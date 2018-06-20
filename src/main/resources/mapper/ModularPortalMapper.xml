@@ -1,46 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jushang.dao.ModularPortalDao">
+<mapper namespace="com.jh.jsuk.dao.ModularPortalDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jushang.entity.ModularPortal">
-        <id column="id" property="id"/>
-        <result column="name" property="name"/>
-        <result column="logo" property="logo"/>
-        <result column="parent_id" property="parentId"/>
-        <result column="sort_order" property="sortOrder"/>
-        <result column="status" property="status"/>
-        <result column="type" property="type"/>
-        <result column="publish_time" property="publishTime"/>
-        <result column="update_time" property="updateTime"/>
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ModularPortal">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="logo" property="logo" />
+        <result column="parent_id" property="parentId" />
+        <result column="sort_order" property="sortOrder" />
+        <result column="status" property="status" />
+        <result column="type" property="type" />
+        <result column="publish_time" property="publishTime" />
+        <result column="update_time" property="updateTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, name, logo, parent_id, sort_order, status, type, publish_time, update_time
     </sql>
-
-    <resultMap id="ModularPortalVo" type="com.jushang.entity.vo.ModularPortalVo" extends="BaseResultMap">
-        <association column="id" property="modularPortalVoList" select="com.jushang.dao.ModularPortalDao.findChildrenModular"/>
-    </resultMap>
-
-    <select id="getModularList" resultMap="ModularPortalVo">
-        SELECT
-            *
-        FROM
-            `t_modular_portal`
-        ORDER BY
-            sort_order DESC
-    </select>
-
-    <select id="findChildrenModular" resultMap="BaseResultMap">
-        SELECT
-            *
-        FROM
-            `t_modular_portal`
-        WHERE
-            parent_id = #{id}
-        ORDER BY sort_order DESC
-    </select>
 
 </mapper>

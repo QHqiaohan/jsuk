@@ -1,55 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jushang.dao.ExpressDao">
+<mapper namespace="com.jh.jsuk.dao.ExpressDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jushang.entity.Express">
-        <id column="id" property="id"/>
-        <result column="user_id" property="userId"/>
-        <result column="sender_address" property="senderAddress"/>
-        <result column="get_address" property="getAddress"/>
-        <result column="goods_type" property="goodsType"/>
-        <result column="weight" property="weight"/>
-        <result column="real_weight" property="realWeight"/>
-        <result column="is_del" property="isDel"/>
-        <result column="status" property="status"/>
-        <result column="type" property="type"/>
-        <result column="price" property="price"/>
-        <result column="notes" property="notes"/>
-        <result column="requirement_time" property="requirementTime"/>
-        <result column="publish_time" property="publishTime"/>
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Express">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="sender_address" property="senderAddress" />
+        <result column="get_address" property="getAddress" />
+        <result column="goods_type" property="goodsType" />
+        <result column="weight" property="weight" />
+        <result column="real_weight" property="realWeight" />
+        <result column="is_del" property="isDel" />
+        <result column="status" property="status" />
+        <result column="type" property="type" />
+        <result column="price" property="price" />
+        <result column="notes" property="notes" />
+        <result column="requirement_time" property="requirementTime" />
+        <result column="publish_time" property="publishTime" />
+        <result column="end_time" property="endTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_id, sender_address, get_address, goods_type, weight, real_weight, is_del, status, type, price, notes, requirement_time, publish_time
+        id, user_id, sender_address, get_address, goods_type, weight, real_weight, is_del, status, type, price, notes, requirement_time, publish_time, end_time
     </sql>
-
-
-    <resultMap id="ExpressVo" type="com.jushang.entity.vo.ExpressVo" extends="BaseResultMap">
-        <association property="senderAddressInfo" column="sender_address" select="com.jushang.dao.AddressDao.selectAddressById"></association>
-        <association property="getAddressInfo" column="get_address" select="com.jushang.dao.AddressDao.selectAddressById"></association>
-    </resultMap>
-
-    <select id="shopGoodsListByModularId" resultMap="ExpressVo">
-        SELECT
-        *
-        FROM
-        t_express
-        WHERE
-        user_id = #{userId}
-        <if test="type != null">
-            AND
-            `type` = #{type}
-        </if>
-        <if test="status != null">
-            AND
-            status = #{status}
-        </if>
-        ORDER BY publish_time DESC
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
 
 </mapper>

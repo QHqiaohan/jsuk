@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.jsuk.dao.LogDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Log">
+        <id column="id" property="id" />
+        <result column="user_name" property="userName" />
+        <result column="servlet_path" property="servletPath" />
+        <result column="param" property="param" />
+        <result column="operation_time" property="operationTime" />
+        <result column="user_id" property="userId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_name, servlet_path, param, operation_time, user_id
+    </sql>
+
+</mapper>

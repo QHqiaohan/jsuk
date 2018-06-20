@@ -1,77 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jushang.dao.UserDao">
+<mapper namespace="com.jh.jsuk.dao.UserDao">
 
-	<!-- 通用查询映射结果 -->
-	<resultMap id="BaseResultMap" type="com.jushang.entity.User">
-		<id column="id" property="id" />
-		<result column="phone" property="phone" />
-		<result column="password" property="password" />
-		<result column="head_img" property="headImg" />
-		<result column="nick_name" property="nickName" />
-		<result column="gender" property="gender" />
-		<result column="hometown" property="hometown" />
-		<result column="weibo_token" property="weiboToken" />
-		<result column="last_login_time" property="lastLoginTime" />
-		<result column="login_ip" property="loginIp" />
-		<result column="wx_token" property="wxToken" />
-		<result column="qq_token" property="qqToken" />
-		<result column="publish_time" property="publishTime" />
-		<result column="invitation_id" property="invitationId" />
-		<result column="can_use" property="canUse" />
-		<result column="is_available" property="isAvailable" />
-		<result column="is_secondary_market" property="isSecondaryMarket" />
-	</resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.User">
+        <id column="id" property="id" />
+        <result column="nick_name" property="nickName" />
+        <result column="phone" property="phone" />
+        <result column="level" property="level" />
+        <result column="sex" property="sex" />
+        <result column="head_img" property="headImg" />
+        <result column="password" property="password" />
+        <result column="login_ip" property="loginIp" />
+        <result column="wx_token" property="wxToken" />
+        <result column="weibo_token" property="weiboToken" />
+        <result column="qq_token" property="qqToken" />
+        <result column="can_use" property="canUse" />
+        <result column="is_secondary_market" property="isSecondaryMarket" />
+        <result column="is_available" property="isAvailable" />
+        <result column="address" property="address" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="last_login_time" property="lastLoginTime" />
+    </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, phone, password, head_img, nick_name, gender, hometown, last_login_time, login_ip, qq_token,wx_token, publish_time,invitation_id,can_use,is_available,is_secondary_market
+        id, nick_name, phone, level, sex, head_img, password, login_ip, wx_token, weibo_token, qq_token, can_use, is_secondary_market, is_available, address, create_time, update_time, last_login_time
     </sql>
-
-    <sql id="Vo_Column_List">
-        id, head_img, nick_name
-    </sql>
-
-	<resultMap id="UserInfoVo" type="com.jushang.entity.vo.UserInfoVo" extends="BaseResultMap">
-		<association property="label" column="flavor_id" select="com.jushang.dao.GoodsLabelDao.selectById"></association>
-	</resultMap>
-
-	<select id="selectInfoById" resultMap="UserInfoVo">
-		SELECT
-		<include refid="Base_Column_List"/>
-		FROM t_user
-		WHERE id = #{id}
-	</select>
-
-	<resultMap id="UserVo" type="com.jushang.entity.vo.UserVo">
-		<id column="id" property="id" />
-		<result column="head_img" property="headImg" />
-		<result column="nick_name" property="nickName" />
-	</resultMap>
-
-	<select id="selectVoById" resultMap="UserVo">
-		SELECT
-		<include refid="Vo_Column_List"></include>
-		FROM t_user
-		WHERE
-		id = #{id}
-	</select>
-
-	<select id="selectVoByWishId" resultMap="UserVo">
-		SELECT
-		t_user.*
-		FROM t_user LEFT JOIN t_wish
-		ON t_user.id = t_wish.user_id
-		WHERE
-		t_wish.id = #{wishId}
-	</select>
-
-    <select id="findUserHeadImgById" resultMap="BaseResultMap">
-		SELECT
-		*
-		FROM t_user
-		WHERE
-		id = #{id}
-	</select>
 
 </mapper>

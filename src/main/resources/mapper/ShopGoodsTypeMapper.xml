@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.jsuk.dao.ShopGoodsTypeDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopGoodsType">
+        <id column="id" property="id" />
+        <result column="manager_id" property="managerId" />
+        <result column="name" property="name" />
+        <result column="goods_size_id" property="goodsSizeId" />
+        <result column="sort" property="sort" />
+        <result column="id_del" property="idDel" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, manager_id, name, goods_size_id, sort, id_del, create_time
+    </sql>
+
+</mapper>

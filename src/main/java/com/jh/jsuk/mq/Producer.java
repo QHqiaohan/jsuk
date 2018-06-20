@@ -1,6 +1,6 @@
 package com.jh.jsuk.mq;
 
-import com.jushang.entity.dto.UserOrderDTO;
+import com.jh.jsuk.entity.dto.UserOrderDTO;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

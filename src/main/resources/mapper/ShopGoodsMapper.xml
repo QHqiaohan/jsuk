@@ -1,248 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jushang.dao.ShopGoodsDao">
+<mapper namespace="com.jh.jsuk.dao.ShopGoodsDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jushang.entity.ShopGoods">
-        <id column="id" property="id"/>
-        <result column="shop_id" property="shopId"/>
-        <result column="shop_modular_id" property="shopModularId"/>
-        <result column="goods_label_id" property="goodsLabelId"/>
-        <result column="goods_name" property="goodsName"/>
-        <result column="goods_img" property="goodsImg"/>
-        <result column="goods_desc" property="goodsDesc"/>
-        <result column="status" property="status"/>
-        <result column="is_del" property="isDel"/>
-        <result column="publish_time" property="publishTime"/>
-        <result column="update_time" property="updateTime"/>
-        <result column="main_image" property="mainImage"/>
-        <result column="goods_break" property="goodsBreak"/>
-        <result column="goods_type" property="goodsType"/>
-        <result column="is_recommend" property="isRecommend"/>
-        <result column="is_kill" property="isKill"/>
-        <result column="price_kill" property="priceKill"/>
-        <result column="sale_amont" property="saleAmont"/>
-    </resultMap>
-
-    <resultMap id="ResultMap" type="map">
-        <id column="id" property="id"/>
-        <result column="shop_id" property="shopId"/>
-        <result column="shop_category_id" property="shopModularId"/>
-        <result column="goods_label_id" property="goodsLabelId"/>
-        <result column="goods_name" property="goodsName"/>
-        <result column="goods_img" property="goodsImg"/>
-        <result column="goods_desc" property="goodsDesc"/>
-        <result column="status" property="status"/>
-        <result column="is_del" property="isDel"/>
-        <result column="publish_time" property="publishTime"/>
-        <result column="update_time" property="updateTime"/>
-        <result column="main_image" property="mainImage"/>
-        <result column="goods_break" property="goodsBreak"/>
-        <result column="shop_name" property="shopName"/>
-        <result column="address" property="address"/>
-        <result column="goods_type" property="goodsType"/>
-        <result column="is_recommend" property="isRecommend"/>
-        <result column="is_kill" property="isKill"/>
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopGoods">
+        <id column="id" property="id" />
+        <result column="shop_id" property="shopId" />
+        <result column="shop_modular_id" property="shopModularId" />
+        <result column="is_recommend" property="isRecommend" />
+        <result column="goods_label_id" property="goodsLabelId" />
+        <result column="goods_name" property="goodsName" />
+        <result column="goods_img" property="goodsImg" />
+        <result column="goods_desc" property="goodsDesc" />
+        <result column="status" property="status" />
+        <result column="is_del" property="isDel" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="main_image" property="mainImage" />
+        <result column="goods_break" property="goodsBreak" />
+        <result column="sale_amont" property="saleAmont" />
+        <result column="goods_type" property="goodsType" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, shop_id, shop_modular_id, goods_label_id, goods_name, goods_img, goods_desc, status, is_del, publish_time, update_time,
-        main_image, goods_break, goods_type, is_recommend,sale_amont,
-        is_kill, price_kill
+        id, shop_id, shop_modular_id, is_recommend, goods_label_id, goods_name, goods_img, goods_desc, status, is_del, create_time, update_time, main_image, goods_break, sale_amont, goods_type
     </sql>
-    <resultMap id="ShopGoodsVo" type="com.jushang.entity.vo.ShopGoodsVo">
-        <result column="goods_name" property="goodsName"/>
-        <result column="size_name" property="sizeName"/>
-        <result column="main_image" property="mainImage"/>
-        <result column="num" property="num"/>
-        <result column="goodsId" property="goodsId"/>
-    </resultMap>
 
-    <select id="selectVoById" resultMap="ShopGoodsVo">
-        SELECT
-            id,
-            goods_name
-        FROM t_shop_goods
-        WHERE id = #{id}
-    </select>
-    <select id="getCount" resultType="long">
-        SELECT count(*)
-        FROM t_shop_goods tsg inner join t_shop ts on tsg.shop_id = ts.id
-        <where>
-            <if test="goodsName !='' and goodsName !=null">
-                and tsg.goods_name=#{goodsName}
-            </if>
-            <if test="shopName !=''  and shopName !=null">
-                and ts.shop_name=#{shopName}
-            </if>
-            <if test="status !=null">
-                and tsg.status=#{status}
-            </if>
-        </where>
-    </select>
-
-    <select id="findShopGoodsByShopId" resultMap="BaseResultMap">
-        SELECT
-        *
-        FROM t_shop_goods
-        WHERE
-        id = #{id}
-    </select>
-
-    <select id="selectPageByList" resultMap="ResultMap">
-        SELECT tsg.id, tsg.shop_id, tsg.shop_category_id, tsg.goods_label_id, tsg.goods_name, tsg.goods_price,
-        tsg.goods_img, tsg.stock, tsg.goods_desc, tsg.status, tsg.is_del, tsg.publish_time, tsg.update_time,
-        tsg.main_image, tsg.commodity_price, tsg.sell_price, tsg.express_fee, tsg.deduction_of_integral,
-        tsg.goods_break, tsg.goods_trademark
-        ,ts.shop_name,ts.address
-        FROM t_shop_goods tsg inner join t_shop ts on tsg.shop_id = ts.id
-        <where>
-            <if test="goodsName !='' and goodsName !=null">
-                and tsg.goods_name=#{goodsName}
-            </if>
-            <if test="shopName !=''  and shopName !=null">
-                and ts.shop_name=#{shopName}
-            </if>
-            <if test="status !=null">
-                and tsg.status=#{status}
-            </if>
-        </where>
-        limit #{current},#{size}
-    </select>
-
-    <resultMap id="OrderVo" type="com.jushang.entity.vo.OrderVo" extends="BaseResultMap">
-        <association property="shop" column="{couponId=id,userId=user_id}" select="com.jushang.dao.UserCouponDao.selectByCouponId"></association>
-        <association property="shopGoods" column="{couponId=id,userId=user_id}" select="com.jushang.dao.UserCouponDao.selectByCouponId"></association>
-    </resultMap>
-
-    <select id="findAllShopGoodsByShopId" resultMap="BaseResultMap">
-        SELECT
-        *
-        FROM t_shop_goods
-        WHERE
-        shop_id = #{shopId}
-
-        <if test="type == 0">
-            and is_kill = 0
-            ORDER BY sale_amont DESC
-        </if>
-
-        <if test="type == 1">
-            and is_kill = 0
-            ORDER BY goods_price DESC
-        </if>
-
-        <if test="type == 2">
-            and is_kill = 0
-            ORDER BY sale_amont DESC
-        </if>
-
-        <if test="type == 3">
-            and is_kill = 0
-            and goods_type = 3
-            ORDER BY sale_amont DESC
-        </if>
-
-        LIMIT #{begin},#{size}
-    </select>
-
-    <select id="getCountBy" resultType="int">
-        SELECT
-        COUNT
-        FROM t_shop_goods
-        WHERE
-        shop_id = #{shopId}
-
-        <if test="type == 3">
-            and is_kill = 0
-            and goods_type = 3
-        </if>
-
-    </select>
-
-    <select id="findShopGoodsById" resultMap="ShopGoodsVo">
-        SELECT
-        t1.num,
-        t2.goods_name,
-        t2.main_image,
-        t2.id AS goodsId,
-        t3.size_name
-        FROM
-        t_order_goods t1
-        LEFT JOIN t_shop_goods t2 ON t1.goods_id = t2.id
-        LEFT JOIN t_shop_goods_size t3 ON t1.goods_size_id = t3.id
-        WHERE
-        t1.goods_id = #{goodsId}
-        AND t1.goods_size_id = #{goodsSizeId}
-
-        <if test="goodsName != null">
-            AND t2.goods_name LIKE CONCAT('%', #{goodsName}, '%')
-        </if>
-    </select>
-
-    <select id="findShopGoods" resultMap="ShopGoodsSizeVo">
-        SELECT
-           *
-        FROM
-            t_shop_goods
-        WHERE
-            is_recommend = '1'
-        AND `status` = '1'
-        AND is_del = '1'
-        ORDER BY
-            sale_amont
-        LIMIT 1,
-         8
-    </select>
-
-    <select id="findShopGoodsByModularId" resultMap="ShopGoodsSizeVo">
-        SELECT
-           *
-        FROM
-            t_shop_goods
-        WHERE
-            is_recommend = '1'
-        AND `status` = '1'
-        AND is_del = '1'
-        AND shop_modular_id = #{modularId}
-        ORDER BY
-            sale_amont DESC
-        LIMIT 1,
-         4
-    </select>
-
-    <resultMap id="ShopGoodsSizeVo" type="com.jushang.entity.vo.ShopGoodsSizeVo" extends="BaseResultMap">
-
-    </resultMap>
-
-    <resultMap id="GoodsImg" type="com.jushang.entity.vo.GoodsImg">
-        <result column="goods_img" property="goodsImg"/>
-    </resultMap>
-
-    <resultMap id="ShopGoodsVoT" type="com.jushang.entity.vo.GoodsSizeVo" extends="BaseResultMap">
-        <association property="shopGoodsSize" column="id" select="com.jushang.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></association>
-    </resultMap>
-
-    <select id="shopGoodsListByModularId" resultMap="ShopGoodsVoT">
-        SELECT
-        *
-        FROM t_shop_goods
-        WHERE
-        shop_modular_id = #{modularId}
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
-
-    <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="ShopGoodsVoT">
-        SELECT
-        *
-        FROM t_shop_goods
-        WHERE
-        shop_id = #{shopId}
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
 </mapper>

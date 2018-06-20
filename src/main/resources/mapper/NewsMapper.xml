@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.jsuk.dao.NewsDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.News">
+        <id column="id" property="id" />
+        <result column="news_type" property="newsType" />
+        <result column="title" property="title" />
+        <result column="content" property="content" />
+        <result column="goods_id" property="goodsId" />
+        <result column="image" property="image" />
+        <result column="create_time" property="createTime" />
+        <result column="send_user_id" property="sendUserId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, news_type, title, content, goods_id, image, create_time, send_user_id
+    </sql>
+
+</mapper>

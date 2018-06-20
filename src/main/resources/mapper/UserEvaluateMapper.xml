@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.jsuk.dao.UserEvaluateDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.UserEvaluate">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="order_id" property="orderId" />
+        <result column="goods_id" property="goodsId" />
+        <result column="shop_star_num" property="shopStarNum" />
+        <result column="distribution_star_num" property="distributionStarNum" />
+        <result column="service_start_num" property="serviceStartNum" />
+        <result column="content" property="content" />
+        <result column="img" property="img" />
+        <result column="status" property="status" />
+        <result column="is_del" property="isDel" />
+        <result column="type_code" property="typeCode" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, order_id, goods_id, shop_star_num, distribution_star_num, service_start_num, content, img, status, is_del, type_code, create_time
+    </sql>
+
+</mapper>

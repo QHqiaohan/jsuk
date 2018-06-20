@@ -1,7 +1,7 @@
 package com.jh.jsuk.utils;
 
 
-import com.jushang.conf.Constant;
+import com.jh.jsuk.conf.Constant;
 
 public class Result<T> {
     private Long code;

@@ -2,8 +2,8 @@ package com.jh.jsuk.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jushang.conf.Constant;
-import com.jushang.entity.jwt.JwtParam;
+import com.jh.jsuk.conf.Constant;
+import com.jh.jsuk.entity.jwt.JwtParam;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;

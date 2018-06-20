@@ -1,9 +1,10 @@
+/*
 package com.jh.jsuk.utils.wx;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jushang.utils.MSGUtil;
+import com.jh.jsuk.utils.MSGUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -17,41 +18,59 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
+*/
 /**
  * Created by LUTAO on 2018/1/16.
- */
+ *//*
+
 public class WxPay {
-    /**
+    */
+/**
      * 微信商户号
-     */
+     *//*
+
     public static final String MCHID = "1495002222";
-    /**
+    */
+/**
      * 微信交易类型
-     */
+     *//*
+
     public static final String TRADETYPE = "APP";
-    /**
+    */
+/**
      * 微信APIKEY
-     */
+     *//*
+
     public static final String APIKEY = "uMONQLKx5jM5oHx9M9HtcYoq1c6GlVDe";
-    /**
+    */
+/**
      * 微信APPID
-     */
+     *//*
+
     public static final String APPID = "wxecb014ee8fd771fb";
-    /**
+    */
+/**
      * 微信操作密码
-     */
+     *//*
+
     public static final String caozuoPsd = "mamahui666+";
-    /**
+    */
+/**
      * 微信操作密码
-     */
+     *//*
+
     public static final String P12FILE = "C:\\www\\mombraise\\wxR\\apiclient_cert.p12";//服务器
-    /**
+    */
+/**
      * 微信统一下单接口路径
-     */
+     *//*
+
     private static final String UNIFORMORDER = "https://api.mch.weixin.qq.com/pay/unifiedorder";
-    /**
+    */
+/**
      * 微信退款路径
-     */
+     *//*
+
     private static final String WXREFUND = "https://api.mch.weixin.qq.com/secapi/pay/refund";
     //public static final String P12FILE ="C:\\Users\\SharPei\\Desktop\\apiclient_cert.p12";//本地
 
@@ -59,12 +78,14 @@ public class WxPay {
         //uniformorder("211.149.159:9999/",0.1,"451561141541");
     }
 
-    /**
+    */
+/**
      * 微信统一下单
      *
      * @return
      * @throws
-     */
+     *//*
+
     public static MSGUtil uniformorder(HttpServletRequest request, String nofityUrl, Double money, String orderNum) throws UnsupportedEncodingException,
             NoSuchAlgorithmException {
         //ResultObject result = new ResultObject();// 返回数据结果集合
@@ -139,9 +160,11 @@ public class WxPay {
         }
     }
 
-    /**
+    */
+/**
      * 微信退款
-     */
+     *//*
+
     public static MSGUtil wxPayRefund(Double money, String orderNum) throws UnsupportedEncodingException {
         //request.setCharacterEncoding("UTF-8");
         MSGUtil rt = new MSGUtil(MSGUtil.OK, "");
@@ -203,12 +226,14 @@ public class WxPay {
         return map;
     }
 
-    /**
+    */
+/**
      * 回掉，获取订单号
      *
      * @param request
      * @return
-     */
+     *//*
+
     public static String getOrderNo(HttpServletRequest request) {
         try {
             request.setCharacterEncoding("UTF-8");
@@ -292,12 +317,16 @@ public class WxPay {
             String key = (String) entry.getKey();
             String value = entry.getValue().toString();
             //过滤相关字段sign
-           /* if("sign".equalsIgnoreCase(key)){
+           */
+/* if("sign".equalsIgnoreCase(key)){
                 buffer.append("<"+key+">"+"<![CDATA["+value+"]]>"+"</"+key+">");
                 //buffer.append("<"+key+">"+value+"</"+key+">");
-            }else{*/
+            }else{*//*
+
             buffer.append("<" + key + ">" + value + "</" + key + ">");
-            /* }*/
+            */
+/* }*//*
+
         }
         buffer.append("</xml>");
         System.out.println(buffer.toString());
@@ -365,3 +394,4 @@ public class WxPay {
 
 
 }
+*/

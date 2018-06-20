@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jushang.dao.GoodsLabelDao">
+<mapper namespace="com.jh.jsuk.dao.GoodsLabelDao">
 
-	<!-- 通用查询映射结果 -->
-	<resultMap id="BaseResultMap" type="com.jushang.entity.GoodsLabel">
-		<id column="id" property="id" />
-		<result column="label" property="label" />
-		<result column="rank" property="rank" />
-		<result column="is_del" property="isDel" />
-		<result column="publish_time" property="publishTime" />
-	</resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.GoodsLabel">
+        <id column="id" property="id" />
+        <result column="label" property="label" />
+        <result column="rank" property="rank" />
+        <result column="is_del" property="isDel" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, label, rank, is_del, publish_time
+        id, label, rank, is_del, create_time
     </sql>
 
 </mapper>

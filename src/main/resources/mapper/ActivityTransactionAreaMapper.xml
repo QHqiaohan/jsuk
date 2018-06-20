@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jushang.dao.ActivityTransactionAreaDao">
+<mapper namespace="com.jh.jsuk.dao.ActivityTransactionAreaDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jushang.entity.ActivityTransactionArea">
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ActivityTransactionArea">
         <id column="id" property="id" />
         <result column="transaction_area" property="transactionArea" />
         <result column="is_del" property="isDel" />
@@ -15,14 +15,5 @@
     <sql id="Base_Column_List">
         id, transaction_area, is_del, longitude, latitude
     </sql>
-
-    <select id="findAreaById" resultMap="BaseResultMap">
-        SELECT
-        *
-        FROM
-        `t_activity_transaction_area`
-        WHERE
-        id = #{id}
-    </select>
 
 </mapper>

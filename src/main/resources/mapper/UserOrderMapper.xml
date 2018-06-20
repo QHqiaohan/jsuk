@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.jsuk.dao.UserOrderDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.UserOrder">
+        <id column="id" property="id" />
+        <result column="order_num" property="orderNum" />
+        <result column="order_price" property="orderPrice" />
+        <result column="distribution_fee" property="distributionFee" />
+        <result column="creat_time" property="creatTime" />
+        <result column="pay_time" property="payTime" />
+        <result column="pay_type" property="payType" />
+        <result column="status" property="status" />
+        <result column="is_unsubscribe" property="isUnsubscribe" />
+        <result column="is_evaluate" property="isEvaluate" />
+        <result column="is_del" property="isDel" />
+        <result column="manager_id" property="managerId" />
+        <result column="address_id" property="addressId" />
+        <result column="user_id" property="userId" />
+        <result column="cancel_time" property="cancelTime" />
+        <result column="complete_time" property="completeTime" />
+        <result column="send_time" property="sendTime" />
+        <result column="coupon_id" property="couponId" />
+        <result column="distribution_user_id" property="distributionUserId" />
+        <result column="order_type" property="orderType" />
+        <result column="logistics_no" property="logisticsNo" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_num, order_price, distribution_fee, creat_time, pay_time, pay_type, status, is_unsubscribe, is_evaluate, is_del, manager_id, address_id, user_id, cancel_time, complete_time, send_time, coupon_id, distribution_user_id, order_type, logistics_no, remark
+    </sql>
+
+</mapper>

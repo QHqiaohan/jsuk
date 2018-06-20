@@ -14,14 +14,24 @@ import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import java.util.*;
 
 public class MysqlGenerator {
-    private static String[] table = new String[]{"t_distribution_user"};            //table名字
+    private static String[] table =  new String[]{"js_activity", "js_activity_join", "js_activity_small", "js_activity_transaction_area", "js_banner"
+            , "js_banner_goods", "js_brand", "js_car", "js_coupon", "js_coupon_goods", "js_coupon_user", "js_distribution_apply",
+            "js_distribution_user", "js_express", "js_express_news", "js_express_type", "js_goods_category", "js_goods_evaluate", "js_goods_label"
+            , "js_hot_advisory", "js_hotel", "js_kill_goods_info", "js_life_class", "js_manager_user", "js_market_comment", "js_modular_portal",
+            "js_news", "js_news_user", "js_shop_goods", "js_shop_goods_size", "js_shop_goods_type", "js_shop_money", "js_shop_month_statistics",
+            "js_shop_rush_buy", "js_shop_today_money", "js_shop_today_statistics", "js_shop_user", "js_shop_visit", "js_shopping_cart",
+            "js_special_goods", "js_special_theme", "js_sys_areas", "js_sys_citys", "js_sys_dict", "js_sys_feedback", "js_sys_log", "js_sys_menu",
+            "js_sys_provinces", "js_sys_role", "js_sys_role_menu", "js_sys_user_role", "js_sys_version",
+            "js_sys_weather_city", "js_user", "js_user_address", "js_user_authentication", "js_user_bank", "js_user_evaluate", "js_user_footprint",
+            "js_user_order", "js_user_order_goods"};
+    //table名字
     private static String[] prefixs = {"js_sys_", "js_"};            //table前缀
     private static String authorName = "lpf";                //作者
     private static String parent = "com.jh.jsuk";         //父包名
     private static String path = System.getProperty("user.dir");
-    private static String url = "jdbc:mysql://127.0.0.1:3306/jushang?characterEncoding=utf8";
+    private static String url = "jdbc:mysql://127.0.0.1:3306/jushang_new?characterEncoding=utf8";
     private static String username = "root";
-    private static String password = "qqle";
+    private static String password = "qqleqqle";
     private static String driverClassName = "com.mysql.jdbc.Driver";
 
     public static void main(String[] args) {

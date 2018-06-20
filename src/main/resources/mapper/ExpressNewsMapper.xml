@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jushang.dao.ExpressNewsDao">
+<mapper namespace="com.jh.jsuk.dao.ExpressNewsDao">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jushang.entity.ExpressNews">
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ExpressNews">
         <id column="id" property="id" />
         <result column="type" property="type" />
         <result column="title" property="title" />
         <result column="content" property="content" />
         <result column="is_del" property="isDel" />
+        <result column="image" property="image" />
+        <result column="user_id" property="userId" />
         <result column="publish_time" property="publishTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, type, title, content, is_del, publish_time
+        id, type, title, content, is_del, image, user_id, publish_time
     </sql>
 
 </mapper>

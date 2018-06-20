@@ -1,6 +1,6 @@
 package com.jh.jsuk.conf;
 
-import com.jushang.utils.Result;
+import com.jh.jsuk.utils.Result;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;

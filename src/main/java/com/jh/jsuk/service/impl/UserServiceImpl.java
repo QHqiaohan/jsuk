@@ -1,0 +1,20 @@
+package com.jh.jsuk.service.impl;
+
+import com.jh.jsuk.entity.User;
+import com.jh.jsuk.dao.UserDao;
+import com.jh.jsuk.service.UserService;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
+
+/**
+ * <p>
+ * 普通用户 服务实现类
+ * </p>
+ *
+ * @author lpf
+ * @since 2018-06-20
+ */
+@Service
+public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserService {
+
+}

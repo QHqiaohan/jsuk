@@ -1,73 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jushang.dao.CouponDao">
+<mapper namespace="com.jh.jsuk.dao.CouponDao">
 
-	<!-- 通用查询映射结果 -->
-	<resultMap id="BaseResultMap" type="com.jushang.entity.Coupon">
-		<id column="id" property="id" />
-		<result column="shop_id" property="shopId" />
-		<result column="full_price" property="fullPrice" />
-		<result column="discount" property="discount" />
-		<result column="start_time" property="startTime" />
-		<result column="end_time" property="endTime" />
-		<result column="num" property="num" />
-		<result column="is_del" property="isDel" />
-		<result column="publish_time" property="publishTime" />
-	</resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Coupon">
+        <id column="id" property="id" />
+        <result column="manager_user_id" property="managerUserId" />
+        <result column="full_price" property="fullPrice" />
+        <result column="discount" property="discount" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="num" property="num" />
+        <result column="is_del" property="isDel" />
+        <result column="publish_time" property="publishTime" />
+        <result column="coupon_type" property="couponType" />
+        <result column="limiting_num" property="limitingNum" />
+        <result column="coupon_name" property="couponName" />
+        <result column="coupon_platform" property="couponPlatform" />
+    </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, shop_id, full_price, discount, start_time, end_time, num, is_del, publish_time
+        id, manager_user_id, full_price, discount, start_time, end_time, num, is_del, publish_time, coupon_type, limiting_num, coupon_name, coupon_platform
     </sql>
 
-	<resultMap id="CouponVo" type="com.jushang.entity.vo.CouponVo" extends="BaseResultMap">
-		<association property="userCoupon" column="{couponId=id,userId=user_id}" select="com.jushang.dao.UserCouponDao.selectByCouponId"></association>
-	</resultMap>
-	<!--<resultMap id="CouponVo" type="com.jushang.entity.vo.CouponVo" extends="BaseResultMap">
-		<association property="userCoupon" column="id" select="com.jushang.dao.UserCouponDao.selectByCouponId"></association>
-	</resultMap>-->
-	<select id="findByUserId" resultMap="CouponVo">
-		SELECT
-		t_coupon.*,t_user_coupon.user_id
-		FROM t_coupon LEFT JOIN t_user_coupon ON t_coupon.id = t_user_coupon.coupon_id
-		WHERE
-		user_id = #{userId} AND t_user_coupon.status != 0
-		order by
-		t_coupon.end_time
-	</select>
-
-	<select id="selectVoList" resultMap="CouponVo" >
-
-
-		SELECT
-		t_coupon.*,t_user_coupon.user_id
-		FROM t_coupon LEFT JOIN t_user_coupon ON t_user_coupon.coupon_id  = t_coupon.id
-		<where>
-			${ew.sqlSegment}
-		</where>
-	</select>
-
-
-	<select id="selectVoList2" resultMap="CouponVo" parameterType="com.jushang.entity.vo.CoupQueryParam">
-
-		SELECT t_coupon.*,t_user_coupon.user_id
-		FROM t_coupon LEFT JOIN t_user_coupon ON
-		t_user_coupon.coupon_id = t_coupon.id
-		WHERE user_id=#{userId}
-		<if test="status != null">
-			AND status = #{status}
-		</if>
-
-		<!--<if test="shopId != null">
-			AND shop_id = #{shopId}
-		</if>-->
-
-		<if test="money != null">
-			AND full_price &lt;= #{money}
-		</if>
-
-		AND is_del = 1
-
-
-	</select>
 </mapper>

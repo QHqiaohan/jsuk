@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jushang.dao.ProvincesDao">
+<mapper namespace="com.jh.jsuk.dao.ProvincesDao">
 
-	<!-- 通用查询映射结果 -->
-	<resultMap id="BaseResultMap" type="com.jushang.entity.Provinces">
-		<id column="id" property="id" />
-		<result column="province_name" property="provinceName" />
-		<result column="alias" property="alias" />
-		<result column="pinyin" property="pinyin" />
-		<result column="abbr" property="abbr" />
-		<result column="zip" property="zip" />
-	</resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Provinces">
+        <id column="id" property="id" />
+        <result column="province_name" property="provinceName" />
+        <result column="alias" property="alias" />
+        <result column="pinyin" property="pinyin" />
+        <result column="abbr" property="abbr" />
+        <result column="zip" property="zip" />
+    </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">

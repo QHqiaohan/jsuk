@@ -1,6 +1,6 @@
 package com.jh.jsuk.conf;
 
-import com.jushang.utils.KieUtils;
+import com.jh.jsuk.utils.KieUtils;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.*;

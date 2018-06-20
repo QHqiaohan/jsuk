@@ -1,44 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jushang.dao.RoleDao">
+<mapper namespace="com.jh.jsuk.dao.RoleDao">
 
-	<!-- 通用查询映射结果 -->
-	<resultMap id="BaseResultMap" type="com.jushang.entity.Role">
-		<id column="role_id" property="roleId" />
-		<result column="role_name" property="roleName" />
-		<result column="role_sign" property="roleSign" />
-		<result column="remark" property="remark" />
-		<result column="user_id_create" property="userIdCreate" />
-		<result column="gmt_create" property="gmtCreate" />
-		<result column="gmt_modified" property="gmtModified" />
-		<result column="groupt_id" property="grouptId" />
-
-	</resultMap>
-<resultMap id="ResultMap" type="java.util.Map">
-		<id column="role_id" property="roleId" />
-		<result column="role_name" property="roleName" />
-		<result column="role_sign" property="roleSign" />
-		<result column="remark" property="remark" />
-		<result column="user_id_create" property="userIdCreate" />
-		<result column="gmt_create" property="gmtCreate" />
-		<result column="gmt_modified" property="gmtModified" />
-		<result column="groupt_id" property="grouptId" />
-		<result column="group_name" property="grouptName" />
-		<result column="nick_name" property="nickName" />
-	</resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Role">
+        <id column="role_id" property="roleId" />
+        <result column="role_name" property="roleName" />
+        <result column="role_sign" property="roleSign" />
+        <result column="remark" property="remark" />
+        <result column="user_id_create" property="userIdCreate" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="gmt_modified" property="gmtModified" />
+        <result column="groupt_id" property="grouptId" />
+    </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        role_id, role_name, role_sign, remark, user_id_create, gmt_create, gmt_modified
+        role_id, role_name, role_sign, remark, user_id_create, gmt_create, gmt_modified, groupt_id
     </sql>
-	<select id="selectPage" resultMap="ResultMap">
-        select sr.*,sg.group_name,su.user_name as nick_name,su.id from jushang.sys_role sr
-            left join  jushang.sys_groupt sg on sg.id=sr.groupt_id
-            left join  jushang.sys_user su on sr.user_id_create=su.id
-		limit #{current},#{size}
-	</select>
-    <select id="getCount" resultType="java.lang.Integer">
-        select count(*) from jushang.sys_role sr  left join  jushang.sys_groupt sg on sg.id=sr.groupt_id
-    </select>
 
 </mapper>
