@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.VersionDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jushang.entity.Version">
+        <id column="id" property="id"/>
+        <result column="status" property="status"/>
+        <result column="version" property="version"/>
+        <result column="code" property="code"/>
+        <result column="os_type" property="osType"/>
+        <result column="app_type" property="appType"/>
+        <result column="url" property="url"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, status, version, code,os_type, app_type, url
+    </sql>
+
+    <resultMap id="Version" type="com.jushang.entity.Version" extends="BaseResultMap">
+        <result column="version" property="version"/>
+    </resultMap>
+
+    <select id="getNewVersion" resultMap="Version">
+        SELECT * FROM `t_version` ORDER BY id desc LIMIT 1;
+    </select>
+
+</mapper>

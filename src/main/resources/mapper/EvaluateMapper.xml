@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.EvaluateDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.jushang.entity.Evaluate">
+		<id column="id" property="id" />
+		<result column="order_id" property="orderId" />
+		<result column="shop_star_num" property="shopStarNum" />
+		<result column="distribution_star_num" property="distributionStarNum" />
+		<result column="content" property="content" />
+		<result column="img" property="img" />
+		<result column="status" property="status" />
+		<result column="user_id" property="userId" />
+		<result column="publish_time" property="publishTime" />
+		<result column="is_del" property="isDel" />
+	</resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_id, shop_star_num, distribution_star_num, content, img, status, user_id, publish_time
+    </sql>
+
+	<resultMap id="EvaluateVo" type="com.jushang.entity.vo.EvaluateVo" extends="BaseResultMap">
+		<association property="user" column="user_id" select="com.jushang.dao.UserDao.selectVoById"></association>
+		<collection property="goodsList" column="order_id" ofType="com.jushang.entity.vo.OrderGoodsNameVo" select="com.jushang.dao.OrderGoodsDao.findVoByOrderId"></collection>
+	</resultMap>
+
+	<select id="calulateStar" resultType="int">
+		SELECT
+		round(SUM(${column})/COUNT(1))
+		FROM
+		t_evaluate
+		LEFT JOIN t_order ON t_evaluate.order_id = t_order.id
+		<where>
+			${ew.sqlSegment}
+		</where>
+	</select>
+	<resultMap id="EvaluateVoT" type="com.jushang.entity.vo.EvaluateVoT" extends="BaseResultMap">
+		<association property="user" column="user_id"  select="com.jushang.dao.UserDao.selectById"></association>
+		<association property="order" column="order_id" select="com.jushang.dao.OrderDao.selectById"></association>
+		<association property="shop" column="shop_id" select="com.jushang.dao.ShopDao.selectById"></association>
+	</resultMap>
+	<select id="selectListAllForAdmin" resultMap="EvaluateVoT">
+		SELECT
+		t1.id,t1.content,
+		t1.img,t1.status,
+		t1.publish_time, t1.shop_star_num,
+		t1.distribution_star_num, t1.user_id,
+		t1.order_id, t2.order_num, t2.shop_id,
+		t3.nick_name,t4.shop_name
+		FROM t_evaluate t1
+		LEFT JOIN t_order t2 ON  t2.id = t1.order_id
+		LEFT JOIN t_user t3 ON  t3.id = t1.user_id
+		LEFT JOIN t_shop t4 ON t4.id = t2.shop_id
+		<where>
+			${ew.sqlSegment}
+		</where>
+	</select>
+	<select id="selectListAll" resultMap="EvaluateVo">
+		SELECT
+		*
+		FROM
+		t_evaluate t1
+		<where>
+			${ew.sqlSegment}
+		</where>
+	</select>
+	<select id="selectListByShopId" resultMap="EvaluateVo">
+		SELECT
+		t1.*
+		FROM
+		t_evaluate t1
+		LEFT JOIN t_order t2 ON t1.order_id = t2.id
+		<where>
+			${ew.sqlSegment}
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,49 @@
+server:
+   port: 80
+logging:
+  level:
+    root: info
+    com.bootdo: debug
+spring:
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+  aop:
+    auto: true
+    proxy-target-class: true
+  rabbitmq:
+    host: 15640pa567.imwork.net
+    port: 51577
+    username: guest
+    password: guest
+  thymeleaf:
+      cache: false
+      mode: LEGACYHTML5
+      prefix: classpath:/templates/
+      suffix: .html
+  datasource:
+  # 数据库配置
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: jdbc:mysql://39.108.80.44:3306/jushang?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false
+      username: root
+      password: ab12345678
+      driverClassName: com.mysql.jdbc.Driver
+  # druid配置
+      initialSize: 1
+      minIdle: 3
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      filters: stat,wall,log4j
+  # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+  # 合并多个DruidDataSource的监控数据
+      useGlobalDataSourceStat: true

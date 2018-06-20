@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.GrouptDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jushang.entity.Groupt">
+        <id column="id" property="id" />
+        <result column="group_name" property="groupName" />
+        <result column="crt_by" property="crtBy" />
+        <result column="publish_time" property="publishTime" />
+        <result column="can_use" property="canUse" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, group_name, crt_by, publish_time, can_use
+    </sql>
+
+</mapper>

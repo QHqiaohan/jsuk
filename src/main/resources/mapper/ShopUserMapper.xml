@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.ShopUserDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jushang.entity.ShopUser">
+        <id column="id" property="id"/>
+        <result column="phone" property="phone"/>
+        <result column="password" property="password"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="last_login_time" property="lastLoginTime"/>
+        <result column="login_ip" property="loginIp"/>
+        <result column="publish_time" property="publishTime"/>
+        <result column="can_use" property="canUse"/>
+        <result column="is_waiting" property="isWaiting"/>
+        <result column="is_check" property="isCheck"/>
+        <result column="legal_person_name" property="legalPersonName"/>
+        <result column="card_num" property="cardNum"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, phone, password, shop_id, last_login_time, login_ip, publish_time, can_use, is_waiting, is_check, legal_person_name, card_num
+    </sql>
+
+    <resultMap id="ShopUserVo" type="com.jushang.entity.vo.ShopUserVo" extends="BaseResultMap">
+        <association property="shop" column="shop_id" select="com.jushang.dao.ShopDao.selectById"></association>
+    </resultMap>
+
+    <select id="selectVoPage" resultMap="ShopUserVo">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM t_shop_user
+        <if test="ew !=null">
+            ${ew.sqlSegment}
+        </if>
+    </select>
+
+</mapper>

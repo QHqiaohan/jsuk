@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.ShopTodayStatisticsDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jushang.entity.ShopTodayStatistics">
+        <id column="id" property="id" />
+        <result column="shop_id" property="shopId" />
+        <result column="today" property="today" />
+        <result column="today_visitor" property="todayVisitor" />
+        <result column="today_money" property="todayMoney" />
+        <result column="today_order" property="todayOrder" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, shop_id, today, today_visitor, today_money, today_order
+    </sql>
+
+</mapper>

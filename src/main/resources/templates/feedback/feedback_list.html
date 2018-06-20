@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>文章列表--layui后台管理模板</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/plugins/layui/css/layui.css" media="all" />
+
+	<!--<link rel="stylesheet" href="/build/css/news.css" media="all" />-->
+	<style>
+		#editor2{
+			height: 200px;
+			border: 1px solid #ccc;
+		}
+	</style>
+</head>
+<body>
+
+<table class="layui-hide" id="LAY_table_user" lay-filter="user"></table>
+
+
+<script type="text/javascript" src="/plugins/layui/layui.js"  charset="utf-8"></script>
+
+<script>
+	function refrersh() {
+
+		window.location.Reload();
+    }
+    layui.use('table', function(){
+        var table = layui.table;
+
+        //方法级渲染
+        table.render({
+            elem: '#LAY_table_user'
+
+            ,url: '/feedback/ui/list'
+            ,cols: [[
+                /*{checkbox: true, fixed: true},*/
+                {field:'id', width:80, title: 'ID', sort: true}
+                ,{field:'userId', width:80, title: '用户ID'}
+                ,{field:'content', width:910, title: '内容'}
+                ,{field:'publishTime', width:165, title: '反馈时间'}
+            ]]
+            ,id: 'testReload'
+            ,page: true
+			,limit: 10
+            ,height: 'full-65'
+        });
+
+    });
+</script>
+</body>
+</html>

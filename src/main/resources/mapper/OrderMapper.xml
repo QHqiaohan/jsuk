@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.OrderDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.jushang.entity.Order">
+		<id column="id" property="id" />
+		<result column="order_num" property="orderNum" />
+		<result column="order_price" property="orderPrice" />
+		<result column="distribution_fee" property="distributionFee" />
+		<result column="creat_time" property="creatTime" />
+		<result column="pay_time" property="payTime" />
+		<result column="pay_type" property="payType" />
+		<result column="status" property="status" />
+		<result column="is_unsubscribe" property="isUnsubscribe" />
+		<result column="is_evaluate" property="isEvaluate" />
+		<result column="is_del" property="isDel" />
+		<result column="shop_id" property="shopId" />
+		<result column="address_id" property="addressId" />
+		<result column="user_id" property="userId" />
+		<result column="cancel_time" property="cancelTime" />
+		<result column="complete_time" property="completeTime" />
+		<result column="send_time" property="sendTime" />
+		<result column="coupon_id" property="couponId" />
+		<result column="user_coupon_id" property="userCouponId" />
+		<result column="distribution_user_id" property="distributionUserId" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, order_num, order_price, distribution_fee, creat_time, pay_time, pay_type, status, is_unsubscribe, is_evaluate, is_del, shop_id, address_id, user_id, cancel_time, complete_time, send_time, coupon_id, distribution_user_id,user_coupon_id
+    </sql>
+
+	<resultMap id="OrderVo" type="com.jushang.entity.vo.OrderVo" extends="BaseResultMap">
+		<association property="shop" column="shop_id" select="com.jushang.dao.ShopDao.selectShopPhoneById"></association>
+		<association property="distributionUser" column="distribution_user_id" select="com.jushang.dao.DistributionUserDao.selectById"></association>
+		<association property="coupon" column="coupon_id" select="com.jushang.dao.CouponDao.selectById"></association>
+		<association property="address" column="address_id" select="com.jushang.dao.AddressDao.selectById"></association>
+		<collection property="goodsList" column="id" ofType="com.jushang.entity.vo.OrderGoodsVo" select="com.jushang.dao.OrderGoodsDao.findByOrderId"></collection>
+	</resultMap>
+
+
+	<select id="findVoByPage" resultMap="OrderVo">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		FROM t_order
+		<where>
+			${ew.sqlSegment}
+		</where>
+	</select>
+
+	<select id="findVoById" resultMap="OrderVo">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		FROM t_order
+		WHERE
+		id = #{id}
+	</select>
+
+</mapper>

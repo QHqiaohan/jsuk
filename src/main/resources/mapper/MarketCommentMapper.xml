@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.MarketCommentDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jushang.entity.MarketComment">
+        <id column="id" property="id"/>
+        <result column="comment" property="comment"/>
+        <result column="user_id" property="userId"/>
+        <result column="publish_time" property="publishTime"/>
+        <result column="comment_id" property="commentId"/>
+        <result column="activity_id" property="activityId"/>
+        <result column="is_del" property="isDel"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, comment, user_id, publish_time, comment_id, activity_id, is_del
+    </sql>
+
+    <sql id="result1">
+        id, comment, user_id, publish_time, comment_id
+    </sql>
+
+    <select id="getCommentCount" resultType="integer">
+       SELECT
+            count(*)
+        FROM
+            t_market_comment
+        WHERE
+            activity_id = #{activityId}
+    </select>
+
+    <resultMap id="MarketCommentVo" type="com.jushang.entity.vo.MarketCommentVo" extends="BaseResultMap">
+        <association property="user" column="user_id" select="com.jushang.dao.UserDao.findUserHeadImgById"></association>
+    </resultMap>
+
+    <select id="findCommentByActivityId" resultMap="MarketCommentVo">
+        SELECT
+        <include refid="result1"/>
+        FROM
+        t_market_comment
+        WHERE
+        activity_id = #{activityId}
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
+</mapper>

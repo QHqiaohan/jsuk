@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.DictionaryDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.jushang.entity.Dictionary">
+		<id column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="value" property="value" />
+		<result column="desc" property="desc" />
+		<result column="is_edit" property="isEdit" />
+		<result column="publish_time" property="publishTime" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, code, value, desc, is_edit, publish_time
+    </sql>
+
+</mapper>

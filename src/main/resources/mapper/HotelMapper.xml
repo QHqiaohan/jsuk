@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.HotelDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jushang.entity.Hotel">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="pic" property="pic" />
+        <result column="rank" property="rank" />
+        <result column="statu" property="statu" />
+        <result column="modular_id" property="modularId" />
+        <result column="publish_time" property="publishTime" />
+        <result column="is_del" property="isDel" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, pic, rank, statu, modular_id, publish_time, is_del
+    </sql>
+
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.BannerDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.jushang.entity.Banner">
+		<id column="id" property="id" />
+		<result column="title" property="title" />
+		<result column="img" property="img" />
+		<result column="content" property="content" />
+		<result column="is_link" property="isLink" />
+		<result column="rank" property="rank" />
+		<result column="publish_time" property="publishTime" />
+		<result column="banner_location" property="bannerLocation" />
+		<result column="banner_type" property="bannerType" />
+		<result column="operator_id" property="operatorId" />
+		<result column="is_valid" property="isValid" />
+		<result column="link_url" property="linkUrl" />
+		<result column="shop_code" property="shopCode" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, title, img, content, is_link, rank, publish_time, banner_location, banner_type, operator_id, is_valid, link_url, shop_code
+    </sql>
+
+</mapper>

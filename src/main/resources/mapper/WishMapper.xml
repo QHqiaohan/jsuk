@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.WishDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.jushang.entity.Wish">
+		<id column="id" property="id" />
+		<result column="content" property="content" />
+		<result column="photo" property="photo" />
+		<result column="user_id" property="userId" />
+		<result column="wish_id" property="wishId" />
+		<result column="reply_wish_id" property="replyWishId" />
+		<result column="is_del" property="isDel" />
+		<result column="publish_time" property="publishTime" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, content, photo, user_id, wish_id, reply_wish_id, is_del, publish_time
+    </sql>
+	<resultMap id="WishVo" type="com.jushang.entity.vo.WishVo" extends="BaseResultMap">
+		<result column="my_user_id" property="myUserId" />
+		<association property="userInfo" column="user_id" select="com.jushang.dao.UserDao.selectVoById"></association>
+		<association property="isLick" column="{myUserId=my_user_id,wishId=id}" select="com.jushang.dao.UserWishDao.selectIsMyLick"></association>
+		<association property="countLick" column="id" select="com.jushang.dao.UserWishDao.selectCountByWishId"></association>
+		<association property="countReply" column="id" select="com.jushang.dao.WishDao.selectCountById"></association>
+		<!--<collection property="wishs" column="{myUserId=my_user_id,wishId=id}" ofType="com.jushang.entity.vo.WishVo" select="com.jushang.dao.WishDao.selectVoById"></collection>-->
+	</resultMap>
+
+	<resultMap id="WishMessageVo" type="com.jushang.entity.vo.WishMessageVo" extends="BaseResultMap">
+		<association property="user" column="user_id" select="com.jushang.dao.UserDao.selectVoById"></association>
+		<association property="wish" column="{wishId=wish_id,replyWishId=reply_wish_id}" select="com.jushang.dao.WishDao.findByReplyUserId"></association>
+	</resultMap>
+
+	<resultMap id="UserWishVo" type="com.jushang.entity.vo.UserWishVo" extends="BaseResultMap">
+		<result column="reply_user_id" property="replyUserId" />
+		<association property="user" column="reply_user_id" select="com.jushang.dao.UserDao.selectVoById"></association>
+	</resultMap>
+
+	<resultMap id="WishUserVo" type="com.jushang.entity.vo.WishUserVo" extends="BaseResultMap">
+		<association property="userInfo" column="user_id" select="com.jushang.dao.UserDao.selectVoById"></association>
+		<association property="beRestoredUserInfo" column="reply_wish_id" select="com.jushang.dao.UserDao.selectVoByWishId"></association>
+	</resultMap>
+
+	<select id="findByWishId" resultMap="WishUserVo">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		FROM t_wish
+		WHERE
+		wish_id = #{wishId}
+		AND is_del = 1
+		ORDER BY publish_time DESC
+	</select>
+
+	<select id="findReplyMsg" resultMap="UserWishVo">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		,${replyUserId} as reply_user_id
+		FROM
+		t_wish
+		WHERE id = #{wishId}
+	</select>
+
+	<select id="findWishMessageVoById" resultMap="WishMessageVo">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		FROM t_wish
+		WHERE
+		id = #{id}
+	</select>
+
+	<select id="findAllWishs" resultMap="WishVo">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		,${myUserId} as my_user_id
+		FROM t_wish
+		WHERE wish_id = 0
+		AND reply_wish_id = 0
+		AND is_del = 1
+		ORDER BY publish_time DESC
+	</select>
+
+	<select id="findByUserId" resultMap="WishVo">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		,${userId} as my_user_id
+		FROM t_wish
+		WHERE wish_id = 0
+		AND reply_wish_id = 0
+		AND is_del = 1
+		AND user_id = #{userId}
+		ORDER BY publish_time DESC
+	</select>
+
+	<select id="selectVoById" resultMap="WishVo">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		,${myUserId} as my_user_id
+		FROM t_wish
+		WHERE wish_id = #{wishId}
+		AND is_del = 1
+	</select>
+
+	<select id="findByReplyUserId" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List"></include>
+		FROM t_wish
+		WHERE id =
+		<choose>
+			<when test="replyWishId!=0">
+				#{replyWishId}
+			</when>
+			<otherwise>
+				#{wishId}
+			</otherwise>
+		</choose>
+	</select>
+	<sql id="admin_list">
+		t1.id, t1.content, t1.photo, t1.user_id, t1.wish_id, t1.reply_wish_id, t1.is_del, t1.publish_time
+	</sql>
+	<resultMap id="WishVoForAdmin" type="com.jushang.entity.vo.WishVoT" extends="BaseResultMap">
+		<association property="user" column="user_id" select="com.jushang.dao.UserDao.selectById"></association>
+	</resultMap>
+	<select id="wishListAll" resultMap="WishVoForAdmin">
+		SELECT
+		<include refid="admin_list"></include>
+		FROM t_wish t1
+		LEFT JOIN t_user t2 on t1.user_id=t2.id
+		<where>
+			${ew.sqlSegment}
+		</where>
+	</select>
+
+</mapper>

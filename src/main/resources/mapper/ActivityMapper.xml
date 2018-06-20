@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.ActivityDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jushang.entity.Activity">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="phone" property="phone"/>
+        <result column="title" property="title"/>
+        <result column="price" property="price"/>
+        <result column="fixed_price" property="fixedPrice"/>
+        <result column="content" property="content"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="publish_time" property="publishTime"/>
+        <result column="is_del" property="isDel"/>
+        <result column="type" property="type"/>
+        <result column="user_id" property="userId"/>
+        <result column="rank" property="rank"/>
+        <result column="class_id" property="classId"/>
+        <result column="modular_id" property="modularId"/>
+        <result column="car_id" property="carId"/>
+        <result column="transaction_area_id" property="transactionAreaId"/>
+        <result column="is_recommend" property="isRecommend"/>
+        <result column="images" property="images"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, phone, title, price, fixed_price, content, start_time, end_time, publish_time, is_del, type, user_id, rank,
+        class_id, car_name, transaction_area_id, is_recommend, images, status, modular_id
+    </sql>
+
+    <resultMap id="ActivityVo" type="com.jushang.entity.vo.ActivityVo" extends="BaseResultMap">
+        <result column="car_name" property="carName"/>
+        <association column="user_id" property="user" select="com.jushang.dao.UserDao.findUserHeadImgById"/>
+        <association column="transaction_area_id" property="activityTransactionArea"
+                     select="com.jushang.dao.ActivityTransactionAreaDao.findAreaById"/>
+    </resultMap>
+
+    <select id="findActivityById" resultMap="ActivityVo">
+        SELECT
+            *
+        FROM
+            `t_activity` a
+        LEFT JOIN t_car c ON a.car_id = c.id
+        WHERE
+            a.id = #{id}
+    </select>
+
+    <select id="findActivity" resultMap="ActivityVo">
+        SELECT
+            *
+        FROM
+            `t_activity`
+        WHERE
+            id = #{id}
+    </select>
+
+    <resultMap id="ActivityVoT" type="com.jushang.entity.vo.ActivityVoT" extends="BaseResultMap">
+        <association column="id" property="commentCount" select="com.jushang.dao.MarketCommentDao.getCommentCount"/>
+        <association column="user_id" property="user" select="com.jushang.dao.UserDao.findUserHeadImgById"></association>
+    </resultMap>
+
+    <select id="getActivityList" resultMap="ActivityVoT">
+        SELECT
+            *
+        FROM
+            t_activity
+        WHERE
+            is_del = 0
+        AND type = 3
+        ORDER BY
+            rank DESC
+    </select>
+
+
+</mapper>

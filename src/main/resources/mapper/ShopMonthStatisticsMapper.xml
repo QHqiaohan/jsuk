@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.ShopMonthStatisticsDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jushang.entity.ShopMonthStatistics">
+        <id column="id" property="id" />
+        <result column="shop_id" property="shopId" />
+        <result column="month" property="month" />
+        <result column="month_visitor" property="monthVisitor" />
+        <result column="month_money" property="monthMoney" />
+        <result column="month_order" property="monthOrder" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, shop_id, month, month_visitor, month_money, month_order
+    </sql>
+
+</mapper>

@@ -1,0 +1,17 @@
+package com.jushang
+import com.jushang.entity.DistributionUser
+import com.jushang.entity.rules.AccountRule
+import com.jushang.entity.DistributionDetail
+import java.math.BigDecimal
+dialect  "java"
+
+rule myDetail
+    dialect "java"
+    when
+        ar : AccountRule()
+    then
+        DistributionUser user = ar.getUser();
+        DistributionDetail detail = ar.getDetail();
+        user.addAccount(detail.getMoney());
+        detail.setUserId(user.getId());
+end

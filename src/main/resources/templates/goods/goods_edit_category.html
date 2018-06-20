@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>商品分类列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/plugins/layui/css/layui.css" media="all"/>
+    <script type="text/javascript" src="/plugins/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/res/js/common.js" charset="utf-8"></script>
+</head>
+<body>
+
+<form class="layui-form" action="/sys/category/ui/edit_category" lay-filter="dict" id="dict">
+    <div class="layui-form" style="padding-top:30px;margin: 10px">
+        <div class="layui-form-item">
+            <label class="layui-form-label">分类父类：</label>
+            <input type="hidden" name="id" th:value="${ecategory.id}">
+            <div class="layui-input-block" style="width: 180px">
+                <select name="parentId">
+                    <option th:if="${ecategory.parentId ne 0}" th:selected="${ecategory.parentId==category.id}"
+                            th:each="category :${categories}" th:value="${ecategory.parentId}"
+                            th:text="${category.name}"/>
+                    <option th:if="${ecategory.parentId eq 0}" value="0">根分类</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">分类名称：</label>
+            <div class="layui-input-block" style="width: 180px">
+                <input type="text" style="margin-top: 10px" name="categoryName" th:value="${ecategory.name}"
+                       placeholder="请输入分类名称"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">图标：</label>
+            <span id="pic_url"></span>
+            <span id="pic_" th:if="${ecategory.pic ne null}" class="offer"><img style="height: 20%;width: 30%"
+                                                                                th:src="${ecategory.pic}"></span>
+            <input class="layui-hide" th:value="${ecategory.pic}" name="pic" id="uploadPicVal_edit">
+            <button type="button" class="layui-btn" id="uploadPic_edit">
+                <i class="layui-icon">&#xe67c;</i>上传图片
+            </button>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">分类状态：</label>
+            <div class="layui-input-block" style="width: 180px">
+                <select class="layui-select" name="status">
+                    <option th:selected="${ecategory.status eq  1 }" value="1">可用</option>
+                    <option th:selected="${ecategory.status eq  2 }" value="2">禁用</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-hide" lay-submit lay-filter="dict">立即提交</button>
+            </div>
+        </div>
+    </div>
+</form>
+</body>
+
+<script>
+    var form = null;
+    var $ = null;
+    layui.use(['table', 'upload', 'form'], function () {
+        form = layui.form;
+        $ = layui.jquery;
+        var lay = layui.layer;
+        var upload = layui.upload;
+        upload.render({
+            elem: '#uploadPic_edit' //绑定元素
+            , url: '/upload/imgToOSS' //上传接口
+            , done: function (res) {
+                $("#uploadPicVal_edit").val(res.data)
+                lay.msg("上传图片成功")
+                //上传完毕回调
+                $("#pic_").remove();
+                $("#pic_url").html('<img name="pic" style="width: 25%;height: 25%;" src="' + res.data + '"/>')
+            }
+            , error: function () {
+                //请求异常回调
+                lay.msg("上传图片异常")
+            }
+        });
+    });
+</script>
+</html>

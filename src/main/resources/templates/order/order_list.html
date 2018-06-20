@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>文章列表--layui后台管理模板</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/plugins/layui/css/layui.css" media="all" />
+	<!--<link rel="stylesheet" href="/build/css/news.css" media="all" />-->
+
+</head>
+<body>
+<div class="layui-form" style="margin-top: 5px; margin-left: 10px">
+	<table class="layui-table" lay-skin="nob" lay-size="sm">
+		<tr>
+			<td>订单号：</td>
+			<td>
+				<div class="layui-inline">
+					<input class="layui-input layui-input-sm" name="orderNum" autocomplete="off">
+				</div>
+			</td>
+			<td>支付方式：</td>
+			<td>
+				<div class="layui-inline">
+					<select lay-filter="payType" name="payType" data-type="reload">
+						<option value="">全部</option>
+						<option value="0">支付宝</option>
+						<option value="1">微信</option>
+					</select>
+				</div>
+			</td>
+			<td>订单状态：</td>
+			<td>
+				<div class="layui-inline">
+					<select lay-filter="status" name="status" data-type="reload">
+						<option value="">全部</option>
+						<option value="0">未支付</option>
+						<option value="1">待商家接单</option>
+						<option value="2">商家接单(待骑手接单)</option>
+						<option value="3">骑手接单</option>
+						<option value="4">已取货</option>
+						<option value="5">确认送达</option>
+						<option value="6">用户取消</option>
+						<option value="7">商家拒绝</option>
+					</select>
+				</div>
+			</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>是否评价：</td>
+			<td>
+				<div class="layui-inline">
+					<select lay-filter="isEvaluate" name="isEvaluate" data-type="reload">
+						<option value="">全部</option>
+						<option value="1">是</option>
+						<option value="0">否</option>
+					</select>
+				</div>
+			</td>
+			<td>删除状态：</td>
+			<td>
+				<div class="layui-inline">
+					<select lay-filter="isDel" name="isDel" data-type="reload">
+						<option value="">全部</option>
+						<option value="0">全部未删除</option>
+						<option value="1">用户删除</option>
+						<option value="2">商家删除</option>
+						<option value="4">骑手删除</option>
+						<option value="3">用户和商家删除</option>
+						<option value="5">用户和骑手删除</option>
+						<option value="6">骑手和商家删除</option>
+						<option value="7">全部删除</option>
+					</select>
+				</div>
+			</td>
+			<td>
+				退款状态：
+			</td>
+			<td>
+				<div class="layui-inline">
+					<select lay-filter="isUnsubscribe" name="isUnsubscribe" data-type="reload">
+						<option value="">全部</option>
+						<option value="0">未退款</option>
+						<option value="1">订单超时退款</option>
+					</select>
+				</div>
+			</td>
+			<td>
+				<button class="layui-btn" lay-submit type="submit">搜索</button>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<table class="layui-hide" id="LAY_table_user" lay-filter="user"></table>
+
+
+<script type="text/javascript" src="/plugins/layui/layui.js"  charset="utf-8"></script>
+
+<script type="text/html" id="status">
+    {{#  if(d.status == 0){ }}
+    	未支付
+    {{#  } else if(d.status == 1){ }}
+        待商家接单
+    {{#  } else if(d.status == 2){ }}
+        商家接单(待骑手接单)
+    {{#  } else if(d.status == 3){ }}
+        骑手接单
+    {{#  } else if(d.status == 4){ }}
+        已取货
+    {{#  } else if(d.status == 5){ }}
+        确认送达
+    {{#  } else if(d.status == 6){ }}
+        用户取消
+    {{#  } else if(d.status == 7){ }}
+        商家拒绝
+	{{# } }}
+</script>
+<script type="text/html" id="isDel">
+
+    {{#  if(d.isDel == 0){ }}
+	  		全部未删除
+    {{#  } else if(d.isDel == 1){ }}
+			用户删除
+    {{#  } else if(d.isDel == 2){ }}
+		 	商家删除
+    {{#  } else if(d.isDel == 3){ }}
+			用户和商家删除
+    {{#  } else if(d.isDel == 4){ }}
+			骑手删除
+    {{#  } else if(d.isDel == 5){ }}
+			用户和骑手删除
+    {{#  } else if(d.isDel == 6){ }}
+			骑手和商家删除
+    {{#  } else if(d.isDel == 7){ }}
+			全部删除
+	{{# } }}
+</script>
+<script type="text/html" id="evaluate">
+    {{#  if(d.isEvaluate == 1){ }}
+    	已评价
+    {{#  } else if(d.isEvaluate == 0){ }}
+        未评价
+	{{# } }}
+</script>
+<script type="text/html" id="payType">
+    {{#  if(d.payType == 0){ }}
+		支付宝
+    {{#  } else if(d.payType == 1){ }}
+		微信
+	{{# } }}
+</script>
+<script type="text/html" id="isUnsubscribe">
+    {{#  if(d.isUnsubscribe == 0){ }}
+		未退款
+    {{#  } else if(d.isUnsubscribe == 1){ }}
+		订单超时退款
+	{{# } }}
+</script>
+<script type="text/html" id="titleTpl">
+    {{#  if(d.gender == 1){ }}
+    	男
+    {{#  } else if(d.gender == 0){ }}
+        女
+	{{#  } else { }}
+		未填写
+	{{# } }}
+</script>
+<script type="text/html" id="BaseModel">
+	{{# function getData(key) { }}
+	{{# var arr = key.split('.'); }}
+	{{# var temp = ''; }}
+	{{# arr.forEach(function(value,index){ }}
+	{{# if(index == 0){ }}
+	{{# if(d[value] != null && typeof(d[value]) != 'undefined'){ }}
+	{{# temp = d[value]; }}
+	{{# }else{ }}
+	{{# temp = ''; }}
+	{{# } }}
+	{{# }else { }}
+	{{# if(temp[value] != null && typeof(temp[value]) != 'undefined'){ }}
+	{{# temp = temp[value]; }}
+	{{# }else{ }}
+	{{# temp = ''; }}
+	{{# } }}
+	{{# } }}
+	{{# }); }}
+	{{# return temp; }}
+	{{# } }}
+
+	{{ getData(d.param.path) }}
+</script>
+<script type="text/html" id="img">
+	{{# function getData(key) { }}
+	{{# var arr = key.split('.'); }}
+	{{# var temp = ''; }}
+	{{# arr.forEach(function(value,index){ }}
+	{{# if(index == 0){ }}
+	{{# if(d[value] != null && typeof(d[value]) != 'undefined'){ }}
+	{{# temp = d[value]; }}
+	{{# }else{ }}
+	{{# temp = ''; }}
+	{{# } }}
+	{{# }else { }}
+	{{# if(temp[value] != null && typeof(temp[value]) != 'undefined'){ }}
+	{{# temp = temp[value]; }}
+	{{# }else{ }}
+	{{# temp = ''; }}
+	{{# } }}
+	{{# } }}
+	{{# }); }}
+	{{# return temp; }}
+	{{# } }}
+	<img src='http://youmehe.oss-cn-beijing.aliyuncs.com/image/{{getData(d.param.path)}}'/>
+</script>
+
+<script>
+	function refrersh() {
+
+		window.location.Reload();
+    }
+    layui.use('table', function(){
+        var table = layui.table,form = layui.form,$ = layui.$;
+
+        //方法级渲染
+        table.render({
+            elem: '#LAY_table_user'
+            ,url: '/order/ui/findAll'
+            ,cols: [[
+                /*{checkbox: true, fixed: true},*/
+                {field:'id', width:80, title: 'ID', sort: true}
+                ,{field:'userId', width:80, title: '用户ID'}
+                ,{field:'orderNum', width:120, title: '订单号'}
+                ,{field:'orderPrice', width:100, title: '订单金额'}
+                ,{field:'distributionFee', width:100, title: '配送费'}
+                ,{field:'creatTime', width:100, title: '创建时间'}
+                ,{field:'payTime', width:100, title: '支付时间'}
+                ,{field:'sendTime', width:100, title: '配送时间'}
+                ,{field:'completeTime', width:100, title: '完成时间'}
+                ,{field:'payType', width:100, title: '支付方式' ,templet:'#payType'}
+                ,{field:'status', width:100, title: '订单状态', templet:'#status'}
+                ,{field:'isEvaluate', width:100, title: '是否已评价',templet:'#evaluate'}
+                ,{field:'isDel', width:100, title: '删除状态',templet:'#isDel'}
+                ,{field:'isUnsubscribe', width:100, title: '退款状态',templet:'#isUnsubscribe'}
+                ,{fixed: 'right', width:500, align:'center', toolbar: '#barDemo'} //这里的toolbar值是模板元素的选择器
+            ]]
+            ,id: 'testReload'
+            ,page: true
+			,limit: 10
+            ,height: 'full-65'
+        });
+
+        form.render().on('submit', function(obj){
+            var data = obj.field;
+            //执行重载
+            table.reload('testReload', {
+                page: {
+                    curr: $('#page').val, //重新从第 1 页开始
+                }
+                ,where: {
+                    orderNum:data.orderNum,
+                    payType:data.payType,
+                    isEvaluate:data.isEvaluate,
+                    isDel:data.isDel,
+                    isUnsubscribe:data.isUnsubscribe,
+                    status:data.status
+                }
+            });
+        });
+
+    });
+</script>
+
+<script type="text/html" id="barDemo">
+	<a class="layui-btn layui-btn-mini" lay-event="showShop">店铺信息</a>
+	<a class="layui-btn layui-btn-mini" lay-event="showAddress">买家地址信息</a>
+	<a class="layui-btn layui-btn-mini" lay-event="showDistributionUser">骑手信息</a>
+	<a class="layui-btn layui-btn-mini" lay-event="showCoupon">优惠卷信息</a>
+	<a class="layui-btn layui-btn-mini" lay-event="showGoodsList">商品列表</a>
+	{{#  if(d.status >1&&d.status<4&&d.isUnsubscribe==0){ }}
+	<!--<a class="layui-btn layui-btn-mini layui-btn-danger" lay-event="aliPayRefund">退单</a>-->
+	{{# } }}
+</script>
+
+<script type="text/html" id="detail">
+	<table class="layui-hide" id="tabledetail" lay-filter="detail"></table>
+</script>
+
+<script>
+    //监听工具条
+    layui.use('table', function(){
+
+        var table = layui.table,$ = layui.$
+		table.on('tool(user)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+			var data = obj.data; //获得当前行数据
+			var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+			var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+			if(layEvent === 'showShop'){ //查看
+                if(data.shop == null){
+                    layer.msg('没有找到数据');
+                }else {
+                    layer.open({
+                        type: 1
+                        ,title:'详情'
+                        ,offset: ['20px','10px']
+                        ,area: ['900px','200px']
+                        ,moveOut: true
+                        ,resize: false
+                        ,content: $('#detail').html()
+                        ,success: function(layero,index){
+                            //方法级渲染
+                            table.render({
+                                elem: '#tabledetail'
+                                ,data: [data.shop]
+                                ,cols: [[
+                                    {field:'id', width:80, title: 'ID', sort: true}
+                                    ,{field:'headImg', width:120, title: '店铺头像', templet:'<div><img src="http://youmehe.oss-cn-beijing.aliyuncs.com/image/{{d.headImg}}"></div>'}
+                                    ,{field:'shopName', width:100, title: '店铺名称'}
+                                    ,{field:'address', width:100, title: '店铺地址'}
+                                    ,{field:'shopImg', width:100, title: '店铺图片'}
+                                    ,{field:'announcement', width:100, title: '店铺公告'}
+                                    ,{field:'chefName', width:100, title: '厨师姓名'}
+                                    ,{field:'chefAge', width:100, title: '厨师年龄'}
+                                    ,{field:'chefHome', width:100, title: '厨师家乡'}
+                                    ,{field:'deliveryFee', width:100, title: '起送费'}
+                                    ,{field:'distributionFee', width:100, title: '配送费'}
+                                    ,{field:'starNum', width:100, title: '星数'}
+                                ]]
+                                ,id: 'tabledetail'
+                                ,height:'120px'
+                            });
+                        }
+                    });
+                }
+			} else if(layEvent === 'showAddress'){ //删除
+                if(data.address == null){
+                    layer.msg('没有找到数据');
+                }else {
+                    layer.open({
+                        type: 1
+                        ,title:'详情'
+                        ,offset: ['20px','10px']
+                        ,area: ['900px','200px']
+                        ,moveOut: true
+                        ,resize: false
+                        ,content: $('#detail').html()
+                        ,success: function(layero,index){
+                            //方法级渲染
+                            table.render({
+                                elem: '#tabledetail'
+                                ,data: [data.address]
+                                ,cols: [[
+                                    {field:'id', width:80, title: 'ID', sort: true}
+                                    ,{field:'name', width:120, title: '收货人姓名'}
+                                    ,{field:'phone', width:100, title: '电话号码'}
+//                                    ,{field:'gender', width:100, title: '性别',templet:'#titleTpl'}
+                                    ,{field:'address', width:100, title: '地址'}
+                                    ,{field:'homeNum', width:100, title: '门牌号'}
+                                ]]
+                                ,id: 'tabledetail'
+                                ,height:'120px'
+                            });
+                        }
+                    });
+                }
+			} else if(layEvent === 'showDistributionUser'){ //编辑
+                if(data.distributionUser == null){
+                    layer.msg('没有找到数据');
+                }else {
+                    layer.open({
+                        type: 1
+                        ,title:'详情'
+                        ,offset: ['20px','10px']
+                        ,area: ['900px','200px']
+                        ,moveOut: true
+                        ,resize: false
+                        ,content: $('#detail').html()
+                        ,success: function(layero,index){
+                            //方法级渲染
+                            table.render({
+                                elem: '#tabledetail'
+                                ,data: [data.distributionUser]
+                                ,cols: [[
+                                    {field:'id', width:80, title: 'ID', sort: true}
+                                    ,{field:'name', width:120, title: '配送员姓名'}
+                                    ,{field:'phone', width:100, title: '电话号码'}
+                                    ,{field:'gender', width:100, title: '性别',templet:'#titleTpl'}
+                                    ,{field:'age', width:100, title: '年龄'}
+                                    ,{field:'starNum', width:100, title: '星数'}
+                                    ,{field:'idCardNo', width:100, title: '身份证号'}
+                                    ,{field:'cardFront', width:100, title: '身份证正面图', templet:'<div><img src="http://youmehe.oss-cn-beijing.aliyuncs.com/image/{{d.cardFront}}"></div>'}
+                                    ,{field:'cardBack', width:100, title: '身份证背面图', templet:'<div><img src="http://youmehe.oss-cn-beijing.aliyuncs.com/image/{{d.cardBack}}"></div>'}
+                                ]]
+                                ,id: 'tabledetail'
+                                ,height:'120px'
+                            });
+                        }
+                    });
+				}
+			} else if(layEvent === 'showCoupon'){ //编辑
+                if(data.coupon == null){
+                    layer.msg('没有找到数据');
+                }else {
+                    layer.open({
+                        type: 1
+                        ,title:'详情'
+                        ,offset: ['20px','10px']
+                        ,area: ['900px','200px']
+                        ,moveOut: true
+                        ,resize: false
+                        ,content: $('#detail').html()
+                        ,success: function(layero,index){
+                            //方法级渲染
+                            table.render({
+                                elem: '#tabledetail'
+                                ,data: [data.coupon]
+                                ,cols: [[
+                                    {field:'id', width:80, title: 'ID', sort: true}
+                                    ,{field:'fullPrice', width:100, title: '满足价格'}
+                                    ,{field:'discount', width:100, title: '优惠价格'}
+                                    ,{field:'startTime', width:100, title: '开始时间'}
+                                    ,{field:'endTime', width:100, title: '结束时间'}
+                                ]]
+                                ,id: 'tabledetail'
+                                ,height:'120px'
+                            });
+                        }
+                    });
+				}
+			} else if(layEvent === 'showGoodsList'){ //编辑
+                if(data.goodsList == null) {
+                    layer.msg('没有找到数据');
+                }else {
+                    layer.open({
+                        type: 1
+                        ,title:'详情'
+                        ,offset: ['20px','10px']
+                        ,moveOut: true
+                        ,resize: false
+                        ,content: $('#detail').html()
+                        ,success: function(layero,index){
+                            //方法级渲染
+                            table.render({
+                                elem: '#tabledetail'
+                                ,data: data.goodsList
+                                ,cols: [[
+                                    {field:'goodsId', width:80, title: 'ID', sort: true}
+                                    ,{field:'goodsImg', width:100, title: '商品图片',templet:'#img?path=shopGoods.goodsImg'}
+                                    ,{field:'goodsName', width:100, title: '商品名称',templet:'#BaseModel?path=shopGoods.goodsName'}
+                                    ,{field:'goodsPrice', width:100, title: '商品价格',templet:'#BaseModel?path=shopGoods.goodsPrice'}
+                                    ,{field:'num', width:100, title: '购买数量'}
+                                ]]
+                                ,id: 'tabledetail'
+                                ,height:'120px'
+                            });
+                        }
+                    });
+				}
+            }else if(layEvent === 'aliPayRefund'){ //编辑
+                layer.confirm('您确定要退单吗？', function(index){
+                    var url = "";
+                    if(data.payType==0){
+                        url='/pay/ui/aliPayRefund';
+					}else{
+                        url='/pay/ui/wxPayRefund';
+					}
+                    $.ajax({
+                        url:url,
+                        type:'POST',
+                        dataType:'json',
+                        data:{id:data.id},
+                        success:function (res) {
+                            layer.msg(res.msg);
+                            if(res.code < 2000){
+                                table.reload('testReload', {
+                                    page: {
+                                        curr: $('#page').val, //重新从第 1 页开始
+                                    }
+                                });
+                            }else {
+                                layer.msg(res.msg);
+                            }
+                        }
+                    })
+                });
+            }
+		});
+    });
+</script>
+</body>
+</html>

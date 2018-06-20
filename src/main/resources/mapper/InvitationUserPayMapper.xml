@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.InvitationUserPayDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.jushang.entity.InvitationUserPay">
+		<id column="id" property="id" />
+		<result column="user_id" property="userId" />
+		<result column="invitation_id" property="invitationId" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, invitation_id
+    </sql>
+
+    <select id="selectInfoByUser" resultMap="BaseResultMap">
+        SELECT
+        id, user_id, invitation_id
+        FROM t_invitation_user_pay
+        WHERE user_id = #{arg0} AND invitation_id = #{arg1}
+    </select>
+    <select id="selectInvitationNumByUser" parameterType="int"  resultType="java.lang.Integer" >
+        SELECT count(id)
+        FROM t_invitation_user_pay
+        WHERE invitation_id = #{invitationId}
+    </select>
+
+</mapper>

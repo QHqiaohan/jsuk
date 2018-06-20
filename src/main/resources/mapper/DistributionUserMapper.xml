@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jushang.dao.DistributionUserDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jushang.entity.DistributionUser">
+        <id column="id" property="id" />
+        <result column="phone" property="phone" />
+        <result column="password" property="password" />
+        <result column="name" property="name" />
+        <result column="id_card_no" property="idCardNo" />
+        <result column="card_front" property="cardFront" />
+        <result column="card_back" property="cardBack" />
+        <result column="last_login_time" property="lastLoginTime" />
+        <result column="login_ip" property="loginIp" />
+        <result column="longitude" property="longitude" />
+        <result column="latitude" property="latitude" />
+        <result column="head_img" property="headImg" />
+        <result column="gender" property="gender" />
+        <result column="age" property="age" />
+        <result column="star_num" property="starNum" />
+        <result column="account" property="account" />
+        <result column="publish_time" property="publishTime" />
+        <result column="can_use" property="canUse" />
+        <result column="status" property="status" />
+        <result column="desc" property="desc" />
+        <result column="is_online" property="isOnline" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, phone, password, name, id_card_no, card_front, card_back, last_login_time, login_ip, longitude, latitude, head_img, gender, age, star_num, account, publish_time, can_use, status, desc, is_online
+    </sql>
+
+</mapper>

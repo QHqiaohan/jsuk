@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>文章列表--layui后台管理模板</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/plugins/layui/css/layui.css" media="all"/>
+
+    <style>
+        #editor2, #editor4 {
+            height: 200px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+<div class="demoTable" style="margin-top: 5px;margin-left: 10px;">
+    标题：
+    <div class="layui-inline">
+        <input class="layui-input layui-input-sm" name="id" id="demoReload" autocomplete="off">
+    </div>
+    <button class="layui-btn" data-type="reload">搜索</button>
+    <button class="layui-btn" data-type="add"><i class="layui-icon">&#xe608;</i>新建banner</button>
+    <button class="layui-btn" data-type="edit"><i class="layui-icon">&#xe642;</i>编辑banner</button>
+</div>
+
+<table class="layui-hide" id="LAY_table_user" lay-filter="user"></table>
+
+<div style="display: none" id="refuse">
+    <ul class="layui-form" style="margin: 10px;">
+        <div class="layui-form-item">
+            <label class="layui-form-label" >标题</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序</label>
+            <div class="layui-input-block">
+                <input type="text" name="rank" required lay-verify="required|number" placeholder="数字越大越靠前"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <!--banner位置-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">banner位置</label>
+            <div class="layui-input-block">
+                <select lay-filter="bannerLocation" name="bannerLocation" data-type="reload">
+                    <option  th:each="banner :${banners}" th:value="${banner.value}" th:text="${banner.name}"/>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">banner类型</label>
+            <div class="layui-input-block">
+                <select lay-filter="bannerType" name="bannerType" data-type="reload">
+                    <option  th:each="banner :${bannerTypes}" th:value="${banner.value}" th:text="${banner.name}"/>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">跳转类型</label>
+            <div class="layui-input-block">
+                <!--跳转类型:0:站内 1:站外 2:商品-->
+                <select lay-filter="isLink" name="isLink" data-type="reload">
+                    <option th:each="banner :${bannerLocals}" th:value="${banner.value}" th:text="${banner.name}"></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">图片</label>
+            <input class="layui-input" type="hidden" name="img" id="uploadPicVal_add">
+            <span id="pic_url_add"></span>
+            <button type="button" class="layui-btn" id="uploadPic_add">
+                <i class="layui-icon">&#xe67c;</i>上传图片
+            </button>
+        </div>
+
+        <div class="layui-form-item" id="shopCode1" style="display: none;">
+            <label class="layui-form-label">商品id</label>
+            <div class="layui-input-block">
+                <select lay-filter="isLink" name="isLink" data-type="reload">
+                    <option th:each="good :${shopGoods}" th:value="${good.id}" th:text="${good.goodsName}"/>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item" id="linkUrl1" style="display: none;">
+            <label class="layui-form-label">链接地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="linkUrl" placeholder="请输入链接地址" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" id='content1'>
+            <label class="layui-form-label">内容</label>
+            <div class="layui-input-block">
+                <div id="editor1">
+                </div>
+                <div id="editor2">
+                </div>
+            </div>
+        </div>
+        <li class="layui-form-item" style="text-align:center;">
+            <button type="submit" lay-submit lay-filter="*" class="layui-btn">提交</button>
+        </li>
+    </ul>
+</div>
+
+<script type="text/html" id="pic">
+    {{# if(d.img != null){ }}
+    <img src="{{d.img}}"/>
+    {{# } }}
+</script>
+<script type="text/javascript" src="/plugins/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src="/res/js/common.js" charset="utf-8"></script>
+<script>
+    layui.use(['table', 'upload', 'form'], function () {
+        var table = layui.table;
+        var form = layui.form;
+        var $ = layui.jquery;
+        var lay = layui.layer;
+        var upload = layui.upload;
+        //方法级渲染
+        table.render({
+            elem: '#LAY_table_user'
+            , url: '/banner/ui/list'
+            , cols: [[
+                {checkbox: true, fixed: true},
+                {field: 'id', width: 80, title: 'ID', sort: true}
+                , {field: 'title', align: 'center', width: 100, title: '标题'}
+                , {field: 'img', width: 120, title: '图片', templet: '#pic'}
+                , {field: 'bannerLocation', align: 'center', width: 120, title: 'banner位置'}
+                , {field: 'bannerType', align: 'center', width: 120, title: '跳转类型'}
+                , {field: 'isLink', align: 'center', width: 120, title: '跳转类型'}
+                , {field: 'content', width: 120, title: '内容'}
+                , {field: 'rank', align: 'center', width: 165, title: '排序'}
+                , {field: 'publishTime', align: 'center', width: 165, title: '添加时间'}
+            ]]
+            , id: 'testReload'
+            , page: true
+            , limit: 10
+            , height: 'full-65'
+        });
+        var active = {
+            reload: function () {
+                var demoReload = $('#demoReload');
+                //执行重载
+                table.reload('testReload', {
+                    page: {
+                        curr: $('#page').val //重新从第 1 页开始
+                    }
+                    , where: {
+                        title: demoReload.val()
+                    }
+                });
+            },
+            add: function () {
+                layer.open({
+                    type: 1
+                    , title: '新建banner'
+                    , area: ['900px', '700px']
+                    , resize: false
+                    , content: $('#refuse')
+                    , success: function (layero, index) {
+                        var E = window.wangEditor;
+                        var editor = new E('#editor1', '#editor2');
+                        editor.customConfig.uploadImgServer = '/upload/imgToOSS',
+                            editor.customConfig.uploadFileName = 'files';
+                        // 或者 var editor = new E( document.getElementById('#editor') )
+                        editor.create();
+                        form.render().on('submit(*)', function (datas) {
+                            datas.field.content = editor.txt.html();
+                            $.ajax({
+                                url: '/banner/ui/add',
+                                type: 'POST',
+                                dataType: 'json',
+                                data: datas.field,
+                                success: function (res) {
+                                    if (res.code < 2000) {
+                                        table.reload('testReload', {
+                                            page: {
+                                                curr: $('#page').val, //重新从第 1 页开始
+                                            }
+                                        });
+                                    } else {
+                                        layer.msg(res.msg);
+                                    }
+                                }
+                            });
+                            layer.close(index);
+                        });
+                    }
+                });
+            },
+            edit: function () {
+                var checkStatus = table.checkStatus('testReload');
+                if (checkStatus.data.length != 1) {
+                    meMsg("请选择一行数据");
+                    return;
+                }
+                var index = LayerOpen({
+                    type: 2
+                    , title: '修改banner'
+                    , area: ['900px', '700px']
+                    , resize: false
+                    , content: '/ui/to_edit_banner?id=' + checkStatus.data[0].id
+                    , btn: ['确定', '取消'],
+                    yes: function (index, layero) {
+                        LayerClose(index);
+                        active.reload();
+                    }
+                });
+            }
+            ,del: function () {
+                var checkStatus = table.checkStatus('testReload');
+                if (checkStatus.data.length != 1) {
+                    meMsg("请选择一行数据");
+                    return;
+                }
+                layer.confirm('真的要删除吗？', function (index) {
+                    $.ajax({
+                        url: '/banner/ui/del',
+                        type: 'GET',
+                        dataType: 'json',
+                        data: {id: data.id},
+                        success: function (res) {
+                            console.log(res);
+                            if (res.code < 2000) {
+                                table.reload('testReload', {
+                                    page: {
+                                        curr: $('#page').val, //重新从第 1 页开始
+                                    }
+                                });
+                            } else {
+                                layer.msg(res.msg);
+                            }
+                        }
+                    });
+                    layer.close(index);
+                });
+            }
+        };
+
+        form.on("select(isLink)", function (data) {
+            if (data.value == 0) {
+                $('#shopCode1').hide();
+                $('#shopCode2').hide();
+                $('#linkUrl1').hide();
+                $('#linkUrl2').hide();
+                $('#content1').show();
+                $('#content2').show();
+            } else if (data.value == 1) {
+                $('#shopCode1').hide();
+                $('#shopCode2').hide();
+                $('#linkUrl1').show();
+                $('#linkUrl2').show();
+                $('#content1').hide();
+                $('#content2').hide();
+            } else {
+                $('#shopCode1').show();
+                $('#shopCode2').show();
+                $('#linkUrl1').hide();
+                $('#linkUrl2').hide();
+                $('#content1').hide();
+                $('#content2').hide();
+            }
+        })
+        $('.demoTable .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+
+        //执行实例
+        upload.render({
+            elem: '#uploadPic_add' //绑定元素
+            , url: '/upload/imgToOSS' //上传接口
+            , done: function (res) {
+                $("#uploadPicVal_add").val(res.data)
+                lay.msg("上传图片成功")
+                $("#pic_url_add").html('<img style="width: 25%;height: 25%;" src="' + res.data + '"/>')
+                //上传完毕回调
+            }
+            , error: function () {
+                //请求异常回调
+                lay.msg("上传图片异常")
+            }
+        });
+        upload.render({
+            elem: '#uploadPic_edit' //绑定元素
+            , url: '/upload/imgToOSS' //上传接口
+            , done: function (res) {
+                $("#uploadPicVal_edit").val(res.data)
+                lay.msg("上传图片成功")
+                $("#pic_url").html('<img style="width: 25%;height: 25%;" src="' + res.data + '"/>')
+                //上传完毕回调
+            }
+            , error: function () {
+                //请求异常回调
+                lay.msg("上传图片异常")
+            }
+        });
+    });
+</script>
+
+
+<script type="text/javascript" src="/edit/wangEditor.min.js"></script>
+</body>
+</html>

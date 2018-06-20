@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>文章列表--layui后台管理模板</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/plugins/layui/css/layui.css" media="all" />
+	<script type="text/javascript" src="/build/js/jquery-1.9.1.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/diyUpload/css/webuploader.css">
+	<link rel="stylesheet" type="text/css" href="/diyUpload/css/diyUpload.css">
+	<script type="text/javascript" src="/diyUpload/js/webuploader.html5only.min.js"></script>
+	<script type="text/javascript" src="/diyUpload/js/diyUpload.js"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=dK4agavw0Gw6wRDEDF2Zujr8"></script>
+	<!--<link rel="stylesheet" href="/build/css/news.css" media="all" />-->
+	<style>
+		.layui-form-switch{
+			width:55px;
+			margin-top: 0;
+		}
+		#searchResultPanel{
+
+		}
+		.tangram-suggestion-main{
+			z-index: 19891020;
+		}
+	</style>
+</head>
+<body>
+<div class="demoTable" style="margin-top: 5px; margin-left: 10px;">
+	手机号：
+	<div class="layui-inline">
+		<input class="layui-input layui-input-sm" name="id" id="demoReload" autocomplete="off">
+	</div>
+	<button class="layui-btn" data-type="reload">搜索</button>
+	<button class="layui-btn"  id="addUser">新增用户</button>
+</div>
+
+<table class="layui-hide" id="LAY_table_user" lay-filter="user"></table>
+
+
+<script type="text/javascript" src="/plugins/layui/layui.js"  charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script type="text/html" id="titleTpl">
+    {{#  if(d.gender == 1){ }}
+    	男
+    {{#  } else if(d.gender == 0){ }}
+        女
+	{{#  } else { }}
+		未填写
+	{{# } }}
+</script>
+<script type="text/html" id="can_use">
+	<input style="width: 40px" type="checkbox" name="canUse" lay-skin="switch" data-id="{{d.id}}" data-phone="{{d.phone}}" lay-filter="can_use" lay-text="ON|OFF" value="{{d.canUse}}" {{ d.canUse == 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="orderNum">
+	<a class="layui-btn layui-btn-mini layui-btn-danger" lay-event="queryOrderNum">查看订单数量</a>
+
+</script>
+<script type="text/html" id="barDemo">
+	{{# if(d.status == 0||d.status == null){ }}
+	<a class="layui-btn layui-btn-mini" lay-event="edit">同意申请</a>
+	<a class="layui-btn layui-btn-danger layui-btn-mini" data-type="test" lay-event="del">拒绝申请</a>
+	{{# } }}
+</script>
+<script type="text/html" id="queryOrderNumDiv">
+	<div class="layui-form">
+		<table class="layui-table">
+			<colgroup>
+				<col width="150">
+				<col width="150">
+			</colgroup>
+			<thead>
+			<tr>
+				<th style="text-align: center">上月订单数量</th>
+				<th style="text-align: center">本月订单数量</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td style="text-align: center" id="lastMonthNum"></td>
+				<td style="text-align: center" id="nowMonthNum"></td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</script>
+<script type="text/html" id="addNewUser">
+	<form class="layui-form" action="">
+		<div class="layui-form" style="padding-top:30px;margin: 10px">
+			<div class="layui-form-item">
+				<label class="layui-form-label">手机号：</label>
+				<div class="layui-input-block">
+					<input type="text" name="phone" required lay-verify="required" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">密码：</label>
+				<div class="layui-input-block">
+					<input type="password" style="margin-top: 10px" name="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">姓名：</label>
+				<div class="layui-input-block">
+					<input type="text" name="name"  placeholder="请输入姓名" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">年龄：</label>
+				<div class="layui-input-block">
+					<input type="number" name="age"  placeholder="请输入年龄" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">身份证号：</label>
+				<div class="layui-input-block">
+					<input type="text" name="idCardNo" placeholder="请输入身份证号" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">地址：</label>
+				<div class="layui-input-block">
+					<input type="text" id="shopAddress" placeholder="请输入地址" lay-filter="jiexi_address" class="layui-input">
+					<div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
+				</div>
+				<div id="bmap" style="width: 500px;height: 400px;margin-top: 15px;margin-left: 111px"></div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">经纬度：</label>
+				<div class="layui-input-inline" style="width: 100px;">
+					<input type="text" id="longitude" name="longitude" placeholder="经度" readonly="readonly" class="layui-input">
+				</div>
+				<div class="layui-form-mid">-</div>
+				<div class="layui-input-inline" style="width: 100px;">
+					<input type="text" id="latitude" name="latitude" placeholder="纬度" readonly="readonly" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit="" lay-filter="addUserSubmit">立即提交</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</script>
+<script type="text/html" id="refuse">
+	<ul class="layui-form" style="margin: 10px;">
+		<li class="layui-form-item">
+			<textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+		</li>
+		<li class="layui-form-item" style="text-align:center;">
+			<button type="submit" lay-submit lay-filter="*" class="layui-btn">提交</button>
+		</li>
+	</ul>
+</script>
+<script type="text/html" id="shopModel2">
+	<div class="ccccc">{{d.phone}}</div>
+</script>
+<script>
+    //监听工具条
+    layui.use('table', function(){
+        var table = layui.table,layer = layui.layer,$ = layui.$,form = layui.form,laytpl=layui.laytpl;
+
+        table.on('tool(user)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            console.log(obj);
+            /*if(layEvent === 'detail'){ //查看
+                //do somehing
+                console.log(data)
+            } else */
+            if(layEvent === 'queryOrderNum') {
+                layer.open({
+                    type: 1
+                    ,title:'详情'
+                    ,area: ['400px','300px']
+                    ,moveOut: true
+                    ,resize: false
+                    ,content: $('#queryOrderNumDiv').html()
+                    ,success: function(layero,index){
+                        $.ajax({
+                            url:'/distributionUser/ui/getUserOrderNum',
+                            type:'GET',
+                            dataType:'json',
+                            data:{id:data.id},
+                            success:function (res) {
+                                $("#lastMonthNum").html(res.data.lastMonthNum);
+                                $("#nowMonthNum").html(res.data.nowMonthNum);
+                            }
+                        })
+                    }
+                });
+            } else
+            if(layEvent === 'del'){ //删除
+                layer.open({
+                    type: 1
+                    ,title:'拒绝原因'
+                    ,area: '300px'
+                    ,resize: false
+                    ,content: $('#refuse').html()
+                    ,success: function(layero,index){
+                        layero.find('.layui-layer-content').css('overflow', 'visible');
+                        form.render().on('submit(*)', function(datas){
+                            $.ajax({
+                                url:'/distributionUser/ui/refuse',
+                                type:'POST',
+                                dataType:'json',
+                                data:{id:data.id,desc:datas.field.desc},
+                                success:function (res) {
+                                    console.log(res);
+                                    if(res.code < 2000){
+                                        /*obj.update({
+                                            status: '审核拒绝',
+                                            desc: datas.field.desc
+                                        });*/
+                                        table.reload('testReload', {
+                                            page: {
+                                                curr: $('#page').val, //重新从第 1 页开始
+                                            }
+                                        });
+                                    }else {
+                                        layer.msg(res.msg);
+                                    }
+                                }
+                            })
+                            layer.close(index);
+                        });
+                    }
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                layer.confirm('您确定同意吗？', function(index){
+                    layer.close(index);
+                    $.ajax({
+                        url:'/distributionUser/ui/adopt',
+                        type:'POST',
+                        dataType:'json',
+                        data:{id:data.id},
+                        success:function (res) {
+                            console.log(res);
+                            if(res.code < 2000){
+                                table.reload('testReload', {
+                                    page: {
+                                        curr: $('#page').val, //重新从第 1 页开始
+                                    }
+                                });
+                            }else {
+                                layer.msg("该条数据存在异常请检查");
+                            }
+                        }
+                    })
+                });
+            }
+        });
+    });
+</script>
+
+<script>
+	function refrersh() {
+
+		window.location.Reload();
+    }
+    layui.use('table', function(){
+        var table = layui.table
+            ,form = layui.form;
+
+
+        //方法级渲染
+        table.render({
+            elem: '#LAY_table_user'
+            ,url: '/distributionUser/ui/getUserList'
+            ,cols: [[
+                /*{checkbox: true, fixed: true},*/
+                {field:'id', width:80, title: 'ID', sort: true}
+                ,{field:'headImg', width:100, title: '头像', templet:'<div><img src="http://youmehe.oss-cn-beijing.aliyuncs.com/image/{{d.headImg}}"></div>'}
+                ,{field:'phone', width:120, title: '手机号',templet:'#shopModel2'}
+                ,{field:'name', width:120, title: '姓名'}
+                ,{field:'gender', width:80, title: '性别', templet: '#titleTpl'}
+                ,{field:'age', width:80, title: '年龄'}
+                ,{field:'desc', width:80, title: '拒绝原因'}
+                ,{field:'starNum', width:80, title: '星数'}
+                ,{field:'idCardNo', width:120, title: '身份证号码'}
+                ,{field:'cardFront', width:120, title: '身份证正面', templet:'<div><img src="http://youmehe.oss-cn-beijing.aliyuncs.com/image/{{d.cardFront}}"></div>'}
+                ,{field:'cardBack', width:120, title: '身份证背面', templet:'<div><img src="http://youmehe.oss-cn-beijing.aliyuncs.com/image/{{d.cardBack}}"></div>'}
+                ,{field:'loginIp', width:120, title: '登陆IP'}
+                ,{field:'lastLoginTime', width:165, title: '最后登陆时间'}
+                ,{field:'publishTime', width:165, title: '注册时间'}
+                ,{field:'canUse',fixed: 'right', width:80,align:'center', title: '是否可用',templet:'#can_use'}
+                ,{field:'canUse',fixed: 'right', width:140,align:'center', title: '查看订单量',templet:'#orderNum'}
+                ,{fixed: 'right', width:160, align:'center', title: '审核状态',toolbar: '#barDemo'} //这里的toolbar值是模板元素的选择器
+
+            ]]
+            ,id: 'testReload'
+            ,page: true
+			,limit: 10
+            ,height: 'full-65'
+            , done: function(res, curr, count){
+                var userRole = getCookie("userRole");
+                function getCookie(name){
+                    var arr = document.cookie.split('; ');
+                    var val = '';
+                    for(var i= 0; i < arr.length; i++){
+                        if(arr[i].indexOf(name) != -1){
+                            val = unescape(arr[i].split('=')[1]);
+                            break;
+                        }
+                    }
+                    return val;
+                }
+                if(userRole==2){
+                    $(".ccccc").text("*************");
+                }
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+            }
+        });
+        form.on('switch(can_use)', function(obj){
+            var id = this.getAttribute("data-id");
+            var phone = this.getAttribute("data-phone");
+            var canUse = obj.value==1?0:1;
+            $.ajax({
+                url:"/distributionUser/ui/edit",
+                type:"Post",
+                data:{
+                    id:id,
+                    canUse:canUse,
+					phone:phone
+                },
+                success:function(data){
+                    if(data.code==2004){
+                        layer.alert(data.msg)
+                    }else{
+                        location.reload();
+                    }
+                }
+            });
+        });
+        var $ = layui.$, active = {
+            reload: function(){
+                var demoReload = $('#demoReload');
+                //执行重载
+                table.reload('testReload', {
+                    page: {
+                        curr: $('#page').val, //重新从第 1 页开始
+                    }
+                    ,where: {
+                        phone:demoReload.val()
+                    }
+                });
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+    });
+</script>
+<script>
+    layui.use('form', function(){
+        var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+        $('#addUser').on('click',function(){
+            layer.open({
+                type: 1
+                ,title:'新增商家用户'
+                ,offset: 'auto'
+                ,area: ['700px','450px']
+                ,moveOut: true
+                ,resize: false
+                ,content: $('#addNewUser').html()
+                ,success: function(layero,index){
+                    //初始化百度地图
+                    var map = new BMap.Map("bmap");
+                    var points = new BMap.Point(104.072431, 30.663215);
+                    map.centerAndZoom(points, 13);
+                    map.enableScrollWheelZoom();   //启用滚轮放大缩小，默认禁用
+                    var mapMarker = new BMap.Marker(points);
+                    map.addOverlay(mapMarker);
+                    setjy(points);
+                    mapMarker.enableDragging(); //设置标注可拖拽
+                    mapMarker.addEventListener("dragend",getPoints);
+                    zhiti(map); //添加输入智能提示
+                    //        //监听提交
+                    form.on('submit(addUserSubmit)', function(obj){
+                        var errorField = '';
+                        $.each(obj.field,function (index,d) {
+                            if(index!='file'&&(d==null||d=='')){
+                                errorField = '请完善数据：'+index;
+                                alert(errorField);
+                                return false;
+                            }
+                        });
+                        if(errorField!=''){
+                            return false;
+                        }
+                        $.ajax({
+                            url:"/distributionUser/ui/addDUserFoAdmin",
+                            type:"POST",
+                            data:obj.field,
+                            success:function(data){
+                                if(data.code==2004){
+                                    layer.alert(data.msg)
+                                }else{
+                                    location.reload();
+                                }
+                            }
+                        });
+                        return false;
+                    });
+                }
+            });
+        });
+    });
+    //百度地图智能提示
+    function zhiti(map) {
+        var ac = new BMap.Autocomplete(    //建立一个自动完成的对象
+            {
+                "input": "shopAddress"
+                , "location": map
+            });
+
+        ac.addEventListener("onhighlight", function (e) {  //鼠标放在下拉列表上的事件
+            var str = "";
+            var _value = e.fromitem.value;
+            var value = "";
+            if (e.fromitem.index > -1) {
+                value = _value.province + _value.city + _value.district + _value.street + _value.business;
+            }
+            str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+
+            value = "";
+            if (e.toitem.index > -1) {
+                _value = e.toitem.value;
+                value = _value.province + _value.city + _value.district + _value.street + _value.business;
+            }
+            str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+            document.querySelector("#searchResultPanel").innerHTML = str;
+        });
+
+        var myValue;
+        ac.addEventListener("onconfirm", function (e) {    //鼠标点击下拉列表后的事件
+            var _value = e.item.value;
+
+            myValue = _value.province + _value.city + _value.district + _value.street + _value.business;
+            document.querySelector("#searchResultPanel").innerHTML = "onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+            $('#inaddress').val(myValue);
+            setPlace();
+        });
+
+        function setPlace() {
+            map.clearOverlays();    //清除地图上所有覆盖物
+            function myFun() {
+                map.clearOverlays();
+                map.removeEventListener("dragend", getPoints);
+                var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
+                map.centerAndZoom(pp, 18);
+                var npoint = new BMap.Point(pp.lng, pp.lat);
+                mapMarker = new BMap.Marker(npoint);
+                map.addOverlay(mapMarker);    //添加标注
+                setjy(pp);
+                mapMarker.enableDragging(); //设置标注可拖拽
+                mapMarker.addEventListener("dragend", getPoints);
+            }
+
+            var local = new BMap.LocalSearch(map, { //智能搜索
+                onSearchComplete: myFun
+            });
+            local.search(myValue);
+        }
+    }
+        function getPoints(mark) {
+            var p = mapMarker.getPosition();  //获取marker的位置
+            setjy(p);
+            var myGeo = new BMap.Geocoder();
+            // 根据坐标得到地址描述
+            myGeo.getLocation(p, function (result) {
+                if (result) {
+                    alert(result.address);
+                    $('#shopAddress').val(result.address);
+                }
+            });
+        }
+
+        function setjy(point) {
+            $('#longitude').val(point.lng);
+            $('#latitude').val(point.lat);
+        }
+//   required lay-verify="required"
+</script>
+
+</body>
+</html>
