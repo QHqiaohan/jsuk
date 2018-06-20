@@ -16,5 +16,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class VersionServiceImpl extends ServiceImpl<VersionDao, Version> implements VersionService {
-
+    @Override
+    public Version getNewVersion() {
+        return baseMapper.getNewVersion();
+    }
 }

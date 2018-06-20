@@ -4,13 +4,13 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Version">
-        <id column="id" property="id" />
-        <result column="status" property="status" />
-        <result column="version" property="version" />
-        <result column="code" property="code" />
-        <result column="os_type" property="osType" />
-        <result column="app_type" property="appType" />
-        <result column="url" property="url" />
+        <id column="id" property="id"/>
+        <result column="status" property="status"/>
+        <result column="version" property="version"/>
+        <result column="code" property="code"/>
+        <result column="os_type" property="osType"/>
+        <result column="app_type" property="appType"/>
+        <result column="url" property="url"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -18,4 +18,13 @@
         id, status, version, code, os_type, app_type, url
     </sql>
 
+    <resultMap id="Version" type="com.jh.jsuk.entity.Version" extends="BaseResultMap">
+        <result column="version" property="version"/>
+    </resultMap>
+
+    <select id="getNewVersion" resultMap="Version">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM `t_version` ORDER BY id desc LIMIT 1;
+    </select>
 </mapper>

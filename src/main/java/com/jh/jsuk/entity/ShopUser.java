@@ -1,9 +1,9 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
 import java.io.Serializable;
 
 /**
@@ -15,7 +15,7 @@ import java.io.Serializable;
  * @since 2018-06-20
  */
 @TableName("js_shop_user")
-public class ShopUser extends Model<ShopUser> {
+public class ShopUser extends ParentUser<ShopUser> {
 
     private static final long serialVersionUID = 1L;
 

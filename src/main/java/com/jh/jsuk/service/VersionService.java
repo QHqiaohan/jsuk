@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-06-20
  */
 public interface VersionService extends IService<Version> {
-
+    Version getNewVersion();
 }

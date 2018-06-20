@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2018-06-20
  */
 public interface VersionDao extends BaseMapper<Version> {
-
+    Version getNewVersion();
 }

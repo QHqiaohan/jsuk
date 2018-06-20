@@ -1,14 +1,14 @@
-/*
 package com.jh.jsuk.filter;
 
-import com.jushang.entity.AdminLog;
-import com.jushang.entity.ParentUser;
-import com.jushang.entity.jwt.JwtParam;
-import com.jushang.service.AdminLogService;
-import com.jushang.service.DistributionUserService;
-import com.jushang.service.ShopUserService;
-import com.jushang.service.UserService;
-import com.jushang.utils.FastJsonUtil;
+
+import com.jh.jsuk.entity.Log;
+import com.jh.jsuk.entity.ParentUser;
+import com.jh.jsuk.entity.jwt.JwtParam;
+import com.jh.jsuk.service.DistributionUserService;
+import com.jh.jsuk.service.LogService;
+import com.jh.jsuk.service.ShopUserService;
+import com.jh.jsuk.service.UserService;
+import com.jh.jsuk.utils.FastJsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 
@@ -30,7 +30,7 @@ public class JwtFilter implements Filter {
     @Autowired
     private UserService userService;
     @Autowired
-    private AdminLogService adminLogService;
+    private LogService adminLogService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -57,7 +57,7 @@ public class JwtFilter implements Filter {
                     !"img".equals(split[split.length - 1]) &&
                     !"gif".equals(split[split.length - 1])) {
 
-                AdminLog al = new AdminLog();
+                Log al = new Log();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String user = httpServletRequest.getSession().getAttribute("adminUserName").toString();
                 al.setUserName(user);
@@ -210,4 +210,3 @@ public class JwtFilter implements Filter {
 
     }
 }
-*/

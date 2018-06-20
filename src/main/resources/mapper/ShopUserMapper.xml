@@ -20,4 +20,6 @@
         id, manager_user_id, is_waiting, is_check, desc, legal_person_name, id_card_no, card_front, card_back
     </sql>
 
+
+
 </mapper>

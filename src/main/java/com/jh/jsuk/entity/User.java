@@ -1,9 +1,9 @@
 package com.jh.jsuk.entity;
 
-import java.util.Date;
-import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @since 2018-06-20
  */
 @TableName("js_user")
-public class User extends Model<User> {
+public class User extends ParentUser<User> {
 
     private static final long serialVersionUID = 1L;
 

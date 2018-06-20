@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.jsuk.dao.UserIntegralDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.UserIntegral">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="integral_type" property="integralType" />
+        <result column="integral_number" property="integralNumber" />
+        <result column="cra_time" property="craTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, integral_type, integral_number, cra_time
+    </sql>
+
+</mapper>
