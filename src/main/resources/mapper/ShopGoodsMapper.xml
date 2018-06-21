@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopGoods">
         <id column="id" property="id"/>
         <result column="shop_id" property="shopId"/>
+        <result column="attribute_id" property="attributeId"/>
         <result column="shop_modular_id" property="shopModularId"/>
         <result column="is_recommend" property="isRecommend"/>
         <result column="goods_label_id" property="goodsLabelId"/>
@@ -24,14 +25,31 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, shop_id, shop_modular_id, is_recommend, goods_label_id, goods_name, goods_img, goods_desc, status, is_del, create_time, update_time,
-        main_image, goods_break, sale_amont, goods_type
+        id, shop_id, attribute_id, shop_modular_id, is_recommend, goods_label_id, goods_name, goods_img, goods_desc, status, is_del, create_time,
+        update_time, main_image, goods_break, sale_amont, goods_type
     </sql>
 
-    <resultMap id="ShopGoodsSizeVo" type="com.jh.jsuk.entity.vo.ShopGoodsSizeVo" extends="BaseResultMap">
+    <resultMap id="GoodsSalesPriceVo" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
+        <result property="salesPrice" column="sales_price"/>
     </resultMap>
 
-    <select id="findShopGoodsByModularId" resultMap="ShopGoodsSizeVo">
+    <select id="findShopGoodsByModularId" resultMap="GoodsSalesPriceVo">
+        SELECT
+           *
+        FROM
+            js_shop_goods
+        WHERE
+            is_recommend = '1'
+        AND `status` = '1'
+        AND is_del = '1'
+        AND shop_modular_id = #{modularId}
+        ORDER BY
+            sale_amont DESC
+        LIMIT 1,
+         4
+    </select>
+
+    <select id="shopGoodsListByAttributeId" resultMap="GoodsSalesPriceVo">
         SELECT
            *
         FROM

@@ -9,7 +9,7 @@ import com.jh.jsuk.entity.ShopGoods;
  * @author: XuChuRuo
  * @date: 2018/6/12 15:01
  */
-public class ShopGoodsSizeVo extends ShopGoods {
+public class GoodsSalesPriceVo extends ShopGoods {
 
     private String salesPrice;
 

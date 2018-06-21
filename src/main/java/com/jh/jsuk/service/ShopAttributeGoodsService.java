@@ -2,6 +2,7 @@ package com.jh.jsuk.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.ShopAttributeGoods;
+import com.jh.jsuk.entity.vo.ShopAttributeVo;
 
 /**
  * <p>
@@ -13,4 +14,5 @@ import com.jh.jsuk.entity.ShopAttributeGoods;
  */
 public interface ShopAttributeGoodsService extends IService<ShopAttributeGoods> {
 
+    ShopAttributeVo getShopAttributeByShopId(Integer shopId);
 }

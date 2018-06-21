@@ -3,6 +3,7 @@ package com.jh.jsuk.service.impl;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ShopAttributeGoodsDao;
 import com.jh.jsuk.entity.ShopAttributeGoods;
+import com.jh.jsuk.entity.vo.ShopAttributeVo;
 import com.jh.jsuk.service.ShopAttributeGoodsService;
 import org.springframework.stereotype.Service;
 
@@ -17,4 +18,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShopAttributeGoodsServiceImpl extends ServiceImpl<ShopAttributeGoodsDao, ShopAttributeGoods> implements ShopAttributeGoodsService {
 
+    @Override
+    public ShopAttributeVo getShopAttributeByShopId(Integer shopId) {
+        return baseMapper.getShopAttributeByShopId(shopId);
+    }
 }
