@@ -31,4 +31,13 @@
         id, shop_goods_id, size_name, stock, original_price, sales_price, weight, volume, freight, status, type, is_del, img, brand, send_jf, deductible_jf, goods_type_id, goods_no, kill_price, kill_stock
     </sql>
 
+    <select id="selectSizeByGoodsId" resultMap="BaseResultMap">
+        SELECT
+           *
+        FROM
+            js_shop_goods_size
+        WHERE
+            shop_goods_id=#{goodsId}
+    </select>
+
 </mapper>

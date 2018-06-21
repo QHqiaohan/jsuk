@@ -1,22 +1,23 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
- * 二级分类下的详细品牌
+ * 类型的详细品牌
  * </p>
  *
- * @author lpf
- * @since 2018-06-20
+ * @author xcr
+ * @since 2018-06-21
  */
-@TableName("js_brand")
-public class Brand extends Model<Brand> {
+@TableName("js_goods_brand")
+public class GoodsBrand extends Model<GoodsBrand> {
 
     private static final long serialVersionUID = 1L;
 
@@ -125,7 +126,7 @@ public class Brand extends Model<Brand> {
 
     @Override
     public String toString() {
-        return "Brand{" +
+        return "GoodsBrand{" +
         "id=" + id +
         ", categoryId=" + categoryId +
         ", name=" + name +

@@ -9,22 +9,21 @@ import com.google.common.collect.Maps;
 import com.jh.jsuk.conf.Menu;
 import com.jh.jsuk.entity.Banner;
 import com.jh.jsuk.entity.GoodsCategory;
-import com.jh.jsuk.entity.Shop;
-import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.service.BannerService;
 import com.jh.jsuk.service.GoodsCategoryService;
-import com.jh.jsuk.service.ShopGoodsService;
-import com.jh.jsuk.service.ShopService;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -43,48 +42,17 @@ public class GoodsCategoryController {
     private BannerService bannerService;
     @Autowired
     private GoodsCategoryService goodsCategoryService;
-    @Autowired
-    private ShopService shopService;
-    @Autowired
-    private ShopGoodsService shopGoodsService;
 
-    @ApiOperation("根据模块分类查询商品/店铺列表")
-    @PostMapping("/getByModular")
-    public Result getByModular(@ApiParam(value = "模块ID", required = true) Integer modularId) {
-        // 封装数据map
-        Map<String, Object> map = new HashMap<>();
-        /**
-         * 商品推荐
-         */
-        Page<ShopGoods> shopGoodsPage = shopGoodsService.selectPage(
-                new Page<>(1, 4),
-                new EntityWrapper<ShopGoods>()
-                        .eq(ShopGoods.STATUS, 1)
-                        .eq(ShopGoods.IS_RECOMMEND, 1)
-                        .eq(ShopGoods.SHOP_MODULAR_ID, modularId)
-                        .orderBy(ShopGoods.SALE_AMONT, false));
-        map.put("shopGoods", shopGoodsPage.getRecords());
-        /**
-         * 店铺列表
-         */
-        Page<Shop> shopPage = shopService.selectPage(
-                new Page<>(1, 4),
-                new EntityWrapper<Shop>()
-                        .eq(Shop.CAN_USE, 1)
-                        .eq(Shop.IS_RECOMMEND, 1)
-                        .eq(Shop.MODULAR_ID, modularId)
-                        .orderBy(Shop.TOTAL_VOLUME, false));
-        map.put("shop", shopPage.getRecords());
-        return new Result().success();
-    }
-
-    @ApiOperation("获取所有类型")
-    @RequestMapping(value = "/getAllCategory", method = {RequestMethod.POST, RequestMethod.GET})
+    @ApiOperation("用户端-获取商品所有类型")
+    @GetMapping(value = "/getAllCategory")
     public Result getAllCategory() {
-        // 原始的数据
-        List<GoodsCategory> categorys = goodsCategoryService.selectList(new MyEntityWrapper<GoodsCategory>());
+        /**
+         * 商品类型
+         */
+        List<GoodsCategory> goodsCategories = goodsCategoryService.selectList(new MyEntityWrapper<GoodsCategory>()
+                .orderBy(GoodsCategory.SORT_ORDER, false));
         List<Menu> rootMenu = Lists.newArrayList();
-        categorys.forEach(category -> {
+        goodsCategories.forEach(category -> {
             Menu menu = new Menu();
             menu.setId(String.valueOf(category.getId()));
             menu.setIcon(category.getPic());
@@ -93,7 +61,6 @@ public class GoodsCategoryController {
             menu.setParentId(String.valueOf(category.getParentId()));
             rootMenu.add(menu);
         });
-
         // 最后的结果
         List<Menu> menuList = Lists.newArrayList();
         // 先找到所有的一级菜单
@@ -108,16 +75,21 @@ public class GoodsCategoryController {
             menu.setChildMenus(getChild(menu.getId(), rootMenu));
         }
         Map<String, Object> map = Maps.newHashMap();
-        map.put("classifys", menuList);
+        map.put("goodsCategory", menuList);
         /**
          * 获取banner
          */
         List<Banner> bannerList = bannerService.selectList(new EntityWrapper<Banner>()
-                .eq(Banner.BANNER_LOCATION, 7)// 7=分类页banner
-                .eq(Banner.IS_VALID, 1));
-        map.put("banners", bannerList);
+                // 7=分类页banner
+                .eq(Banner.BANNER_LOCATION, 7)
+                .eq(Banner.IS_VALID, 1)
+                .orderBy(Banner.CREATE_TIME, false));
+        if (CollectionUtils.isEmpty(bannerList)) {
+            map.put("banner", null);
+        } else {
+            map.put("banner", bannerList);
+        }
         return new Result().success(map);
-
     }
 
     @GetMapping("/get_category")

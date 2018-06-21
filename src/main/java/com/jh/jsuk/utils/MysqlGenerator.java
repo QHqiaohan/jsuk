@@ -14,10 +14,10 @@ import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import java.util.*;
 
 public class MysqlGenerator {
-    private static String[] table =  new String[]{"js_shop"};
+    private static String[] table =  new String[]{"js_goods_brand"};
     //table名字
     private static String[] prefixs = {"js_sys_", "js_"};            //table前缀
-    private static String authorName = "lpf";                //作者
+    private static String authorName = "xcr";                //作者
     private static String parent = "com.jh.jsuk";         //父包名
     private static String path = System.getProperty("user.dir");
     private static String url = "jdbc:mysql://39.108.80.44:3306/jushang_new?characterEncoding=utf8";
