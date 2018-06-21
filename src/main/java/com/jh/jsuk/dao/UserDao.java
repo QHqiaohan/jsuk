@@ -1,7 +1,8 @@
 package com.jh.jsuk.dao;
 
-import com.jh.jsuk.entity.User;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.jh.jsuk.entity.User;
+import com.jh.jsuk.entity.vo.UserInfoVo;
 
 /**
  * <p>
