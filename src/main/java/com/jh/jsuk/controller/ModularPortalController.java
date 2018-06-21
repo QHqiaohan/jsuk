@@ -81,6 +81,7 @@ public class ModularPortalController {
         map.put("shop", shopPage.getRecords());
         return new Result().success();
     }*/
+
     @ApiOperation(value = "用户端-根据模块ID获取店铺/商品列表")
     @GetMapping("/getShopAndGoodsByModular")
     public Result getShopAndGoodsByModular(@ApiParam(value = "模块ID", required = true) Integer modularId) {

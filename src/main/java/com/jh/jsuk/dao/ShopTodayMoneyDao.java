@@ -1,7 +1,12 @@
 package com.jh.jsuk.dao;
 
-import com.jh.jsuk.entity.ShopTodayMoney;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.jh.jsuk.entity.ShopTodayMoney;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +18,6 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface ShopTodayMoneyDao extends BaseMapper<ShopTodayMoney> {
 
+    List getTodayMoneyList(RowBounds rowBounds, @Param("ew") Wrapper wrapper,
+                           @Param("shopId") Integer shopId, @Param("today") String today);
 }

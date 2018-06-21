@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ShopDao;
 import com.jh.jsuk.entity.Shop;
+import com.jh.jsuk.entity.vo.ShopTelPhoneVo;
 import com.jh.jsuk.service.ShopMoneyService;
 import com.jh.jsuk.service.ShopService;
 import com.jh.jsuk.service.UserRemainderService;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * <p>
@@ -51,6 +52,16 @@ public class ShopServiceImpl extends ServiceImpl<ShopDao, Shop> implements ShopS
     public void doDeal(Integer shopId, Integer userId, BigDecimal bigDecimal) throws Exception {
         userRemainderService.consume(userId, bigDecimal);
         shopMoneyService.makeIncome(shopId, bigDecimal);
+    }
+
+    @Override
+    public ShopTelPhoneVo getShopById(Integer shopId) {
+        return baseMapper.getShopById(shopId);
+    }
+
+    @Override
+    public List<Shop> findCollectByUserId(Integer userId) {
+        return baseMapper.findCollectByUserId(userId);
     }
 
 }

@@ -1,7 +1,9 @@
 package com.jh.jsuk.service;
 
-import com.jh.jsuk.entity.ShopVisit;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.ShopVisit;
 
 /**
  * <p>
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface ShopVisitService extends IService<ShopVisit> {
 
+    Page getVisitList(Page page, Wrapper wrapper, Integer shopId, String today);
 }
