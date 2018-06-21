@@ -2,9 +2,12 @@ package com.jh.jsuk.filter;
 
 
 import com.jh.jsuk.entity.Log;
+import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.ParentUser;
 import com.jh.jsuk.entity.jwt.JwtParam;
-import com.jh.jsuk.service.*;
+import com.jh.jsuk.service.DistributionUserService;
+import com.jh.jsuk.service.LogService;
+import com.jh.jsuk.service.UserService;
 import com.jh.jsuk.utils.FastJsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -20,16 +23,15 @@ import java.util.HashMap;
 @WebFilter
 @Order(2)
 public class JwtFilter implements Filter {
+
     @Autowired
-    private ShopUserService shopUserService;
+    private ManagerUser managerUser;
     @Autowired
     private DistributionUserService distributionUserService;
     @Autowired
     private UserService userService;
     @Autowired
     private LogService adminLogService;
-    @Autowired
-    private ManagerUserService managerUserService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -37,16 +39,14 @@ public class JwtFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException,
-            ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         //System.out.println("进入JWT_filter");
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String servletPath = ((HttpServletRequest) servletRequest).getServletPath();
         String[] split = servletPath.split("\\.");
-        if (split.length > 0 && httpServletRequest.getSession().getAttribute("adminUserName") != null && httpServletRequest.getParameterMap().size
-                () != 0) {
+        if (split.length > 0 && httpServletRequest.getSession().getAttribute("adminUserName") != null && httpServletRequest.getParameterMap().size() != 0) {
             if (!"js".equals(split[split.length - 1]) &&
                     !"css".equals(split[split.length - 1]) &&
                     !"ico".equals(split[split.length - 1]) &&
@@ -126,6 +126,8 @@ public class JwtFilter implements Filter {
                 || servletPath.indexOf("/lifeClass") != -1
                 // 商家端-获取分类列表
                 || servletPath.indexOf("/getModularList") != -1
+                // 商品类型相认证
+                || servletPath.indexOf("/goodsCategory") != -1
 
             ////////////////////////////////////////////////
             //方便ios上架开放接口 TODO 上架后最好注掉
@@ -148,9 +150,7 @@ public class JwtFilter implements Filter {
 
         } else {
             FilteredRequest request = new FilteredRequest(servletRequest, new HashMap<String, String[]>(httpServletRequest.getParameterMap()));
-
             //filterChain.doFilter(request,response);
-
             System.out.println(servletPath);
             JwtParam jwtParam = request.getJwtParam();
             if (null != jwtParam) {
@@ -158,7 +158,7 @@ public class JwtFilter implements Filter {
                     ParentUser user = null;
                     switch (jwtParam.getLoginType()) {
                         case 1:
-                            user = managerUserService.selectById(jwtParam.getUserId());
+                            user = managerUser.selectById(jwtParam.getUserId());
                             break;
                         case 2:
                             user = distributionUserService.selectById(jwtParam.getUserId());
@@ -172,10 +172,8 @@ public class JwtFilter implements Filter {
                         dispatcher.forward(request, response);
                         response.setStatus(2002);
                     }
-
                     if (user != null) {
-                        System.out.println(user.getLastLoginTime().getTime() + "===========" + Math.round((double) jwtParam.getLoginTime().getTime
-                                () / 1000)
+                        System.out.println(user.getLastLoginTime().getTime() + "===========" + Math.round((double) jwtParam.getLoginTime().getTime() / 1000)
                                 * 1000);
                         if (user.getLastLoginTime().getTime() == Math.round((double) jwtParam.getLoginTime().getTime() / 1000) * 1000) {
                             System.out.println("认证成功");

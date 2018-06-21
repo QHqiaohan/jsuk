@@ -1,7 +1,8 @@
 package com.jh.jsuk.service;
 
-import com.jh.jsuk.entity.GoodsCategory;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.GoodsCategory;
+import com.jh.jsuk.utils.Result;
 
 /**
  * <p>
@@ -13,4 +14,11 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface GoodsCategoryService extends IService<GoodsCategory> {
 
+    Result getChildrenParallelCategory(Integer categoryId);
+
+    Result addCategory(String categoryName, Integer parentId);
+
+    Result updateCategoryName(Integer categoryId, String categoryName, Integer stas);
+
+    Result selectCategoryAndChildrenById(Integer categoryId);
 }
