@@ -20,4 +20,27 @@
         id, name, logo, parent_id, sort_order, status, type, publish_time, update_time
     </sql>
 
+    <resultMap id="ModularPortalVo" type="com.jh.jsuk.entity.vo.ModularPortalVo" extends="BaseResultMap">
+        <association column="id" property="modularPortalVoList" select="com.jh.jsuk.dao.ModularPortalDao.findChildrenModular"/>
+    </resultMap>
+
+    <select id="getModularList" resultMap="ModularPortalVo">
+        SELECT
+            *
+        FROM
+            `js_modular_portal`
+        ORDER BY
+            sort_order DESC
+    </select>
+
+    <select id="findChildrenModular" resultMap="BaseResultMap">
+        SELECT
+            *
+        FROM
+            `js_modular_portal`
+        WHERE
+            parent_id = #{id}
+        ORDER BY sort_order DESC
+    </select>
+
 </mapper>

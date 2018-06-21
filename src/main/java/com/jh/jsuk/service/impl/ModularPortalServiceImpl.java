@@ -1,10 +1,13 @@
 package com.jh.jsuk.service.impl;
 
-import com.jh.jsuk.entity.ModularPortal;
-import com.jh.jsuk.dao.ModularPortalDao;
-import com.jh.jsuk.service.ModularPortalService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.jh.jsuk.dao.ModularPortalDao;
+import com.jh.jsuk.entity.ModularPortal;
+import com.jh.jsuk.entity.vo.ModularPortalVo;
+import com.jh.jsuk.service.ModularPortalService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +20,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ModularPortalServiceImpl extends ServiceImpl<ModularPortalDao, ModularPortal> implements ModularPortalService {
 
+    @Override
+    public List<ModularPortalVo> getModularList() {
+        return baseMapper.getModularList();
+    }
 }

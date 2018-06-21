@@ -4,27 +4,62 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopGoods">
-        <id column="id" property="id" />
-        <result column="shop_id" property="shopId" />
-        <result column="shop_modular_id" property="shopModularId" />
-        <result column="is_recommend" property="isRecommend" />
-        <result column="goods_label_id" property="goodsLabelId" />
-        <result column="goods_name" property="goodsName" />
-        <result column="goods_img" property="goodsImg" />
-        <result column="goods_desc" property="goodsDesc" />
-        <result column="status" property="status" />
-        <result column="is_del" property="isDel" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
-        <result column="main_image" property="mainImage" />
-        <result column="goods_break" property="goodsBreak" />
-        <result column="sale_amont" property="saleAmont" />
-        <result column="goods_type" property="goodsType" />
+        <id column="id" property="id"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="shop_modular_id" property="shopModularId"/>
+        <result column="is_recommend" property="isRecommend"/>
+        <result column="goods_label_id" property="goodsLabelId"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="goods_img" property="goodsImg"/>
+        <result column="goods_desc" property="goodsDesc"/>
+        <result column="status" property="status"/>
+        <result column="is_del" property="isDel"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="main_image" property="mainImage"/>
+        <result column="goods_break" property="goodsBreak"/>
+        <result column="sale_amont" property="saleAmont"/>
+        <result column="goods_type" property="goodsType"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, shop_id, shop_modular_id, is_recommend, goods_label_id, goods_name, goods_img, goods_desc, status, is_del, create_time, update_time, main_image, goods_break, sale_amont, goods_type
+        id, shop_id, shop_modular_id, is_recommend, goods_label_id, goods_name, goods_img, goods_desc, status, is_del, create_time, update_time,
+        main_image, goods_break, sale_amont, goods_type
     </sql>
+
+    <resultMap id="ShopGoodsSizeVo" type="com.jh.jsuk.entity.vo.ShopGoodsSizeVo" extends="BaseResultMap">
+    </resultMap>
+
+    <select id="findShopGoodsByModularId" resultMap="ShopGoodsSizeVo">
+        SELECT
+           *
+        FROM
+            js_shop_goods
+        WHERE
+            is_recommend = '1'
+        AND `status` = '1'
+        AND is_del = '1'
+        AND shop_modular_id = #{modularId}
+        ORDER BY
+            sale_amont DESC
+        LIMIT 1,
+         4
+    </select>
+
+    <resultMap id="ShopGoodsVoT" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
+        <association property="shopGoodsSize" column="id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></association>
+    </resultMap>
+
+    <select id="shopGoodsListByModularId" resultMap="ShopGoodsVoT">
+        SELECT
+        *
+        FROM js_shop_goods
+        WHERE
+        shop_modular_id = #{modularId}
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
 
 </mapper>

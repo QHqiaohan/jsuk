@@ -2,20 +2,19 @@ package com.jh.jsuk.controller;
 
 
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 二级分类下的详细品牌 前端控制器
+ * 类型的详细品牌 前端控制器
  * </p>
  *
- * @author lpf
- * @since 2018-06-20
+ * @author xcr
+ * @since 2018-06-21
  */
 @RestController
-@RequestMapping("/brand")
-public class BrandController {
+@RequestMapping("/goodsBrand")
+public class GoodsBrandController {
 
 }
 

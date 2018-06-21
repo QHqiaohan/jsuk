@@ -128,8 +128,10 @@ public class JwtFilter implements Filter {
                 || servletPath.indexOf("/lifeClass") != -1
                 // 商家端-获取分类列表
                 || servletPath.indexOf("/getModularList") != -1
-                // 商品类型相认证
+                // 用户端-商品类型相关API
                 || servletPath.indexOf("/goodsCategory") != -1
+                // 用户端-模块相关API
+                || servletPath.indexOf("/modularPortal") != -1
 
             ////////////////////////////////////////////////
             //方便ios上架开放接口 TODO 上架后最好注掉
