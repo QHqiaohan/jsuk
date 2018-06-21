@@ -1,6 +1,8 @@
 package com.jh.jsuk.aspect;
 
-import org.apache.log4j.Logger;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,13 +19,14 @@ import java.util.Arrays;
 /**
  * Web层日志切面
  */
+@Slf4j
 @Aspect
 @Order(5)
 @Component
 public class WebLogAspect {
 
     ThreadLocal<Long> startTime = new ThreadLocal<>();
-    private Logger logger = Logger.getLogger(getClass());
+//    private Logger logger = Logger.getLogger(getClass());
 
     @Pointcut("execution(public * com.jh.jsuk.controller.*..*(..))")
     public void webLog() {
@@ -38,20 +41,24 @@ public class WebLogAspect {
         HttpServletRequest request = attributes.getRequest();
 
         // 记录下请求内容
-        System.out.println("\r\n");
-        logger.info("地址 : " + request.getRequestURL().toString());
-        logger.info("请求方式 : " + request.getMethod());
-        logger.info("IP : " + request.getRemoteAddr());
-        logger.info("执行的方法 : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-        logger.info("参数 : " + Arrays.toString(joinPoint.getArgs()));
+//        System.out.println("\r\n");
+        log.info("地址 : " + request.getRequestURL().toString());
+        log.info("请求方式 : " + request.getMethod());
+        log.info("IP : " + request.getRemoteAddr());
+        log.info("执行的方法 : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
+        log.info("参数 : " + Arrays.toString(joinPoint.getArgs()));
 
     }
 
     @AfterReturning(returning = "ret", pointcut = "webLog()")
     public void doAfterReturning(Object ret) {
         // 处理完请求，返回内容
-        logger.info("返回内容 : " + ret);
-        logger.info("花费时间 : " + (System.currentTimeMillis() - startTime.get()) + "毫秒");
+        try {
+            log.info("返回内容 : {}", new ObjectMapper().writeValueAsString(ret));
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage());
+        }
+        log.info("花费时间 : " + (System.currentTimeMillis() - startTime.get()) + "毫秒");
     }
 
 

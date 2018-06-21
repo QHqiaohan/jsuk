@@ -1,7 +1,8 @@
 package com.jh.jsuk.service;
 
-import com.jh.jsuk.entity.User;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.User;
+import com.jh.jsuk.entity.vo.UserInfoVo;
 
 /**
  * <p>
@@ -12,5 +13,7 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-06-20
  */
 public interface UserService extends IService<User> {
+
+    UserInfoVo selectInfoById(Integer id);
 
 }

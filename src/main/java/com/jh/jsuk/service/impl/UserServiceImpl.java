@@ -1,9 +1,10 @@
 package com.jh.jsuk.service.impl;
 
-import com.jh.jsuk.entity.User;
-import com.jh.jsuk.dao.UserDao;
-import com.jh.jsuk.service.UserService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.jh.jsuk.dao.UserDao;
+import com.jh.jsuk.entity.User;
+import com.jh.jsuk.entity.vo.UserInfoVo;
+import com.jh.jsuk.service.UserService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,5 +17,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserService {
+
+    @Override
+    public UserInfoVo selectInfoById(Integer id) {
+        return baseMapper.selectInfoById(id);
+    }
 
 }
