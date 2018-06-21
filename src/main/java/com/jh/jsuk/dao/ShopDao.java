@@ -1,16 +1,16 @@
 package com.jh.jsuk.dao;
 
-import com.jh.jsuk.entity.ShopUser;
+import com.jh.jsuk.entity.Shop;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
  * <p>
- * 商户信息 Mapper 接口
+ * 店铺 Mapper 接口
  * </p>
  *
  * @author lpf
  * @since 2018-06-21
  */
-public interface ShopUserDao extends BaseMapper<ShopUser> {
+public interface ShopDao extends BaseMapper<Shop> {
 
 }

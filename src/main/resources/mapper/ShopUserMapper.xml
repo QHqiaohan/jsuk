@@ -5,6 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopUser">
         <id column="id" property="id" />
+        <result column="shop_id" property="shopId" />
         <result column="manager_user_id" property="managerUserId" />
         <result column="is_waiting" property="isWaiting" />
         <result column="is_check" property="isCheck" />
@@ -17,9 +18,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, manager_user_id, is_waiting, is_check, desc, legal_person_name, id_card_no, card_front, card_back
+        id, shop_id, manager_user_id, is_waiting, is_check, desc, legal_person_name, id_card_no, card_front, card_back
     </sql>
-
-
 
 </mapper>

@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author lpf
- * @since 2018-06-20
+ * @since 2018-06-21
  */
 @TableName("js_shop_user")
 public class ShopUser extends ParentUser<ShopUser> {
@@ -21,6 +21,10 @@ public class ShopUser extends ParentUser<ShopUser> {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+    /**
+     * 店铺ID
+     */
+    private Integer shopId;
     /**
      * 商户id
      */
@@ -61,6 +65,14 @@ public class ShopUser extends ParentUser<ShopUser> {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
     }
 
     public Integer getManagerUserId() {
@@ -129,6 +141,8 @@ public class ShopUser extends ParentUser<ShopUser> {
 
     public static final String ID = "id";
 
+    public static final String SHOP_ID = "shop_id";
+
     public static final String MANAGER_USER_ID = "manager_user_id";
 
     public static final String IS_WAITING = "is_waiting";
@@ -154,6 +168,7 @@ public class ShopUser extends ParentUser<ShopUser> {
     public String toString() {
         return "ShopUser{" +
         "id=" + id +
+        ", shopId=" + shopId +
         ", managerUserId=" + managerUserId +
         ", isWaiting=" + isWaiting +
         ", isCheck=" + isCheck +
