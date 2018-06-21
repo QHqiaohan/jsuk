@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2018-06-20
  */
 @RestController
-@RequestMapping("/userBank")
+@RequestMapping("/bank")
 public class UserBankController {
     @Autowired
     private UserBankService bankService;
