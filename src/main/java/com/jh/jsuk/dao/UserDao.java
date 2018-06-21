@@ -1,8 +1,7 @@
 package com.jh.jsuk.dao;
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.jh.jsuk.entity.User;
-import com.jh.jsuk.entity.vo.UserInfoVo;
+import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
  * <p>
@@ -15,5 +14,7 @@ import com.jh.jsuk.entity.vo.UserInfoVo;
 public interface UserDao extends BaseMapper<User> {
 
     UserInfoVo selectInfoById(Integer id);
+
+    User findUserHeadImgById(Integer id);
 
 }

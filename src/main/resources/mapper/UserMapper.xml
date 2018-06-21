@@ -40,4 +40,16 @@
         WHERE id = #{id}
     </select>
 
+    <sql id="Vo_Column_List">
+        head_img, nick_name
+    </sql>
+
+    <select id="findUserHeadImgById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Vo_Column_List"/>
+        FROM t_user
+        WHERE
+        id = #{id}
+    </select>
+
 </mapper>

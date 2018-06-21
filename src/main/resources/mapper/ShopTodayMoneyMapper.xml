@@ -4,16 +4,31 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopTodayMoney">
-        <id column="id" property="id" />
-        <result column="shop_id" property="shopId" />
-        <result column="user_id" property="userId" />
-        <result column="price" property="price" />
-        <result column="publish_time" property="publishTime" />
+        <id column="id" property="id"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="user_id" property="userId"/>
+        <result column="price" property="price"/>
+        <result column="publish_time" property="publishTime"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, shop_id, user_id, price, publish_time
     </sql>
+
+    <resultMap id="ShopVisitorVo" type="com.jh.jsuk.entity.vo.ShopVisitorVo" extends="BaseResultMap">
+        <association property="user" column="user_id" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"></association>
+    </resultMap>
+
+    <select id="getTodayMoneyList" resultMap="ShopVisitorVo">
+        SELECT
+        price, publish_time
+        FROM t_shop_today_money
+        WHERE
+        shop_id = #{shopId}
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
 
 </mapper>

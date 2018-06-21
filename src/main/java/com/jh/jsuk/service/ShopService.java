@@ -2,8 +2,10 @@ package com.jh.jsuk.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.Shop;
+import com.jh.jsuk.entity.vo.ShopTelPhoneVo;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * <p>
@@ -32,4 +34,7 @@ public interface ShopService extends IService<Shop> {
      */
     void doDeal(Integer shopId, Integer userId, BigDecimal bigDecimal) throws Exception;
 
+    ShopTelPhoneVo getShopById(Integer shopId);
+
+    List<Shop> findCollectByUserId(Integer userId);
 }

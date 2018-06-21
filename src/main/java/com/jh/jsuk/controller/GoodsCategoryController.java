@@ -117,7 +117,6 @@ public class GoodsCategoryController {
 
     }
 
-
     @GetMapping("get_deep_category")
     public Result getCategoryAndDeepChildrenCategory(HttpSession session, @RequestParam(value = "categoryId", defaultValue = "0") Integer
             categoryId) {

@@ -15,4 +15,19 @@
         id, shop_id, user_id, publish_time
     </sql>
 
+    <resultMap id="ShopVisitorVo" type="com.jh.jsuk.entity.vo.ShopVisitorVo" extends="BaseResultMap">
+        <association property="user" column="user_id" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"></association>
+    </resultMap>
+
+    <select id="getVisitList" resultMap="ShopVisitorVo">
+        SELECT
+        publish_time
+        FROM t_shop_visit
+        WHERE
+        shop_id = #{shopId}
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
 </mapper>

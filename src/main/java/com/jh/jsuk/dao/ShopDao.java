@@ -1,7 +1,10 @@
 package com.jh.jsuk.dao;
 
-import com.jh.jsuk.entity.Shop;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.jh.jsuk.entity.Shop;
+import com.jh.jsuk.entity.vo.ShopTelPhoneVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,9 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2018-06-21
  */
 public interface ShopDao extends BaseMapper<Shop> {
+
+    ShopTelPhoneVo getShopById(Integer shopId);
+
+    List<Shop> findCollectByUserId(Integer userId);
 
 }
