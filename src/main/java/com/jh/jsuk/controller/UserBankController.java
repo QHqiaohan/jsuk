@@ -1,8 +1,17 @@
 package com.jh.jsuk.controller;
 
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.jh.jsuk.entity.UserBank;
+import com.jh.jsuk.service.UserBankService;
+import com.jh.jsuk.utils.Result;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,7 +32,7 @@ public class UserBankController {
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "type", value = "0商家端  1骑手端  2用户端",
                     required = true, paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "accountNumber", value = "银行卡号",
+            @ApiImplicitParam(name = "bankNumber", value = "银行卡号",
                     required = true, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "bankName", value = "银行名称",
                     required = true, paramType = "query", dataType = "String"),
@@ -40,7 +49,7 @@ public class UserBankController {
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "id", value = "表id",
                     required = true, paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "accountNumber", value = "银行卡号",
+            @ApiImplicitParam(name = "bankNumber", value = "银行卡号",
                     required = false, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "bankName", value = "银行名称",
                     required = false, paramType = "query", dataType = "String"),
