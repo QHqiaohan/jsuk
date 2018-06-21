@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 商户信息 前端控制器
+ * 店铺 前端控制器
  * </p>
  *
  * @author lpf
  * @since 2018-06-21
  */
 @RestController
-@RequestMapping("/shopUser")
-public class ShopUserController {
+@RequestMapping("/shop")
+public class ShopController {
 
 }
 
