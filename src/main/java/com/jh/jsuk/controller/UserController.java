@@ -12,6 +12,7 @@ import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.Dictionary;
 import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
+import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.IpUtil;
 import com.jh.jsuk.utils.JwtHelper;
@@ -371,23 +372,26 @@ public class UserController {
             @ApiImplicitParam(name = "gender", value = "性别", paramType = "query", dataType = "int")
     })
     @PostMapping("/edit")
-    public Result edit(@ModelAttribute User user, Integer userId) {
-        if (userId != null) {
-            user.setId(userId);
-            if (StrUtil.isNotBlank(user.getPhone())) {
-                if (Validator.isMobile(user.getPhone())) {
-                    User oneuser = userService.selectOne(new EntityWrapper<User>().eq(User.PHONE, user.getPhone()));
-                    if (oneuser != null) {
-                        return new Result().erro("手机号已被绑定");
-                    }
-                } else {
-                    return new Result().erro("请输入正确的手机号");
-                }
-            }
-            user.updateById();
-            return new Result().success();
+    public Result edit(@ModelAttribute User user, Integer userId) throws Exception {
+//        if (user.getId() == null) {
+//            throw new MessageException("用户id不存在");
+//        }
+        if (userId == null) {
+            throw new MessageException("用户未登录");
         }
-        return new Result().erro("用户未登录");
+        user.setId(userId);
+        if (StrUtil.isNotBlank(user.getPhone())) {
+            if (Validator.isMobile(user.getPhone())) {
+                User oneuser = userService.selectOne(new EntityWrapper<User>().eq(User.PHONE, user.getPhone()));
+                if (oneuser != null) {
+                    return new Result().erro("手机号已被绑定");
+                }
+            } else {
+                return new Result().erro("请输入正确的手机号");
+            }
+        }
+        user.updateById();
+        return new Result().success();
     }
 
     @ApiOperation("根据手机验证码修改密码")
