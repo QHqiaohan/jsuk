@@ -4,15 +4,31 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopAttributeGoods">
-        <id column="id" property="id" />
-        <result column="attribute_id" property="attributeId" />
-        <result column="goods_id" property="goodsId" />
-        <result column="shop_id" property="shopId" />
+        <id column="id" property="id"/>
+        <result column="attribute_id" property="attributeId"/>
+        <result column="shop_id" property="shopId"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, attribute_id, goods_id, shop_id
+        id, attribute_id, shop_id
     </sql>
+
+    <resultMap id="ShopAttributeVo" type="com.jh.jsuk.entity.vo.ShopAttributeVo" extends="BaseResultMap">
+        <association property="id" column="id"/>
+        <association property="name" column="name"/>
+    </resultMap>
+
+    <select id="getShopAttributeByShopId" resultMap="ShopAttributeVo">
+        SELECT
+            sa.id,sa.`name`
+        FROM
+            js_shop_attribute_goods sag
+        LEFT JOIN js_shop_attribute sa ON sag.attribute_id = sa.id
+        WHERE
+            shop_id = #{shopId}
+        ORDER BY
+            sort_order DESC
+    </select>
 
 </mapper>

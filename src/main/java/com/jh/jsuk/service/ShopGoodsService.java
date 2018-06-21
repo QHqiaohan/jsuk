@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.ShopGoods;
-import com.jh.jsuk.entity.vo.ShopGoodsSizeVo;
+import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 
 import java.util.List;
 
@@ -18,8 +18,10 @@ import java.util.List;
  */
 public interface ShopGoodsService extends IService<ShopGoods> {
 
-    List<ShopGoodsSizeVo> findShopGoodsByModularId(Integer modularId);
+    List<GoodsSalesPriceVo> findShopGoodsByModularId(Integer modularId);
 
     Page shopGoodsListByModularId(Page page, Wrapper wrapper, Integer modularId);
+
+    Page shopGoodsListByAttributeId(Page page, Wrapper wrapper, Integer attributeId);
 
 }

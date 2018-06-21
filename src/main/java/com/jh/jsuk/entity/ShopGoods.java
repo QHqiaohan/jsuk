@@ -1,11 +1,12 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -26,6 +27,10 @@ public class ShopGoods extends Model<ShopGoods> {
      * 店铺id
      */
     private Integer shopId;
+    /**
+     * 属性ID
+     */
+    private Integer attributeId;
     /**
      * 模块ID
      */
@@ -90,6 +95,14 @@ public class ShopGoods extends Model<ShopGoods> {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getAttributeId() {
+        return attributeId;
+    }
+
+    public void setAttributeId(Integer attributeId) {
+        this.attributeId = attributeId;
     }
 
     public Integer getShopId() {
@@ -244,6 +257,8 @@ public class ShopGoods extends Model<ShopGoods> {
 
     public static final String GOODS_TYPE = "goods_type";
 
+    public static final String ATTRIBUTE_ID = "attribute_id";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -252,22 +267,23 @@ public class ShopGoods extends Model<ShopGoods> {
     @Override
     public String toString() {
         return "ShopGoods{" +
-        "id=" + id +
-        ", shopId=" + shopId +
-        ", shopModularId=" + shopModularId +
-        ", isRecommend=" + isRecommend +
-        ", goodsLabelId=" + goodsLabelId +
-        ", goodsName=" + goodsName +
-        ", goodsImg=" + goodsImg +
-        ", goodsDesc=" + goodsDesc +
-        ", status=" + status +
-        ", isDel=" + isDel +
-        ", createTime=" + createTime +
-        ", updateTime=" + updateTime +
-        ", mainImage=" + mainImage +
-        ", goodsBreak=" + goodsBreak +
-        ", saleAmont=" + saleAmont +
-        ", goodsType=" + goodsType +
-        "}";
+                "id=" + id +
+                ", shopId=" + shopId +
+                ", attributeId=" + attributeId +
+                ", shopModularId=" + shopModularId +
+                ", isRecommend=" + isRecommend +
+                ", goodsLabelId=" + goodsLabelId +
+                ", goodsName='" + goodsName + '\'' +
+                ", goodsImg='" + goodsImg + '\'' +
+                ", goodsDesc='" + goodsDesc + '\'' +
+                ", status=" + status +
+                ", isDel=" + isDel +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", mainImage='" + mainImage + '\'' +
+                ", goodsBreak='" + goodsBreak + '\'' +
+                ", saleAmont=" + saleAmont +
+                ", goodsType=" + goodsType +
+                '}';
     }
 }

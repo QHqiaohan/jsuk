@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.Shop;
 import com.jh.jsuk.entity.ShopGoodsSize;
+import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.ModularPortalVo;
-import com.jh.jsuk.entity.vo.ShopGoodsSizeVo;
 import com.jh.jsuk.service.ModularPortalService;
 import com.jh.jsuk.service.ShopGoodsService;
 import com.jh.jsuk.service.ShopGoodsSizeService;
@@ -81,7 +81,6 @@ public class ModularPortalController {
         map.put("shop", shopPage.getRecords());
         return new Result().success();
     }*/
-
     @ApiOperation(value = "用户端-根据模块ID获取店铺/商品列表")
     @GetMapping("/getShopAndGoodsByModular")
     public Result getShopAndGoodsByModular(@ApiParam(value = "模块ID", required = true) Integer modularId) {
@@ -104,13 +103,13 @@ public class ModularPortalController {
          * 商品列表
          */
         // 商品数据
-        List<ShopGoodsSizeVo> goodsSizeVoList = shopGoodsService.findShopGoodsByModularId(modularId);
+        List<GoodsSalesPriceVo> goodsSalesPriceVos = shopGoodsService.findShopGoodsByModularId(modularId);
         // 规格数据
-        for (ShopGoodsSizeVo shopGoodsSizeVo : goodsSizeVoList) {
+        for (GoodsSalesPriceVo shopGoodsSizeVo : goodsSalesPriceVos) {
             Integer shopGoodsId = shopGoodsSizeVo.getId();
             List<ShopGoodsSize> goodsSizeList = shopGoodsSizeService.selectList(new EntityWrapper<ShopGoodsSize>()
                     .eq(ShopGoodsSize.SHOP_GOODS_ID, shopGoodsId));
-            // 售价
+            // 售价,默认取规格里第一个价格
             if (!CollectionUtils.isEmpty(goodsSizeList)) {
                 String salesPrice = goodsSizeList.get(0).getSalesPrice();
                 if (shopGoodsSizeVo.getId().equals(goodsSizeList.get(0).getShopGoodsId())) {
@@ -120,7 +119,7 @@ public class ModularPortalController {
                 shopGoodsSizeVo.setSalesPrice("0");
             }
         }
-        map.put("shopGoods", goodsSizeVoList);
+        map.put("shopGoods", goodsSalesPriceVos);
         return new Result().success(map);
     }
 

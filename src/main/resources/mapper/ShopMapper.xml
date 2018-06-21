@@ -41,7 +41,7 @@
 
     <select id="getShopById" resultMap="ShopTelPhoneVo">
         SELECT
-            s.*, tel_phone
+            s.*, mu.tel_phone
         FROM
             js_shop s
             LEFT JOIN js_manager_user mu

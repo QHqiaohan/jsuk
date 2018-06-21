@@ -27,10 +27,6 @@ public class ShopAttributeGoods extends Model<ShopAttributeGoods> {
      */
     private Integer attributeId;
     /**
-     * 商品ID
-     */
-    private Integer goodsId;
-    /**
      * 店铺ID
      */
     private Integer shopId;
@@ -50,14 +46,6 @@ public class ShopAttributeGoods extends Model<ShopAttributeGoods> {
 
     public void setAttributeId(Integer attributeId) {
         this.attributeId = attributeId;
-    }
-
-    public Integer getGoodsId() {
-        return goodsId;
-    }
-
-    public void setGoodsId(Integer goodsId) {
-        this.goodsId = goodsId;
     }
 
     public Integer getShopId() {
@@ -86,7 +74,6 @@ public class ShopAttributeGoods extends Model<ShopAttributeGoods> {
         return "ShopAttributeGoods{" +
         "id=" + id +
         ", attributeId=" + attributeId +
-        ", goodsId=" + goodsId +
         ", shopId=" + shopId +
         "}";
     }

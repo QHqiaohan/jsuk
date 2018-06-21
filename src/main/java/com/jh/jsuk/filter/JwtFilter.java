@@ -132,6 +132,10 @@ public class JwtFilter implements Filter {
                 || servletPath.indexOf("/goodsCategory") != -1
                 // 用户端-模块相关API
                 || servletPath.indexOf("/modularPortal") != -1
+                // 商家店铺相关
+                || servletPath.indexOf("/shop") != -1
+                // 商品相关
+                || servletPath.indexOf("/shopGoods") != -1
 
             ////////////////////////////////////////////////
             //方便ios上架开放接口 TODO 上架后最好注掉

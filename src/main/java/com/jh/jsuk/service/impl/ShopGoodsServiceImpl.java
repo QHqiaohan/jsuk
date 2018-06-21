@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ShopGoodsDao;
 import com.jh.jsuk.entity.ShopGoods;
-import com.jh.jsuk.entity.vo.ShopGoodsSizeVo;
+import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.service.ShopGoodsService;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ import java.util.List;
 public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> implements ShopGoodsService {
 
     @Override
-    public List<ShopGoodsSizeVo> findShopGoodsByModularId(Integer modularId) {
+    public List<GoodsSalesPriceVo> findShopGoodsByModularId(Integer modularId) {
         return baseMapper.findShopGoodsByModularId(modularId);
     }
 
@@ -32,6 +32,13 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     public Page shopGoodsListByModularId(Page page, Wrapper wrapper, Integer modularId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.shopGoodsListByModularId(page, wrapper, modularId));
+        return page;
+    }
+
+    @Override
+    public Page shopGoodsListByAttributeId(Page page, Wrapper wrapper, Integer attributeId) {
+        wrapper = SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(baseMapper.shopGoodsListByAttributeId(page, wrapper, attributeId));
         return page;
     }
 }

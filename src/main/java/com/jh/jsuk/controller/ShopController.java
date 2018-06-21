@@ -7,6 +7,7 @@ import com.jh.jsuk.entity.Shop;
 import com.jh.jsuk.entity.ShopMonthStatistics;
 import com.jh.jsuk.entity.ShopTodayStatistics;
 import com.jh.jsuk.entity.ShopVisit;
+import com.jh.jsuk.entity.vo.ShopAttributeVo;
 import com.jh.jsuk.entity.vo.ShopTelPhoneVo;
 import com.jh.jsuk.entity.vo.ShopVisitorVo;
 import com.jh.jsuk.service.*;
@@ -31,7 +32,7 @@ import java.util.List;
  * @author lpf
  * @since 2018-05-24
  */
-@Api(tags = "商家店铺相关:")
+@Api(tags = "商家店铺相关API:")
 @RestController
 @RequestMapping("/shop")
 public class ShopController {
@@ -56,7 +57,7 @@ public class ShopController {
     private UserRemainderService userRemainderService;
 
     @ApiOperation("用户端-根据店铺id查看店铺信息")
-    @PostMapping("/getShopById")
+    @GetMapping("/getShopById")
     public Result getShopById(@ApiParam(value = "店铺id", required = true) Integer shopId, Integer userId) {
         ShopTelPhoneVo shop = shopService.getShopById(shopId);
         if (shop == null) {
@@ -106,7 +107,7 @@ public class ShopController {
             @ApiImplicitParam(name = "shopId", value = "店铺id", required = true, paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "today", value = "当前日期", required = true, paramType = "query", dataType = "string")
     })
-    @PostMapping("/getTodayVisit")
+    @GetMapping("/getTodayVisit")
     public Result getTodayVisit(Page page, Integer shopId, String today) {
         MyEntityWrapper<ShopVisitorVo> ew = new MyEntityWrapper<>();
         Page visitList = shopVisitService.getVisitList(page, ew, shopId, today);
@@ -136,23 +137,22 @@ public class ShopController {
     }
 
     @ApiOperation("用户端-根据店铺id查看店铺内部的商品分类-属性")
-    @PostMapping("/getShopAttributeByShopId")
-    public Result getShopAttributeByShopId(@ApiParam(value = "店铺id", required = true) @RequestParam Integer shopId) {
-        return new Result().success(null);
-    }
-
-    @ApiOperation("用户端-根据商家自己的分类查询商品")
-    @PostMapping("/getGoodsByShopCategory")
-    public Result getGoodsByShopCategory(@ApiParam(value = "店铺id", required = true) @RequestParam Integer shopId) {
-        return new Result().success();
+    @GetMapping("/getShopAttributeByShopId")
+    public Result getShopAttributeByShopId(@ApiParam(value = "店铺id", required = true) Integer shopId) {
+        ShopAttributeVo attributeVo = shopAttributeGoodsService.getShopAttributeByShopId(shopId);
+        if (attributeVo == null) {
+            return new Result().success(null);
+        } else {
+            return new Result().success(attributeVo);
+        }
     }
 
     @ApiOperation("用户端-显示收藏的店铺列表")
-    @PostMapping("/collect")
+    @GetMapping("/collect")
     public Result list(Integer userId) {
         List<Shop> shops = shopService.findCollectByUserId(userId);
         if (shops == null) {
-            return new Result().success();
+            return new Result().success(null);
         } else {
             return new Result().success(shops);
         }
@@ -197,21 +197,6 @@ public class ShopController {
         }
         return new Result().success(shopList);
     }*/
-
-    @ApiOperation("更多店铺列表")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "current", value = "当前页码",
-                    required = false, paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数",
-                    required = false, paramType = "query", dataType = "integer"),
-    })
-
-    @PostMapping("/shopList")
-    public Result shopList(@ApiParam(hidden = true) Page page) {
-        Page shopPage = shopService.selectPage(page, new EntityWrapper<Shop>()
-                .orderBy(Shop.TOTAL_VOLUME, false));
-        return new Result().success(shopPage);
-    }
 
     @PostMapping("/ui/edit")
     public Result uiEdit(HttpSession session, @ModelAttribute Shop shop) {
