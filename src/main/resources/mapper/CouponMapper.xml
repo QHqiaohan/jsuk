@@ -24,4 +24,56 @@
         id, manager_user_id, full_price, discount, start_time, end_time, num, is_del, publish_time, coupon_type, limiting_num, coupon_name, coupon_platform
     </sql>
 
+
+    <resultMap id="CouponVo" type="com.jh.jsuk.entity.vo.CouponVo" extends="BaseResultMap">
+        <association property="userCoupon" column="{couponId=id,userId=user_id}" select="com.jushang.dao.UserCouponDao.selectByCouponId"></association>
+    </resultMap>
+    <!--<resultMap id="CouponVo" type="com.jushang.entity.vo.CouponVo" extends="BaseResultMap">
+      <association property="userCoupon" column="id" select="com.jushang.dao.UserCouponDao.selectByCouponId"></association>
+    </resultMap>-->
+    <select id="findByUserId" resultMap="CouponVo">
+		SELECT
+		js_coupon.*,js_user_coupon.user_id
+		FROM js_coupon LEFT JOIN js_user_coupon ON js_coupon.id = js_user_coupon.coupon_id
+		WHERE
+		user_id = #{userId} AND js_user_coupon.status != 0
+		order by
+		js_coupon.end_time
+	</select>
+
+    <select id="selectVoList" resultMap="CouponVo" >
+
+
+        SELECT
+        js_coupon.*,js_user_coupon.user_id
+        FROM js_coupon LEFT JOIN js_user_coupon ON js_user_coupon.coupon_id  = js_coupon.id
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
+
+    <select id="selectVoList2" resultMap="CouponVo" parameterType="com.jh.jsuk.entity.vo.CoupQueryParam">
+
+        SELECT js_coupon.*,js_user_coupon.user_id
+        FROM js_coupon LEFT JOIN js_user_coupon ON
+        js_user_coupon.coupon_id = js_coupon.id
+        WHERE user_id=#{userId}
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+
+        <!--<if test="shopId != null">
+          AND shop_id = #{shopId}
+        </if>-->
+
+        <if test="money != null">
+            AND full_price &lt;= #{money}
+        </if>
+
+        AND is_del = 1
+
+
+    </select>
+
 </mapper>
