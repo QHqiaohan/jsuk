@@ -4,6 +4,7 @@ package com.jh.jsuk.controller;
 import com.jh.jsuk.entity.UserCoupon;
 import com.jh.jsuk.service.UserCouponService;
 import com.jh.jsuk.utils.Result;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author xuchuruo
  * @since 2018年5月23日
  */
-//@Api(tags = {"优惠券:"})
+@Api(tags = {"优惠券:"})
 @RestController
 @RequestMapping("/userCoupon")
 public class UserCouponController {

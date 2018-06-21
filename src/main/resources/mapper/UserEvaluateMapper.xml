@@ -24,4 +24,67 @@
         id, user_id, order_id, goods_id, shop_star_num, distribution_star_num, service_start_num, content, img, status, is_del, type_code, create_time
     </sql>
 
+    <resultMap id="EvaluateVo" type="com.jh.jsuk.entity.vo.EvaluateVo" extends="BaseResultMap">
+        <association property="user" column="user_id" select="com.jushang.dao.UserDao.selectVoById"></association>
+        <collection property="goodsList" column="order_id" ofType="com.jh.jsuk.entity.vo.OrderGoodsNameVo" select="com.jushang.dao.OrderGoodsDao.findVoByOrderId"></collection>
+    </resultMap>
+
+    <select id="calulateStar" resultType="int">
+        SELECT
+        round(SUM(${column})/COUNT(1))
+        FROM
+        js_user_evaluate
+        LEFT JOIN js_user_order o ON js_user_evaluate.order_id = o.id
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+    <resultMap id="EvaluateVoT" type="com.jh.jsuk.entity.vo.EvaluateVoT" extends="BaseResultMap">
+        <association property="user" column="user_id"  select="com.jushang.dao.UserDao.selectById"></association>
+        <association property="order" column="order_id" select="com.jushang.dao.OrderDao.selectById"></association>
+        <association property="shop" column="shop_id" select="com.jushang.dao.ShopDao.selectById"></association>
+    </resultMap>
+    <select id="selectListAllForAdmin" resultMap="EvaluateVoT">
+        SELECT
+        t1.id,t1.content,
+        t1.img,t1.status,
+        t1.publish_time, t1.shop_star_num,
+        t1.distribution_star_num, t1.user_id,
+        t1.order_id, t2.order_num, t2.shop_id,
+        t3.nick_name,t4.shop_name
+        FROM js_user_evaluate t1
+        LEFT JOIN js_user_order t2 ON  t2.id = t1.order_id
+        LEFT JOIN js_user t3 ON  t3.id = t1.user_id
+        LEFT JOIN js_shop t4 ON t4.id = t2.shop_id
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+    <select id="selectListAll" resultMap="EvaluateVo">
+        SELECT
+        *
+        FROM
+        js_user_evaluate t1
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+    <select id="selectListByShopId" resultMap="EvaluateVo">
+        SELECT
+        t1.*
+        FROM
+        js_user_evaluate t1
+        LEFT JOIN t_order t2 ON t1.order_id = t2.id
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
+    <select id="listUserEvaluate" resultType="java.util.Map">
+		select e.create_time createTime,e.content,g.goods_name goodsName,g.goods_img goodsImg from (
+		select e.goods_id,e.content,e.create_time from js_user_evaluate e where e.user_id =#{userId} and not e.is_del
+		) e left join js_shop_goods g on e.goods_id = g.id
+		order by e.create_time desc
+	</select>
+
 </mapper>

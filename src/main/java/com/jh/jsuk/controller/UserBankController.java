@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.UserBank;
 import com.jh.jsuk.service.UserBankService;
 import com.jh.jsuk.utils.Result;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -24,6 +25,7 @@ import java.util.Date;
  * @author lpf
  * @since 2018-06-20
  */
+@Api(tags = {"银行卡相关:"})
 @RestController
 @RequestMapping("/bank")
 public class UserBankController {
