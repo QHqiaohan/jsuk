@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+
 /**
  * <p>
  * 银行卡 前端控制器
@@ -41,6 +43,7 @@ public class UserBankController {
     })
     @PostMapping("/add")
     public Result add(UserBank bank) {
+        bank.setCreateTime(new Date());
         bank.insert();
         return new Result().success();
     }
@@ -86,7 +89,7 @@ public class UserBankController {
     @PostMapping("/list")
     public Result list(Page page, Integer type, Integer userId) {
         Page bankPage = bankService.selectPage(page, new EntityWrapper<UserBank>()
-                .eq(UserBank.USER_TYPE, type)
+//                .eq(UserBank.USER_TYPE, type)
                 .eq(UserBank.USER_ID, userId)
                 .orderBy(UserBank.CREATE_TIME, false));
         return new Result().success(bankPage);
