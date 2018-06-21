@@ -8,20 +8,17 @@ import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Constant;
-import com.jh.jsuk.entity.User;
-import com.jh.jsuk.entity.UserIntegral;
+import com.jh.jsuk.entity.*;
+import com.jh.jsuk.entity.Dictionary;
 import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
-import com.jh.jsuk.service.DictionaryService;
-import com.jh.jsuk.service.ManagerUserService;
-import com.jh.jsuk.service.UserIntegralService;
-import com.jh.jsuk.service.UserService;
+import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.IpUtil;
 import com.jh.jsuk.utils.JwtHelper;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
+import com.jh.jsuk.utils.wx.MD5Util;
 import io.swagger.annotations.*;
-import org.drools.core.rule.Collect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +39,12 @@ import java.util.*;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    @Autowired
+    UserRemainderService userRemainderService;
+    @Autowired
+    UserCouponService userCouponService;
+    @Autowired
+    CollectService collectService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -302,11 +305,11 @@ public class UserController {
                     user.setPassword(user.getPassword());
                     user.setCanUse(1);
                     //获取默认头像
-                    com.jh.jsuk.entity.Dictionary dictionaryImg = dictionaryService.selectOne(new EntityWrapper<com.jh.jsuk.entity.Dictionary>().
+                    Dictionary dictionaryImg = dictionaryService.selectOne(new EntityWrapper<Dictionary>().
                             eq("code", "user_default_img"));
                     user.setHeadImg(dictionaryImg.getValue());
                     //获取默认昵称
-                    com.jh.jsuk.entity.Dictionary dictionaryName = dictionaryService.selectOne(new EntityWrapper<com.jh.jsuk.entity.Dictionary>().
+                    Dictionary dictionaryName = dictionaryService.selectOne(new EntityWrapper<Dictionary>().
                             eq("code", "user_default_name"));
                     user.setNickName(dictionaryName.getValue());
                     user.insert();
@@ -418,7 +421,7 @@ public class UserController {
         User user = userService.selectOne(new EntityWrapper<User>().
                 eq(User.ID, userId));
         if (user != null) {
-            if (user.getPassword().equals(MD5Util.getMD5(oldPassword))) {
+            if (user.getPassword().equals(oldPassword)) {
                 user.setPassword(newPassword);
                 user.updateById();
                 return new Result().success("修改成功");
@@ -470,8 +473,8 @@ public class UserController {
         /**
          * 获取用户总余额
          */
-        List<UserRemainder> userRemainderList = userRemainderService.selectList(new EntityWrapper<UserRemainder>()
-                .eq(UserRemainder.USER_ID, userId));
+
+        List<UserRemainder> userRemainderList = userRemainderService.selectList(new EntityWrapper<UserRemainder>().eq(UserRemainder.USER_ID, userId));
         // 初始化记录总余额
         BigDecimal decimalSum = new BigDecimal("0.00");
         // 如果余额表有该用户信息
@@ -512,29 +515,10 @@ public class UserController {
 
     @GetMapping("/ui/getUserList")
     public Result getUserList(Page page, @RequestParam(required = false) String phone) {
-        Page userPage = userService.selectPage(page, new MyEntityWrapper<User>().like(User.PHONE, phone).orderDesc(Collections.singleton(User.PUBLISH_TIME)));
+        Page userPage = userService.selectPage(page, new MyEntityWrapper<User>().like(User.PHONE, phone).orderDesc(Collections.singleton(User.CREATE_TIME)));
         return new Result().success(userPage);
     }
 
-    @GetMapping("/test")
-    public void getTest(@RequestParam String orderNum) {
-        String mmhgfyzc666 = MD5Util.getMD5("mmhgfyzc666");
-        System.out.println(mmhgfyzc666);
-        //BigDecimal orderPrice = new BigDecimal(1.10);//订单价格
-        //BigDecimal distributionFee = new BigDecimal(4);//配送费价格
-        ////BigDecimal orderPrice = order.getOrderPrice();//订单价格
-        ////BigDecimal distributionFee = order.getDistributionFee();//配送费价格
-        //BigDecimal realOrderPrice;
-        //realOrderPrice = orderPrice.add(distributionFee).setScale(2,BigDecimal.ROUND_HALF_UP);
-        //double op = realOrderPrice.doubleValue();
-        //System.out.println(op);
-        //BigDecimal realOrderPrice = orderPrice.add(distributionFee).setScale(2,BigDecimal.ROUND_HALF_UP);
-        //try {
-        //    WxPay.wxPayRefund(op,orderNum);
-        //} catch (UnsupportedEncodingException e) {
-        //    e.printStackTrace();
-        //}
-    }
 
     /**
      * 修改密码
@@ -542,11 +526,11 @@ public class UserController {
     @PostMapping(value = "/ui/EditPassword")
     public Result editPassword(HttpSession session, String oldPassword, String newPassword) throws Exception {
         Integer userId = Integer.parseInt(session.getAttribute("adminId").toString());
-        String opw = MD5Util.getMD5(oldPassword);
-        SysUser user = sysUserService.selectOne((new MyEntityWrapper<SysUser>().eq("id", userId)
-                .eq("password", opw)));
+        String opw = SecureUtil.md5(oldPassword);
+        ManagerUser user = managerUserService.selectOne((new MyEntityWrapper<ManagerUser>().eq(ManagerUser.ID, userId)
+                .eq(ManagerUser.PASSWORD, opw)));
         if (user != null) {
-            user.setPassword(MD5Util.getMD5(newPassword));
+            user.setPassword(SecureUtil.md5(newPassword));
             user.updateById();
             return new Result().success("修改成功");
         } else {
@@ -559,7 +543,7 @@ public class UserController {
      */
     @RequestMapping(value = "/ui/getAdminList", method = {RequestMethod.GET, RequestMethod.POST})
     public Result getAdminList(HttpSession session, Page page) {
-        Page userPage = sysUserService.selectPage(page, new MyEntityWrapper<SysUser>().orderDesc(Collections.singleton(SysUser.PUBLISH_TIME)));
+        Page userPage = managerUserService.selectPage(page, new MyEntityWrapper<ManagerUser>().orderDesc(Collections.singleton(ManagerUser.CREATE_TIME)));
         return new Result().success(userPage);
     }
 
@@ -567,7 +551,7 @@ public class UserController {
      * 管理账号是否可用
      */
     @PostMapping(value = "/ui/editAdmin")
-    public Result editAdmin(@ModelAttribute SysUser user, Integer userId) {
+    public Result editAdmin(@ModelAttribute ManagerUser user, Integer userId) {
         if (userId != null) {
             user.setId(userId);
         }
@@ -579,8 +563,8 @@ public class UserController {
      * 增加管理账号
      */
     @PostMapping("/ui/addAdminUser")
-    public Result addAdminUser(@ModelAttribute SysUser user) {
-        SysUser su = sysUserService.selectOne(new EntityWrapper<SysUser>().eq("user_name", user.getUserName()));
+    public Result addAdminUser(@ModelAttribute ManagerUser user) {
+        ManagerUser su = managerUserService.selectOne(new EntityWrapper<ManagerUser>().eq(ManagerUser.USER_NAME, user.getUserName()));
         if (su == null) {
             user.setPassword(MD5Util.getMD5(user.getPassword()));
             user.setCanUse(1);
