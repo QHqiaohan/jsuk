@@ -147,9 +147,7 @@ public class JwtFilter implements Filter {
 
         } else {
             FilteredRequest request = new FilteredRequest(servletRequest, new HashMap<String, String[]>(httpServletRequest.getParameterMap()));
-
-            //filterChain.doFilter(request,response);
-
+             //filterChain.doFilter(request,response);
             System.out.println(servletPath);
             JwtParam jwtParam = request.getJwtParam();
             if (null != jwtParam) {
@@ -171,7 +169,6 @@ public class JwtFilter implements Filter {
                         dispatcher.forward(request, response);
                         response.setStatus(2002);
                     }
-
                     if (user != null) {
                         System.out.println(user.getLastLoginTime().getTime() + "===========" + Math.round((double) jwtParam.getLoginTime().getTime() / 1000)
                                 * 1000);
