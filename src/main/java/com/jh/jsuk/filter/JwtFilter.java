@@ -2,11 +2,11 @@ package com.jh.jsuk.filter;
 
 
 import com.jh.jsuk.entity.Log;
-import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.ParentUser;
 import com.jh.jsuk.entity.jwt.JwtParam;
 import com.jh.jsuk.service.DistributionUserService;
 import com.jh.jsuk.service.LogService;
+import com.jh.jsuk.service.ManagerUserService;
 import com.jh.jsuk.service.UserService;
 import com.jh.jsuk.utils.FastJsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.HashMap;
 public class JwtFilter implements Filter {
 
     @Autowired
-    private ManagerUser managerUser;
+    private ManagerUserService managerUserService;
     @Autowired
     private DistributionUserService distributionUserService;
     @Autowired
@@ -39,14 +39,16 @@ public class JwtFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException,
+            ServletException {
         //System.out.println("进入JWT_filter");
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String servletPath = ((HttpServletRequest) servletRequest).getServletPath();
         String[] split = servletPath.split("\\.");
-        if (split.length > 0 && httpServletRequest.getSession().getAttribute("adminUserName") != null && httpServletRequest.getParameterMap().size() != 0) {
+        if (split.length > 0 && httpServletRequest.getSession().getAttribute("adminUserName") != null && httpServletRequest.getParameterMap().size
+                () != 0) {
             if (!"js".equals(split[split.length - 1]) &&
                     !"css".equals(split[split.length - 1]) &&
                     !"ico".equals(split[split.length - 1]) &&
@@ -158,7 +160,7 @@ public class JwtFilter implements Filter {
                     ParentUser user = null;
                     switch (jwtParam.getLoginType()) {
                         case 1:
-                            user = managerUser.selectById(jwtParam.getUserId());
+                            user = managerUserService.selectById(jwtParam.getUserId());
                             break;
                         case 2:
                             user = distributionUserService.selectById(jwtParam.getUserId());
@@ -173,7 +175,8 @@ public class JwtFilter implements Filter {
                         response.setStatus(2002);
                     }
                     if (user != null) {
-                        System.out.println(user.getLastLoginTime().getTime() + "===========" + Math.round((double) jwtParam.getLoginTime().getTime() / 1000)
+                        System.out.println(user.getLastLoginTime().getTime() + "===========" + Math.round((double) jwtParam.getLoginTime().getTime
+                                () / 1000)
                                 * 1000);
                         if (user.getLastLoginTime().getTime() == Math.round((double) jwtParam.getLoginTime().getTime() / 1000) * 1000) {
                             System.out.println("认证成功");

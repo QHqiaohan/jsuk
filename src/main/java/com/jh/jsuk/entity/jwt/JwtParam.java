@@ -3,6 +3,7 @@ package com.jh.jsuk.entity.jwt;
 import java.util.Date;
 
 public class JwtParam {
+
     private Integer userId;
     private Date loginTime;
     private Integer loginType;

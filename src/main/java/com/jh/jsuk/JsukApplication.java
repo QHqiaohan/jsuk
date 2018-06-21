@@ -9,10 +9,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-@SpringBootApplication
 @EnableTransactionManagement
 @ServletComponentScan
 @EnableScheduling
+@SpringBootApplication
 public class JsukApplication {
 
     public static void main(String[] args) throws UnknownHostException {

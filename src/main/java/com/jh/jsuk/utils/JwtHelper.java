@@ -18,10 +18,11 @@ import java.util.Date;
 @Component
 public class JwtHelper {
 
-    private String profiles = "mombraise";
+    private String profiles = "jsuk";
 
     public static void main(String[] args) throws Exception {
-        Claims claims = new JwtHelper().parseJWT("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE1MjU3NDQ4OTcsInN1YiI6IntcInVzZXJJZFwiOjI3LFwibG9naW5UaW1lXCI6MTUyNTc0NDg5NzI0OSxcImxvZ2luVHlwZVwiOjN9In0.wNrzO7wyVExJMRuP4V1T44imuuFWiW0g5xt0p6eFFIw");
+        Claims claims = new JwtHelper().parseJWT
+                ("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE1MjU3NDQ4OTcsInN1YiI6IntcInVzZXJJZFwiOjI3LFwibG9naW5UaW1lXCI6MTUyNTc0NDg5NzI0OSxcImxvZ2luVHlwZVwiOjN9In0.wNrzO7wyVExJMRuP4V1T44imuuFWiW0g5xt0p6eFFIw");
         String subject = claims.getSubject();
         ObjectMapper objectMapper = new ObjectMapper();
         JwtParam jwtParam = null;
