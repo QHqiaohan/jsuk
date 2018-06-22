@@ -40,6 +40,8 @@ public class WebLogAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
+//        log.info("jwt值:{}",request.getHeader(Constant.JWT_HEADER));
+
         // 记录下请求内容
 //        System.out.println("\r\n");
         log.info("地址 : " + request.getRequestURL().toString());

@@ -61,7 +61,7 @@ public class UserAuthenticationController {
         int status;
         // 如果表信息为空
         if (userAuthentication == null) {
-            return new Result().erro("没有该用户认证信息");
+            return new Result(-1l, "没有该用户认证信息");
         } else {
             // 获取审核状态
             status = userAuthentication.getStatus();
