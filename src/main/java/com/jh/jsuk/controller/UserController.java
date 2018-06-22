@@ -20,6 +20,7 @@ import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import com.jh.jsuk.utils.wx.MD5Util;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +37,7 @@ import java.util.*;
  * @author lpf
  * @since 2018-06-20
  */
+@Slf4j
 @Api(tags = {"用户登录相关操作API:"})
 @RestController
 @RequestMapping("/user")
@@ -296,31 +298,29 @@ public class UserController {
                     required = false, paramType = "query", dataType = "string")
     })
     @PostMapping("/register")
-    public Result register(@ModelAttribute User user, @RequestParam String code, HttpSession session) {
+    public Result register(@ModelAttribute User user, @RequestParam String code, HttpSession session) throws Exception {
         try {
             // 效验手机验证码
             String verificationCode = (String) session.getAttribute(user.getPhone() + "register0");
-            if (verificationCode != null) {
-                if (code.equals(verificationCode)) {
-                    // 验证码正确
-                    user.setPassword(user.getPassword());
-                    user.setCanUse(1);
-                    //获取默认头像
-                    Dictionary dictionaryImg = dictionaryService.selectOne(new EntityWrapper<Dictionary>().
-                            eq("code", "user_default_img"));
-                    user.setHeadImg(dictionaryImg.getValue());
-                    //获取默认昵称
-                    Dictionary dictionaryName = dictionaryService.selectOne(new EntityWrapper<Dictionary>().
-                            eq("code", "user_default_name"));
-                    user.setNickName(dictionaryName.getValue());
-                    user.insert();
-                    return new Result().success();
-                } else {
-                    return new Result().erro("验证码错误");
-                }
-            } else {
-                return new Result().erro("验证码过期");
+            if(verificationCode == null) {
+                throw new MessageException("验证码错误");
             }
+            if (!code.equals(verificationCode)) {
+                throw new MessageException("验证码过期");
+            }
+            // 验证码正确
+            user.setPassword(user.getPassword());
+            user.setCanUse(1);
+            //获取默认头像
+            Dictionary dictionaryImg = dictionaryService.selectOne(new EntityWrapper<Dictionary>().
+                    eq("code", "user_default_img"));
+            user.setHeadImg(dictionaryImg.getValue());
+            //获取默认昵称
+            Dictionary dictionaryName = dictionaryService.selectOne(new EntityWrapper<Dictionary>().
+                    eq("code", "user_default_name"));
+            user.setNickName(dictionaryName.getValue());
+            user.insert();
+            return new Result().success();
         } catch (MybatisPlusException e) {
             throw new RuntimeException("服务器繁忙");
         }
