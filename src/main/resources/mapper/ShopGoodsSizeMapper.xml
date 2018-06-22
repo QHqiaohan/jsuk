@@ -13,6 +13,7 @@
         <result column="weight" property="weight"/>
         <result column="volume" property="volume"/>
         <result column="freight" property="freight"/>
+        <result column="full_freight" property="fullFreight"/>
         <result column="status" property="status"/>
         <result column="type" property="type"/>
         <result column="is_del" property="isDel"/>
@@ -28,12 +29,13 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, shop_goods_id, size_name, stock, original_price, sales_price, weight, volume, freight, status, type, is_del, img, brand, send_jf, deductible_jf, goods_type_id, goods_no, kill_price, kill_stock
+        id, shop_goods_id, size_name, stock, original_price, sales_price, weight, volume, freight, status, type, is_del, img, brand, send_jf,
+        deductible_jf, goods_type_id, goods_no, kill_price, kill_stock, full_freight
     </sql>
 
     <select id="getSalesPriceByGoodsId" resultMap="BaseResultMap">
         SELECT
-           sales_price
+           sales_price,original_price
         FROM
             js_shop_goods_size
         WHERE

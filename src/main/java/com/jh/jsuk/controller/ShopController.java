@@ -112,7 +112,7 @@ public class ShopController {
         MyEntityWrapper<ShopVisitorVo> ew = new MyEntityWrapper<>();
         Page visitList = shopVisitService.getVisitList(page, ew, shopId, today);
         if (CollectionUtils.isEmpty(visitList.getRecords())) {
-            return new Result().success(null);
+            return new Result().success("暂无数据", null);
         } else {
             return new Result().success(visitList);
         }
@@ -130,7 +130,7 @@ public class ShopController {
         MyEntityWrapper<ShopVisitorVo> ew = new MyEntityWrapper<>();
         Page moneyList = shopTodayMoneyService.getTodayMoneyList(page, ew, shopId, today);
         if (CollectionUtils.isEmpty(moneyList.getRecords())) {
-            return new Result().success(null);
+            return new Result().success("暂无数据", null);
         } else {
             return new Result().success(moneyList);
         }
@@ -141,7 +141,7 @@ public class ShopController {
     public Result getShopAttributeByShopId(@ApiParam(value = "店铺id", required = true) Integer shopId) {
         ShopAttributeVo attributeVo = shopAttributeGoodsService.getShopAttributeByShopId(shopId);
         if (attributeVo == null) {
-            return new Result().success(null);
+            return new Result().success("暂无数据", null);
         } else {
             return new Result().success(attributeVo);
         }
@@ -152,7 +152,7 @@ public class ShopController {
     public Result list(Integer userId) {
         List<Shop> shops = shopService.findCollectByUserId(userId);
         if (shops == null) {
-            return new Result().success(null);
+            return new Result().success("暂无数据", null);
         } else {
             return new Result().success(shops);
         }

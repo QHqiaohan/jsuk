@@ -2,7 +2,6 @@ package com.jh.jsuk.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
@@ -27,7 +26,23 @@ public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
 
     List<GoodsSalesPriceVo> shopGoodsListByAttributeId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("attributeId") Integer attributeId);
 
-    List<GoodsSalesPriceVo> getShopGoodsBy(Page page, Wrapper wrapper, Integer type);
+    List<GoodsSalesPriceVo> getShopGoodsBy(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("type") Integer type);
 
-    List<GoodsSalesPriceVo> getShopGoodsOrderBySalesPrice(Page page, Wrapper wrapper, Integer type);
+    List<GoodsSalesPriceVo> getShopGoodsOrderBySalesPrice(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("type") Integer type);
+
+    List<GoodsSalesPriceVo> getShopGoodsByCategoryId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("categoryId") Integer categoryId);
+
+    List getShopGoodsByServiceOrPrice(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("goodsType") Integer goodsType,
+                                      @Param("lowPrice") String lowPrice, @Param("highPrice") String highPrice,
+                                      @Param("categoryId") Integer categoryId);
+
+    GoodsSizeVo getShopGoodsById(Integer id);
+
+    List<GoodsSalesPriceVo> getShopGoodsByLikeName(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("type") Integer type,
+                                                   @Param("name") String name);
+
+    List<GoodsSalesPriceVo> getShopGoodsOnCategoryBy(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("type") Integer type,
+                                                     @Param("categoryId") Integer categoryId);
+
+    List getShopGoodsByBrandId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("brandId") Integer brandId);
 }

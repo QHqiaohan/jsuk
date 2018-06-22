@@ -99,7 +99,7 @@ public class ModularPortalController {
                         .eq(Shop.MODULAR_ID, modularId)
                         .orderBy(Shop.TOTAL_VOLUME, false));
         if (CollectionUtils.isEmpty(shopPage.getRecords())) {
-            map.put("shop", null);
+            map.put("shop", "暂无数据");
         } else {
             map.put("shop", shopPage.getRecords());
         }
@@ -109,7 +109,7 @@ public class ModularPortalController {
         // 商品数据
         List<GoodsSalesPriceVo> goodsSalesPriceVos = shopGoodsService.findShopGoodsByModularId(modularId);
         if (CollectionUtils.isEmpty(goodsSalesPriceVos)) {
-            map.put("shopGoods", null);
+            map.put("shopGoods", "暂无数据");
         } else {
             map.put("shopGoods", goodsSalesPriceVos);
         }
@@ -134,6 +134,10 @@ public class ModularPortalController {
                     .eq(Shop.IS_RECOMMEND, 1)
                     .eq(Shop.MODULAR_ID, modularId)
                     .orderBy(Shop.TOTAL_VOLUME, false));
+            // 数据非空判断
+            if (CollectionUtils.isEmpty(shopPage.getRecords())) {
+                return new Result().success("暂无数据", null);
+            }
             return new Result().success(shopPage);
         } else {
             // 更多商家列表
@@ -141,6 +145,10 @@ public class ModularPortalController {
                     .eq(Shop.CAN_USE, 1)
                     .eq(Shop.MODULAR_ID, modularId)
                     .orderBy(Shop.TOTAL_VOLUME, false));
+            // 数据非空判断
+            if (CollectionUtils.isEmpty(shopPage.getRecords())) {
+                return new Result().success("暂无数据", null);
+            }
             return new Result().success(shopPage);
         }
     }
@@ -156,6 +164,10 @@ public class ModularPortalController {
     public Result shopGoodsListByModularId(Page page, @ApiParam(value = "模块ID", required = true) Integer modularId) {
         MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
         Page goodsSizeVoList = shopGoodsService.shopGoodsListByModularId(page, ew, modularId);
+        // 数据非空判断
+        if (CollectionUtils.isEmpty(goodsSizeVoList.getRecords())) {
+            return new Result().success("暂无数据", null);
+        }
         return new Result().success(goodsSizeVoList);
     }
 

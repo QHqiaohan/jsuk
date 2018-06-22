@@ -1,9 +1,10 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
 import java.io.Serializable;
 
 /**
@@ -53,6 +54,10 @@ public class ShopGoodsSize extends Model<ShopGoodsSize> {
      * 运费 0=包邮
      */
     private String freight;
+    /**
+     * 满多少包邮
+     */
+    private String fullFreight;
     /**
      * 状态,备用
      */
@@ -171,6 +176,14 @@ public class ShopGoodsSize extends Model<ShopGoodsSize> {
         this.freight = freight;
     }
 
+    public String getFullFreight() {
+        return fullFreight;
+    }
+
+    public void setFullFreight(String fullFreight) {
+        this.fullFreight = fullFreight;
+    }
+
     public Integer getStatus() {
         return status;
     }
@@ -277,6 +290,8 @@ public class ShopGoodsSize extends Model<ShopGoodsSize> {
 
     public static final String FREIGHT = "freight";
 
+    public static final String FULL_FREIGHT = "full_freight";
+
     public static final String STATUS = "status";
 
     public static final String TYPE = "type";
@@ -307,26 +322,27 @@ public class ShopGoodsSize extends Model<ShopGoodsSize> {
     @Override
     public String toString() {
         return "ShopGoodsSize{" +
-        "id=" + id +
-        ", shopGoodsId=" + shopGoodsId +
-        ", sizeName=" + sizeName +
-        ", stock=" + stock +
-        ", originalPrice=" + originalPrice +
-        ", salesPrice=" + salesPrice +
-        ", weight=" + weight +
-        ", volume=" + volume +
-        ", freight=" + freight +
-        ", status=" + status +
-        ", type=" + type +
-        ", isDel=" + isDel +
-        ", img=" + img +
-        ", brand=" + brand +
-        ", sendJf=" + sendJf +
-        ", deductibleJf=" + deductibleJf +
-        ", goodsTypeId=" + goodsTypeId +
-        ", goodsNo=" + goodsNo +
-        ", killPrice=" + killPrice +
-        ", killStock=" + killStock +
-        "}";
+                "id=" + id +
+                ", shopGoodsId=" + shopGoodsId +
+                ", sizeName='" + sizeName + '\'' +
+                ", stock=" + stock +
+                ", originalPrice='" + originalPrice + '\'' +
+                ", salesPrice='" + salesPrice + '\'' +
+                ", weight='" + weight + '\'' +
+                ", volume='" + volume + '\'' +
+                ", freight='" + freight + '\'' +
+                ", full_freight='" + fullFreight + '\'' +
+                ", status=" + status +
+                ", type=" + type +
+                ", isDel=" + isDel +
+                ", img='" + img + '\'' +
+                ", brand='" + brand + '\'' +
+                ", sendJf='" + sendJf + '\'' +
+                ", deductibleJf='" + deductibleJf + '\'' +
+                ", goodsTypeId=" + goodsTypeId +
+                ", goodsNo='" + goodsNo + '\'' +
+                ", killPrice='" + killPrice + '\'' +
+                ", killStock=" + killStock +
+                '}';
     }
 }

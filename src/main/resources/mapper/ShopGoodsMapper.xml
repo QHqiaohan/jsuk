@@ -8,6 +8,7 @@
         <result column="shop_id" property="shopId"/>
         <result column="attribute_id" property="attributeId"/>
         <result column="shop_modular_id" property="shopModularId"/>
+        <result column="brand_id" property="brandId"/>
         <result column="is_recommend" property="isRecommend"/>
         <result column="goods_label_id" property="goodsLabelId"/>
         <result column="goods_name" property="goodsName"/>
@@ -21,12 +22,13 @@
         <result column="goods_break" property="goodsBreak"/>
         <result column="sale_amont" property="saleAmont"/>
         <result column="goods_type" property="goodsType"/>
+        <result column="category_id" property="categoryId"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, shop_id, attribute_id, shop_modular_id, is_recommend, goods_label_id, goods_name, goods_img, goods_desc, status, is_del, create_time,
-        update_time, main_image, goods_break, sale_amont, goods_type
+        update_time, main_image, goods_break, sale_amont, goods_type, category_id, brand_id
     </sql>
 
     <resultMap id="GoodsSalesPriceVo" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
@@ -67,6 +69,22 @@
         </where>
     </select>
 
+    <select id="getShopGoodsByLikeName" resultMap="GoodsSalesPriceVo">
+        SELECT
+        *
+        FROM
+        js_shop_goods
+        WHERE
+        `status` = '1'
+        AND is_del = '1'
+        AND goods_name LIKE CONCAT('%', #{name}, '%')
+        ORDER BY
+        sale_amont DESC
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
     <select id="getShopGoodsBy" resultMap="GoodsSalesPriceVo">
         SELECT
         *
@@ -90,6 +108,7 @@
 
     <resultMap id="GoodsSalesPriceVoT" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
         <result column="sales_price" property="salesPrice"/>
+        <result column="original_price" property="originalPrice"/>
     </resultMap>
 
     <select id="getShopGoodsOrderBySalesPrice" resultMap="GoodsSalesPriceVoT">
@@ -106,6 +125,65 @@
             ORDER BY
             sgs.sales_price + 0
         </if>
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
+    <select id="getShopGoodsOnCategoryBy" resultMap="GoodsSalesPriceVoT">
+        SELECT
+        sg.*,sgs.sales_price
+        FROM
+        js_shop_goods sg
+        LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
+        WHERE sg.category_id = #{categoryId}
+        <if test="type == 1">
+            ORDER BY
+            sgs.sales_price + 0 DESC
+        </if>
+        <if test="type == -1">
+            ORDER BY
+            sgs.sales_price + 0
+        </if>
+        <if test="type == 2">
+            ORDER BY
+            sgs.sale_amont DESC
+        </if>
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
+    <select id="getShopGoodsByCategoryId" resultMap="GoodsSalesPriceVoT">
+        SELECT
+        sg.*,sgs.sales_price
+        FROM
+        js_shop_goods sg
+        LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
+        WHERE sg.category_id = #{categoryId}
+        ORDER BY sg.sale_amont DESC
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
+    <select id="getShopGoodsByServiceOrPrice" resultMap="GoodsSalesPriceVoT">
+        SELECT
+        sg.*,sgs.sales_price
+        FROM
+        js_shop_goods sg
+        LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
+        where sg.category_id = #{categoryId}
+        <if test="goodsType != null ">
+            and sg.goods_type = #{goodsType}
+        </if>
+        <if test="salesPrice != null ">
+            and BETWEEN sg.#{lowPrice} AND sg.#{highPrice}
+        </if>
+        ORDER BY sg.sale_amont DESC
+        <where>
+            ${ew.sqlSegment}
+        </where>
     </select>
 
     <resultMap id="GoodsSizeVo" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
@@ -118,6 +196,26 @@
         FROM js_shop_goods
         WHERE
         shop_modular_id = #{modularId}
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
+    <select id="getShopGoodsById" resultMap="GoodsSizeVo">
+        SELECT
+        *
+        FROM js_shop_goods
+        WHERE
+        id = #{id}
+    </select>
+
+    <select id="getShopGoodsByBrandId" resultMap="GoodsSalesPriceVo">
+        SELECT
+        *
+        FROM js_shop_goods
+        WHERE
+        brand_id = #{brandId}
+        ORDER BY sale_amont DESC
         <where>
             ${ew.sqlSegment}
         </where>

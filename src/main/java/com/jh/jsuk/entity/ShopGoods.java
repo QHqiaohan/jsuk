@@ -32,6 +32,10 @@ public class ShopGoods extends Model<ShopGoods> {
      */
     private Integer attributeId;
     /**
+     * 品牌ID
+     */
+    private Integer brandId;
+    /**
      * 模块ID
      */
     private Integer shopModularId;
@@ -87,6 +91,10 @@ public class ShopGoods extends Model<ShopGoods> {
      * 类型,1=包邮,2=促销,3=新品
      */
     private Integer goodsType;
+    /**
+     * 类型ID
+     */
+    private Integer categoryId;
 
 
     public Integer getId() {
@@ -95,6 +103,22 @@ public class ShopGoods extends Model<ShopGoods> {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Integer getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(Integer brandId) {
+        this.brandId = brandId;
     }
 
     public Integer getAttributeId() {
@@ -231,6 +255,8 @@ public class ShopGoods extends Model<ShopGoods> {
 
     public static final String SHOP_MODULAR_ID = "shop_modular_id";
 
+    public static final String BRAND_ID = "brand_id";
+
     public static final String IS_RECOMMEND = "is_recommend";
 
     public static final String GOODS_LABEL_ID = "goods_label_id";
@@ -259,6 +285,8 @@ public class ShopGoods extends Model<ShopGoods> {
 
     public static final String ATTRIBUTE_ID = "attribute_id";
 
+    public static final String CATEGORY_ID = "category_id";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -270,6 +298,7 @@ public class ShopGoods extends Model<ShopGoods> {
                 "id=" + id +
                 ", shopId=" + shopId +
                 ", attributeId=" + attributeId +
+                ", brandId=" + brandId +
                 ", shopModularId=" + shopModularId +
                 ", isRecommend=" + isRecommend +
                 ", goodsLabelId=" + goodsLabelId +
@@ -284,6 +313,7 @@ public class ShopGoods extends Model<ShopGoods> {
                 ", goodsBreak='" + goodsBreak + '\'' +
                 ", saleAmont=" + saleAmont +
                 ", goodsType=" + goodsType +
+                ", categoryId=" + categoryId +
                 '}';
     }
 }

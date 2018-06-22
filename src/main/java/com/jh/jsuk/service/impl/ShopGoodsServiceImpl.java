@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ShopGoodsDao;
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
+import com.jh.jsuk.entity.vo.GoodsSizeVo;
 import com.jh.jsuk.service.ShopGoodsService;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +54,46 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     public Page getShopGoodsOrderBySalesPrice(Page page, Wrapper wrapper, Integer type) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.getShopGoodsOrderBySalesPrice(page, wrapper, type));
+        return page;
+    }
+
+    @Override
+    public Page getShopGoodsByCategoryId(Page page, Wrapper wrapper, Integer categoryId) {
+        wrapper = SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(baseMapper.getShopGoodsByCategoryId(page, wrapper, categoryId));
+        return page;
+    }
+
+    @Override
+    public Page getShopGoodsByServiceOrPrice(Page page, Wrapper wrapper, Integer goodsType, String lowPrice, String highPrice, Integer categoryId) {
+        wrapper = SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(baseMapper.getShopGoodsByServiceOrPrice(page, wrapper, goodsType, lowPrice, highPrice, categoryId));
+        return page;
+    }
+
+    @Override
+    public GoodsSizeVo getShopGoodsById(Integer id) {
+        return baseMapper.getShopGoodsById(id);
+    }
+
+    @Override
+    public Page getShopGoodsByLikeName(Page page, Wrapper wrapper, Integer type, String name) {
+        wrapper = SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(baseMapper.getShopGoodsByLikeName(page, wrapper, type, name));
+        return page;
+    }
+
+    @Override
+    public Page getShopGoodsOnCategoryBy(Page page, Wrapper wrapper, Integer type, Integer categoryId) {
+        wrapper = SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(baseMapper.getShopGoodsOnCategoryBy(page, wrapper, type, categoryId));
+        return page;
+    }
+
+    @Override
+    public Page getShopGoodsByBrandId(Page page, Wrapper wrapper, Integer brandId) {
+        wrapper = SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(baseMapper.getShopGoodsByBrandId(page, wrapper, brandId));
         return page;
     }
 }
