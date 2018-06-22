@@ -24,4 +24,7 @@ public interface ShopGoodsService extends IService<ShopGoods> {
 
     Page shopGoodsListByAttributeId(Page page, Wrapper wrapper, Integer attributeId);
 
+    Page getShopGoodsBy(Page page, Wrapper wrapper, Integer type);
+
+    Page getShopGoodsOrderBySalesPrice(Page page, Wrapper wrapper, Integer type);
 }

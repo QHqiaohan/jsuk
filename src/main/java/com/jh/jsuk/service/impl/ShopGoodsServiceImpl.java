@@ -41,4 +41,18 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
         page.setRecords(baseMapper.shopGoodsListByAttributeId(page, wrapper, attributeId));
         return page;
     }
+
+    @Override
+    public Page getShopGoodsBy(Page page, Wrapper wrapper, Integer type) {
+        wrapper = SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(baseMapper.getShopGoodsBy(page, wrapper, type));
+        return page;
+    }
+
+    @Override
+    public Page getShopGoodsOrderBySalesPrice(Page page, Wrapper wrapper, Integer type) {
+        wrapper = SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(baseMapper.getShopGoodsOrderBySalesPrice(page, wrapper, type));
+        return page;
+    }
 }
