@@ -38,7 +38,7 @@ public class ShopGoodsController {
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer")
     })
     @GetMapping("/getShopGoodsByAttributeId")
-    public Result getShopGoodsByAttributeId(@ApiParam(value = "属性ID", required = true) Integer attributeId, Page page) {
+    public Result getShopGoodsByAttributeId(@ApiParam(value = "属性ID,不传为全部商品") Integer attributeId, Page page) {
         if (attributeId == null) {
             // 全部商品分类
             MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
@@ -57,6 +57,13 @@ public class ShopGoodsController {
                 return new Result().success(goodsPage);
             }
         }
+    }
+
+    @ApiOperation(value = "用户端-根据")
+    @GetMapping("/getModularList")
+    public Result getModularList() {
+        //List<ModularPortalVo> modularPortalVoList = modularPortalService.getModularList();
+        return new Result().success(null);
     }
 
 }

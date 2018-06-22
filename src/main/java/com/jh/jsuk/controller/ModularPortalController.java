@@ -98,28 +98,21 @@ public class ModularPortalController {
                         .eq(Shop.IS_RECOMMEND, 1)
                         .eq(Shop.MODULAR_ID, modularId)
                         .orderBy(Shop.TOTAL_VOLUME, false));
-        map.put("shop", shopPage.getRecords());
+        if (CollectionUtils.isEmpty(shopPage.getRecords())) {
+            map.put("shop", null);
+        } else {
+            map.put("shop", shopPage.getRecords());
+        }
         /**
          * 商品列表
          */
         // 商品数据
         List<GoodsSalesPriceVo> goodsSalesPriceVos = shopGoodsService.findShopGoodsByModularId(modularId);
-        // 规格数据
-        for (GoodsSalesPriceVo shopGoodsSizeVo : goodsSalesPriceVos) {
-            Integer shopGoodsId = shopGoodsSizeVo.getId();
-            List<ShopGoodsSize> goodsSizeList = shopGoodsSizeService.selectList(new EntityWrapper<ShopGoodsSize>()
-                    .eq(ShopGoodsSize.SHOP_GOODS_ID, shopGoodsId));
-            // 售价,默认取规格里第一个价格
-            if (!CollectionUtils.isEmpty(goodsSizeList)) {
-                String salesPrice = goodsSizeList.get(0).getSalesPrice();
-                if (shopGoodsSizeVo.getId().equals(goodsSizeList.get(0).getShopGoodsId())) {
-                    shopGoodsSizeVo.setSalesPrice(salesPrice);
-                }
-            } else {
-                shopGoodsSizeVo.setSalesPrice("0");
-            }
+        if (CollectionUtils.isEmpty(goodsSalesPriceVos)) {
+            map.put("shopGoods", null);
+        } else {
+            map.put("shopGoods", goodsSalesPriceVos);
         }
-        map.put("shopGoods", goodsSalesPriceVos);
         return new Result().success(map);
     }
 

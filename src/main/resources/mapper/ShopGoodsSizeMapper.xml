@@ -4,26 +4,26 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopGoodsSize">
-        <id column="id" property="id" />
-        <result column="shop_goods_id" property="shopGoodsId" />
-        <result column="size_name" property="sizeName" />
-        <result column="stock" property="stock" />
-        <result column="original_price" property="originalPrice" />
-        <result column="sales_price" property="salesPrice" />
-        <result column="weight" property="weight" />
-        <result column="volume" property="volume" />
-        <result column="freight" property="freight" />
-        <result column="status" property="status" />
-        <result column="type" property="type" />
-        <result column="is_del" property="isDel" />
-        <result column="img" property="img" />
-        <result column="brand" property="brand" />
-        <result column="send_jf" property="sendJf" />
-        <result column="deductible_jf" property="deductibleJf" />
-        <result column="goods_type_id" property="goodsTypeId" />
-        <result column="goods_no" property="goodsNo" />
-        <result column="kill_price" property="killPrice" />
-        <result column="kill_stock" property="killStock" />
+        <id column="id" property="id"/>
+        <result column="shop_goods_id" property="shopGoodsId"/>
+        <result column="size_name" property="sizeName"/>
+        <result column="stock" property="stock"/>
+        <result column="original_price" property="originalPrice"/>
+        <result column="sales_price" property="salesPrice"/>
+        <result column="weight" property="weight"/>
+        <result column="volume" property="volume"/>
+        <result column="freight" property="freight"/>
+        <result column="status" property="status"/>
+        <result column="type" property="type"/>
+        <result column="is_del" property="isDel"/>
+        <result column="img" property="img"/>
+        <result column="brand" property="brand"/>
+        <result column="send_jf" property="sendJf"/>
+        <result column="deductible_jf" property="deductibleJf"/>
+        <result column="goods_type_id" property="goodsTypeId"/>
+        <result column="goods_no" property="goodsNo"/>
+        <result column="kill_price" property="killPrice"/>
+        <result column="kill_stock" property="killStock"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -31,7 +31,17 @@
         id, shop_goods_id, size_name, stock, original_price, sales_price, weight, volume, freight, status, type, is_del, img, brand, send_jf, deductible_jf, goods_type_id, goods_no, kill_price, kill_stock
     </sql>
 
-    <select id="selectSizeByGoodsId" resultMap="BaseResultMap">
+    <select id="getSalesPriceByGoodsId" resultMap="BaseResultMap">
+        SELECT
+           sales_price
+        FROM
+            js_shop_goods_size
+        WHERE
+            shop_goods_id=#{goodsId}
+            limit 1,2
+    </select>
+
+    <select id="getGoodsSizeByGoodsId" resultMap="BaseResultMap">
         SELECT
            *
         FROM

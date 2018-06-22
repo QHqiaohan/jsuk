@@ -30,7 +30,7 @@
     </sql>
 
     <resultMap id="GoodsSalesPriceVo" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
-        <result property="salesPrice" column="sales_price"/>
+        <association property="salesPrice" column="id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.getSalesPriceByGoodsId"></association>
     </resultMap>
 
     <select id="findShopGoodsByModularId" resultMap="GoodsSalesPriceVo">
@@ -51,25 +51,27 @@
 
     <select id="shopGoodsListByAttributeId" resultMap="GoodsSalesPriceVo">
         SELECT
-           *
+        *
         FROM
-            js_shop_goods
+        js_shop_goods
         WHERE
-            is_recommend = '1'
-        AND `status` = '1'
+        `status` = '1'
         AND is_del = '1'
-        AND shop_modular_id = #{modularId}
+        <if test="attributeId != null ">
+            AND attribute_id = #{attributeId}
+        </if>
         ORDER BY
-            sale_amont DESC
-        LIMIT 1,
-         4
+        sale_amont DESC
+        <where>
+            ${ew.sqlSegment}
+        </where>
     </select>
 
-    <resultMap id="ShopGoodsVoT" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
-        <association property="shopGoodsSize" column="id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></association>
+    <resultMap id="GoodsSizeVo" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
+        <association property="shopGoodsSize" column="id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.getGoodsSizeByGoodsId"></association>
     </resultMap>
 
-    <select id="shopGoodsListByModularId" resultMap="ShopGoodsVoT">
+    <select id="shopGoodsListByModularId" resultMap="GoodsSizeVo">
         SELECT
         *
         FROM js_shop_goods
