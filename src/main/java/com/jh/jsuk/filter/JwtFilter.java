@@ -4,6 +4,7 @@ package com.jh.jsuk.filter;
 import com.jh.jsuk.entity.Log;
 import com.jh.jsuk.entity.ParentUser;
 import com.jh.jsuk.entity.jwt.JwtParam;
+import com.jh.jsuk.exception.OverdueException;
 import com.jh.jsuk.service.DistributionUserService;
 import com.jh.jsuk.service.LogService;
 import com.jh.jsuk.service.ManagerUserService;
@@ -159,56 +160,65 @@ public class JwtFilter implements Filter {
         } else {
             FilteredRequest request = new FilteredRequest(servletRequest, new HashMap<String, String[]>(httpServletRequest.getParameterMap()));
             //filterChain.doFilter(request,response);
-            System.out.println(servletPath);
-            JwtParam jwtParam = request.getJwtParam();
-            if (null != jwtParam) {
-                try {
-                    ParentUser user = null;
-                    switch (jwtParam.getLoginType()) {
-                        case 1:
-                            user = managerUserService.selectById(jwtParam.getUserId());
-                            break;
-                        case 2:
-                            user = distributionUserService.selectById(jwtParam.getUserId());
-                            break;
-                        case 3:
-                            user = userService.selectById(jwtParam.getUserId());
-                            break;
-                    }
-                    if (user.getCanUse() == 0) {
-                        RequestDispatcher dispatcher = request.getRequestDispatcher("/noLogin");
-                        dispatcher.forward(request, response);
-                        response.setStatus(2002);
-                    }
-                    if (user != null) {
-                        System.out.println(user.getLastLoginTime().getTime() + "===========" + Math.round((double) jwtParam.getLoginTime().getTime
-                                () / 1000)
-                                * 1000);
-                        if (user.getLastLoginTime().getTime() == Math.round((double) jwtParam.getLoginTime().getTime() / 1000) * 1000) {
-                            System.out.println("认证成功");
-                            filterChain.doFilter(request, response);
+            try {
+                // 避免在jwt解析失败时手机端报其他异常
+                request.parseJwt();
+//            System.out.println(servletPath);
+                JwtParam jwtParam = request.getJwtParam();
+                if (null != jwtParam) {
+                    try {
+                        ParentUser user = null;
+                        switch (jwtParam.getLoginType()) {
+                            case 1:
+                                user = managerUserService.selectById(jwtParam.getUserId());
+                                break;
+                            case 2:
+                                user = distributionUserService.selectById(jwtParam.getUserId());
+                                break;
+                            case 3:
+                                user = userService.selectById(jwtParam.getUserId());
+                                break;
+                        }
+                        if (user.getCanUse() == 0) {
+                            RequestDispatcher dispatcher = request.getRequestDispatcher("/noLogin");
+                            dispatcher.forward(request, response);
+                            response.setStatus(2002);
+                        }
+                        if (user != null) {
+                            System.out.println(user.getLastLoginTime().getTime() + "===========" + Math.round((double) jwtParam.getLoginTime().getTime
+                                    () / 1000)
+                                    * 1000);
+                            if (user.getLastLoginTime().getTime() == Math.round((double) jwtParam.getLoginTime().getTime() / 1000) * 1000) {
+                                System.out.println("认证成功");
+                                filterChain.doFilter(request, response);
+                            } else {
+                                System.out.println("认证过期");
+                                RequestDispatcher dispatcher = request.getRequestDispatcher("/overdue");
+                                dispatcher.forward(request, response);
+                            }
                         } else {
-                            System.out.println("认证过期");
-                            RequestDispatcher dispatcher = request.getRequestDispatcher("/overdue");
+                            //没有找到该用户
+                            System.out.println("没有找到该用户");
+                            RequestDispatcher dispatcher = request.getRequestDispatcher("/noFound");
                             dispatcher.forward(request, response);
                         }
-                    } else {
-                        //没有找到该用户
-                        System.out.println("没有找到该用户");
-                        RequestDispatcher dispatcher = request.getRequestDispatcher("/noFound");
+                    } catch (Exception e) {
+                        //认证过期  这里当作认证未知错误处理
+                        System.out.println("认证过期2");
+                        RequestDispatcher dispatcher = request.getRequestDispatcher("/overdue");
                         dispatcher.forward(request, response);
                     }
-                } catch (Exception e) {
-                    //认证过期  这里当作认证未知错误处理
-                    System.out.println("认证过期2");
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("/overdue");
+                } else {
+                    //认证失败
+                    System.out.println(servletPath);
+                    System.out.println("认证失败");
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/noLogin");
                     dispatcher.forward(request, response);
                 }
-            } else {
-                //认证失败
-                System.out.println(servletPath);
-                System.out.println("认证失败");
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/noLogin");
+            } catch (OverdueException e) {
+//                e.printStackTrace();
+//                System.out.println("认证过期");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/overdue");
                 dispatcher.forward(request, response);
             }
         }
