@@ -314,6 +314,7 @@ public class UserController {
                             eq("code", "user_default_name"));
                     user.setNickName(dictionaryName.getValue());
                     user.insert();
+                    return new Result().success();
                 } else {
                     return new Result().erro("验证码错误");
                 }
@@ -321,9 +322,8 @@ public class UserController {
                 return new Result().erro("验证码过期");
             }
         } catch (MybatisPlusException e) {
-            throw new RuntimeException("该手机号已注册");
+            throw new RuntimeException("服务器繁忙");
         }
-        return new Result().success();
     }
 
     @ApiOperation("客户邀请注册")
@@ -519,7 +519,8 @@ public class UserController {
 
     @GetMapping("/ui/getUserList")
     public Result getUserList(Page page, @RequestParam(required = false) String phone) {
-        Page userPage = userService.selectPage(page, new MyEntityWrapper<User>().like(User.PHONE, phone).orderDesc(Collections.singleton(User.CREATE_TIME)));
+        Page userPage = userService.selectPage(page, new MyEntityWrapper<User>().like(User.PHONE, phone).orderDesc(Collections.singleton(User
+                .CREATE_TIME)));
         return new Result().success(userPage);
     }
 
@@ -547,7 +548,8 @@ public class UserController {
      */
     @RequestMapping(value = "/ui/getAdminList", method = {RequestMethod.GET, RequestMethod.POST})
     public Result getAdminList(HttpSession session, Page page) {
-        Page userPage = managerUserService.selectPage(page, new MyEntityWrapper<ManagerUser>().orderDesc(Collections.singleton(ManagerUser.CREATE_TIME)));
+        Page userPage = managerUserService.selectPage(page, new MyEntityWrapper<ManagerUser>().orderDesc(Collections.singleton(ManagerUser
+                .CREATE_TIME)));
         return new Result().success(userPage);
     }
 

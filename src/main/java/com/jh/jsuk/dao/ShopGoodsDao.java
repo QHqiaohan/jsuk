@@ -2,6 +2,7 @@ package com.jh.jsuk.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
@@ -25,4 +26,8 @@ public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
     List<GoodsSizeVo> shopGoodsListByModularId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("modularId") Integer modularId);
 
     List<GoodsSalesPriceVo> shopGoodsListByAttributeId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("attributeId") Integer attributeId);
+
+    List<GoodsSalesPriceVo> getShopGoodsBy(Page page, Wrapper wrapper, Integer type);
+
+    List<GoodsSalesPriceVo> getShopGoodsOrderBySalesPrice(Page page, Wrapper wrapper, Integer type);
 }

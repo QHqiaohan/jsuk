@@ -186,8 +186,7 @@ public class JwtFilter implements Filter {
                         }
                         if (user != null) {
                             System.out.println(user.getLastLoginTime().getTime() + "===========" + Math.round((double) jwtParam.getLoginTime().getTime
-                                    () / 1000)
-                                    * 1000);
+                                    () / 1000) * 1000);
                             if (user.getLastLoginTime().getTime() == Math.round((double) jwtParam.getLoginTime().getTime() / 1000) * 1000) {
                                 System.out.println("认证成功");
                                 filterChain.doFilter(request, response);

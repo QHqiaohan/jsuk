@@ -67,6 +67,47 @@
         </where>
     </select>
 
+    <select id="getShopGoodsBy" resultMap="GoodsSalesPriceVo">
+        SELECT
+        *
+        FROM js_shop_goods
+        WHERE
+        status = 1
+        and is_del = 1
+        <if test="type == 2">
+            ORDER BY
+            sale_amont DESC
+        </if>
+        <if test="type == 3">
+            and goods_type = 3
+            ORDER BY
+            create_time DESC
+        </if>
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
+    <resultMap id="GoodsSalesPriceVoT" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
+        <result column="sales_price" property="salesPrice"/>
+    </resultMap>
+
+    <select id="getShopGoodsOrderBySalesPrice" resultMap="GoodsSalesPriceVoT">
+        SELECT
+        sg.*,sgs.sales_price
+        FROM
+        js_shop_goods sg
+        LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
+        <if test="type == 1">
+            ORDER BY
+            sgs.sales_price + 0 DESC
+        </if>
+        <if test="type == -1">
+            ORDER BY
+            sgs.sales_price + 0
+        </if>
+    </select>
+
     <resultMap id="GoodsSizeVo" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
         <association property="shopGoodsSize" column="id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.getGoodsSizeByGoodsId"></association>
     </resultMap>
