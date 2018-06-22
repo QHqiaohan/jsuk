@@ -26,7 +26,7 @@
 
 
     <resultMap id="CouponVo" type="com.jh.jsuk.entity.vo.CouponVo" extends="BaseResultMap">
-        <association property="userCoupon" column="{couponId=id,userId=user_id}" select="com.jushang.dao.UserCouponDao.selectByCouponId"></association>
+        <association property="userCoupon" column="{couponId=id,userId=user_id}" select="com.jh.jsuk.dao.UserCouponDao.selectByCouponId"></association>
     </resultMap>
     <!--<resultMap id="CouponVo" type="com.jushang.entity.vo.CouponVo" extends="BaseResultMap">
       <association property="userCoupon" column="id" select="com.jushang.dao.UserCouponDao.selectByCouponId"></association>
