@@ -1,7 +1,12 @@
 package com.jh.jsuk.dao;
 
-import com.jh.jsuk.entity.ShoppingCart;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.jh.jsuk.entity.ShoppingCart;
+import com.jh.jsuk.entity.vo.ShoppingCartVo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -9,8 +14,9 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * </p>
  *
  * @author lpf
- * @since 2018-06-20
+ * @since 2018-06-24
  */
 public interface ShoppingCartDao extends BaseMapper<ShoppingCart> {
+    List<ShoppingCartVo> selectVoList(@Param("ew") Wrapper wrapper);
 
 }

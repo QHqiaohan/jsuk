@@ -148,21 +148,43 @@ public class PayController {
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "orderId", value = "订单号",
                     required = true, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "memberConfigId", value = "会员信息ID",
+                    required = true, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "payWay", value = "支付方式",
                     required = true, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "userId", value = "用户ID",
                     required = true, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "orderType", value = "订单类型 0:普通订单 1:秒杀订单 2:会员充值",
+                    required = true, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "isDeduction", value = "是否使用折扣 1:是 0:否",
-                    required = false, paramType = "query", dataType = "string")
+                    required = true, paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "pre_order", method = RequestMethod.POST)
     @Transactional(propagation = Propagation.REQUIRED)
-    public ServerResponse appPay(String orderId, String payWay, String userId, String isDeduction) {
+    public ServerResponse appPay(String orderId, String payWay,String memberConfigId, String userId,String orderType, String isDeduction) {
         Callable<ServerResponse> callable = () -> {
-            if (StrUtil.isBlank(orderId) || StrUtil.isBlank(userId) || StrUtil.isBlank(isDeduction) || StrUtil.isBlank(payWay)) {
+
+            if (StrUtil.isBlank(orderType) || StrUtil.isBlank(userId) || StrUtil.isBlank(isDeduction) || StrUtil.isBlank(payWay)) {
                 return ServerResponse.createByErrorMessage("参数错误!");
             }
-            UserOrder orderRecord = userOrderService.selectOne(new MyEntityWrapper<UserOrder>().eq(UserOrder.ORDER_NUM, orderId));
+            UserOrder orderRecord =null;
+
+
+            //当为普通订单时OrderId必须
+            if(StrUtil.equals(orderType,"1")||StrUtil.equals(orderType,"0")){
+                if(StrUtil.isBlank(orderId)){
+                    return ServerResponse.createByErrorMessage("参数错误!");
+                }
+                 orderRecord = userOrderService.selectOne(new MyEntityWrapper<UserOrder>().eq(UserOrder.ORDER_NUM, orderId));
+            }
+            //当为购买订单时memberConfigId必须
+            if(StrUtil.equals(orderType,"2")){
+                if(StrUtil.isBlank(memberConfigId)){
+                    return ServerResponse.createByErrorMessage("参数错误!");
+                }
+                orderRecord = userOrderService.selectOne(new MyEntityWrapper<UserOrder>().eq(UserOrder.ORDER_NUM, orderId));
+            }
+
             if (orderRecord == null) {
                 return ServerResponse.createByErrorMessage("订单不存在");
             }
