@@ -16,14 +16,19 @@ import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.ServerResponse;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -35,6 +40,7 @@ import java.util.concurrent.Callable;
 /**
  * luopa 在 2018/6/21 创建.
  */
+@Api(tags = {"用户支付相关操作API:"})
 @RestController
 @RequestMapping("/pay")
 @PropertySource(value = "classpath:payinfo.properties")
@@ -112,8 +118,16 @@ public class PayController {
      * @param carId
      * @return
      */
-    @RequestMapping("placeAnOrder")
-    @ResponseBody
+    @ApiOperation("下单 在本地系统生成订单")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "userId", value = "用户ID",
+                    required = true, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "goodsId", value = "商品ID",
+                    required = true, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "carId", value = "购物车ID",
+                    required = false, paramType = "query", dataType = "string")
+    })
+    @RequestMapping(value = "placeAnOrder", method = RequestMethod.POST)
     public ServerResponse placeAnOrder(Integer userId, String goodsId, String carId) {
         if (ObjectUtil.isNull(userId) || StrUtil.isBlank(goodsId)) {
             return ServerResponse.createByErrorMessage("参数错误!");
@@ -130,8 +144,18 @@ public class PayController {
      * @param isDeduction 是否抵扣  1:是  0:否
      * @return
      */
-    @RequestMapping("pre_order")
-    @ResponseBody
+    @ApiOperation("预下单 在支付系统生成订单")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "orderId", value = "订单号",
+                    required = true, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "payWay", value = "支付方式",
+                    required = true, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "userId", value = "用户ID",
+                    required = true, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "isDeduction", value = "是否使用折扣 1:是 0:否",
+                    required = false, paramType = "query", dataType = "string")
+    })
+    @RequestMapping(value = "pre_order", method = RequestMethod.POST)
     @Transactional(propagation = Propagation.REQUIRED)
     public ServerResponse appPay(String orderId, String payWay, String userId, String isDeduction) {
         Callable<ServerResponse> callable = () -> {
@@ -180,12 +204,13 @@ public class PayController {
     }
 
     /**
-     * 支付回调
+     * 支付宝回调
      *
      * @param request
      * @return
      */
-    @RequestMapping(value = "alipayBack.json")
+    @ApiIgnore
+    @RequestMapping(value = "alipayBack.json", method = {RequestMethod.POST, RequestMethod.GET})
     public String alipayBack(HttpServletRequest request) throws IOException {
         //获取支付方返回的对应参数
         Map<String, Object> params = aliservice.getParameter2Map(request.getParameterMap(), request.getInputStream());
@@ -208,7 +233,8 @@ public class PayController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "wxpayBack.json")
+    @ApiIgnore
+    @RequestMapping(value = "wxpayBack.json", method = {RequestMethod.POST, RequestMethod.GET})
     public String wxpayBack(HttpServletRequest request) throws IOException {
         //获取支付方返回的对应参数
         Map<String, Object> params = wxservice.getParameter2Map(request.getParameterMap(), request.getInputStream());
