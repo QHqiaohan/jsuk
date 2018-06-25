@@ -9,7 +9,6 @@ import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,9 +36,6 @@ public class StatisticsPriceController {
                 new Page<>(1, 3),
                 new EntityWrapper<StatisticsPrice>()
                         .orderBy(StatisticsPrice.COUNT, false));
-        if (CollectionUtils.isEmpty(statisticsPricePage.getRecords())) {
-            return new Result().success("暂无数据", null);
-        }
         return new Result().success(statisticsPricePage.getRecords());
     }
 

@@ -15,7 +15,6 @@ import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,11 +55,7 @@ public class ShopGoodsController {
     public Result getShopGoodsByAttributeId(@ApiParam(value = "属性ID,不传=全部商品") Integer attributeId, Page page) {
         MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
         Page goodsPage = shopGoodsService.shopGoodsListByAttributeId(page, ew, attributeId);
-        if (CollectionUtils.isEmpty(goodsPage.getRecords())) {
-            return new Result().success("暂无数据", null);
-        } else {
-            return new Result().success(goodsPage);
-        }
+        return new Result().success(goodsPage);
     }
 
     @ApiOperation(value = "用户端-店铺内部的全部商品-根据综合/价格/销量/新品查询商品")
@@ -74,16 +69,10 @@ public class ShopGoodsController {
         if (type == 1 || type == -1) {
             MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
             Page goodsPage = shopGoodsService.getShopGoodsOrderBySalesPrice(page, ew, type);
-            if (CollectionUtils.isEmpty(goodsPage.getRecords())) {
-                return new Result().success("暂无数据", null);
-            }
             return new Result().success(goodsPage);
         } else {
             MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
             Page goodsPage = shopGoodsService.getShopGoodsBy(page, ew, type);
-            if (CollectionUtils.isEmpty(goodsPage.getRecords())) {
-                return new Result().success("暂无数据", null);
-            }
             return new Result().success(goodsPage);
         }
     }
@@ -98,9 +87,6 @@ public class ShopGoodsController {
     public Result getShopGoodsByCategoryId(Page page, Integer categoryId) {
         MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
         Page goodsPage = shopGoodsService.getShopGoodsByCategoryId(page, ew, categoryId);
-        if (CollectionUtils.isEmpty(goodsPage.getRecords())) {
-            return new Result().success("暂无数据", null);
-        }
         return new Result().success(goodsPage);
     }
 
@@ -114,11 +100,7 @@ public class ShopGoodsController {
     public Result getShopGoodsOnCategoryBy(Page page, Integer categoryId, @ApiParam("1=价格降序/-1升序,2=销量") Integer type) {
         MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
         Page goodsPage = shopGoodsService.getShopGoodsOnCategoryBy(page, ew, type, categoryId);
-        if (CollectionUtils.isEmpty(goodsPage.getRecords())) {
-            return new Result().success("暂无数据", null);
-        } else {
-            return new Result().success(goodsPage);
-        }
+        return new Result().success(goodsPage);
     }
 
     @ApiOperation(value = "用户端-根据筛选条件查询商品列表")
@@ -155,9 +137,6 @@ public class ShopGoodsController {
                 statisticsPrice.setPercentage("1%");
                 statisticsPrice.insert();
             }
-        }
-        if (CollectionUtils.isEmpty(goodsPage.getRecords())) {
-            return new Result().success("暂无数据", null);
         }
         return new Result().success(goodsPage);
     }
@@ -198,19 +177,11 @@ public class ShopGoodsController {
                     .eq(Shop.CAN_USE, 1)
                     .like(Shop.SHOP_NAME, name)
                     .orderBy(Shop.TOTAL_VOLUME, false));
-            // 数据非空判断
-            if (CollectionUtils.isEmpty(shopPage.getRecords())) {
-                return new Result().success("暂无数据", null);
-            }
             return new Result().success(shopPage);
         } else if (type == 1) {
             // 商品模糊查询
             MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
             Page goodsPage = shopGoodsService.getShopGoodsByLikeName(page, ew, type, name);
-            // 数据非空判断
-            if (CollectionUtils.isEmpty(goodsPage.getRecords())) {
-                return new Result().success("暂无数据", null);
-            }
             return new Result().success(goodsPage);
         } else {
             // 店铺&商品
@@ -223,18 +194,9 @@ public class ShopGoodsController {
 
             MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
             Page goodsPage = shopGoodsService.getShopGoodsByLikeName(page, ew, type, name);
+            map.put("shop", shopPage);
+            map.put("shopGoods", goodsPage);
 
-            if (CollectionUtils.isEmpty(shopPage.getRecords())) {
-                map.put("shop", "暂无数据");
-            } else {
-                map.put("shop", shopPage);
-            }
-
-            if (CollectionUtils.isEmpty(goodsPage.getRecords())) {
-                map.put("shopGoods", "暂无数据");
-            } else {
-                map.put("shopGoods", goodsPage);
-            }
             return new Result().success(map);
         }
     }
