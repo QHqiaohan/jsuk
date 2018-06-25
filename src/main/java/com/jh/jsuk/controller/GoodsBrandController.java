@@ -43,7 +43,7 @@ public class GoodsBrandController {
     @GetMapping("/getBrandByCategoryId")
     public Result getBrandByCategoryId(@ApiParam(value = "分类ID", required = true) Integer categoryId) {
         List<GoodsBrand> goodsBrandList = goodsBrandService.selectList(new EntityWrapper<GoodsBrand>()
-                .eq(GoodsBrand.ID, categoryId)
+                .eq(GoodsBrand.CATEGORY_ID, categoryId)
                 .eq(GoodsBrand.STATUS, 1)
                 .orderBy(GoodsBrand.SORT_ORDER, false));
         return new Result().success(goodsBrandList);

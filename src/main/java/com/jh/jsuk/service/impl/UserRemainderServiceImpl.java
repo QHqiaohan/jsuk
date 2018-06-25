@@ -57,7 +57,7 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
     public void consume(Integer userId, BigDecimal amount) throws Exception {
         UserRemainder e = new UserRemainder();
         e.setUserId(userId);
-        e.setPublishTime(new Date());
+        e.setCreateTime(new Date());
         e.setRemainder(amount);
         e.setType(-1);
         insert(e);
@@ -68,7 +68,7 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
         UserRemainder e = new UserRemainder();
         e.setType(1);
         e.setUserId(userId);
-        e.setPublishTime(new Date());
+        e.setCreateTime(new Date());
         e.setRemainder(amount);
         insert(e);
     }

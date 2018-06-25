@@ -14,7 +14,7 @@ import java.util.Date;
  * </p>
  *
  * @author lpf
- * @since 2018-06-24
+ * @since 2018-06-25
  */
 @TableName("js_shopping_cart")
 public class ShoppingCart extends Model<ShoppingCart> {
@@ -51,6 +51,10 @@ public class ShoppingCart extends Model<ShoppingCart> {
      * 是否过期 0:否 1:是
      */
     private Integer isPast;
+    /**
+     * 规格ID
+     */
+    private Integer sizeId;
 
 
     public Integer getId() {
@@ -117,6 +121,14 @@ public class ShoppingCart extends Model<ShoppingCart> {
         this.isPast = isPast;
     }
 
+    public Integer getSizeId() {
+        return sizeId;
+    }
+
+    public void setSizeId(Integer sizeId) {
+        this.sizeId = sizeId;
+    }
+
     public static final String ID = "id";
 
     public static final String USER_ID = "user_id";
@@ -132,6 +144,8 @@ public class ShoppingCart extends Model<ShoppingCart> {
     public static final String CHECKED = "checked";
 
     public static final String IS_PAST = "is_past";
+
+    public static final String SIZE_ID = "size_id";
 
     @Override
     protected Serializable pkVal() {
@@ -149,6 +163,7 @@ public class ShoppingCart extends Model<ShoppingCart> {
         ", createTime=" + createTime +
         ", checked=" + checked +
         ", isPast=" + isPast +
+        ", sizeId=" + sizeId +
         "}";
     }
 }

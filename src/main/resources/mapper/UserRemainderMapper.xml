@@ -5,15 +5,19 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.UserRemainder">
         <id column="id" property="id" />
-        <result column="publish_time" property="publishTime" />
+        <result column="create_time" property="createTime" />
         <result column="type" property="type" />
         <result column="remainder" property="remainder" />
         <result column="user_id" property="userId" />
+        <result column="is_ok" property="isOk" />
+        <result column="member_id" property="memberId" />
+        <result column="id_del" property="idDel" />
+        <result column="order_num" property="orderNum" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, publish_time, type, remainder, user_id
+        id, create_time, type, remainder, user_id, is_ok, member_id, id_del, order_num
     </sql>
 
 </mapper>

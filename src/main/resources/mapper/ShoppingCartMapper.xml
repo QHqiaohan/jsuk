@@ -12,15 +12,17 @@
         <result column="create_time" property="createTime" />
         <result column="checked" property="checked" />
         <result column="is_past" property="isPast" />
+        <result column="size_id" property="sizeId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_id, shop_id, goods_id, num, create_time, checked, is_past
+        id, user_id, shop_id, goods_id, num, create_time, checked, is_past, size_id
     </sql>
     <resultMap id="ShoppingCartVo" type="com.jh.jsuk.entity.vo.ShoppingCartVo" extends="BaseResultMap">
         <association property="goods" column="goods_id" select="com.jh.jsuk.dao.ShopGoodsDao.selectById"></association>
         <association property="shops" column="shop_id" select="com.jh.jsuk.dao.ManagerUserDao.selectById"></association>
+        <association property="sizes" column="size_id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectById"></association>
     </resultMap>
 
     <select id="selectVoList" resultMap="ShoppingCartVo">

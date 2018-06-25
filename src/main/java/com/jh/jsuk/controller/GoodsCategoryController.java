@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -92,18 +93,21 @@ public class GoodsCategoryController {
         return new Result().success(map);
     }
 
+    @ApiIgnore
     @GetMapping("/get_category")
     public Result getChildrenParallelCategory(HttpSession session, @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
         //查询子节点的category信息,并且不递归,保持平级
         return goodsCategoryService.getChildrenParallelCategory(categoryId);
     }
 
+    @ApiIgnore
     @PostMapping("add_category")
     public Result addCategory(HttpSession session, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") int parentId) {
         //增加我们处理分类的逻辑
         return goodsCategoryService.addCategory(categoryName, parentId);
     }
 
+    @ApiIgnore
     @PostMapping("set_category_name")
     public Result setCategoryName(HttpSession session, Integer categoryId, String categoryName, String status) {
         Integer stas = null;
@@ -117,6 +121,7 @@ public class GoodsCategoryController {
 
     }
 
+    @ApiIgnore
     @GetMapping("get_deep_category")
     public Result getCategoryAndDeepChildrenCategory(HttpSession session, @RequestParam(value = "categoryId", defaultValue = "0") Integer
             categoryId) {
@@ -125,6 +130,7 @@ public class GoodsCategoryController {
         return goodsCategoryService.selectCategoryAndChildrenById(categoryId);
     }
 
+    @ApiIgnore
     @GetMapping("get_category_list")
     public Result getCategoryList(Integer size, Integer current) {
         Page selectPage = goodsCategoryService.selectPage(
@@ -143,6 +149,7 @@ public class GoodsCategoryController {
      * @param pic
      * @return
      */
+    @ApiIgnore
     @PostMapping("/ui/add_category")
     public Result addCategoryBySys(String categoryName, @RequestParam(value = "parentId", defaultValue = "0") int parentId, @RequestParam(value =
             "status",
@@ -165,6 +172,7 @@ public class GoodsCategoryController {
      * @param pic
      * @return
      */
+    @ApiIgnore
     @PostMapping("/ui/edit_category")
     public Result editCategoryBySys(int id, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") int parentId, @RequestParam
             (value = "status", defaultValue = "1") String status, String pic) {

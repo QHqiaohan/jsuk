@@ -65,20 +65,23 @@ public class ShopGoodsController {
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "type", value = "1=价格降序/-1升序,2=销量,3=新品,不传=默认综合", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "shopId", value = "店铺ID", paramType = "query", dataType = "integer")
+            @ApiImplicitParam(name = "shopId", required = true, value = "店铺ID", paramType = "query", dataType = "integer")
     })
     @GetMapping("/getShopGoodsBy")
     public Result getShopGoodsBy(Page page, Integer type, Integer shopId) {
         // 按价格查询
-        if (type == 1 || type == -1) {
-            MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
-            Page goodsPage = shopGoodsService.getShopGoodsOrderBySalesPrice(page, ew, type, shopId);
-            return new Result().success(goodsPage);
+        if (type != null) {
+            if (type == 1 || type == -1) {
+                MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
+                Page goodsPage = shopGoodsService.getShopGoodsOrderBySalesPrice(page, ew, type, shopId);
+                return new Result().success(goodsPage);
+            }
         } else {
             MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
             Page goodsPage = shopGoodsService.getShopGoodsBy(page, ew, type, shopId);
             return new Result().success(goodsPage);
         }
+        return  new Result().success("暂无数据",null);
     }
 
     @ApiOperation(value = "用户端-根据商品类型获取商品列表")
@@ -188,7 +191,7 @@ public class ShopGoodsController {
         } else if (type == 1) {
             // 商品模糊查询
             MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
-            Page goodsPage = shopGoodsService.getShopGoodsByLikeName(page, ew, type, name,attributeId);
+            Page goodsPage = shopGoodsService.getShopGoodsByLikeName(page, ew, type, name, attributeId);
             return new Result().success(goodsPage);
         } else {
             // 店铺&商品
@@ -201,7 +204,7 @@ public class ShopGoodsController {
                     .orderBy(Shop.TOTAL_VOLUME, false));
 
             MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
-            Page goodsPage = shopGoodsService.getShopGoodsByLikeName(page, ew, type, name,attributeId);
+            Page goodsPage = shopGoodsService.getShopGoodsByLikeName(page, ew, type, name, attributeId);
             map.put("shop", shopPage);
             map.put("shopGoods", goodsPage);
 
