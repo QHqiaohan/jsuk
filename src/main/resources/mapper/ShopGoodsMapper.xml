@@ -87,32 +87,38 @@
         </where>
     </select>
 
-    <select id="getShopGoodsBy" resultMap="GoodsSalesPriceVo">
+    <resultMap id="GoodsSalesPriceVoT" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
+        <result column="sales_price" property="salesPrice"/>
+        <result column="original_price" property="originalPrice"/>
+    </resultMap>
+
+    <select id="getShopGoodsBy" resultMap="GoodsSalesPriceVoT">
         SELECT
-        *
-        FROM js_shop_goods
+        sg.*,sgs.sales_price
+        FROM
+        js_shop_goods sg
+        LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
         WHERE
-        status = 1
-        and is_del = 1
-        and shop_id = #{shopId}
+        sg.status = 1
+        and sg.is_del = 1
+        and sg.shop_id = #{shopId}
         <if test="type == 2">
             ORDER BY
-            sale_amont DESC
+            sg.sale_amont DESC
         </if>
         <if test="type == 3">
-            and goods_type = 3
+            and sg.goods_type = 3
             ORDER BY
-            create_time DESC
+            sg.create_time DESC
+        </if>
+        <if test="type == null">
+            ORDER BY
+            sg.create_time
         </if>
         <where>
             ${ew.sqlSegment}
         </where>
     </select>
-
-    <resultMap id="GoodsSalesPriceVoT" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
-        <result column="sales_price" property="salesPrice"/>
-        <result column="original_price" property="originalPrice"/>
-    </resultMap>
 
     <select id="getShopGoodsOrderBySalesPrice" resultMap="GoodsSalesPriceVoT">
         SELECT
@@ -120,6 +126,9 @@
         FROM
         js_shop_goods sg
         LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
+        WHERE
+        sg.status = 1
+        and sg.is_del = 1
         and sg.shop_id = #{shopId}
         <if test="type == 1">
             ORDER BY
@@ -141,6 +150,8 @@
         js_shop_goods sg
         LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
         WHERE sg.category_id = #{categoryId}
+        and sg.status = 1
+        and sg.is_del = 1
         <if test="type == 1">
             ORDER BY
             sgs.sales_price + 0 DESC
@@ -151,7 +162,7 @@
         </if>
         <if test="type == 2">
             ORDER BY
-            sgs.sale_amont DESC
+            sg.sale_amont DESC
         </if>
         <where>
             ${ew.sqlSegment}
