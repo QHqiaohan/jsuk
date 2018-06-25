@@ -12,7 +12,6 @@ import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,9 +46,6 @@ public class GoodsBrandController {
                 .eq(GoodsBrand.ID, categoryId)
                 .eq(GoodsBrand.STATUS, 1)
                 .orderBy(GoodsBrand.SORT_ORDER, false));
-        if (CollectionUtils.isEmpty(goodsBrandList)) {
-            return new Result().success("暂无数据", null);
-        }
         return new Result().success(goodsBrandList);
     }
 
@@ -64,10 +60,7 @@ public class GoodsBrandController {
     public Result getShopGoodsByBrandId(@ApiParam(value = "品牌ID") Integer brandId, Page page) {
         MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
         Page goodsPage = shopGoodsService.getShopGoodsByBrandId(page, ew, brandId);
-        if (CollectionUtils.isEmpty(goodsPage.getRecords())) {
-            return new Result().success("暂无数据", null);
-        }
-        return new Result().success();
+        return new Result().success(goodsPage);
     }
 
 }

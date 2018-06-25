@@ -1,11 +1,12 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -13,7 +14,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author lpf
- * @since 2018-06-20
+ * @since 2018-06-24
  */
 @TableName("js_shopping_cart")
 public class ShoppingCart extends Model<ShoppingCart> {
@@ -42,6 +43,14 @@ public class ShoppingCart extends Model<ShoppingCart> {
      * 创建时间
      */
     private Date createTime;
+    /**
+     * 是否选中 0:否 1:是
+     */
+    private Integer checked;
+    /**
+     * 是否过期 0:否 1:是
+     */
+    private Integer isPast;
 
 
     public Integer getId() {
@@ -92,6 +101,22 @@ public class ShoppingCart extends Model<ShoppingCart> {
         this.createTime = createTime;
     }
 
+    public Integer getChecked() {
+        return checked;
+    }
+
+    public void setChecked(Integer checked) {
+        this.checked = checked;
+    }
+
+    public Integer getIsPast() {
+        return isPast;
+    }
+
+    public void setIsPast(Integer isPast) {
+        this.isPast = isPast;
+    }
+
     public static final String ID = "id";
 
     public static final String USER_ID = "user_id";
@@ -103,6 +128,10 @@ public class ShoppingCart extends Model<ShoppingCart> {
     public static final String NUM = "num";
 
     public static final String CREATE_TIME = "create_time";
+
+    public static final String CHECKED = "checked";
+
+    public static final String IS_PAST = "is_past";
 
     @Override
     protected Serializable pkVal() {
@@ -118,6 +147,8 @@ public class ShoppingCart extends Model<ShoppingCart> {
         ", goodsId=" + goodsId +
         ", num=" + num +
         ", createTime=" + createTime +
+        ", checked=" + checked +
+        ", isPast=" + isPast +
         "}";
     }
 }

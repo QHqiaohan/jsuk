@@ -10,11 +10,25 @@
         <result column="goods_id" property="goodsId" />
         <result column="num" property="num" />
         <result column="create_time" property="createTime" />
+        <result column="checked" property="checked" />
+        <result column="is_past" property="isPast" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_id, shop_id, goods_id, num, create_time
+        id, user_id, shop_id, goods_id, num, create_time, checked, is_past
     </sql>
+    <resultMap id="ShoppingCartVo" type="com.jh.jsuk.entity.vo.ShoppingCartVo" extends="BaseResultMap">
+        <association property="goods" column="goods_id" select="com.jh.jsuk.dao.ShopGoodsDao.selectById"></association>
+        <association property="shops" column="shop_id" select="com.jh.jsuk.dao.ManagerUserDao.selectById"></association>
+    </resultMap>
 
+    <select id="selectVoList" resultMap="ShoppingCartVo">
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM t_shopping_cart
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
 </mapper>

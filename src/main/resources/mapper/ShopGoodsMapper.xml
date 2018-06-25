@@ -177,7 +177,7 @@
         <if test="goodsType != null ">
             and sg.goods_type = #{goodsType}
         </if>
-        <if test="salesPrice != null ">
+        <if test="lowPrice != null ">
             and BETWEEN sg.#{lowPrice} AND sg.#{highPrice}
         </if>
         ORDER BY sg.sale_amont DESC

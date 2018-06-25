@@ -17,7 +17,6 @@ import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -71,8 +70,9 @@ public class ShopController {
         ShopTodayStatistics todayStatistics = shopTodayStatisticsService.selectOne(new EntityWrapper<ShopTodayStatistics>()
                 .eq(ShopTodayStatistics.SHOP_ID, shopId));
         if (todayStatistics == null) {
-            todayStatistics.setShopId(shopId);
-            todayStatistics.insert();
+            ShopTodayStatistics shopTodayStatistics = new ShopTodayStatistics();
+            shopTodayStatistics.setShopId(shopId);
+            shopTodayStatistics.insert();
         } else {
             Integer todayVisitor = todayStatistics.getTodayVisitor();
             todayVisitor++;
@@ -83,8 +83,9 @@ public class ShopController {
         ShopMonthStatistics monthStatistics = shopMonthStatisticsService.selectOne(new EntityWrapper<ShopMonthStatistics>()
                 .eq(ShopMonthStatistics.SHOP_ID, shopId));
         if (monthStatistics == null) {
-            monthStatistics.setShopId(shopId);
-            monthStatistics.insert();
+            ShopMonthStatistics shopMonthStatistics = new ShopMonthStatistics();
+            shopMonthStatistics.setShopId(shopId);
+            shopMonthStatistics.insert();
         } else {
             Integer monthVisitor = monthStatistics.getMonthVisitor();
             monthVisitor++;
@@ -111,11 +112,7 @@ public class ShopController {
     public Result getTodayVisit(Page page, Integer shopId, String today) {
         MyEntityWrapper<ShopVisitorVo> ew = new MyEntityWrapper<>();
         Page visitList = shopVisitService.getVisitList(page, ew, shopId, today);
-        if (CollectionUtils.isEmpty(visitList.getRecords())) {
-            return new Result().success("暂无数据", null);
-        } else {
-            return new Result().success(visitList);
-        }
+        return new Result().success(visitList);
     }
 
     @ApiOperation("商家端-查看今日交易额列表")
@@ -129,33 +126,21 @@ public class ShopController {
     public Result getTodayMoney(Page page, Integer shopId, String today) {
         MyEntityWrapper<ShopVisitorVo> ew = new MyEntityWrapper<>();
         Page moneyList = shopTodayMoneyService.getTodayMoneyList(page, ew, shopId, today);
-        if (CollectionUtils.isEmpty(moneyList.getRecords())) {
-            return new Result().success("暂无数据", null);
-        } else {
-            return new Result().success(moneyList);
-        }
+        return new Result().success(moneyList);
     }
 
     @ApiOperation("用户端-根据店铺id查看店铺内部的商品分类-属性")
     @GetMapping("/getShopAttributeByShopId")
     public Result getShopAttributeByShopId(@ApiParam(value = "店铺id", required = true) Integer shopId) {
         ShopAttributeVo attributeVo = shopAttributeGoodsService.getShopAttributeByShopId(shopId);
-        if (attributeVo == null) {
-            return new Result().success("暂无数据", null);
-        } else {
-            return new Result().success(attributeVo);
-        }
+        return new Result().success(attributeVo);
     }
 
     @ApiOperation("用户端-显示收藏的店铺列表")
     @GetMapping("/collect")
     public Result list(Integer userId) {
         List<Shop> shops = shopService.findCollectByUserId(userId);
-        if (shops == null) {
-            return new Result().success("暂无数据", null);
-        } else {
-            return new Result().success(shops);
-        }
+        return new Result().success(shops);
     }
 
 /*    @ApiOperation("用户端-搜索店铺列表")

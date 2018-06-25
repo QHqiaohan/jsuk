@@ -16,7 +16,6 @@ import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -98,21 +97,13 @@ public class ModularPortalController {
                         .eq(Shop.IS_RECOMMEND, 1)
                         .eq(Shop.MODULAR_ID, modularId)
                         .orderBy(Shop.TOTAL_VOLUME, false));
-        if (CollectionUtils.isEmpty(shopPage.getRecords())) {
-            map.put("shop", "暂无数据");
-        } else {
-            map.put("shop", shopPage.getRecords());
-        }
+        map.put("shop", shopPage.getRecords());
         /**
          * 商品列表
          */
         // 商品数据
         List<GoodsSalesPriceVo> goodsSalesPriceVos = shopGoodsService.findShopGoodsByModularId(modularId);
-        if (CollectionUtils.isEmpty(goodsSalesPriceVos)) {
-            map.put("shopGoods", "暂无数据");
-        } else {
-            map.put("shopGoods", goodsSalesPriceVos);
-        }
+        map.put("shopGoods", goodsSalesPriceVos);
         return new Result().success(map);
     }
 
@@ -134,10 +125,6 @@ public class ModularPortalController {
                     .eq(Shop.IS_RECOMMEND, 1)
                     .eq(Shop.MODULAR_ID, modularId)
                     .orderBy(Shop.TOTAL_VOLUME, false));
-            // 数据非空判断
-            if (CollectionUtils.isEmpty(shopPage.getRecords())) {
-                return new Result().success("暂无数据", null);
-            }
             return new Result().success(shopPage);
         } else {
             // 更多商家列表
@@ -145,10 +132,6 @@ public class ModularPortalController {
                     .eq(Shop.CAN_USE, 1)
                     .eq(Shop.MODULAR_ID, modularId)
                     .orderBy(Shop.TOTAL_VOLUME, false));
-            // 数据非空判断
-            if (CollectionUtils.isEmpty(shopPage.getRecords())) {
-                return new Result().success("暂无数据", null);
-            }
             return new Result().success(shopPage);
         }
     }
@@ -164,10 +147,6 @@ public class ModularPortalController {
     public Result shopGoodsListByModularId(Page page, @ApiParam(value = "模块ID", required = true) Integer modularId) {
         MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
         Page goodsSizeVoList = shopGoodsService.shopGoodsListByModularId(page, ew, modularId);
-        // 数据非空判断
-        if (CollectionUtils.isEmpty(goodsSizeVoList.getRecords())) {
-            return new Result().success("暂无数据", null);
-        }
         return new Result().success(goodsSizeVoList);
     }
 
