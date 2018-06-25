@@ -1,11 +1,12 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -50,6 +51,11 @@ public class News extends Model<News> {
      * 发送人ID
      */
     private String sendUserId;
+
+    /**
+     * 系统消息不使用此字段
+     */
+    private Integer marketCommentId;
 
 
     public Integer getId() {
@@ -116,6 +122,14 @@ public class News extends Model<News> {
         this.sendUserId = sendUserId;
     }
 
+    public Integer getMarketCommentId() {
+        return marketCommentId;
+    }
+
+    public void setMarketCommentId(Integer marketCommentId) {
+        this.marketCommentId = marketCommentId;
+    }
+
     public static final String ID = "id";
 
     public static final String NEWS_TYPE = "news_type";
@@ -132,6 +146,8 @@ public class News extends Model<News> {
 
     public static final String SEND_USER_ID = "send_user_id";
 
+    public static final String MARKET_COMMENT_ID = "market_comment_id";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -140,14 +156,15 @@ public class News extends Model<News> {
     @Override
     public String toString() {
         return "News{" +
-        "id=" + id +
-        ", newsType=" + newsType +
-        ", title=" + title +
-        ", content=" + content +
-        ", goodsId=" + goodsId +
-        ", image=" + image +
-        ", createTime=" + createTime +
-        ", sendUserId=" + sendUserId +
-        "}";
+                "id=" + id +
+                ", newsType=" + newsType +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", goodsId=" + goodsId +
+                ", image='" + image + '\'' +
+                ", createTime=" + createTime +
+                ", sendUserId='" + sendUserId + '\'' +
+                ", marketCommentId=" + marketCommentId +
+                '}';
     }
 }

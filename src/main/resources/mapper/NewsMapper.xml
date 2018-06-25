@@ -2,21 +2,40 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jh.jsuk.dao.NewsDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.News">
-        <id column="id" property="id" />
-        <result column="news_type" property="newsType" />
-        <result column="title" property="title" />
-        <result column="content" property="content" />
-        <result column="goods_id" property="goodsId" />
-        <result column="image" property="image" />
-        <result column="create_time" property="createTime" />
-        <result column="send_user_id" property="sendUserId" />
-    </resultMap>
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.News">
+    <id column="id" property="id"/>
+    <result column="news_type" property="newsType"/>
+    <result column="title" property="title"/>
+    <result column="content" property="content"/>
+    <result column="goods_id" property="goodsId"/>
+    <result column="image" property="image"/>
+    <result column="create_time" property="createTime"/>
+    <result column="send_user_id" property="sendUserId"/>
+  </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
         id, news_type, title, content, goods_id, image, create_time, send_user_id
     </sql>
+  <select id="newsContent" resultType="com.jh.jsuk.entity.News">
+      select * from js_news n where n.news_type = #{type} and n.id in (select news_id from js_news_user nu where nu.received_id = #{userId} )
+      order by n.create_time desc limit 1
+    </select>
+
+  <select id="selectMessageIndex" resultType="java.lang.Integer">
+    select DISTINCT news_type from js_news n where n.id in (select news_id from js_news_user nu where nu.received_id = #{userId} )
+  </select>
+
+  <select id="list" resultType="com.jh.jsuk.entity.News">
+    select n.* from (
+    select * from js_news n where n.news_type = #{newsType}
+    ) n join
+    (select news_id from js_news_user nu where nu.received_id = #{userId} ) u
+    on n.id = u.news_id
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
 
 </mapper>

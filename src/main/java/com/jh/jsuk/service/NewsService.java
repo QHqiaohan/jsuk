@@ -1,7 +1,10 @@
 package com.jh.jsuk.service;
 
-import com.jh.jsuk.entity.News;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.News;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,38 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface NewsService extends IService<News> {
 
+    /**
+     * 获取消息列表索引
+     *
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    List<News> listIndex(Integer userId) throws Exception;
+
+    /**
+     * 使用线程池推送
+     * @param news
+     * @param receivedUserIds
+     * @throws Exception
+     */
+    void push(News news, Integer... receivedUserIds) throws Exception;
+
+    /**
+     * 获取系统消息列表
+     * @param userId
+     * @param page
+     * @return
+     * @throws Exception
+     */
+    Page listSys(Integer userId, Page page) throws Exception;
+
+    /**
+     * 获取二手市场消息列表
+     * @param userId
+     * @param page
+     * @return
+     * @throws Exception
+     */
+    Page listSecondHandMarket(Integer userId, Page page) throws Exception;
 }

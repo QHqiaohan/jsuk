@@ -32,8 +32,12 @@ public class NewsUser extends Model<NewsUser> {
     /**
      * 0;未读 1:已读
      */
-    private Integer status;
+    private Integer isRead;
 
+    /**
+     * 0:未推送 1：已推送
+     */
+    private Integer isPushed;
 
     public Integer getId() {
         return id;
@@ -59,12 +63,20 @@ public class NewsUser extends Model<NewsUser> {
         this.receivedId = receivedId;
     }
 
-    public Integer getStatus() {
-        return status;
+    public Integer getIsRead() {
+        return isRead;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setIsRead(Integer isRead) {
+        this.isRead = isRead;
+    }
+
+    public Integer getIsPushed() {
+        return isPushed;
+    }
+
+    public void setIsPushed(Integer isPushed) {
+        this.isPushed = isPushed;
     }
 
     public static final String ID = "id";
@@ -73,20 +85,25 @@ public class NewsUser extends Model<NewsUser> {
 
     public static final String RECEIVED_ID = "received_id";
 
-    public static final String STATUS = "status";
+    public static final String IS_READ = "is_read";
+
+    public static final String IS_PUSHED = "is_pushed";
+
+    @Override
+    public String toString() {
+        return "NewsUser{" +
+                "id=" + id +
+                ", newsId=" + newsId +
+                ", receivedId=" + receivedId +
+                ", isRead=" + isRead +
+                ", isPushed=" + isPushed +
+                '}';
+    }
 
     @Override
     protected Serializable pkVal() {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "NewsUser{" +
-        "id=" + id +
-        ", newsId=" + newsId +
-        ", receivedId=" + receivedId +
-        ", status=" + status +
-        "}";
-    }
+
 }
