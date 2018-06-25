@@ -59,6 +59,7 @@
         WHERE
         `status` = '1'
         AND is_del = '1'
+        and shop_id = #{shopId}
         <if test="attributeId != null ">
             AND attribute_id = #{attributeId}
         </if>
@@ -77,6 +78,7 @@
         WHERE
         `status` = '1'
         AND is_del = '1'
+        AND attribute_id = #{attributeId}
         AND goods_name LIKE CONCAT('%', #{name}, '%')
         ORDER BY
         sale_amont DESC
@@ -92,6 +94,7 @@
         WHERE
         status = 1
         and is_del = 1
+        and shop_id = #{shopId}
         <if test="type == 2">
             ORDER BY
             sale_amont DESC
@@ -117,6 +120,7 @@
         FROM
         js_shop_goods sg
         LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
+        and sg.shop_id = #{shopId}
         <if test="type == 1">
             ORDER BY
             sgs.sales_price + 0 DESC
@@ -175,10 +179,12 @@
         LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
         where sg.category_id = #{categoryId}
         <if test="goodsType != null ">
-            and sg.goods_type = #{goodsType}
+            AND sg.goods_type = #{goodsType}
         </if>
-        <if test="lowPrice != null ">
-            and BETWEEN sg.#{lowPrice} AND sg.#{highPrice}
+        <if test="lowPrice != null">
+            <if test="highPrice != null ">
+                AND (BETWEEN sg.#{lowPrice} AND sg.#{highPrice})
+            </if>
         </if>
         ORDER BY sg.sale_amont DESC
         <where>
@@ -215,6 +221,18 @@
         FROM js_shop_goods
         WHERE
         brand_id = #{brandId}
+        ORDER BY sale_amont DESC
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
+    <select id="getIsRecommend" resultMap="GoodsSalesPriceVo">
+        SELECT
+        *
+        FROM js_shop_goods
+        WHERE
+        is_recommend = 1
         ORDER BY sale_amont DESC
         <where>
             ${ew.sqlSegment}

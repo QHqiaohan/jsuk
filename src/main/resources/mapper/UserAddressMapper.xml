@@ -26,7 +26,16 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_id, name, phone, sex, latitude, longitude, postal_code, province, city, area, address, room_number, is_default, is_del, create_time, update_time, invitation_id
+        id, user_id, name, phone, sex, latitude, longitude, postal_code, province, city, area, address, room_number, is_default, is_del,
+        create_time, update_time, invitation_id
     </sql>
+
+    <select id="getUserAddressbyId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM js_user_address
+        WHERE
+        id = #{id}
+    </select>
 
 </mapper>

@@ -26,4 +26,30 @@
         id, user_id, sender_address, get_address, goods_type, weight, real_weight, is_del, status, type, price, notes, requirement_time, publish_time, end_time
     </sql>
 
+    <resultMap id="ExpressVo" type="com.jh.jsuk.entity.vo.ExpressVo" extends="BaseResultMap">
+        <association property="senderAddressInfo" column="sender_address" select="com.jh.jsuk.dao.UserAddressDao.getUserAddressbyId"></association>
+        <association property="getAddressInfo" column="get_address" select="com.jh.jsuk.dao.UserAddressDao.getUserAddressbyId"></association>
+    </resultMap>
+
+    <select id="getExpressListBy" resultMap="ExpressVo">
+        SELECT
+        *
+        FROM
+        t_express
+        WHERE
+        user_id = #{userId}
+        <if test="type != null">
+            AND
+            `type` = #{type}
+        </if>
+        <if test="status != null">
+            AND
+            status = #{status}
+        </if>
+        ORDER BY publish_time DESC
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
 </mapper>
