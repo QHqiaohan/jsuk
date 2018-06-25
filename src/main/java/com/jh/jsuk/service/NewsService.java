@@ -3,6 +3,7 @@ package com.jh.jsuk.service;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.News;
+import com.jh.jsuk.entity.NewsUser;
 
 import java.util.List;
 
@@ -24,6 +25,25 @@ public interface NewsService extends IService<News> {
      * @throws Exception
      */
     List<News> listIndex(Integer userId) throws Exception;
+
+    /**
+     * 没有发送成功的消息重新推送
+     *
+     * @param newsUserId
+     */
+    void push(Integer newsUserId);
+
+    /**
+     * 定时任务调用数据
+     */
+    void fixedCall();
+
+    /**
+     * 没有发送成功的消息重新推送
+     *
+     * @param newsUser
+     */
+    void push(NewsUser newsUser);
 
     /**
      * 使用线程池推送

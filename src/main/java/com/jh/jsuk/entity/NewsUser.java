@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 /**
@@ -38,6 +40,15 @@ public class NewsUser extends Model<NewsUser> {
      * 0:未推送 1：已推送
      */
     private Integer isPushed;
+
+    /**
+     *  已经被推送
+     * @return
+     */
+    @JsonIgnore
+    public boolean isPushed() {
+        return isPushed != null && isPushed.equals(1);
+    }
 
     public Integer getId() {
         return id;

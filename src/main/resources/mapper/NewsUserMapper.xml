@@ -7,12 +7,21 @@
         <id column="id" property="id" />
         <result column="news_id" property="newsId" />
         <result column="received_id" property="receivedId" />
-        <result column="status" property="status" />
+        <result column="is_read" property="isRead" />
+        <result column="is_pushed" property="isPushed" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, news_id, received_id, status
     </sql>
+
+  <select id="getNotPushed" resultType="com.jh.jsuk.entity.NewsUser">
+      select * from js_news_user
+      <where>
+          ${ew.sqlSegment}
+      </where>
+      limit 500
+  </select>
 
 </mapper>

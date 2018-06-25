@@ -51,6 +51,42 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
     NewsUserService newsUserService;
 
     @Override
+    public void push(Integer newsUserId) {
+        push(newsUserService.selectById(newsUserId));
+    }
+
+    @Override
+    public void fixedCall() {
+        List<NewsUser> notPushed = newsUserService.getNotPushed();
+        if (notPushed == null || notPushed.isEmpty()) {
+            return;
+        }
+        for (NewsUser user : notPushed) {
+            push(user);
+        }
+    }
+
+    @Override
+    public void push(NewsUser newsUser) {
+        if (newsUser == null) {
+            return;
+        }
+        if (newsUser.isPushed()) {
+            return;
+        }
+        News news = selectById(newsUser.getNewsId());
+        pushTaskExecutor.execute(() -> {
+            try {
+                JPushUtils.push(String.valueOf(newsUser.getReceivedId()), news.getContent(), news.getTitle(), new HashMap<>());
+                newsUser.setIsPushed(1);
+                newsUser.updateById();
+            } catch (Exception e) {
+                log.error("推送消息 title:{} content:{}失败", news.getTitle(), news.getContent(), e);
+            }
+        });
+    }
+
+    @Override
     public void push(News news, Integer... receivedUserIds) throws Exception {
         if (news.getNewsType() == null) {
             throw new Exception("类型不能为空");
@@ -82,7 +118,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
         }
     }
 
-    public void setRead(List<Integer> newsIds,Integer userId){
+    public void setRead(List<Integer> newsIds, Integer userId) {
         Wrapper<NewsUser> wpr = new EntityWrapper<>();
         wpr.in(NewsUser.NEWS_ID, newsIds)
                 .eq(NewsUser.RECEIVED_ID, userId)
@@ -90,7 +126,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
         NewsUser newsUser = new NewsUser();
         newsUser.setIsRead(1);
         newsUser.setIsPushed(1);
-        newsUserService.update(newsUser,wpr);
+        newsUserService.update(newsUser, wpr);
     }
 
     @Override
@@ -102,7 +138,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
         for (News news : list) {
             newsIds.add(news.getId());
         }
-        setRead(newsIds,userId);
+        setRead(newsIds, userId);
         return page.setRecords(list);
 
     }
@@ -116,7 +152,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
         for (News news : list) {
             newsIds.add(news.getId());
         }
-        setRead(newsIds,userId);
+        setRead(newsIds, userId);
         return page.setRecords(list);
     }
 }
