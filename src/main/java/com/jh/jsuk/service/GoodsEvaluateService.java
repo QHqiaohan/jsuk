@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.GoodsEvaluate;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -20,5 +21,7 @@ public interface GoodsEvaluateService extends IService<GoodsEvaluate> {
 
     Integer count(Integer goodsId) throws Exception;
 
-    Page listPage(Integer goodsId, Page page) throws Exception;
+    Page listPage(Integer goodsId, String type, Page page) throws Exception;
+
+    Map<String,Object> counts(Integer goodsId) throws Exception;
 }

@@ -6,10 +6,14 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.GoodsEvaluateDao;
 import com.jh.jsuk.entity.GoodsEvaluate;
+import com.jh.jsuk.envm.GoodsEvalType;
 import com.jh.jsuk.service.GoodsEvaluateService;
+import com.jh.jsuk.utils.EnumUitl;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -27,7 +31,7 @@ public class GoodsEvaluateServiceImpl extends ServiceImpl<GoodsEvaluateDao, Good
         Wrapper<GoodsEvaluate> wrapper = new EntityWrapper<>();
         wrapper.eq(GoodsEvaluate.GOODS_ID, goodsId)
                 .eq(GoodsEvaluate.IS_DEL, 0)
-                .orderBy(GoodsEvaluate.CREATE_TIME,false);
+                .orderBy(GoodsEvaluate.CREATE_TIME, false);
         return baseMapper.list(wrapper, count);
     }
 
@@ -40,11 +44,32 @@ public class GoodsEvaluateServiceImpl extends ServiceImpl<GoodsEvaluateDao, Good
     }
 
     @Override
-    public Page listPage(Integer goodsId, Page page) throws Exception {
+    public Page listPage(Integer goodsId, String type, Page page) throws Exception {
         Wrapper<GoodsEvaluate> wrapper = new EntityWrapper<>();
         wrapper.eq(GoodsEvaluate.GOODS_ID, goodsId)
                 .eq(GoodsEvaluate.IS_DEL, 0)
-                .orderBy(GoodsEvaluate.CREATE_TIME,false);
+                .orderBy(GoodsEvaluate.CREATE_TIME, false);
+        GoodsEvalType evalType = null;
+        if (!"all".equalsIgnoreCase(type)) {
+            evalType = EnumUitl.toEnum(GoodsEvalType.class, type);
+        }
+        if (evalType != null) {
+            wrapper.in(GoodsEvaluate.STAR_NUMBER, evalType.getStars());
+        }
         return selectPage(page, wrapper);
+    }
+
+    @Override
+    public Map<String, Object> counts(Integer goodsId) throws Exception {
+        Map<String,Object> map = new HashMap<>();
+        Wrapper<GoodsEvaluate> wrapper = new EntityWrapper<>();
+        wrapper.eq(GoodsEvaluate.GOODS_ID, goodsId)
+                .eq(GoodsEvaluate.IS_DEL, 0);
+        map.put("all",selectCount(wrapper));
+        for (GoodsEvalType evalType : GoodsEvalType.values()) {
+            wrapper.in(GoodsEvaluate.STAR_NUMBER, evalType.getStars());
+            map.put(evalType.getKey(),selectCount(wrapper));
+        }
+        return map;
     }
 }

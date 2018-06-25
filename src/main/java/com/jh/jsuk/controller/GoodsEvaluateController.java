@@ -42,14 +42,24 @@ public class GoodsEvaluateController {
 
     @ApiOperation("获取评价数量")
     @GetMapping("/count")
-    public Result count(Integer goodsId) throws Exception{
+    public Result count(Integer goodsId) throws Exception {
         return new Result().success(goodsEvaluateService.count(goodsId));
     }
 
+    @ApiOperation("各类型评价数量")
+    @GetMapping("/counts")
+    public Result counts(Integer goodsId) throws Exception {
+        return new Result().success(goodsEvaluateService.counts(goodsId));
+    }
+
     @ApiOperation("获取评价分页数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "goodsId", required = true, value = "商品id", paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "type", required = false, value = "评价类型 全部:all(默认),好评:gd 中评:mdm  差评:ngt", paramType = "query", dataType = "integer")
+    })
     @GetMapping("/list")
-    public Result count(Integer goodsId, Page page) throws Exception{
-        return new Result().success(goodsEvaluateService.listPage(goodsId,page));
+    public Result count(Integer goodsId, @RequestParam(defaultValue = "all") String type, Page page) throws Exception {
+        return new Result().success(goodsEvaluateService.listPage(goodsId, type, page));
     }
 
 
