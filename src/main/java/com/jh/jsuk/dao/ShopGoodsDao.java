@@ -2,6 +2,7 @@ package com.jh.jsuk.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
@@ -24,11 +25,14 @@ public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
 
     List<GoodsSizeVo> shopGoodsListByModularId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("modularId") Integer modularId);
 
-    List<GoodsSalesPriceVo> shopGoodsListByAttributeId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("attributeId") Integer attributeId);
+    List<GoodsSalesPriceVo> shopGoodsListByAttributeId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("attributeId") Integer attributeId
+            , @Param("shopId") Integer shopId);
 
-    List<GoodsSalesPriceVo> getShopGoodsBy(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("type") Integer type);
+    List<GoodsSalesPriceVo> getShopGoodsBy(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("type") Integer type,
+                                           @Param("shopId") Integer shopId);
 
-    List<GoodsSalesPriceVo> getShopGoodsOrderBySalesPrice(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("type") Integer type);
+    List<GoodsSalesPriceVo> getShopGoodsOrderBySalesPrice(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("type") Integer type,
+                                                          @Param("shopId") Integer shopId);
 
     List<GoodsSalesPriceVo> getShopGoodsByCategoryId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("categoryId") Integer categoryId);
 
@@ -39,10 +43,12 @@ public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
     GoodsSizeVo getShopGoodsById(Integer id);
 
     List<GoodsSalesPriceVo> getShopGoodsByLikeName(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("type") Integer type,
-                                                   @Param("name") String name);
+                                                   @Param("name") String name, @Param("attributeId") Integer attributeId);
 
     List<GoodsSalesPriceVo> getShopGoodsOnCategoryBy(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("type") Integer type,
                                                      @Param("categoryId") Integer categoryId);
 
     List getShopGoodsByBrandId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("brandId") Integer brandId);
+
+    List<GoodsSalesPriceVo> getIsRecommend(Page page, Wrapper wrapper);
 }

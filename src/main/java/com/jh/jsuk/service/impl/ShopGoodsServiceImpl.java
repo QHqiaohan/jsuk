@@ -37,23 +37,23 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     }
 
     @Override
-    public Page shopGoodsListByAttributeId(Page page, Wrapper wrapper, Integer attributeId) {
+    public Page shopGoodsListByAttributeId(Page page, Wrapper wrapper, Integer attributeId,Integer shopId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
-        page.setRecords(baseMapper.shopGoodsListByAttributeId(page, wrapper, attributeId));
+        page.setRecords(baseMapper.shopGoodsListByAttributeId(page, wrapper, attributeId,shopId));
         return page;
     }
 
     @Override
-    public Page getShopGoodsBy(Page page, Wrapper wrapper, Integer type) {
+    public Page getShopGoodsBy(Page page, Wrapper wrapper, Integer type,Integer shopId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
-        page.setRecords(baseMapper.getShopGoodsBy(page, wrapper, type));
+        page.setRecords(baseMapper.getShopGoodsBy(page, wrapper, type,shopId));
         return page;
     }
 
     @Override
-    public Page getShopGoodsOrderBySalesPrice(Page page, Wrapper wrapper, Integer type) {
+    public Page getShopGoodsOrderBySalesPrice(Page page, Wrapper wrapper, Integer type,Integer shopId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
-        page.setRecords(baseMapper.getShopGoodsOrderBySalesPrice(page, wrapper, type));
+        page.setRecords(baseMapper.getShopGoodsOrderBySalesPrice(page, wrapper, type,shopId));
         return page;
     }
 
@@ -77,9 +77,9 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     }
 
     @Override
-    public Page getShopGoodsByLikeName(Page page, Wrapper wrapper, Integer type, String name) {
+    public Page getShopGoodsByLikeName(Page page, Wrapper wrapper, Integer type, String name,Integer attributeId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
-        page.setRecords(baseMapper.getShopGoodsByLikeName(page, wrapper, type, name));
+        page.setRecords(baseMapper.getShopGoodsByLikeName(page, wrapper, type, name,attributeId));
         return page;
     }
 
@@ -94,6 +94,13 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     public Page getShopGoodsByBrandId(Page page, Wrapper wrapper, Integer brandId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.getShopGoodsByBrandId(page, wrapper, brandId));
+        return page;
+    }
+
+    @Override
+    public Page getIsRecommend(Page page, Wrapper wrapper) {
+        wrapper = SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(baseMapper.getIsRecommend(page, wrapper));
         return page;
     }
 }

@@ -1,7 +1,7 @@
 package com.jh.jsuk.dao;
 
-import com.jh.jsuk.entity.UserAddress;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.jh.jsuk.entity.UserAddress;
 
 /**
  * <p>
@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface UserAddressDao extends BaseMapper<UserAddress> {
 
+    UserAddress getUserAddressbyId(Integer id);
 }

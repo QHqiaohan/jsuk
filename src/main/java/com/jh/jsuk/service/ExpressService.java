@@ -1,7 +1,9 @@
 package com.jh.jsuk.service;
 
-import com.jh.jsuk.entity.Express;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.Express;
 
 /**
  * <p>
@@ -12,5 +14,7 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-06-20
  */
 public interface ExpressService extends IService<Express> {
+
+    Page getExpressListBy(Page page, Wrapper wrapper, Integer status, Integer type, Integer userId);
 
 }

@@ -1,12 +1,14 @@
 package com.jh.jsuk.entity;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableName;
-import java.io.Serializable;
 
 /**
  * <p>
@@ -68,7 +70,7 @@ public class Shop extends Model<Shop> {
      */
     private BigDecimal accountPoint;
     /**
-     * 总访问量 
+     * 总访问量
      */
     private Integer totalVolume;
     /**
@@ -130,7 +132,7 @@ public class Shop extends Model<Shop> {
     }
 
     public String getHeadImg() {
-        return headImg;
+        return StrUtil.trim(headImg);
     }
 
     public void setHeadImg(String headImg) {
@@ -351,29 +353,29 @@ public class Shop extends Model<Shop> {
     @Override
     public String toString() {
         return "Shop{" +
-        "id=" + id +
-        ", modularId=" + modularId +
-        ", headImg=" + headImg +
-        ", shopName=" + shopName +
-        ", address=" + address +
-        ", longitude=" + longitude +
-        ", latitude=" + latitude +
-        ", shopImg=" + shopImg +
-        ", announcement=" + announcement +
-        ", startTime=" + startTime +
-        ", endTime=" + endTime +
-        ", accountPoint=" + accountPoint +
-        ", totalVolume=" + totalVolume +
-        ", deliveryFee=" + deliveryFee +
-        ", starNum=" + starNum +
-        ", provinceId=" + provinceId +
-        ", cityId=" + cityId +
-        ", areaId=" + areaId +
-        ", publishTime=" + publishTime +
-        ", canUse=" + canUse +
-        ", isRecommend=" + isRecommend +
-        ", content=" + content +
-        ", discountInfo=" + discountInfo +
-        "}";
+                "id=" + id +
+                ", modularId=" + modularId +
+                ", headImg=" + headImg +
+                ", shopName=" + shopName +
+                ", address=" + address +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", shopImg=" + shopImg +
+                ", announcement=" + announcement +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", accountPoint=" + accountPoint +
+                ", totalVolume=" + totalVolume +
+                ", deliveryFee=" + deliveryFee +
+                ", starNum=" + starNum +
+                ", provinceId=" + provinceId +
+                ", cityId=" + cityId +
+                ", areaId=" + areaId +
+                ", publishTime=" + publishTime +
+                ", canUse=" + canUse +
+                ", isRecommend=" + isRecommend +
+                ", content=" + content +
+                ", discountInfo=" + discountInfo +
+                "}";
     }
 }

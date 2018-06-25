@@ -1,7 +1,7 @@
 package com.jh.jsuk.dao;
 
-import com.jh.jsuk.entity.SpecialTheme;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.jh.jsuk.entity.SpecialTheme;
 
 /**
  * <p>
@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * </p>
  *
  * @author lpf
- * @since 2018-06-20
+ * @since 2018-06-25
  */
 public interface SpecialThemeDao extends BaseMapper<SpecialTheme> {
 

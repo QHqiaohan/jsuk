@@ -1,9 +1,10 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
 import java.io.Serializable;
 
 /**
@@ -12,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author lpf
- * @since 2018-06-20
+ * @since 2018-06-25
  */
 @TableName("js_special_theme")
 public class SpecialTheme extends Model<SpecialTheme> {
@@ -36,7 +37,11 @@ public class SpecialTheme extends Model<SpecialTheme> {
     /**
      * 数值越大越靠前
      */
-    private String rank;
+    private Integer rank;
+    /**
+     * 店铺ID
+     */
+    private Integer shopId;
 
 
     public Integer getId() {
@@ -71,12 +76,20 @@ public class SpecialTheme extends Model<SpecialTheme> {
         this.isDel = isDel;
     }
 
-    public String getRank() {
+    public Integer getRank() {
         return rank;
     }
 
-    public void setRank(String rank) {
+    public void setRank(Integer rank) {
         this.rank = rank;
+    }
+
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
     }
 
     public static final String ID = "id";
@@ -88,6 +101,8 @@ public class SpecialTheme extends Model<SpecialTheme> {
     public static final String IS_DEL = "is_del";
 
     public static final String RANK = "rank";
+
+    public static final String SHOP_ID = "shop_id";
 
     @Override
     protected Serializable pkVal() {
@@ -102,6 +117,7 @@ public class SpecialTheme extends Model<SpecialTheme> {
         ", mainImage=" + mainImage +
         ", isDel=" + isDel +
         ", rank=" + rank +
+        ", shopId=" + shopId +
         "}";
     }
 }

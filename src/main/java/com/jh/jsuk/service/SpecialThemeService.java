@@ -1,7 +1,7 @@
 package com.jh.jsuk.service;
 
-import com.jh.jsuk.entity.SpecialTheme;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.SpecialTheme;
 
 /**
  * <p>
@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.service.IService;
  * </p>
  *
  * @author lpf
- * @since 2018-06-20
+ * @since 2018-06-25
  */
 public interface SpecialThemeService extends IService<SpecialTheme> {
 
