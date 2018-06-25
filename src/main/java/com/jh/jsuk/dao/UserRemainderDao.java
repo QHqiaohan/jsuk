@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * </p>
  *
  * @author lpf
- * @since 2018-06-21
+ * @since 2018-06-25
  */
 public interface UserRemainderDao extends BaseMapper<UserRemainder> {
 

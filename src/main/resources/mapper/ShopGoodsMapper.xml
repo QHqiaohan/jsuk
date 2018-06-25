@@ -194,7 +194,7 @@
         </if>
         <if test="lowPrice != null">
             <if test="highPrice != null ">
-                AND (BETWEEN sg.#{lowPrice} AND sg.#{highPrice})
+                AND (sgs.sales_price   BETWEEN #{lowPrice} AND  #{highPrice})
             </if>
         </if>
         ORDER BY sg.sale_amont DESC

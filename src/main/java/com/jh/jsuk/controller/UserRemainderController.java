@@ -44,7 +44,7 @@ public class UserRemainderController {
         // 根据用户ID查询用户余额账单
         Page remainderPage = userRemainderService.selectPage(page, new EntityWrapper<UserRemainder>()
                 .eq(UserRemainder.USER_ID, userId)
-                .orderBy(UserRemainder.PUBLISH_TIME, false));
+                .orderBy(UserRemainder.CREATE_TIME, false));
         return new Result().success(remainderPage);
     }
 
