@@ -14,3 +14,10 @@ CHANGE COLUMN `status` `is_read`  int(1) NULL DEFAULT 0 COMMENT '0:未读 1:已�
 -- 添加推送标志位
 ADD COLUMN `is_pushed`  int(1) NULL DEFAULT 0 COMMENT '0:未推送  1:已经推送' AFTER `is_read`;
 ```
+
+### 商品评价
+2018-6-25 15:44:35
+```sql
+ALTER TABLE `js_goods_evaluate`
+CHANGE COLUMN `id_del` `is_del`  int(1) NULL DEFAULT 0 COMMENT '0:否 1:是' AFTER `image`;
+```

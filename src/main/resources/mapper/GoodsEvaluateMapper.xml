@@ -12,12 +12,20 @@
         <result column="star_number" property="starNumber" />
         <result column="content" property="content" />
         <result column="image" property="image" />
-        <result column="id_del" property="idDel" />
+        <result column="is_del" property="isDel" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_id, name, create_time, goods_id, star_number, content, image, id_del
+        id, user_id, name, create_time, goods_id, star_number, content, image, is_del
     </sql>
+
+  <select id="list" resultType="com.jh.jsuk.entity.GoodsEvaluate">
+      select * from js_goods_evaluate
+      <where>
+          ${ew.sqlSegment}
+      </where>
+      limit #{count}
+  </select>
 
 </mapper>

@@ -1,7 +1,11 @@
 package com.jh.jsuk.dao;
 
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.jh.jsuk.entity.GoodsEvaluate;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface GoodsEvaluateDao extends BaseMapper<GoodsEvaluate> {
 
+    List<GoodsEvaluate> list(@Param("ew") Wrapper<GoodsEvaluate> wrapper,@Param("count") Integer count);
 }

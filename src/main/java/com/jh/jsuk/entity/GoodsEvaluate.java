@@ -1,11 +1,12 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -53,7 +54,7 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
     /**
      * 0:否 1:是
      */
-    private Integer idDel;
+    private Integer isDel;
 
 
     public Integer getId() {
@@ -120,12 +121,12 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
         this.image = image;
     }
 
-    public Integer getIdDel() {
-        return idDel;
+    public Integer getIsDel() {
+        return isDel;
     }
 
-    public void setIdDel(Integer idDel) {
-        this.idDel = idDel;
+    public void setIsDel(Integer idDel) {
+        this.isDel = idDel;
     }
 
     public static final String ID = "id";
@@ -144,7 +145,7 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
 
     public static final String IMAGE = "image";
 
-    public static final String ID_DEL = "id_del";
+    public static final String IS_DEL = "is_del";
 
     @Override
     protected Serializable pkVal() {
@@ -162,7 +163,7 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
         ", starNumber=" + starNumber +
         ", content=" + content +
         ", image=" + image +
-        ", idDel=" + idDel +
+        ", isDel=" + isDel +
         "}";
     }
 }

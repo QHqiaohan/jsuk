@@ -1,7 +1,10 @@
 package com.jh.jsuk.service;
 
-import com.jh.jsuk.entity.GoodsEvaluate;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.GoodsEvaluate;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,9 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface GoodsEvaluateService extends IService<GoodsEvaluate> {
 
+    List<GoodsEvaluate> get(Integer goodsId, Integer count) throws Exception;
+
+    Integer count(Integer goodsId) throws Exception;
+
+    Page listPage(Integer goodsId, Page page) throws Exception;
 }
