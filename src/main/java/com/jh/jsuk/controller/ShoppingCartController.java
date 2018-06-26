@@ -40,7 +40,7 @@ public class ShoppingCartController {
                     required = true, paramType = "query", dataType = "integer")
     })
     @PostMapping("/add")
-    public Result add(@ModelAttribute ShoppingCart shoppingCart,Integer userId) {
+    public Result add(@ModelAttribute ShoppingCart shoppingCart, Integer userId) {
         ShoppingCart shoppingCart1 = shoppingCartService.selectOne(new EntityWrapper<ShoppingCart>()
                 .eq(ShoppingCart.USER_ID, userId)
                 .eq(ShoppingCart.SHOP_ID, shoppingCart.getShopId())
@@ -61,13 +61,11 @@ public class ShoppingCartController {
                     required = true, paramType = "query", dataType = "integer")
     })
     @PostMapping("/edit")
-    public Result edit(@RequestBody List<ShoppingCart> shoppingCarts) {
-        for (ShoppingCart shoppingCart : shoppingCarts) {
-            if (shoppingCart.getNum() == 0) {
-                shoppingCart.deleteById();
-            } else {
-                shoppingCart.updateById();
-            }
+    public Result edit(ShoppingCart shoppingCart) {
+        if (shoppingCart.getNum() == 0) {
+            shoppingCart.deleteById();
+        } else {
+            shoppingCart.updateById();
         }
         return new Result().success();
     }
@@ -81,7 +79,7 @@ public class ShoppingCartController {
 
     @ApiOperation("获取用户购物车数量")
     @PostMapping("/getUserCartCount")
-    public Result getUserCartCount(@ApiParam(value = "用户id", required = true) @RequestParam Integer userId, @ApiParam(value = "购物车id", required = true) @RequestParam Integer shoppingCartId) {
+    public Result getUserCartCount(@ApiParam(value = "用户id", required = true) @RequestParam Integer userId) {
         int count = shoppingCartService.selectCount(new MyEntityWrapper<ShoppingCart>().eq(ShoppingCart.USER_ID, userId));
         return new Result().success("购物车数量从新成功", count);
     }
