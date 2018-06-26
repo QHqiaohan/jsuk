@@ -99,14 +99,14 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
         news.setCreateTime(new Date());
         insert(news);
         for (Integer receivedUserId : receivedUserIds) {
+            Integer newsId = news.getId();
+            NewsUser newsUser = new NewsUser();
+            newsUser.setNewsId(newsId);
+            newsUser.setReceivedId(receivedUserId);
+            newsUser.setIsPushed(0);
+            newsUser.setIsRead(0);
+            newsUser.insert();
             pushTaskExecutor.execute(() -> {
-                Integer newsId = news.getId();
-                NewsUser newsUser = new NewsUser();
-                newsUser.setNewsId(newsId);
-                newsUser.setReceivedId(receivedUserId);
-                newsUser.setIsPushed(0);
-                newsUser.setIsRead(0);
-                newsUserService.insert(newsUser);
                 try {
                     JPushUtils.push(String.valueOf(receivedUserId), news.getContent(), news.getTitle(), new HashMap<>());
                     newsUser.setIsPushed(1);
@@ -119,6 +119,9 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
     }
 
     public void setRead(List<Integer> newsIds, Integer userId) {
+        if (newsIds == null || newsIds.isEmpty()) {
+            return;
+        }
         Wrapper<NewsUser> wpr = new EntityWrapper<>();
         wpr.in(NewsUser.NEWS_ID, newsIds)
                 .eq(NewsUser.RECEIVED_ID, userId)
