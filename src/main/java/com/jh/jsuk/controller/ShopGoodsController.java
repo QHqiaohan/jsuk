@@ -10,13 +10,16 @@ import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.StatisticsPrice;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
-import com.jh.jsuk.service.*;
+import com.jh.jsuk.service.GoodsLabelService;
+import com.jh.jsuk.service.ShopGoodsService;
+import com.jh.jsuk.service.ShopService;
+import com.jh.jsuk.service.StatisticsPriceService;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,8 +41,6 @@ public class ShopGoodsController {
     @Autowired
     private ShopGoodsService shopGoodsService;
     @Autowired
-    private ShopGoodsSizeService shopGoodsSizeService;
-    @Autowired
     private GoodsLabelService goodsLabelService;
     @Autowired
     private ShopService shopService;
@@ -53,7 +54,7 @@ public class ShopGoodsController {
             @ApiImplicitParam(name = "attributeId", value = "属性ID,不传=全部商品", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "shopId", value = "店铺ID", paramType = "query", dataType = "integer")
     })
-    @GetMapping("/getShopGoodsByAttributeId")
+    @RequestMapping(value = "/getShopGoodsByAttributeId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopGoodsByAttributeId(Integer attributeId, Page page, Integer shopId) {
         MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
         Page goodsPage = shopGoodsService.shopGoodsListByAttributeId(page, ew, attributeId, shopId);
@@ -67,7 +68,7 @@ public class ShopGoodsController {
             @ApiImplicitParam(name = "type", value = "1=价格降序/-1升序,2=销量,3=新品,不传=默认综合", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "shopId", required = true, value = "店铺ID", paramType = "query", dataType = "integer")
     })
-    @GetMapping("/getShopGoodsBy")
+    @RequestMapping(value = "/getShopGoodsBy", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopGoodsBy(Page page, Integer type, Integer shopId) {
         // 按价格查询
         if (type != null) {
@@ -81,7 +82,7 @@ public class ShopGoodsController {
             Page goodsPage = shopGoodsService.getShopGoodsBy(page, ew, type, shopId);
             return new Result().success(goodsPage);
         }
-        return  new Result().success("暂无数据",null);
+        return new Result().success("暂无数据", null);
     }
 
     @ApiOperation(value = "用户端-根据商品类型获取商品列表")
@@ -90,7 +91,7 @@ public class ShopGoodsController {
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "categoryId", value = "类型ID", required = true, paramType = "query", dataType = "integer")
     })
-    @GetMapping("/getShopGoodsByCategoryId")
+    @RequestMapping(value = "/getShopGoodsByCategoryId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopGoodsByCategoryId(Page page, Integer categoryId) {
         MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
         Page goodsPage = shopGoodsService.getShopGoodsByCategoryId(page, ew, categoryId);
@@ -103,7 +104,7 @@ public class ShopGoodsController {
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "categoryId", value = "类型ID", required = true, paramType = "query", dataType = "integer"),
     })
-    @GetMapping("/getShopGoodsOnCategoryBy")
+    @RequestMapping(value = "/getShopGoodsOnCategoryBy", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopGoodsOnCategoryBy(Page page, Integer categoryId, @ApiParam("1=价格降序/-1升序,2=销量") Integer type) {
         MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
         Page goodsPage = shopGoodsService.getShopGoodsOnCategoryBy(page, ew, type, categoryId);
@@ -119,7 +120,7 @@ public class ShopGoodsController {
             @ApiImplicitParam(name = "highPrice", value = "最高价格", paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "categoryId", value = "类型ID", required = true, paramType = "query", dataType = "integer")
     })
-    @GetMapping("/getShopGoodsByServiceOrPrice")
+    @RequestMapping(value = "/getShopGoodsByServiceOrPrice", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopGoodsByServiceOrPrice(Page page, Integer goodsType, String lowPrice, String highPrice, Integer categoryId) {
         MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
         Page goodsPage = shopGoodsService.getShopGoodsByServiceOrPrice(page, ew, goodsType, lowPrice, highPrice, categoryId);
@@ -149,7 +150,7 @@ public class ShopGoodsController {
     }
 
     @ApiOperation("用户端-根据商品ID查看商品信息")
-    @GetMapping("/getShopGoodsById")
+    @RequestMapping(value = "/getShopGoodsById", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopGoodsById(@ApiParam(value = "商品ID", required = true) @RequestParam Integer id) {
         // 封装结果map
         Map<String, Object> map = MapUtil.newHashMap();
@@ -178,7 +179,7 @@ public class ShopGoodsController {
             @ApiImplicitParam(name = "attributeId", value = "属性ID", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "modularId", value = "模块ID", paramType = "query", dataType = "integer")
     })
-    @GetMapping("/getShopListByLike")
+    @RequestMapping(value = "/getShopListByLike", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopListByLike(Page page, Integer type, String name, Integer modularId, Integer attributeId) {
         if (type == 2) {
             // 店铺模糊查询

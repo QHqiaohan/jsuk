@@ -37,7 +37,8 @@
     </resultMap>
 
     <select id="findShopGoodsByModularId" resultMap="GoodsSalesPriceVo">
-        SELECT *
+        SELECT
+        *
         FROM
             js_shop_goods
         WHERE

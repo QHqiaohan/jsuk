@@ -11,7 +11,6 @@ import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -79,7 +78,7 @@ public class ActivityController {
          * 快报
          */
         Page<ExpressNews> expressNewsPage = expressNewsService.selectPage(
-                new Page<>(1, 1),
+                new Page<>(1, 4),
                 new EntityWrapper<ExpressNews>()
                         // 1=首页
                         .eq(ExpressNews.TYPE, 1)
@@ -134,7 +133,7 @@ public class ActivityController {
     }
 
     @ApiOperation("城乡优购&本地商城&聚鲜U客-获取banner/分类/快报")
-    @GetMapping("/getNiceChoose")
+    @RequestMapping(value = "/getNiceChoose", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getNiceChoose(@ApiParam(value = "模块ID", required = true) Integer modularId) {
         // 封装结果map
         Map<String, Object> map = new HashMap<>();
@@ -152,7 +151,7 @@ public class ActivityController {
              * 快报
              */
             Page<ExpressNews> expressNewsPage = expressNewsService.selectPage(
-                    new Page<>(1, 1),
+                    new Page<>(1, 4),
                     new EntityWrapper<ExpressNews>()
                             .eq(ExpressNews.IS_DEL, 0)
                             .eq(ExpressNews.TYPE, 2)
@@ -183,7 +182,7 @@ public class ActivityController {
              * 快报
              */
             Page<ExpressNews> expressNewsPage = expressNewsService.selectPage(
-                    new Page<>(1, 1),
+                    new Page<>(1, 4),
                     new EntityWrapper<ExpressNews>()
                             .eq(ExpressNews.IS_DEL, 0)
                             .eq(ExpressNews.TYPE, 3)
@@ -213,7 +212,7 @@ public class ActivityController {
              * 快报
              */
             Page<ExpressNews> expressNewsPage = expressNewsService.selectPage(
-                    new Page<>(1, 1),
+                    new Page<>(1, 4),
                     new EntityWrapper<ExpressNews>()
                             .eq(ExpressNews.IS_DEL, 0)
                             .eq(ExpressNews.TYPE, 4)
@@ -234,7 +233,7 @@ public class ActivityController {
     }
 
     @ApiOperation("特色家乡&直销平台-banner/分类")
-    @GetMapping("/getMoreInfo")
+    @RequestMapping(value = "/getMoreInfo", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getMoreInfo(@ApiParam(value = "模块ID", required = true) Integer modularId) {
         // 封装结果map
         Map<String, Object> map = new HashMap<>();
@@ -284,7 +283,7 @@ public class ActivityController {
     }
 
     @ApiOperation("会员商城-获取banner")
-    @GetMapping("/getVipShop")
+    @RequestMapping(value = "/getVipShop", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getVipShop(@ApiParam(value = "模块ID", required = true) Integer modularId) {
         // 封装结果map
         Map<String, Object> map = new HashMap<>();
@@ -315,7 +314,7 @@ public class ActivityController {
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer")
     })
-    @GetMapping("/getIsRecommend")
+    @RequestMapping(value = "/getIsRecommend", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getIsRecommend(Page page) {
         MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
         Page goodsPage = shopGoodsService.getIsRecommend(page, ew);
