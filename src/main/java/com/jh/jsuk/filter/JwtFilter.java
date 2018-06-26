@@ -119,6 +119,8 @@ public class JwtFilter implements Filter {
                 || servletPath.indexOf("/getKillTime") != -1
                 // 根据时间查询秒杀商品
                 || servletPath.indexOf("/findKillShopGoods") != -1
+                // 根据筛选条件查询商品列表
+                || servletPath.indexOf("/getShopGoodsByServiceOrPrice") != -1
             ////////////////////////////////////////////////
             //方便ios上架开放接口 TODO 上架后最好注掉
             //|| servletPath.indexOf("/banner") != -1
