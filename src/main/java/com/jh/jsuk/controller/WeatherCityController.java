@@ -43,12 +43,12 @@ public class WeatherCityController {
 
     @ApiOperation("查询天气信息信息")
     @RequestMapping("weather/query")
-    public Result queryWeather(@ApiParam(value = "城市名称 eg:成都", required = true) @RequestParam String countyname) {
-        if (StrUtil.isBlank(countyname)) {
+    public Result queryWeather(@ApiParam(value = "城市名称 eg:成都", required = true) @RequestParam String countyName) {
+        if (StrUtil.isBlank(countyName)) {
             return new Result().erro("参数错误");
         }
         try {
-            WeatherCity weatherCity = weatherCityService.selectOne(new MyEntityWrapper<WeatherCity>().eq(WeatherCity.COUNTY_NAME, countyname.trim()));
+            WeatherCity weatherCity = weatherCityService.selectOne(new MyEntityWrapper<WeatherCity>().eq(WeatherCity.COUNTY_NAME, countyName.trim()));
             if (weatherCity == null) {
                 return new Result().erro("暂无城市数据");
             }

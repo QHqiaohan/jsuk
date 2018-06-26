@@ -10,12 +10,18 @@ import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.StatisticsPrice;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
-import com.jh.jsuk.service.*;
+import com.jh.jsuk.service.GoodsLabelService;
+import com.jh.jsuk.service.ShopGoodsService;
+import com.jh.jsuk.service.ShopService;
+import com.jh.jsuk.service.StatisticsPriceService;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -29,13 +35,11 @@ import java.util.Map;
  */
 @Api(tags = "商品相关API:")
 @RestController
-@RequestMapping(value = "/shopGoods", method = {RequestMethod.POST, RequestMethod.GET})
+@RequestMapping("/shopGoods")
 public class ShopGoodsController {
 
     @Autowired
     private ShopGoodsService shopGoodsService;
-    @Autowired
-    private ShopGoodsSizeService shopGoodsSizeService;
     @Autowired
     private GoodsLabelService goodsLabelService;
     @Autowired

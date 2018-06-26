@@ -1,7 +1,9 @@
 package com.jh.jsuk.service;
 
-import com.jh.jsuk.entity.WeatherCity;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.WeatherCity;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface WeatherCityService extends IService<WeatherCity> {
 
+    List<WeatherCity> getOpenCityList();
 }

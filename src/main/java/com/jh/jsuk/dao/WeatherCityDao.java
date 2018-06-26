@@ -1,7 +1,9 @@
 package com.jh.jsuk.dao;
 
-import com.jh.jsuk.entity.WeatherCity;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.jh.jsuk.entity.WeatherCity;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface WeatherCityDao extends BaseMapper<WeatherCity> {
 
+    List<WeatherCity> getOpenCityList();
 }

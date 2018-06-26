@@ -4,13 +4,21 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.WeatherCity">
-        <id column="area_id" property="areaId" />
-        <result column="county_name" property="countyName" />
+        <id column="area_id" property="areaId"/>
+        <result column="county_name" property="countyName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         area_id, county_name
     </sql>
+
+    <select id="getOpenCityList" resultMap="BaseResultMap">
+        SELECT
+            swc.*
+        FROM
+            js_sys_weather_city_open swco
+        LEFT JOIN js_sys_weather_city swc ON swco.weather_city_id = swc.area_id
+    </select>
 
 </mapper>
