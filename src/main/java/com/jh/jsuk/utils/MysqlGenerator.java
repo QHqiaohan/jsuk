@@ -85,8 +85,6 @@ public class MysqlGenerator {
                         // 自定义实体，公共字段
                         //.setSuperEntityColumns(new String[]{"test_id"})
                         .setTableFillList(tableFillList)
-                        .setEntityLombokModel(true)
-                        .setCapitalMode(true)
                         // 自定义 mapper 父类
                         // .setSuperMapperClass("com.baomidou.demo.TestMapper")
                         // 自定义 service 父类

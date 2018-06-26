@@ -10,14 +10,13 @@ import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.ModularPortalVo;
 import com.jh.jsuk.service.ModularPortalService;
 import com.jh.jsuk.service.ShopGoodsService;
-import com.jh.jsuk.service.ShopGoodsSizeService;
 import com.jh.jsuk.service.ShopService;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -42,46 +41,9 @@ public class ModularPortalController {
     private ShopGoodsService shopGoodsService;
     @Autowired
     private ShopService shopService;
-    @Autowired
-    private ShopGoodsSizeService shopGoodsSizeService;
 
-/*    @ApiOperation("用户端-根据模块ID获取商品/店铺列表")
-    @PostMapping("/getByModular")
-    public Result getByModular(@ApiParam(value = "模块ID", required = true) Integer modularId) {
-        // 封装数据map
-        Map<String, Object> map = MapUtil.newHashMap();
-        *//**
-     * 商品推荐
-     *//*
-        Page<ShopGoods> shopGoodsPage = shopGoodsService.selectPage(
-                new Page<>(1, 4),
-                new EntityWrapper<ShopGoods>()
-                        // 商品状态.0-待审核 1-在售 2-下架
-                        .eq(ShopGoods.STATUS, 1)
-                        // 是否推荐,0=不推荐,1=推荐
-                        .eq(ShopGoods.IS_RECOMMEND, 1)
-                        .eq(ShopGoods.SHOP_MODULAR_ID, modularId)
-                        .orderBy(ShopGoods.SALE_AMONT, false));
-        map.put("shopGoods", shopGoodsPage.getRecords());
-        */
-
-    /**
-     * 店铺列表
-     *//*
-        Page<Shop> shopPage = shopService.selectPage(
-                new Page<>(1, 3),
-                new EntityWrapper<Shop>()
-                        // 是否可用  0不可用 1可用
-                        .eq(Shop.CAN_USE, 1)
-                        // 是否推荐,0=不推荐,1=推荐
-                        .eq(Shop.IS_RECOMMEND, 1)
-                        .eq(Shop.MODULAR_ID, modularId)
-                        .orderBy(Shop.TOTAL_VOLUME, false));
-        map.put("shop", shopPage.getRecords());
-        return new Result().success();
-    }*/
     @ApiOperation(value = "用户端-根据模块ID获取店铺/商品列表")
-    @GetMapping("/getShopAndGoodsByModular")
+    @RequestMapping(value = "/getShopAndGoodsByModular", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopAndGoodsByModular(@ApiParam(value = "模块ID", required = true) Integer modularId) {
         // 封装数据map
         Map<String, Object> map = MapUtil.newHashMap();
@@ -114,7 +76,7 @@ public class ModularPortalController {
             @ApiImplicitParam(name = "size", value = "每页条数",
                     paramType = "query", dataType = "integer"),
     })
-    @GetMapping("/shopListByModularId")
+    @RequestMapping(value = "/shopListByModularId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result shopListByModularId(Page page, @ApiParam(value = "模块ID", required = true) Integer modularId) {
         if (modularId == 0) {
             // 首页更多精选商家
@@ -143,7 +105,7 @@ public class ModularPortalController {
             @ApiImplicitParam(name = "size", value = "每页条数",
                     paramType = "query", dataType = "integer"),
     })
-    @GetMapping("/shopGoodsListByModularId")
+    @RequestMapping(value = "/shopGoodsListByModularId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result shopGoodsListByModularId(Page page, @ApiParam(value = "模块ID", required = true) Integer modularId) {
         MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
         Page goodsSizeVoList = shopGoodsService.shopGoodsListByModularId(page, ew, modularId);
@@ -151,7 +113,7 @@ public class ModularPortalController {
     }
 
     @ApiOperation(value = "商家端-获取分类列表")
-    @GetMapping("/getModularList")
+    @RequestMapping(value = "/getModularList", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getModularList() {
         List<ModularPortalVo> modularPortalVoList = modularPortalService.getModularList();
         return new Result().success(modularPortalVoList);

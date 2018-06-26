@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Api(tags = {"意见反馈:"})
 @RestController
-@RequestMapping("/feedback")
+@RequestMapping(value = "/feedback", method = {RequestMethod.POST, RequestMethod.GET})
 public class FeedbackController {
 
     @Autowired
@@ -40,7 +40,7 @@ public class FeedbackController {
     }
 
     @ApiOperation("获取意见反馈")
-    @GetMapping("/ui/list")
+    @RequestMapping("/ui/list")
     public Result uiList(Page page) {
         Page feedbackPage = feedbackService.selectPage(page, new EntityWrapper<Feedback>()
                 .orderBy(Feedback.PUBLISH_TIME, false));

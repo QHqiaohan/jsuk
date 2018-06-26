@@ -9,7 +9,7 @@ import com.jh.jsuk.entity.SpecialTheme;
  * </p>
  *
  * @author lpf
- * @since 2018-06-25
+ * @since 2018-06-26
  */
 public interface SpecialThemeDao extends BaseMapper<SpecialTheme> {
 

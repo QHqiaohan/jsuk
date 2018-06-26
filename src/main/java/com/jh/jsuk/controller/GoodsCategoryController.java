@@ -36,7 +36,7 @@ import java.util.Map;
  */
 @Api(tags = "商品类型相关API:")
 @RestController
-@RequestMapping("/goodsCategory")
+@RequestMapping(value = "/goodsCategory", method = {RequestMethod.POST, RequestMethod.GET})
 public class GoodsCategoryController {
 
     @Autowired
@@ -45,7 +45,7 @@ public class GoodsCategoryController {
     private GoodsCategoryService goodsCategoryService;
 
     @ApiOperation("用户端-获取商品所有类型")
-    @GetMapping(value = "/getAllCategory")
+    @RequestMapping(value = "/getAllCategory")
     public Result getAllCategory() {
         /**
          * 商品类型
@@ -94,7 +94,7 @@ public class GoodsCategoryController {
     }
 
     @ApiIgnore
-    @GetMapping("/get_category")
+    @RequestMapping("/get_category")
     public Result getChildrenParallelCategory(HttpSession session, @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
         //查询子节点的category信息,并且不递归,保持平级
         return goodsCategoryService.getChildrenParallelCategory(categoryId);
@@ -122,7 +122,7 @@ public class GoodsCategoryController {
     }
 
     @ApiIgnore
-    @GetMapping("get_deep_category")
+    @RequestMapping("get_deep_category")
     public Result getCategoryAndDeepChildrenCategory(HttpSession session, @RequestParam(value = "categoryId", defaultValue = "0") Integer
             categoryId) {
         //查询当前节点的id和递归子节点的id
@@ -131,7 +131,7 @@ public class GoodsCategoryController {
     }
 
     @ApiIgnore
-    @GetMapping("get_category_list")
+    @RequestMapping("get_category_list")
     public Result getCategoryList(Integer size, Integer current) {
         Page selectPage = goodsCategoryService.selectPage(
                 new Page<>(current, size),

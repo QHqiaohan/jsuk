@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
@@ -56,7 +57,7 @@ public class ShopController {
     private UserRemainderService userRemainderService;
 
     @ApiOperation("用户端-根据店铺id查看店铺信息")
-    @GetMapping("/getShopById")
+    @RequestMapping(value = "/getShopById", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopById(@ApiParam(value = "店铺id", required = true) Integer shopId, Integer userId) {
         ShopTelPhoneVo shop = shopService.getShopById(shopId);
         if (shop == null) {
@@ -108,7 +109,7 @@ public class ShopController {
             @ApiImplicitParam(name = "shopId", value = "店铺id", required = true, paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "today", value = "当前日期", required = true, paramType = "query", dataType = "string")
     })
-    @GetMapping("/getTodayVisit")
+    @RequestMapping(value = "/getTodayVisit", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getTodayVisit(Page page, Integer shopId, String today) {
         MyEntityWrapper<ShopVisitorVo> ew = new MyEntityWrapper<>();
         Page visitList = shopVisitService.getVisitList(page, ew, shopId, today);
@@ -122,7 +123,7 @@ public class ShopController {
             @ApiImplicitParam(name = "shopId", value = "店铺id", required = true, paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "today", value = "当前日期", required = true, paramType = "query", dataType = "string")
     })
-    @PostMapping("/getTodayMoney")
+    @RequestMapping(value = "/getTodayMoney", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getTodayMoney(Page page, Integer shopId, String today) {
         MyEntityWrapper<ShopVisitorVo> ew = new MyEntityWrapper<>();
         Page moneyList = shopTodayMoneyService.getTodayMoneyList(page, ew, shopId, today);
@@ -130,59 +131,59 @@ public class ShopController {
     }
 
     @ApiOperation("用户端-根据店铺id查看店铺内部的商品分类-属性")
-    @GetMapping("/getShopAttributeByShopId")
+    @RequestMapping(value = "/getShopAttributeByShopId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopAttributeByShopId(@ApiParam(value = "店铺id", required = true) Integer shopId) {
         ShopAttributeVo attributeVo = shopAttributeGoodsService.getShopAttributeByShopId(shopId);
         return new Result().success(attributeVo);
     }
 
     @ApiOperation("用户端-显示收藏的店铺列表")
-    @GetMapping("/collect")
+    @RequestMapping(value = "/collect", method = {RequestMethod.POST, RequestMethod.GET})
     public Result list(Integer userId) {
         List<Shop> shops = shopService.findCollectByUserId(userId);
         return new Result().success(shops);
     }
 
-/*    @ApiOperation("用户端-搜索店铺列表")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "current", value = "当前页码",
-                    required = false, paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数",
-                    required = false, paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "cityId", value = "城市id",
-                    required = false, paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "areaId", value = "区县id",
-                    required = false, paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "longitude",
-                    required = false, value = "经度", paramType = "query", dataType = "double"),
-            @ApiImplicitParam(name = "latitude",
-                    required = false, value = "纬度", paramType = "query", dataType = "double"),
-    })
-    @PostMapping("/list")
-    public Result list(@ApiParam(hidden = true) Page page,
-                       @RequestParam(required = false) Integer cityId,
-                       @RequestParam(required = false) Integer areaId,
-                       @RequestParam(required = false) @ApiParam(value = "标签ID") Integer goodsLabelId,
-                       @RequestParam(required = false) @ApiParam(value = "店铺或商品名称") String name,
-                       @RequestParam(required = false, defaultValue = "0") @ApiParam("智能排序 0降序 1升序") Integer rank,
-                       @RequestParam(required = false) Double longitude,
-                       @RequestParam(required = false) Double latitude) {
-        boolean order = false;
-        if (rank != 0) {
-            order = true;
-        }
-        page.setSize(100);
-        List<ShopVo> shopList = shopService.findByList(page, cityId, areaId, goodsLabelId, name, order);
-        if (shopList != null && shopList.size() > 0) {
-            for (ShopVo shopVo : shopList) {
-                shopVo.setDistance(longitude, latitude);
+    /*    @ApiOperation("用户端-搜索店铺列表")
+        @ApiImplicitParams(value = {
+                @ApiImplicitParam(name = "current", value = "当前页码",
+                        required = false, paramType = "query", dataType = "integer"),
+                @ApiImplicitParam(name = "size", value = "每页条数",
+                        required = false, paramType = "query", dataType = "integer"),
+                @ApiImplicitParam(name = "cityId", value = "城市id",
+                        required = false, paramType = "query", dataType = "integer"),
+                @ApiImplicitParam(name = "areaId", value = "区县id",
+                        required = false, paramType = "query", dataType = "integer"),
+                @ApiImplicitParam(name = "longitude",
+                        required = false, value = "经度", paramType = "query", dataType = "double"),
+                @ApiImplicitParam(name = "latitude",
+                        required = false, value = "纬度", paramType = "query", dataType = "double"),
+        })
+        @PostMapping("/list")
+        public Result list(@ApiParam(hidden = true) Page page,
+                           @RequestParam(required = false) Integer cityId,
+                           @RequestParam(required = false) Integer areaId,
+                           @RequestParam(required = false) @ApiParam(value = "标签ID") Integer goodsLabelId,
+                           @RequestParam(required = false) @ApiParam(value = "店铺或商品名称") String name,
+                           @RequestParam(required = false, defaultValue = "0") @ApiParam("智能排序 0降序 1升序") Integer rank,
+                           @RequestParam(required = false) Double longitude,
+                           @RequestParam(required = false) Double latitude) {
+            boolean order = false;
+            if (rank != 0) {
+                order = true;
             }
-            //根据距离排序
-            //Collections.sort(shopList, new DistanceComparator());
-        }
-        return new Result().success(shopList);
-    }*/
-
+            page.setSize(100);
+            List<ShopVo> shopList = shopService.findByList(page, cityId, areaId, goodsLabelId, name, order);
+            if (shopList != null && shopList.size() > 0) {
+                for (ShopVo shopVo : shopList) {
+                    shopVo.setDistance(longitude, latitude);
+                }
+                //根据距离排序
+                //Collections.sort(shopList, new DistanceComparator());
+            }
+            return new Result().success(shopList);
+        }*/
+    @ApiIgnore
     @PostMapping("/ui/edit")
     public Result uiEdit(HttpSession session, @ModelAttribute Shop shop) {
         Integer adminRole = Integer.parseInt(session.getAttribute("adminRole").toString());
@@ -193,7 +194,8 @@ public class ShopController {
         return new Result().success();
     }
 
-    @GetMapping("/ui/all")
+    @ApiIgnore
+    @RequestMapping("/ui/all")
     public Result all() {
         List<Shop> shops = shopService.selectList(null);
         return new Result().success(shops);
@@ -230,7 +232,7 @@ public class ShopController {
             @ApiImplicitParam(name = "amount", value = "交易金额",
                     required = true, paramType = "query", dataType = "string")
     })
-    @PostMapping("/pay")
+    @RequestMapping(value = "/pay", method = {RequestMethod.POST, RequestMethod.GET})
     public Result pay(Integer shopId, Integer userId, String amount) {
         BigDecimal bigDecimal = new BigDecimal(amount);
         Result<Object> result = new Result<>();

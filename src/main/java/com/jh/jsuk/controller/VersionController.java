@@ -10,7 +10,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * <p>
@@ -60,12 +64,14 @@ public class VersionController {
         }
     }
 
-    @GetMapping("/ui/list")
+    @ApiIgnore
+    @RequestMapping("/ui/list")
     public Result uiList(Page page) {
         Page versionPage = versionService.selectPage(page);
         return new Result().success(versionPage);
     }
 
+    @ApiIgnore
     @PostMapping("/ui/edit")
     public Result uiEdit(Version version) {
         version.updateById();

@@ -23,32 +23,34 @@
         <result column="sale_amont" property="saleAmont"/>
         <result column="goods_type" property="goodsType"/>
         <result column="category_id" property="categoryId"/>
+        <result column="address" property="address"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, shop_id, attribute_id, shop_modular_id, is_recommend, goods_label_id, goods_name, goods_img, goods_desc, status, is_del, create_time,
-        update_time, main_image, goods_break, sale_amont, goods_type, category_id, brand_id
+        update_time, main_image, goods_break, sale_amont, goods_type, category_id, brand_id, address
     </sql>
 
     <resultMap id="GoodsSalesPriceVo" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
-        <association property="salesPrice" column="id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.getSalesPriceByGoodsId"></association>
+        <association property="salesPrice" column="id"
+                     select="com.jh.jsuk.dao.ShopGoodsSizeDao.getSalesPriceByGoodsId"></association>
     </resultMap>
 
     <select id="findShopGoodsByModularId" resultMap="GoodsSalesPriceVo">
         SELECT
-           *
+        *
         FROM
             js_shop_goods
         WHERE
             is_recommend = '1'
-        AND `status` = '1'
-        AND is_del = '1'
-        AND shop_modular_id = #{modularId}
+            AND `status` = '1'
+            AND is_del = '1'
+            AND shop_modular_id = #{modularId}
         ORDER BY
             sale_amont DESC
         LIMIT 1,
-         4
+            4
     </select>
 
     <select id="shopGoodsListByAttributeId" resultMap="GoodsSalesPriceVo">
@@ -78,7 +80,6 @@
         WHERE
         `status` = '1'
         AND is_del = '1'
-        AND attribute_id = #{attributeId}
         AND goods_name LIKE CONCAT('%', #{name}, '%')
         ORDER BY
         sale_amont DESC
@@ -176,6 +177,8 @@
         js_shop_goods sg
         LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
         WHERE sg.category_id = #{categoryId}
+        and sg.status = 1
+        and sg.is_del = 1
         ORDER BY sg.sale_amont DESC
         <where>
             ${ew.sqlSegment}
@@ -194,7 +197,7 @@
         </if>
         <if test="lowPrice != null">
             <if test="highPrice != null ">
-                AND (sgs.sales_price   BETWEEN #{lowPrice} AND  #{highPrice})
+                AND (sgs.sales_price BETWEEN #{lowPrice} AND #{highPrice})
             </if>
         </if>
         ORDER BY sg.sale_amont DESC
@@ -204,7 +207,8 @@
     </select>
 
     <resultMap id="GoodsSizeVo" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
-        <association property="shopGoodsSize" column="id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.getGoodsSizeByGoodsId"></association>
+        <association property="shopGoodsSize" column="id"
+                     select="com.jh.jsuk.dao.ShopGoodsSizeDao.getGoodsSizeByGoodsId"></association>
     </resultMap>
 
     <select id="shopGoodsListByModularId" resultMap="GoodsSizeVo">
@@ -219,11 +223,10 @@
     </select>
 
     <select id="getShopGoodsById" resultMap="GoodsSizeVo">
-        SELECT
-        *
+        SELECT *
         FROM js_shop_goods
         WHERE
-        id = #{id}
+            id = #{id}
     </select>
 
     <select id="getShopGoodsByBrandId" resultMap="GoodsSalesPriceVo">

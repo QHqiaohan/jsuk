@@ -40,7 +40,7 @@ import java.util.*;
 @Slf4j
 @Api(tags = {"用户登录相关操作API:"})
 @RestController
-@RequestMapping("/user")
+@RequestMapping(value = "/user", method = {RequestMethod.POST, RequestMethod.GET})
 public class UserController {
     @Autowired
     UserRemainderService userRemainderService;
@@ -517,7 +517,7 @@ public class UserController {
         return new Result().success(map);
     }
 
-    @GetMapping("/ui/getUserList")
+    @RequestMapping("/ui/getUserList")
     public Result getUserList(Page page, @RequestParam(required = false) String phone) {
         Page userPage = userService.selectPage(page, new MyEntityWrapper<User>().like(User.PHONE, phone).orderDesc(Collections.singleton(User
                 .CREATE_TIME)));

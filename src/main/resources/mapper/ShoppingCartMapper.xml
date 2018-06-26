@@ -28,7 +28,7 @@
     <select id="selectVoList" resultMap="ShoppingCartVo">
         SELECT
         <include refid="Base_Column_List"></include>
-        FROM t_shopping_cart
+        FROM js_shopping_cart
         <where>
             ${ew.sqlSegment}
         </where>

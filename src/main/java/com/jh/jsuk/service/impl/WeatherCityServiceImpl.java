@@ -1,10 +1,12 @@
 package com.jh.jsuk.service.impl;
 
-import com.jh.jsuk.entity.WeatherCity;
-import com.jh.jsuk.dao.WeatherCityDao;
-import com.jh.jsuk.service.WeatherCityService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.jh.jsuk.dao.WeatherCityDao;
+import com.jh.jsuk.entity.WeatherCity;
+import com.jh.jsuk.service.WeatherCityService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class WeatherCityServiceImpl extends ServiceImpl<WeatherCityDao, WeatherCity> implements WeatherCityService {
 
+    @Override
+    public List<WeatherCity> getOpenCityList() {
+        return baseMapper.getOpenCityList();
+    }
 }

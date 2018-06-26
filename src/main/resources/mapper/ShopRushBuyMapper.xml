@@ -4,15 +4,43 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopRushBuy">
-        <id column="id" property="id" />
-        <result column="start_time" property="startTime" />
-        <result column="end_time" property="endTime" />
-        <result column="status" property="status" />
+        <id column="id" property="id"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="status" property="status"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, start_time, end_time, status
     </sql>
+
+    <resultMap id="ShopGoodsKillVo" type="com.jh.jsuk.entity.vo.ShopGoodsKillVo" extends="BaseResultMap">
+        <result column="sales_price" property="salesPrice"/>
+        <result column="original_price" property="originalPrice"/>
+        <result column="kill_price" property="killPrice"/>
+        <result column="kill_stock" property="killStock"/>
+    </resultMap>
+
+    <select id="getShopRushBuyList" resultMap="ShopGoodsKillVo">
+        SELECT
+        srb.`status`,
+        sgs.sales_price,
+        sgs.original_price,
+        sgs.kill_price,
+        sgs.kill_stock,
+        sg.*
+        FROM
+        js_shop_rush_buy_size srbs
+        LEFT JOIN js_shop_rush_buy srb ON srbs.rush_buy_id = srb.id
+        LEFT JOIN js_shop_goods_size sgs ON sgs.id = srbs.goods_size_id
+        LEFT JOIN js_shop_goods sg ON sgs.shop_goods_id = sg.id
+        WHERE
+        srb.start_time &gt;= #{startTime}
+        AND srb.end_time &lt;= #{endTime}
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
 
 </mapper>

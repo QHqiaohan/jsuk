@@ -95,6 +95,10 @@ public class ShopGoods extends Model<ShopGoods> {
      * 类型ID
      */
     private Integer categoryId;
+    /**
+     * 地址
+     */
+    private String address;
 
 
     public Integer getId() {
@@ -249,6 +253,14 @@ public class ShopGoods extends Model<ShopGoods> {
         this.goodsType = goodsType;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public static final String ID = "id";
 
     public static final String SHOP_ID = "shop_id";
@@ -287,6 +299,8 @@ public class ShopGoods extends Model<ShopGoods> {
 
     public static final String CATEGORY_ID = "category_id";
 
+    public static final String ADDRESS = "address";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -314,6 +328,7 @@ public class ShopGoods extends Model<ShopGoods> {
                 ", saleAmont=" + saleAmont +
                 ", goodsType=" + goodsType +
                 ", categoryId=" + categoryId +
+                ", address='" + address + '\'' +
                 '}';
     }
 }

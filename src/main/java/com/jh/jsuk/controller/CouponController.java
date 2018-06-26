@@ -180,7 +180,7 @@ public class CouponController {
         return new Result().success(couponPage);
     }
 
-    @GetMapping("/ui/list")
+    @RequestMapping("/ui/list")
     public Result uiList(Page page) {
         Page couponPage = couponService.selectPage(page, new EntityWrapper<Coupon>()
                 .eq(Coupon.IS_DEL, 1)
@@ -194,7 +194,7 @@ public class CouponController {
         return new Result().success();
     }
 
-    @GetMapping("/ui/del")
+    @RequestMapping("/ui/del")
     public Result del(Coupon coupon) {
         coupon.setIsDel(0);
         coupon.updateById();

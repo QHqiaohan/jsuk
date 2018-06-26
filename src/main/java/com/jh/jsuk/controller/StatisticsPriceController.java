@@ -9,8 +9,8 @@ import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,14 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Api(tags = {"价格区间相关API:"})
 @RestController
-@RequestMapping("/statisticsPrice")
+@RequestMapping(value = "/statisticsPrice",method = {RequestMethod.POST,RequestMethod.GET})
 public class StatisticsPriceController {
 
     @Autowired
     private StatisticsPriceService statisticsPriceService;
 
     @ApiOperation("用户端-获取价格区间")
-    @GetMapping("/getPriceArea")
+    @RequestMapping(value = "/getPriceArea",method = {RequestMethod.POST,RequestMethod.GET})
     public Result getPriceArea() {
         Page<StatisticsPrice> statisticsPricePage = statisticsPriceService.selectPage(
                 new Page<>(1, 3),
