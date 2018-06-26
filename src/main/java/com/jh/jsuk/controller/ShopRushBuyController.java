@@ -73,6 +73,7 @@ public class ShopRushBuyController {
         // 获取当前时间
         LocalTime localTime = LocalTime.now();
         if (localTime.isAfter(killT)) {
+            // 当前时间在秒杀之后,已结束
             if (shopRushBuy == null) {
                 return new Result().success("秒杀配置还未设置", null);
             }

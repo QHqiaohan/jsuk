@@ -12,8 +12,8 @@ import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class ActivityController {
     private SpecialThemeService specialThemeService;
 
     @ApiOperation(value = "获取首页相关信息-上部分")
-    @PostMapping("/getAll")
+    @RequestMapping(value = "/getAll", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getAll() {
         // 封装结果map
         Map<String, Object> map = MapUtil.newHashMap();
@@ -62,7 +62,7 @@ public class ActivityController {
                 // 1=有效
                 .eq(Banner.IS_VALID, 1)
                 .orderBy(Banner.SORT, false));
-            map.put("banner", bannerList);
+        map.put("banner", bannerList);
         /**
          * 模块分类
          */
@@ -86,7 +86,7 @@ public class ActivityController {
                         // 0=未删除
                         .eq(ExpressNews.IS_DEL, 0)
                         .orderBy(ExpressNews.PUBLISH_TIME, false));
-            map.put("news", expressNewsPage.getRecords());
+        map.put("news", expressNewsPage.getRecords());
         /**
          * 活动模块
          */
@@ -96,12 +96,12 @@ public class ActivityController {
                         .eq(ActivitySmall.IS_DEL, 1)
                         .eq(ActivitySmall.STATUS, 1)
                         .orderBy(ActivitySmall.RANK, false));
-            map.put("activity", activitySmallPage.getRecords());
+        map.put("activity", activitySmallPage.getRecords());
         return new Result().success(map);
     }
 
     @ApiOperation(value = "获取首页相关信息-下部分")
-    @PostMapping("/getAllBelow")
+    @RequestMapping(value = "/getAll", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getAllBelow() {
         // 封装结果map
         Map<String, Object> map = MapUtil.newHashMap();
@@ -109,7 +109,7 @@ public class ActivityController {
          * 商品推荐
          */
         List<GoodsSalesPriceVo> goodsSalesPriceVos = shopGoodsService.findShopGoodsByModularId(0);
-            map.put("shopGoods", goodsSalesPriceVos);
+        map.put("shopGoods", goodsSalesPriceVos);
         /**
          * 精选商家
          */
