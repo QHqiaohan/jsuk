@@ -33,7 +33,7 @@ import java.util.Set;
  */
 @Api(tags = {"评价相关API:"})
 @RestController
-@RequestMapping("/evaluate")
+@RequestMapping(value = "/evaluate", method = {RequestMethod.POST, RequestMethod.GET})
 public class UserEvaluateController {
     @Autowired
     private UserEvaluateService evaluateService;
@@ -132,7 +132,7 @@ public class UserEvaluateController {
     }
 
     @ApiOperation("根据订单号显示评价")
-    @GetMapping("show")
+    @RequestMapping("show")
     public Result show(@ApiParam(value = "订单id", required = true) @RequestParam Integer orderId) {
         UserEvaluate evaluate = evaluateService.selectOne(new EntityWrapper<UserEvaluate>()
                 .eq(UserEvaluate.ORDER_ID, orderId).eq("is_del", 0));
@@ -140,7 +140,7 @@ public class UserEvaluateController {
     }
 
     @ApiOperation("后台列表显示评价")
-    @GetMapping("/ui/selectListAllForAdmin")
+    @RequestMapping("/ui/selectListAllForAdmin")
     public Result uiSelectListAllForAdmin(Page page, Integer shopId) {
         EntityWrapper ew = new EntityWrapper();
         if (shopId != null) {
@@ -152,7 +152,7 @@ public class UserEvaluateController {
     }
 
     @ApiOperation("删除评价")
-    @GetMapping("/ui/deleteEvaluate")
+    @RequestMapping("/ui/deleteEvaluate")
     public Result uiDeleteEvaluate(Integer id) {
         UserEvaluate el = new UserEvaluate();
         el.setId(id);
@@ -168,7 +168,7 @@ public class UserEvaluateController {
             @ApiImplicitParam(name = "size", value = "每页条数",
                     required = false, paramType = "query", dataType = "integer")
     })
-    @GetMapping("/list/user")
+    @RequestMapping("/list/user")
     public Result userEvaluate(Integer userId,Page page){
         Result<Page> result = new Result<>();
         Wrapper wrapper = new EntityWrapper();

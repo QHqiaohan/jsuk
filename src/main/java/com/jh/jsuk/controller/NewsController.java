@@ -7,8 +7,8 @@ import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -21,28 +21,28 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Api(tags = "消息相关API:")
 @RestController
-@RequestMapping("/news")
+@RequestMapping(value = "/news", method = {RequestMethod.POST, RequestMethod.GET})
 public class NewsController {
 
     @Autowired
     NewsService newsService;
 
     @ApiOperation("获取用户的消息列表索引")
-    @GetMapping("/list")
+    @RequestMapping("/list")
     public Result list(Integer userId) throws Exception {
         return new Result().success(newsService.listIndex(userId));
     }
 
     @ApiOperation("获取用户系统消息详情")
-    @GetMapping("/sys")
+    @RequestMapping("/sys")
     public Result listSys(Integer userId, Page page) throws Exception {
-        return new Result().success(newsService.listSys(userId,page));
+        return new Result().success(newsService.listSys(userId, page));
     }
 
     @ApiOperation("获取用户二手市场消息详情")
-    @GetMapping("/shmkt")
+    @RequestMapping("/shmkt")
     public Result listSecondHandMarket(Integer userId, Page page) throws Exception {
-        return new Result().success(newsService.listSecondHandMarket(userId,page));
+        return new Result().success(newsService.listSecondHandMarket(userId, page));
     }
 
 }

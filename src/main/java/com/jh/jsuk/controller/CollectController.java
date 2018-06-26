@@ -28,7 +28,7 @@ import java.util.Map;
  */
 @Api(tags = {"收藏:"})
 @RestController
-@RequestMapping("/collect")
+@RequestMapping(value = "/collect", method = {RequestMethod.POST, RequestMethod.GET})
 public class CollectController {
 
     @Autowired
@@ -43,7 +43,7 @@ public class CollectController {
             @ApiImplicitParam(name = "userId", value = "用户id", paramType = "query", dataType = "int"),
             @ApiImplicitParam(name = "shopId", required = true, value = "店铺id", paramType = "query", dataType = "int")
     })
-    @GetMapping("/add")
+    @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.GET})
     public Result add(@ModelAttribute Collect collect) {
         int count = collectService.selectCount(new EntityWrapper<Collect>()
                 .eq(Collect.SHOP_ID, collect.getShopId())
@@ -63,7 +63,7 @@ public class CollectController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "shopId", required = true, value = "店铺id", paramType = "query", dataType = "int"),
     })
-    @GetMapping("/isCollect")
+    @RequestMapping("/isCollect")
     public Result isCollect(@RequestParam Integer shopId, Integer userId) {
         int count = collectService.selectCount(new EntityWrapper<Collect>()
                 .eq(Collect.SHOP_ID, shopId)

@@ -3,6 +3,7 @@ package com.jh.jsuk.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2018-06-20
  */
 @RestController
-@RequestMapping("/newsUser")
+@RequestMapping(value = "/newsUser", method = {RequestMethod.POST, RequestMethod.GET})
 public class NewsUserController {
 
 }

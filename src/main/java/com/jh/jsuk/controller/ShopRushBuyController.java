@@ -18,8 +18,8 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalTime;
@@ -35,7 +35,7 @@ import java.util.List;
  */
 @Api(tags = "限时秒杀相关:")
 @RestController
-@RequestMapping("/shopRushBuy")
+@RequestMapping(value = "/shopRushBuy", method = {RequestMethod.POST, RequestMethod.GET})
 public class ShopRushBuyController {
 
     @Autowired
@@ -46,7 +46,7 @@ public class ShopRushBuyController {
     private ShopRushBuySizeService shopRushBuySizeService;
 
     @ApiOperation("秒杀时间列表")
-    @GetMapping("/getKillTime")
+    @RequestMapping("/getKillTime")
     public Result getKillTime() {
         List<ShopRushBuy> shopRushBuyList = shopRushBuyService.selectList(new EntityWrapper<ShopRushBuy>()
                 .orderBy(ShopRushBuy.START_TIME));
@@ -63,7 +63,7 @@ public class ShopRushBuyController {
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "id", value = "秒杀时间ID", required = true, paramType = "query", dataType = "integer")
     })
-    @GetMapping("/findKillShopGoods")
+    @RequestMapping("/findKillShopGoods")
     public Result findKillShopGoods(Page page, Integer id) {
         if (id == null) {
             return new Result().erro("参数错误");

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -35,7 +36,7 @@ public class CollectGoodsController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "goodsId", required = true, value = "商品id", paramType = "query", dataType = "int"),
     })
-    @GetMapping("/isCollected")
+    @RequestMapping(value = "/isCollected", method = {RequestMethod.POST, RequestMethod.GET})
     public Result isCollect(@RequestParam Integer goodsId, Integer userId) {
         int count = collectGoodsService.selectCount(new EntityWrapper<CollectGoods>()
                 .eq(CollectGoods.GOODS_ID, goodsId)
@@ -52,7 +53,7 @@ public class CollectGoodsController {
             @ApiImplicitParam(name = "userId", value = "用户id", paramType = "query", dataType = "int"),
             @ApiImplicitParam(name = "goodsId", required = true, value = "商品id", paramType = "query", dataType = "int")
     })
-    @GetMapping("/add")
+    @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.GET})
     public Result add(CollectGoods goods) {
         int count = collectGoodsService.selectCount(new EntityWrapper<CollectGoods>()
                 .eq(CollectGoods.GOODS_ID, goods.getGoodsId())
