@@ -42,4 +42,6 @@ public interface ShopGoodsService extends IService<ShopGoods> {
     Page getShopGoodsByBrandId(Page page, Wrapper wrapper, Integer brandId);
 
     Page getIsRecommend(Page page, Wrapper wrapper);
+
+    void returnStock(Integer goodsId, Integer num);
 }

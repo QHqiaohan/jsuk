@@ -6,6 +6,8 @@ import com.jh.jsuk.entity.UserInvitationPay;
 import com.jh.jsuk.service.UserInvitationPayService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 邀请用户 服务实现类
@@ -17,4 +19,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserInvitationPayServiceImpl extends ServiceImpl<UserInvitationPayDao, UserInvitationPay> implements UserInvitationPayService {
 
+    @Override
+    public List<UserInvitationPay> selectInfoByUser(Integer userId, Integer invitationId) {
+        List<UserInvitationPay> invitationUserPayList = baseMapper.selectInfoByUser(userId, invitationId);
+        return invitationUserPayList;
+    }
+
+    @Override
+    public Integer selectInvitationNumByUser(Integer invitationId) {
+        Integer userNum = baseMapper.selectInvitationNumByUser(invitationId);
+        return userNum;
+    }
 }
+

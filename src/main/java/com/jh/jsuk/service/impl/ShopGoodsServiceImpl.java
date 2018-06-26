@@ -103,4 +103,17 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
         page.setRecords(baseMapper.getIsRecommend(page, wrapper));
         return page;
     }
+
+    /**
+     * 返回库存
+     *
+     * @param goodsId
+     */
+    @Override
+    public void returnStock(Integer goodsId, Integer num) {
+
+        ShopGoods shopGoods = this.selectById(goodsId);
+        //shopGoods.setStock(num + shopGoods.getStock());
+        this.updateById(shopGoods);
+    }
 }

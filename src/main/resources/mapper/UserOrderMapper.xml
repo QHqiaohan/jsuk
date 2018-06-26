@@ -33,4 +33,29 @@
         id, order_num, order_price, distribution_fee, creat_time, pay_time, pay_type, status, is_unsubscribe, is_evaluate, is_del, manager_id, address_id, user_id, cancel_time, complete_time, send_time, coupon_id, distribution_user_id, order_type, logistics_no, remark
     </sql>
 
+    <resultMap id="UserOrderVo" type="com.jh.jsuk.entity.vo.UserOrderVo" extends="BaseResultMap">
+        <association property="shop" column="shop_id" select="com.jh.jsuk.dao.ShopDao.selectShopPhoneById"></association>
+        <association property="distributionUser" column="distribution_user_id" select="com.jh.jsuk.dao.DistributionUserDao.selectById"></association>
+        <association property="coupon" column="coupon_id" select="com.jh.jsuk.dao.CouponDao.selectById"></association>
+        <association property="address" column="address_id" select="com.jh.jsuk.dao.UserAddressDao.selectById"></association>
+        <collection property="goodsList" column="id" ofType="com.jh.jsuk.entity.vo.UserOrderGoodsVo" select="com.jh.jsuk.dao.UserOrderGoodsDao.findByOrderId"></collection>
+    </resultMap>
+
+    <select id="findVoByPage" resultMap="UserOrderVo">
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM js_user_order
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
+    <select id="findVoById" resultMap="UserOrderVo">
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM js_user_order
+        WHERE
+        id = #{id}
+    </select>
+
 </mapper>
