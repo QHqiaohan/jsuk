@@ -115,12 +115,26 @@ public class JwtFilter implements Filter {
                 || servletPath.indexOf("/getAll") != -1
                 // 获取首页相关信息-下部分
                 || servletPath.indexOf("/getAllBelow") != -1
-                // 秒杀时间列表
+                || servletPath.indexOf("/getNiceChoose") != -1
+                || servletPath.indexOf("/getMoreInfo") != -1
+                || servletPath.indexOf("/getVipShop") != -1
+                || servletPath.indexOf("/getIsRecommend") != -1
+                // 限时秒杀相关
                 || servletPath.indexOf("/getKillTime") != -1
-                // 根据时间查询秒杀商品
                 || servletPath.indexOf("/findKillShopGoods") != -1
-                // 根据筛选条件查询商品列表
+                // 商品相关API
+                || servletPath.indexOf("/getShopGoodsByAttributeId") != -1
+                || servletPath.indexOf("/getShopGoodsBy") != -1
+                || servletPath.indexOf("/getShopGoodsByCategoryId") != -1
+                || servletPath.indexOf("/getShopGoodsOnCategoryBy") != -1
+                || servletPath.indexOf("/getShopGoodsById") != -1
+                || servletPath.indexOf("/getShopListByLike") != -1
                 || servletPath.indexOf("/getShopGoodsByServiceOrPrice") != -1
+                // 模块相关API
+                || servletPath.indexOf("/getShopAndGoodsByModular") != -1
+                || servletPath.indexOf("/shopListByModularId") != -1
+                || servletPath.indexOf("/shopGoodsListByModularId") != -1
+                || servletPath.indexOf("/getModularList") != -1
             ////////////////////////////////////////////////
             //方便ios上架开放接口 TODO 上架后最好注掉
             //|| servletPath.indexOf("/banner") != -1

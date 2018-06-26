@@ -15,7 +15,10 @@ import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -78,7 +81,7 @@ public class ShopGoodsController {
             Page goodsPage = shopGoodsService.getShopGoodsBy(page, ew, type, shopId);
             return new Result().success(goodsPage);
         }
-        return new Result().success("暂无数据", null);
+        return  new Result().success("暂无数据",null);
     }
 
     @ApiOperation(value = "用户端-根据商品类型获取商品列表")
@@ -116,7 +119,7 @@ public class ShopGoodsController {
             @ApiImplicitParam(name = "highPrice", value = "最高价格", paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "categoryId", value = "类型ID", required = true, paramType = "query", dataType = "integer")
     })
-    @RequestMapping(value = "/getShopGoodsByServiceOrPrice", method = {RequestMethod.POST, RequestMethod.GET})
+    @GetMapping("/getShopGoodsByServiceOrPrice")
     public Result getShopGoodsByServiceOrPrice(Page page, Integer goodsType, String lowPrice, String highPrice, Integer categoryId) {
         MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
         Page goodsPage = shopGoodsService.getShopGoodsByServiceOrPrice(page, ew, goodsType, lowPrice, highPrice, categoryId);
