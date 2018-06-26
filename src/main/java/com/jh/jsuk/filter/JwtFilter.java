@@ -135,6 +135,11 @@ public class JwtFilter implements Filter {
                 || servletPath.indexOf("/shopListByModularId") != -1
                 || servletPath.indexOf("/shopGoodsListByModularId") != -1
                 || servletPath.indexOf("/getModularList") != -1
+                // 快递跑腿相关API
+                || servletPath.indexOf("/expressRunBanner") != -1
+                // 商品类型-品牌相关操作
+                || servletPath.indexOf("/getBrandByCategoryId") != -1
+                || servletPath.indexOf("/getShopGoodsByBrandId") != -1
             ////////////////////////////////////////////////
             //方便ios上架开放接口 TODO 上架后最好注掉
             //|| servletPath.indexOf("/banner") != -1

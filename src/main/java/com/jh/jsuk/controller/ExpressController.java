@@ -3,9 +3,11 @@ package com.jh.jsuk.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.jh.jsuk.entity.Banner;
 import com.jh.jsuk.entity.Express;
 import com.jh.jsuk.entity.ExpressType;
 import com.jh.jsuk.entity.UserAddress;
+import com.jh.jsuk.service.BannerService;
 import com.jh.jsuk.service.ExpressService;
 import com.jh.jsuk.service.ExpressTypeService;
 import com.jh.jsuk.utils.MyEntityWrapper;
@@ -33,6 +35,18 @@ public class ExpressController {
     private ExpressService expressService;
     @Autowired
     private ExpressTypeService expressTypeService;
+    @Autowired
+    BannerService bannerService;
+
+    @ApiOperation(value = "用户端-快递跑腿banner")
+    @RequestMapping(value = "/expressRunBanner", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result expressRunBanner() {
+        List<Banner> bannerList = bannerService.selectList(new EntityWrapper<Banner>()
+                .eq(Banner.BANNER_LOCATION, 11)
+                .eq(Banner.IS_VALID, 1)
+                .orderBy(Banner.SORT, false));
+        return new Result().success(bannerList);
+    }
 
     @ApiOperation("用户端-新增快递/跑腿信息")
     @ApiImplicitParams(value = {
@@ -53,8 +67,8 @@ public class ExpressController {
             @ApiImplicitParam(name = "订单类型 1=快递,2=跑腿", value = "type",
                     required = true, paramType = "query", dataType = "integer"),
     })
-    @PostMapping("/add")
-    public Result add(Express express) {
+    @RequestMapping(value = "/addExpress", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result addExpress(Express express) {
         if (express.getUserId() == null) {
             return new Result().erro("用户信息过期");
         } else {
@@ -74,8 +88,8 @@ public class ExpressController {
             @ApiImplicitParam(name = "size", value = "每页条数",
                     paramType = "query", dataType = "integer"),
     })
-    @PostMapping("/getInfo")
-    public Result getInfo(Page page, @ModelAttribute Express express,
+    @RequestMapping(value = "/getExpressList", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getExpressList(Page page, @ModelAttribute Express express,
                           @ApiParam("状态 1=待接单,2=待送货,3=待评价,0=待付款,4=已完成,5=已取消") @RequestParam(required = false) Integer status,
                           @ApiParam("订单类型 1=快递,2=跑腿") @RequestParam(required = false) Integer type, Integer userId) {
         MyEntityWrapper<UserAddress> ew = new MyEntityWrapper<>();
@@ -84,7 +98,7 @@ public class ExpressController {
     }
 
     @ApiOperation("用户端-物品类型列表")
-    @PostMapping("/getExpressType")
+    @RequestMapping(value = "/getExpressType", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getExpressType() {
         List<ExpressType> expressTypeList = expressTypeService.selectList(new EntityWrapper<ExpressType>()
                 .orderBy(ExpressType.PUBLISH_TIME, false));
@@ -92,8 +106,8 @@ public class ExpressController {
     }
 
     @ApiOperation("用户端-取消跑腿订单")
-    @PostMapping("/cancelOrder")
-    public Result cancelOrder(Integer userId, @ApiParam(value = "订单ID", required = true) Integer orderId) {
+    @RequestMapping(value = "/cancelRunOrder", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result cancelRunOrder(Integer userId, @ApiParam(value = "订单ID", required = true) Integer orderId) {
         Express express = new Express();
         express.setStatus(5);
         boolean res = express.update(new EntityWrapper()
@@ -107,8 +121,8 @@ public class ExpressController {
     }
 
     @ApiOperation("用户端-删除跑腿订单")
-    @PostMapping("/delOrder")
-    public Result delOrder(Integer userId, @ApiParam(value = "订单ID", required = true) Integer orderId) {
+    @RequestMapping(value = "/delRunOrder", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result delRunOrder(Integer userId, @ApiParam(value = "订单ID", required = true) Integer orderId) {
         Express express = new Express();
         express.setIsDel(1);
         boolean res = express.update(new EntityWrapper()
@@ -122,7 +136,7 @@ public class ExpressController {
     }
 
     @ApiOperation("用户端-确认收货")
-    @PostMapping("/enterOrder")
+    @RequestMapping(value = "/enterOrder", method = {RequestMethod.POST, RequestMethod.GET})
     public Result enterOrder(Integer userId, @ApiParam(value = "订单ID", required = true) Integer orderId) {
         Express express = new Express();
         express.setStatus(3);

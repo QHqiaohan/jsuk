@@ -79,7 +79,6 @@
         WHERE
         `status` = '1'
         AND is_del = '1'
-        AND attribute_id = #{attributeId}
         AND goods_name LIKE CONCAT('%', #{name}, '%')
         ORDER BY
         sale_amont DESC
