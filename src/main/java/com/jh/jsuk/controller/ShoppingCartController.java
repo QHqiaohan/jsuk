@@ -2,6 +2,11 @@ package com.jh.jsuk.controller;
 
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.jh.jsuk.entity.ManagerUser;
+import com.jh.jsuk.entity.ShopGoods;
+import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.ShoppingCart;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
 import com.jh.jsuk.service.ShoppingCartService;
@@ -12,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -81,7 +87,7 @@ public class ShoppingCartController {
     @PostMapping("/getUserCartCount")
     public Result getUserCartCount(@ApiParam(value = "用户id", required = true) @RequestParam Integer userId) {
         int count = shoppingCartService.selectCount(new MyEntityWrapper<ShoppingCart>().eq(ShoppingCart.USER_ID, userId));
-        return new Result().success("购物车数量从新成功", count);
+        return new Result().success("获取购物车数量成功", count);
     }
 
     @ApiOperation("根据购shopId goodsId userId删除")
@@ -102,6 +108,15 @@ public class ShoppingCartController {
         List<ShoppingCartVo> shoppingCarts = shoppingCartService.selectVoList(new EntityWrapper()
                 .eq(ShoppingCart.USER_ID, userId)
         );
+        Map<String, Object> shopMap = Maps.newHashMap();
+        List<Map<String, Object>> listGoods = Lists.newArrayList();
+        shoppingCarts.forEach(cart -> {
+            ManagerUser shops = cart.getShops();
+            ShopGoods goods = cart.getGoods();
+            ShopGoodsSize sizes = cart.getSizes();
+           // shopMap.put(shops.getName())
+
+        });
         return new Result().success(shoppingCarts);
     }
 }
