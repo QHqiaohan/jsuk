@@ -29,8 +29,8 @@
         LEFT JOIN js_shop_goods_size sgs ON sgs.id = srbs.goods_size_id
         LEFT JOIN js_shop_goods sg ON sgs.shop_goods_id = sg.id
         WHERE
-        srb.start_time >= #{startTime}
-        AND srb.end_time<= #{endTime}
+        srb.start_time ge #{startTime}
+        AND srb.end_time le #{endTime}
         <where>
             ${ew.sqlSegment}
         </where>
