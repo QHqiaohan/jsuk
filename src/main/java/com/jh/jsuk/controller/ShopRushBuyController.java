@@ -69,7 +69,8 @@ public class ShopRushBuyController {
             return new Result().erro("参数错误");
         }
         ShopRushBuy shopRushBuy = shopRushBuyService.selectById(id);
-        LocalTime killT = DatecConvertUtils.StrToDate(shopRushBuy.getStartTime() + "");
+        String formatDateTime = DateUtil.formatDateTime(shopRushBuy.getStartTime());
+        LocalTime killT = DatecConvertUtils.StrToDate(formatDateTime);
         // 获取当前时间
         LocalTime localTime = LocalTime.now();
         if (localTime.isAfter(killT)) {

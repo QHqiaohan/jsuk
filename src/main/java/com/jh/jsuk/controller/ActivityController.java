@@ -101,7 +101,7 @@ public class ActivityController {
     }
 
     @ApiOperation(value = "获取首页相关信息-下部分")
-    @RequestMapping(value = "/getAll", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/getAllBelow", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getAllBelow() {
         // 封装结果map
         Map<String, Object> map = MapUtil.newHashMap();
