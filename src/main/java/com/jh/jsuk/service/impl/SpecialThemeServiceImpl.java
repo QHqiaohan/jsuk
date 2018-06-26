@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author lpf
- * @since 2018-06-25
+ * @since 2018-06-26
  */
 @Service
 public class SpecialThemeServiceImpl extends ServiceImpl<SpecialThemeDao, SpecialTheme> implements SpecialThemeService {

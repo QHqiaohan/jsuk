@@ -9,12 +9,8 @@ import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +28,7 @@ import java.util.Map;
  * @author lpf
  * @since 2018-06-20
  */
+@Api(tags = {"首页模块相关API--便捷生活新/乡村旅游/二手市场部分API"})
 @RestController
 @RequestMapping("/activity")
 public class ActivityController {
@@ -65,11 +62,7 @@ public class ActivityController {
                 // 1=有效
                 .eq(Banner.IS_VALID, 1)
                 .orderBy(Banner.SORT, false));
-        if (CollectionUtils.isEmpty(bannerList)) {
-            map.put("banner", "暂无数据");
-        } else {
             map.put("banner", bannerList);
-        }
         /**
          * 模块分类
          */
@@ -93,11 +86,7 @@ public class ActivityController {
                         // 0=未删除
                         .eq(ExpressNews.IS_DEL, 0)
                         .orderBy(ExpressNews.PUBLISH_TIME, false));
-        if (CollectionUtils.isEmpty(bannerList)) {
-            map.put("news", "暂无数据");
-        } else {
             map.put("news", expressNewsPage.getRecords());
-        }
         /**
          * 活动模块
          */
@@ -107,11 +96,7 @@ public class ActivityController {
                         .eq(ActivitySmall.IS_DEL, 1)
                         .eq(ActivitySmall.STATUS, 1)
                         .orderBy(ActivitySmall.RANK, false));
-        if (CollectionUtils.isEmpty(bannerList)) {
-            map.put("activity", "暂无数据");
-        } else {
             map.put("activity", activitySmallPage.getRecords());
-        }
         return new Result().success(map);
     }
 
@@ -124,11 +109,7 @@ public class ActivityController {
          * 商品推荐
          */
         List<GoodsSalesPriceVo> goodsSalesPriceVos = shopGoodsService.findShopGoodsByModularId(0);
-        if (CollectionUtils.isEmpty(goodsSalesPriceVos)) {
-            map.put("shopGoods", "暂无数据");
-        } else {
             map.put("shopGoods", goodsSalesPriceVos);
-        }
         /**
          * 精选商家
          */

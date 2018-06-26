@@ -13,7 +13,6 @@ import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,7 +55,7 @@ public class GoodsBrandController {
             @ApiImplicitParam(name = "size", value = "每页条数",
                     paramType = "query", dataType = "integer"),
     })
-    @PostMapping("/getShopGoodsByBrandId")
+    @GetMapping("/getShopGoodsByBrandId")
     public Result getShopGoodsByBrandId(@ApiParam(value = "品牌ID") Integer brandId, Page page) {
         MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
         Page goodsPage = shopGoodsService.getShopGoodsByBrandId(page, ew, brandId);

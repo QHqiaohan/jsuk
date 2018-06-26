@@ -112,8 +112,8 @@ public class JwtFilter implements Filter {
                 // 以下是方便测试,可能会出现效验bug
                 ////////////////////////////////////////////////
                 // 首页模块
-                //|| servletPath.indexOf("/getAll") != -1
-                //|| servletPath.indexOf("/getNiceChoose") != -1
+                || servletPath.indexOf("/getAll") != -1
+                || servletPath.indexOf("/getAllBelow") != -1
                 //|| servletPath.indexOf("/getMoreInfo") != -1
                 //|| servletPath.indexOf("/getVipShop") != -1
                 //|| servletPath.indexOf("/hotel") != -1

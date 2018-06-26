@@ -9,12 +9,12 @@
         <result column="main_image" property="mainImage" />
         <result column="is_del" property="isDel" />
         <result column="rank" property="rank" />
-        <result column="shop_id" property="shopId" />
+        <result column="goods_id" property="goodsId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, title, main_image, is_del, rank, shop_id
+        id, title, main_image, is_del, rank, goods_id
     </sql>
 
 </mapper>

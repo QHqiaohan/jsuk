@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author lpf
- * @since 2018-06-25
+ * @since 2018-06-26
  */
 @TableName("js_special_theme")
 public class SpecialTheme extends Model<SpecialTheme> {
@@ -39,9 +39,9 @@ public class SpecialTheme extends Model<SpecialTheme> {
      */
     private Integer rank;
     /**
-     * 店铺ID
+     * 商品ID
      */
-    private Integer shopId;
+    private Integer goodsId;
 
 
     public Integer getId() {
@@ -84,12 +84,12 @@ public class SpecialTheme extends Model<SpecialTheme> {
         this.rank = rank;
     }
 
-    public Integer getShopId() {
-        return shopId;
+    public Integer getGoodsId() {
+        return goodsId;
     }
 
-    public void setShopId(Integer shopId) {
-        this.shopId = shopId;
+    public void setGoodsId(Integer goodsId) {
+        this.goodsId = goodsId;
     }
 
     public static final String ID = "id";
@@ -102,7 +102,7 @@ public class SpecialTheme extends Model<SpecialTheme> {
 
     public static final String RANK = "rank";
 
-    public static final String SHOP_ID = "shop_id";
+    public static final String GOODS_ID = "goods_id";
 
     @Override
     protected Serializable pkVal() {
@@ -117,7 +117,7 @@ public class SpecialTheme extends Model<SpecialTheme> {
         ", mainImage=" + mainImage +
         ", isDel=" + isDel +
         ", rank=" + rank +
-        ", shopId=" + shopId +
+        ", goodsId=" + goodsId +
         "}";
     }
 }
