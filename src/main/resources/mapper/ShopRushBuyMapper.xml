@@ -15,22 +15,29 @@
         id, start_time, end_time, status
     </sql>
 
-    <resultMap id="GoodsSalesPriceVo" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
+    <resultMap id="ShopGoodsKillVo" type="com.jh.jsuk.entity.vo.ShopGoodsKillVo" extends="BaseResultMap">
         <result column="sales_price" property="salesPrice"/>
         <result column="original_price" property="originalPrice"/>
+        <result column="kill_price" property="killPrice"/>
+        <result column="kill_stock" property="killStock"/>
     </resultMap>
 
-    <select id="getShopRushBuyList" resultMap="GoodsSalesPriceVo">
+    <select id="getShopRushBuyList" resultMap="ShopGoodsKillVo">
         SELECT
-        *
+        srb.`status`,
+        sgs.sales_price,
+        sgs.original_price,
+        sgs.kill_price,
+        sgs.kill_stock,
+        sg.*
         FROM
         js_shop_rush_buy_size srbs
         LEFT JOIN js_shop_rush_buy srb ON srbs.rush_buy_id = srb.id
         LEFT JOIN js_shop_goods_size sgs ON sgs.id = srbs.goods_size_id
         LEFT JOIN js_shop_goods sg ON sgs.shop_goods_id = sg.id
         WHERE
-        srb.start_time ge #{startTime}
-        AND srb.end_time le #{endTime}
+        srb.start_time &gt;= #{startTime}
+        AND srb.end_time &lt;= #{endTime}
         <where>
             ${ew.sqlSegment}
         </where>
