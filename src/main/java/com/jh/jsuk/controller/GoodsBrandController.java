@@ -6,14 +6,13 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.GoodsBrand;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.service.GoodsBrandService;
-import com.jh.jsuk.service.GoodsCategoryService;
 import com.jh.jsuk.service.ShopGoodsService;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -32,14 +31,12 @@ import java.util.List;
 public class GoodsBrandController {
 
     @Autowired
-    private GoodsCategoryService goodsCategoryService;
-    @Autowired
     private ShopGoodsService shopGoodsService;
     @Autowired
     private GoodsBrandService goodsBrandService;
 
     @ApiOperation("用户端-根据类型ID获取品牌列表")
-    @GetMapping("/getBrandByCategoryId")
+    @RequestMapping(value = "/getBrandByCategoryId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getBrandByCategoryId(@ApiParam(value = "分类ID", required = true) Integer categoryId) {
         List<GoodsBrand> goodsBrandList = goodsBrandService.selectList(new EntityWrapper<GoodsBrand>()
                 .eq(GoodsBrand.CATEGORY_ID, categoryId)
@@ -50,12 +47,10 @@ public class GoodsBrandController {
 
     @ApiOperation("用户端-商品类型里的-根据所选品牌ID查询商品")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "current", value = "当前页码",
-                    paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数",
-                    paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
     })
-    @GetMapping("/getShopGoodsByBrandId")
+    @RequestMapping(value = "/getShopGoodsByBrandId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopGoodsByBrandId(@ApiParam(value = "品牌ID") Integer brandId, Page page) {
         MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
         Page goodsPage = shopGoodsService.getShopGoodsByBrandId(page, ew, brandId);
