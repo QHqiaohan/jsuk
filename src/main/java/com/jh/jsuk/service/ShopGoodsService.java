@@ -23,9 +23,9 @@ public interface ShopGoodsService extends IService<ShopGoods> {
 
     Page shopGoodsListByModularId(Page page, Wrapper wrapper, Integer modularId);
 
-    Page shopGoodsListByAttributeId(Page page, Wrapper wrapper, Integer attributeId,Integer shopId);
+    Page shopGoodsListByAttributeId(Page page, Wrapper wrapper, Integer attributeId, Integer shopId);
 
-    Page getShopGoodsBy(Page page, Wrapper wrapper, Integer type,Integer shopId);
+    Page getShopGoodsBy(Page page, Wrapper wrapper, Integer type, Integer shopId);
 
     Page getShopGoodsOrderBySalesPrice(Page page, Wrapper wrapper, Integer type, Integer shopId);
 
@@ -35,13 +35,16 @@ public interface ShopGoodsService extends IService<ShopGoods> {
 
     GoodsSizeVo getShopGoodsById(Integer id);
 
-    Page getShopGoodsByLikeName(Page page, Wrapper wrapper, Integer type, String name,Integer attributeId);
+    Page getShopGoodsByLikeName(Page page, Wrapper wrapper, Integer type, String name, Integer attributeId);
 
     Page getShopGoodsOnCategoryBy(Page page, Wrapper wrapper, Integer type, Integer categoryId);
 
     Page getShopGoodsByBrandId(Page page, Wrapper wrapper, Integer brandId);
 
     Page getIsRecommend(Page page, Wrapper wrapper);
+
+    Page getShopList(Page page, Wrapper wrapper, Integer type, Integer attributeId, String name, Integer shopModularId, Integer categoryId, Integer
+            brandId, String address, Integer goodsType, String lowPrice, String highPrice);
 
     void returnStock(Integer goodsId, Integer num);
 }

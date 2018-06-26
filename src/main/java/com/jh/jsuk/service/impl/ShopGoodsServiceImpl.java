@@ -37,23 +37,23 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     }
 
     @Override
-    public Page shopGoodsListByAttributeId(Page page, Wrapper wrapper, Integer attributeId,Integer shopId) {
+    public Page shopGoodsListByAttributeId(Page page, Wrapper wrapper, Integer attributeId, Integer shopId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
-        page.setRecords(baseMapper.shopGoodsListByAttributeId(page, wrapper, attributeId,shopId));
+        page.setRecords(baseMapper.shopGoodsListByAttributeId(page, wrapper, attributeId, shopId));
         return page;
     }
 
     @Override
-    public Page getShopGoodsBy(Page page, Wrapper wrapper, Integer type,Integer shopId) {
+    public Page getShopGoodsBy(Page page, Wrapper wrapper, Integer type, Integer shopId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
-        page.setRecords(baseMapper.getShopGoodsBy(page, wrapper, type,shopId));
+        page.setRecords(baseMapper.getShopGoodsBy(page, wrapper, type, shopId));
         return page;
     }
 
     @Override
-    public Page getShopGoodsOrderBySalesPrice(Page page, Wrapper wrapper, Integer type,Integer shopId) {
+    public Page getShopGoodsOrderBySalesPrice(Page page, Wrapper wrapper, Integer type, Integer shopId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
-        page.setRecords(baseMapper.getShopGoodsOrderBySalesPrice(page, wrapper, type,shopId));
+        page.setRecords(baseMapper.getShopGoodsOrderBySalesPrice(page, wrapper, type, shopId));
         return page;
     }
 
@@ -77,9 +77,9 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     }
 
     @Override
-    public Page getShopGoodsByLikeName(Page page, Wrapper wrapper, Integer type, String name,Integer attributeId) {
+    public Page getShopGoodsByLikeName(Page page, Wrapper wrapper, Integer type, String name, Integer attributeId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
-        page.setRecords(baseMapper.getShopGoodsByLikeName(page, wrapper, type, name,attributeId));
+        page.setRecords(baseMapper.getShopGoodsByLikeName(page, wrapper, type, name, attributeId));
         return page;
     }
 
@@ -116,4 +116,14 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
         //shopGoods.setStock(num + shopGoods.getStock());
         this.updateById(shopGoods);
     }
+
+    @Override
+    public Page getShopList(Page page, Wrapper wrapper, Integer type, Integer attributeId, String name, Integer shopModularId, Integer categoryId,
+                            Integer brandId, String address, Integer goodsType, String lowPrice, String highPrice) {
+        wrapper = SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(baseMapper.getShopList(page, wrapper, address, attributeId, shopModularId, categoryId, brandId, name, goodsType,
+                lowPrice, highPrice, type));
+        return page;
+    }
+
 }

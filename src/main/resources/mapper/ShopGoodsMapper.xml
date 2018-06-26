@@ -206,6 +206,59 @@
         </where>
     </select>
 
+
+    <select id="getShopList" resultMap="GoodsSalesPriceVoT">
+        SELECT
+        sg.*,sgs.sales_price
+        FROM
+        js_shop_goods sg
+        LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
+        where
+        sg.status = 1
+        AND sg.is_del = 1
+        <if test="attributeId != null">
+            AND sg.attribute_id = #{attributeId}
+        </if>
+        <if test="shopModularId != null">
+            AND sg.shop_modular_id = #{shopModularId}
+        </if>
+        <if test="categoryId != null">
+            AND sg.category_id = #{categoryId}
+        </if>
+        <if test="brandId != null">
+            AND sg.brand_id = #{brandId}
+        </if>
+        <if test="goodsType != null ">
+            AND sg.goods_type = #{goodsType}
+        </if>
+        <if test="lowPrice != null">
+            <if test="highPrice != null ">
+                AND (sgs.sales_price BETWEEN #{lowPrice} AND #{highPrice})
+            </if>
+        </if>
+        <if test="name != null">
+            AND sg.goods_name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="address != null">
+            AND sg.address LIKE CONCAT('%', #{address}, '%')
+        </if>
+        <if test="type == 1">
+            ORDER BY
+            sgs.sales_price + 0 DESC
+        </if>
+        <if test="type == 0">
+            ORDER BY
+            sgs.sales_price + 0
+        </if>
+        <if test="type == 2">
+            ORDER BY
+            sg.sale_amont DESC
+        </if>
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
     <resultMap id="GoodsSizeVo" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
         <association property="shopGoodsSize" column="id"
                      select="com.jh.jsuk.dao.ShopGoodsSizeDao.getGoodsSizeByGoodsId"></association>

@@ -101,7 +101,6 @@ public class ShoppingCartController {
     public Result list(Integer userId) {
         List<ShoppingCartVo> shoppingCarts = shoppingCartService.selectVoList(new EntityWrapper()
                 .eq(ShoppingCart.USER_ID, userId)
-                .groupBy(ShoppingCart.SHOP_ID)
         );
         return new Result().success(shoppingCarts);
     }

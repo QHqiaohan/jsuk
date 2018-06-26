@@ -130,6 +130,7 @@ public class JwtFilter implements Filter {
                 || servletPath.indexOf("/getShopGoodsById") != -1
                 || servletPath.indexOf("/getShopListByLike") != -1
                 || servletPath.indexOf("/getShopGoodsByServiceOrPrice") != -1
+                || servletPath.indexOf("/getShopList") != -1
                 // 模块相关API
                 || servletPath.indexOf("/getShopAndGoodsByModular") != -1
                 || servletPath.indexOf("/shopListByModularId") != -1
