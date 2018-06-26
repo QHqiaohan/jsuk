@@ -1,5 +1,5 @@
 server:
-   port: 80
+   port: 8080
 logging:
   level:
     root: info
@@ -13,14 +13,14 @@ spring:
     auto: true
     proxy-target-class: true
   rabbitmq:
-#    host: 15640pa567.imwork.net
+     host: 127.0.0.1
+     port: 5672
+     username: guest
+     password: guest
+#    host: 192.168.0.65
 #    port: 51577
-#    username: guest
-#    password: guest
-    host: 192.168.0.65
-#    port: 51577
-    username: admin
-    password: 123456
+ #   username: admin
+ #   password: 123456
   thymeleaf:
       cache: false
       mode: LEGACYHTML5
