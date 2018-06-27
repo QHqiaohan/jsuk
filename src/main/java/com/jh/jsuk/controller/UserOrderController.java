@@ -101,6 +101,23 @@ public class UserOrderController {
         return new Result().success(orderVoList);
     }
 
+    /**
+     * 待抢单
+     */
+    @ApiOperation("骑手显示待抢单数量")
+    @GetMapping("/grabASingle/count")
+    public Result grabASingleCount() {
+        Wrapper wrapper = new EntityWrapper()
+                .isNull(UserOrder.DISTRIBUTION_USER_ID)
+                .eq(UserOrder.STATUS, 2)
+                .ne(UserOrder.IS_DEL, 4)
+                .ne(UserOrder.IS_DEL, 5)
+                .ne(UserOrder.IS_DEL, 6)
+                .ne(UserOrder.IS_DEL, 7)
+                .orderBy(UserOrder.CREAT_TIME, false);
+        return new Result().success(userOrderService.selectCount(wrapper));
+    }
+
     @Autowired
     RobbingOrderProducer producer;
 
@@ -122,25 +139,18 @@ public class UserOrderController {
     /**
      * 待取货
      */
-    @ApiOperation("骑手显示显示待取货列表")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "current", value = "当前页码",
-                    required = false, paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数",
-                    required = false, paramType = "query", dataType = "integer")
-    })
-    @GetMapping("/readyToTake")
-    public Result readyToTake(Page page, Integer userId) {
-        List<UserOrderVo> orderVoList = userOrderService.findVoByPage(page, new EntityWrapper()
+    @ApiOperation("骑手显示显示待取货数量")
+    @GetMapping("/readyToTake/count")
+    public Result readyToTake(Integer userId) {
+        Wrapper wrapper = new EntityWrapper()
                 .eq(UserOrder.DISTRIBUTION_USER_ID, userId)
                 .eq(UserOrder.STATUS, 3)
                 .ne(UserOrder.IS_DEL, 4)
                 .ne(UserOrder.IS_DEL, 5)
                 .ne(UserOrder.IS_DEL, 6)
                 .ne(UserOrder.IS_DEL, 7)
-                .orderBy(UserOrder.CREAT_TIME, false)
-        );
-        return new Result().success(orderVoList);
+                .orderBy(UserOrder.CREAT_TIME, false);
+        return new Result().success(userOrderService.selectCount(wrapper));
     }
 
     /**
@@ -341,6 +351,20 @@ public class UserOrderController {
                 .orderBy(UserOrder.CREAT_TIME, false)
         );
         return new Result().success(orderVoList);
+    }
+
+    @ApiOperation("骑手显示待送达数量")
+    @GetMapping("/pendingService/count")
+    public Result pendingService(Integer userId) {
+        Wrapper wrapper = new EntityWrapper()
+                .eq(UserOrder.DISTRIBUTION_USER_ID, userId)
+                .eq(UserOrder.STATUS, 4)
+                .ne(UserOrder.IS_DEL, 4)
+                .ne(UserOrder.IS_DEL, 5)
+                .ne(UserOrder.IS_DEL, 6)
+                .ne(UserOrder.IS_DEL, 7)
+                .orderBy(UserOrder.CREAT_TIME, false);
+        return new Result().success(userOrderService.selectCount(wrapper));
     }
 
     @ApiOperation("骑手显示已完成数量")
