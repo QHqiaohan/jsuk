@@ -27,5 +27,8 @@ public class Constant {
     public static final int JWT_TTL = 60 * 60 * 1000;  //millisecond
     public static final int JWT_REFRESH_INTERVAL = 55 * 60 * 1000;  //millisecond
     public static final int JWT_REFRESH_TTL = 12 * 60 * 60 * 1000;  //millisecond
+    /**
+     * 天气接口地址
+     */
     public static final String MEIZU_WEATHER_URL = "http://aider.meizu.com/app/weather/listWeather";
 }

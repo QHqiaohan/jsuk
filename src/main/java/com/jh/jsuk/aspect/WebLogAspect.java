@@ -26,7 +26,6 @@ import java.util.Arrays;
 public class WebLogAspect {
 
     ThreadLocal<Long> startTime = new ThreadLocal<>();
-//    private Logger logger = Logger.getLogger(getClass());
 
     @Pointcut("execution(public * com.jh.jsuk.controller.*..*(..))")
     public void webLog() {
@@ -43,7 +42,6 @@ public class WebLogAspect {
 //        log.info("jwt值:{}",request.getHeader(Constant.JWT_HEADER));
 
         // 记录下请求内容
-//        System.out.println("\r\n");
         log.info("地址 : " + request.getRequestURL().toString());
         log.info("请求方式 : " + request.getMethod());
         log.info("IP : " + request.getRemoteAddr());

@@ -26,7 +26,7 @@ import java.util.*;
  */
 @Api(tags = {"优惠券:"})
 @RestController
-@RequestMapping("/coupon")
+@RequestMapping(value = "/coupon", method = {RequestMethod.POST, RequestMethod.GET})
 public class CouponController {
 
     @Autowired
