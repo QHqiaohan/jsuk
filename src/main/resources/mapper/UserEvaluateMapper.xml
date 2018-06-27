@@ -25,7 +25,7 @@
     </sql>
 
     <resultMap id="EvaluateVo" type="com.jh.jsuk.entity.vo.EvaluateVo" extends="BaseResultMap">
-        <association property="user" column="user_id" select="com.jushang.dao.UserDao.selectVoById"></association>
+        <association property="user" column="user_id" select="com.jh.jsuk.UserDao.selectVoById"></association>
         <collection property="goodsList" column="order_id" ofType="com.jh.jsuk.entity.vo.OrderGoodsNameVo" select="com.jushang.dao.OrderGoodsDao.findVoByOrderId"></collection>
     </resultMap>
 

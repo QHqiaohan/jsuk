@@ -1,5 +1,6 @@
 server:
    port: 80
+
 spring:
   profiles:
     active: pro
@@ -36,3 +37,7 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: false
+
+logging:
+  level:
+    com.jh.jsuk: DEBUG

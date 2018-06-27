@@ -61,4 +61,19 @@
         ORDER BY t_collect.publish_time DESC
     </select>
 
+    <resultMap id="ShopPhoneVo" type="com.jh.jsuk.entity.vo.ShopPhoneVo" extends="BaseResultMap">
+        <result column="phone" property="phone"/>
+    </resultMap>
+
+
+    <select id="selectShopPhoneById" resultMap="ShopPhoneVo">
+        SELECT
+            t_shop.*, phone
+        FROM
+            t_shop
+            LEFT JOIN t_shop_user ON t_shop.id = t_shop_user.shop_id
+        WHERE
+            t_shop.id = #{id}
+    </select>
+
 </mapper>

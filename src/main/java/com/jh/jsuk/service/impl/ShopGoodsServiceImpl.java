@@ -104,6 +104,19 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
         return page;
     }
 
+    /**
+     * 返回库存
+     *
+     * @param goodsId
+     */
+    @Override
+    public void returnStock(Integer goodsId, Integer num) {
+
+        ShopGoods shopGoods = this.selectById(goodsId);
+        //shopGoods.setStock(num + shopGoods.getStock());
+        this.updateById(shopGoods);
+    }
+
     @Override
     public Page getShopList(Page page, Wrapper wrapper, Integer type, Integer attributeId, String name, Integer shopModularId, Integer categoryId,
                             Integer brandId, String address, Integer goodsType, String lowPrice, String highPrice) {

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.jh.jsuk.envm.NewsType;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -57,6 +58,9 @@ public class News extends Model<News> {
      */
     private Integer marketCommentId;
 
+    public void setNewsType(NewsType newsType) {
+        this.newsType = newsType.getKey();
+    }
 
     public Integer getId() {
         return id;

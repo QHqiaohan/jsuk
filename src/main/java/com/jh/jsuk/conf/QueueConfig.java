@@ -7,9 +7,15 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class QueueConfig {
+
+    /**
+     * 抢订单
+     */
+    public static final String QUEUE_ROBBING_ORDER = "robbing_order";
+
     @Bean
     public Queue helloQueue() {
-        return new Queue("testQueue");
+        return new Queue(QUEUE_ROBBING_ORDER);
     }
 
 }
