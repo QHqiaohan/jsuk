@@ -20,6 +20,26 @@ public class UserOrderInfoVo extends UserOrder {
     private String shopName;
     private String salesPrice;
     private String originalPrice;
+    private Integer shopId;
+    private Integer orderType;
+
+    @Override
+    public Integer getOrderType() {
+        return orderType;
+    }
+
+    @Override
+    public void setOrderType(Integer orderType) {
+        this.orderType = orderType;
+    }
+
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
 
     public Integer getNum() {
         return num;

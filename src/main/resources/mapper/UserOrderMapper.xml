@@ -68,12 +68,15 @@
         <result property="shopName" column="shop_name"/>
         <result property="salesPrice" column="sales_price"/>
         <result property="originalPrice" column="original_price"/>
+        <result property="shopId" column="shopId"/>
+        <result property="orderType" column="order_type"/>
     </resultMap>
 
     <select id="getOrderByUserId" resultMap="UserOrderInfoVo">
         SELECT
         uo.*, uog.num,
         uog.goods_price,
+        uog.order_type,
         sgs.size_name,
         sgs.original_price,
         sgs.sales_price,
