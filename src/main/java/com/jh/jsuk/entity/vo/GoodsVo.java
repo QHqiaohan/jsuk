@@ -13,6 +13,16 @@ public class GoodsVo implements Serializable {
     private String killPrice;
     private Integer num;
     private String createTime;
+    private String mainImage;
+
+    public String getMainImage() {
+        return mainImage;
+    }
+
+    public void setMainImage(String mainImage) {
+        this.mainImage = mainImage;
+    }
+
     private Integer checked;
     private Integer isPast;
 

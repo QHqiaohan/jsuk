@@ -32,6 +32,7 @@
             <result column="checked" property="checked"/>
             <result column="create_time" property="createTime"/>
             <result column="goods_name" property="goodsName"/>
+            <result column="main_image" property="mainImage"/>
             <result column="num" property="num"/>
         </collection>
     </resultMap>
@@ -48,13 +49,14 @@
             jsc.shop_id  as shop_id,
             jsc.goods_id as goods_id,
             jsg.goods_name,
+            jsg.main_image,
             jsgs.sales_price,
             jsgs.kill_price
         FROM
             js_shopping_cart jsc
             LEFT JOIN js_manager_user jmu ON jsc.shop_id = jmu.id
             LEFT JOIN js_shop_goods jsg ON jsc.goods_id = jsg.id
-            LEFT JOIN js_shop_goods_size jsgs ON jsgs.id = jsc.id
+            LEFT JOIN js_shop_goods_size jsgs ON jsgs.shop_goods_id = jsg.id
         WHERE
             jsc.user_id = #{userId}
     </select>
