@@ -89,4 +89,11 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         }
     }
 
+    @Override
+    public Page getOrderByUserId(Page page, Wrapper wrapper, Integer userId, Integer status, String goodsName) {
+        wrapper = SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(baseMapper.getOrderByUserId(page, wrapper, userId, status, goodsName));
+        return page;
+    }
+
 }

@@ -8,6 +8,7 @@ import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.comparator.DistanceComparator;
 import com.jh.jsuk.entity.dto.UserOrderDTO;
 import com.jh.jsuk.entity.rules.AccountRule;
+import com.jh.jsuk.entity.vo.UserOrderInfoVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.NewsType;
 import com.jh.jsuk.mq.RobbingOrderProducer;
@@ -212,11 +213,12 @@ public class UserOrderController {
         User userC = userService.selectInfoById(order.getUserId());
         UserInvitationPay itu = new UserInvitationPay();
 
-        List<UserInvitationPay> list = userInvitationPayService.selectList(new EntityWrapper<UserInvitationPay>().eq(UserInvitationPay.USER_ID, order.getUserId()));
-        if(list != null && !list.isEmpty()){
+        List<UserInvitationPay> list = userInvitationPayService.selectList(new EntityWrapper<UserInvitationPay>().eq(UserInvitationPay.USER_ID,
+                order.getUserId()));
+        if (list != null && !list.isEmpty()) {
             for (UserInvitationPay userInvitationPay : list) {
                 Integer invitationId = userInvitationPay.getInvitationId();
-                if(invitationId == null)
+                if (invitationId == null)
                     continue;
                 User userI = userService.selectInfoById(invitationId);
                 List<UserInvitationPay> itus = userInvitationPayService.selectInfoByUser(userC.getId(), invitationId);
@@ -385,6 +387,40 @@ public class UserOrderController {
 
     //--------------------骑手端----------------------------------------------//
 
+    @ApiOperation(value = "用户端-订单列表&订单关键字模糊搜索", notes = "不传=该用户全部订单")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "status", value = "0待付款,1待发货,2=已发货 3=交易成功,4=申请退款,5=退款成功,6=交易关闭,7=售后",
+                    paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "goodsName", value = "商品名称", paramType = "query", dataType = "string")
+    })
+    @PostMapping("/getOrderByUserId")
+    public Result getOrderByUserId(Page page, Integer userId, Integer status, String goodsName) {
+        MyEntityWrapper<UserOrderInfoVo> ew = new MyEntityWrapper<>();
+        Page orderPage = userOrderService.getOrderByUserId(page, ew, userId, status, goodsName);
+        return new Result().success(orderPage);
+    }
+
+    @ApiOperation(value = "用户端-取消订单")
+    @PostMapping("/cancelOrder")
+    public Result cancelOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
+        UserOrder userOrder = new UserOrder();
+        userOrder.setId(id);
+        userOrder.setStatus(6);
+        userOrder.updateById();
+        return new Result().success("取消成功!");
+    }
+
+    @ApiOperation(value = "用户端-删除订单")
+    @PostMapping("/delOrder")
+    public Result delOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
+        UserOrder userOrder = new UserOrder();
+        userOrder.setId(id);
+        userOrder.setIsDel(1);
+        userOrder.updateById();
+        return new Result().success("删除成功!");
+    }
 
 }
 

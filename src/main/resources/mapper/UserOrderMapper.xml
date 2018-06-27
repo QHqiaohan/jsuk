@@ -4,28 +4,28 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.UserOrder">
-        <id column="id" property="id" />
-        <result column="order_num" property="orderNum" />
-        <result column="order_price" property="orderPrice" />
-        <result column="distribution_fee" property="distributionFee" />
-        <result column="creat_time" property="creatTime" />
-        <result column="pay_time" property="payTime" />
-        <result column="pay_type" property="payType" />
-        <result column="status" property="status" />
-        <result column="is_unsubscribe" property="isUnsubscribe" />
-        <result column="is_evaluate" property="isEvaluate" />
-        <result column="is_del" property="isDel" />
-        <result column="manager_id" property="managerId" />
-        <result column="address_id" property="addressId" />
-        <result column="user_id" property="userId" />
-        <result column="cancel_time" property="cancelTime" />
-        <result column="complete_time" property="completeTime" />
-        <result column="send_time" property="sendTime" />
-        <result column="coupon_id" property="couponId" />
-        <result column="distribution_user_id" property="distributionUserId" />
-        <result column="order_type" property="orderType" />
-        <result column="logistics_no" property="logisticsNo" />
-        <result column="remark" property="remark" />
+        <id column="id" property="id"/>
+        <result column="order_num" property="orderNum"/>
+        <result column="order_price" property="orderPrice"/>
+        <result column="distribution_fee" property="distributionFee"/>
+        <result column="creat_time" property="creatTime"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="pay_type" property="payType"/>
+        <result column="status" property="status"/>
+        <result column="is_unsubscribe" property="isUnsubscribe"/>
+        <result column="is_evaluate" property="isEvaluate"/>
+        <result column="is_del" property="isDel"/>
+        <result column="manager_id" property="managerId"/>
+        <result column="address_id" property="addressId"/>
+        <result column="user_id" property="userId"/>
+        <result column="cancel_time" property="cancelTime"/>
+        <result column="complete_time" property="completeTime"/>
+        <result column="send_time" property="sendTime"/>
+        <result column="coupon_id" property="couponId"/>
+        <result column="distribution_user_id" property="distributionUserId"/>
+        <result column="order_type" property="orderType"/>
+        <result column="logistics_no" property="logisticsNo"/>
+        <result column="remark" property="remark"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -38,7 +38,8 @@
         <association property="distributionUser" column="distribution_user_id" select="com.jh.jsuk.dao.DistributionUserDao.selectById"></association>
         <association property="coupon" column="coupon_id" select="com.jh.jsuk.dao.CouponDao.selectById"></association>
         <association property="address" column="address_id" select="com.jh.jsuk.dao.UserAddressDao.selectById"></association>
-        <collection property="goodsList" column="id" ofType="com.jh.jsuk.entity.vo.UserOrderGoodsVo" select="com.jh.jsuk.dao.UserOrderGoodsDao.findByOrderId"></collection>
+        <collection property="goodsList" column="id" ofType="com.jh.jsuk.entity.vo.UserOrderGoodsVo"
+                    select="com.jh.jsuk.dao.UserOrderGoodsDao.findByOrderId"></collection>
     </resultMap>
 
     <select id="findVoByPage" resultMap="UserOrderVo">
@@ -56,6 +57,49 @@
         FROM js_user_order
         WHERE
         id = #{id}
+    </select>
+
+    <resultMap id="UserOrderInfoVo" type="com.jh.jsuk.entity.vo.UserOrderInfoVo" extends="BaseResultMap">
+        <result property="num" column="num"/>
+        <result property="buyPrice" column="goods_price"/>
+        <result property="sizeName" column="size_name"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="goodsHeadImg" column="main_image"/>
+        <result property="shopName" column="shop_name"/>
+        <result property="salesPrice" column="sales_price"/>
+        <result property="originalPrice" column="original_price"/>
+    </resultMap>
+
+    <select id="getOrderByUserId" resultMap="UserOrderInfoVo">
+        SELECT
+        uo.*, uog.num,
+        uog.goods_price,
+        sgs.size_name,
+        sgs.original_price,
+        sgs.sales_price,
+        sg.goods_name,
+        sg.main_image,
+        s.shop_name
+        FROM
+        js_user_order uo
+        LEFT JOIN js_user_order_goods uog ON uo.id = uog.order_id
+        LEFT JOIN js_shop_goods_size sgs ON uog.goods_size_id = sgs.id
+        LEFT JOIN js_shop_goods sg ON sgs.shop_goods_id = sg.id
+        LEFT JOIN js_shop s ON sg.shop_id = s.id
+        WHERE
+        uo.user_id = #{userId}
+        AND uo.is_del = 0
+        <if test="status != null">
+            AND uo.status = #{status}
+        </if>
+        <if test="goodsName != null">
+            AND sg.goods_name LIKE CONCAT('%', #{goodsName}, '%')
+        </if>
+        ORDER BY
+        uo.creat_time DESC
+        <where>
+            ${ew.sqlSegment}
+        </where>
     </select>
 
 </mapper>

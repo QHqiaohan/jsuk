@@ -28,4 +28,5 @@ public interface UserOrderService extends IService<UserOrder> {
 
     void remindingOrderTaking();
 
+    Page getOrderByUserId(Page page, Wrapper wrapper, Integer userId, Integer status, String goodsName);
 }

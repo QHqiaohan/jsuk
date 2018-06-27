@@ -4,33 +4,58 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShoppingCart">
-        <id column="id" property="id" />
-        <result column="user_id" property="userId" />
-        <result column="shop_id" property="shopId" />
-        <result column="goods_id" property="goodsId" />
-        <result column="num" property="num" />
-        <result column="create_time" property="createTime" />
-        <result column="checked" property="checked" />
-        <result column="is_past" property="isPast" />
-        <result column="size_id" property="sizeId" />
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="num" property="num"/>
+        <result column="create_time" property="createTime"/>
+        <result column="checked" property="checked"/>
+        <result column="is_past" property="isPast"/>
+        <result column="size_id" property="sizeId"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, user_id, shop_id, goods_id, num, create_time, checked, is_past, size_id
     </sql>
-    <resultMap id="ShoppingCartVo" type="com.jh.jsuk.entity.vo.ShoppingCartVo" extends="BaseResultMap">
-        <association property="goods" column="goods_id" select="com.jh.jsuk.dao.ShopGoodsDao.selectById"></association>
-        <association property="shops" column="shop_id" select="com.jh.jsuk.dao.ManagerUserDao.selectById"></association>
-        <association property="sizes" column="size_id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectById"></association>
+    <resultMap id="ShoppingCartVo" type="com.jh.jsuk.entity.vo.ShoppingCartVo">
+        <id column="shop_id" property="shopId"/>
+        <result column="shop_name" property="shopName"/>
+        <result column="user_id" property="userId"/>
+        <collection property="goods" ofType="com.jh.jsuk.entity.vo.GoodsVo">
+            <id column="goods_id" property="goodsId"/>
+            <result column="jsc_id" property="jscId"/>
+            <result column="sales_price" property="salesPrice"/>
+            <result column="kill_price" property="killPrice"/>
+            <result column="is_past" property="isPast"/>
+            <result column="checked" property="checked"/>
+            <result column="create_time" property="createTime"/>
+            <result column="goods_name" property="goodsName"/>
+            <result column="num" property="num"/>
+        </collection>
     </resultMap>
 
     <select id="selectVoList" resultMap="ShoppingCartVo">
         SELECT
-        <include refid="Base_Column_List"></include>
-        FROM js_shopping_cart
-        <where>
-            ${ew.sqlSegment}
-        </where>
+            jsc.id       AS jsc_id,
+            jsc.user_id  AS user_id,
+            jsc.num,
+            jsc.create_time,
+            jsc.checked,
+            jsc.is_past,
+            jmu.`name`   as shop_name,
+            jsc.shop_id  as shop_id,
+            jsc.goods_id as goods_id,
+            jsg.goods_name,
+            jsgs.sales_price,
+            jsgs.kill_price
+        FROM
+            js_shopping_cart jsc
+            LEFT JOIN js_manager_user jmu ON jsc.shop_id = jmu.id
+            LEFT JOIN js_shop_goods jsg ON jsc.goods_id = jsg.id
+            LEFT JOIN js_shop_goods_size jsgs ON jsgs.id = jsc.id
+        WHERE
+            jsc.user_id = #{userId}
     </select>
 </mapper>

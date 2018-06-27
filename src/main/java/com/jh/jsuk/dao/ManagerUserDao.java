@@ -1,7 +1,12 @@
 package com.jh.jsuk.dao;
 
-import com.jh.jsuk.entity.ManagerUser;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.jh.jsuk.entity.ManagerUser;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +18,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface ManagerUserDao extends BaseMapper<ManagerUser> {
 
+    List<Map> selectVoList(@Param("ew") Wrapper wrapper);
 }

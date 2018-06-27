@@ -97,7 +97,7 @@ public class ShopGoodsController {
         return new Result().success(goodsPage);
     }
 
-/*    @ApiOperation(value = "用户端-商品类型里的-根据综合/价格/销量查询商品")
+   /* @ApiOperation(value = "用户端-商品类型里的-根据综合/价格/销量查询商品")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
@@ -154,22 +154,18 @@ public class ShopGoodsController {
         // 封装结果map
         Map<String, Object> map = MapUtil.newHashMap();
         GoodsSizeVo goodsSizeVo = shopGoodsService.getShopGoodsById(id);
-        if (goodsSizeVo == null) {
-            map.put("shopGoods", "暂无数据");
-        } else {
-            map.put("shopGoods", goodsSizeVo);
-            // 获取标签ID
-            Integer labelId = goodsSizeVo.getGoodsLabelId();
-            GoodsLabel goodsLabel = goodsLabelService.selectOne(new EntityWrapper<GoodsLabel>()
-                    .eq(GoodsLabel.ID, labelId)
-                    .eq(GoodsLabel.IS_DEL, 1)
-                    .orderBy(GoodsLabel.RANK, false));
-            map.put("goodsLabel", goodsLabel);
-        }
+        map.put("shopGoods", goodsSizeVo);
+        // 获取标签ID
+        Integer labelId = goodsSizeVo.getGoodsLabelId();
+        GoodsLabel goodsLabel = goodsLabelService.selectOne(new EntityWrapper<GoodsLabel>()
+                .eq(GoodsLabel.ID, labelId)
+                .eq(GoodsLabel.IS_DEL, 1)
+                .orderBy(GoodsLabel.RANK, false));
+        map.put("goodsLabel", goodsLabel);
         return new Result().success(map);
     }
 
-/*    @ApiOperation("用户端-商品搜索&店铺搜索")
+   /* @ApiOperation("用户端-商品搜索&店铺搜索")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
@@ -223,7 +219,7 @@ public class ShopGoodsController {
             @ApiImplicitParam(name = "shopModularId", value = "模块ID", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "categoryId", value = "类型ID", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "brandId", value = "品牌ID", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "address", value = "区域地址", required = true, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "address", value = "区域地址", paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "goodsType", value = "1=包邮,2=促销,3=新品", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "lowPrice", value = "最低价格", paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "highPrice", value = "最高价格", paramType = "query", dataType = "string")
@@ -243,6 +239,7 @@ public class ShopGoodsController {
                     .eq(Shop.CAN_USE, 1)
                     .eq(Shop.MODULAR_ID, shopModularId)
                     .like(Shop.SHOP_NAME, name)
+                    .like(Shop.ADDRESS, address)
                     .orderBy(Shop.TOTAL_VOLUME, false));
             return new Result().success(shopPage);
         } else {
@@ -253,12 +250,13 @@ public class ShopGoodsController {
                     .eq(Shop.CAN_USE, 1)
                     .eq(Shop.MODULAR_ID, shopModularId)
                     .like(Shop.SHOP_NAME, name)
+                    .like(Shop.ADDRESS, address)
                     .orderBy(Shop.TOTAL_VOLUME, false));
 
             MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
             Page goodsPage = shopGoodsService.getShopList(page, ew, type, attributeId, name, shopModularId, categoryId, brandId, address, goodsType,
                     lowPrice, highPrice);
-            map.put("shop", shopPage);
+            map.put("shop", shopPage.getRecords());
             map.put("shopGoods", goodsPage);
 
             return new Result().success(map);

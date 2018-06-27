@@ -1,37 +1,47 @@
 package com.jh.jsuk.entity.vo;
 
-import com.jh.jsuk.entity.ManagerUser;
-import com.jh.jsuk.entity.ShopGoods;
-import com.jh.jsuk.entity.ShopGoodsSize;
-import com.jh.jsuk.entity.ShoppingCart;
+import java.io.Serializable;
+import java.util.List;
 
 
-public class ShoppingCartVo extends ShoppingCart {
-    private ShopGoods goods;
-    private ManagerUser shops;
-    private ShopGoodsSize sizes;
+public class ShoppingCartVo implements Serializable {
 
-    public ShopGoodsSize getSizes() {
-        return sizes;
+    private String userId;
+    private String shopName;
+    private String shopId;
+    private List<GoodsVo> goods;
+
+
+
+    public String getUserId() {
+        return userId;
     }
 
-    public void setSizes(ShopGoodsSize sizes) {
-        this.sizes = sizes;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public ManagerUser getShops() {
-        return shops;
+    public String getShopName() {
+        return shopName;
     }
 
-    public void setShops(ManagerUser shops) {
-        this.shops = shops;
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 
-    public ShopGoods getGoods() {
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public List<GoodsVo> getGoods() {
         return goods;
     }
 
-    public void setGoods(ShopGoods goods) {
+    public void setGoods(List<GoodsVo> goods) {
         this.goods = goods;
     }
 }

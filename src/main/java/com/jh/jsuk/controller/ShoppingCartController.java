@@ -4,12 +4,11 @@ package com.jh.jsuk.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.jh.jsuk.entity.ManagerUser;
-import com.jh.jsuk.entity.ShopGoods;
-import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.ShoppingCart;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
+import com.jh.jsuk.service.ManagerUserService;
 import com.jh.jsuk.service.ShoppingCartService;
+import com.jh.jsuk.service.UserService;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
@@ -31,6 +30,10 @@ import java.util.Map;
 @Api(tags = "购物车")
 @RequestMapping("/shoppingCart")
 public class ShoppingCartController {
+    @Autowired
+    ManagerUserService managerUserService;
+    @Autowired
+    UserService userService;
     @Autowired
     private ShoppingCartService shoppingCartService;
 
@@ -105,17 +108,10 @@ public class ShoppingCartController {
     @ApiOperation("显示购物车列表")
     @PostMapping("/list")
     public Result list(Integer userId) {
-        List<ShoppingCartVo> shoppingCarts = shoppingCartService.selectVoList(new EntityWrapper()
-                .eq(ShoppingCart.USER_ID, userId)
-        );
+        List<ShoppingCartVo> shoppingCarts = shoppingCartService.selectVoList(String.valueOf(userId));
         Map<String, Object> shopMap = Maps.newHashMap();
         List<Map<String, Object>> listGoods = Lists.newArrayList();
         shoppingCarts.forEach(cart -> {
-            ManagerUser shops = cart.getShops();
-            ShopGoods goods = cart.getGoods();
-            ShopGoodsSize sizes = cart.getSizes();
-           // shopMap.put(shops.getName())
-
         });
         return new Result().success(shoppingCarts);
     }
