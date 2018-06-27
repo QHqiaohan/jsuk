@@ -1,6 +1,5 @@
 package com.jh.jsuk.service.impl;
 
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ShoppingCartDao;
 import com.jh.jsuk.entity.ShoppingCart;
@@ -22,7 +21,7 @@ import java.util.List;
 public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartDao, ShoppingCart> implements ShoppingCartService {
 
     @Override
-    public List<ShoppingCartVo> selectVoList(Wrapper wrapper) {
-        return baseMapper.selectVoList(wrapper);
+    public List<ShoppingCartVo> selectVoList(String userId) {
+        return baseMapper.selectVoList(userId);
     }
 }

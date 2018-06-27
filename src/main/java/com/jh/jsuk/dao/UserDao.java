@@ -17,5 +17,5 @@ public interface UserDao extends BaseMapper<User> {
     UserInfoVo selectInfoById(Integer id);
 
     User findUserHeadImgById(Integer id);
-
+ 
 }

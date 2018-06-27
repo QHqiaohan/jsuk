@@ -4,24 +4,24 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.User">
-        <id column="id" property="id" />
-        <result column="nick_name" property="nickName" />
-        <result column="phone" property="phone" />
-        <result column="level" property="level" />
-        <result column="sex" property="sex" />
-        <result column="head_img" property="headImg" />
-        <result column="password" property="password" />
-        <result column="login_ip" property="loginIp" />
-        <result column="wx_token" property="wxToken" />
-        <result column="weibo_token" property="weiboToken" />
-        <result column="qq_token" property="qqToken" />
-        <result column="can_use" property="canUse" />
-        <result column="is_secondary_market" property="isSecondaryMarket" />
-        <result column="is_available" property="isAvailable" />
-        <result column="address" property="address" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
-        <result column="last_login_time" property="lastLoginTime" />
+        <id column="id" property="id"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="phone" property="phone"/>
+        <result column="level" property="level"/>
+        <result column="sex" property="sex"/>
+        <result column="head_img" property="headImg"/>
+        <result column="password" property="password"/>
+        <result column="login_ip" property="loginIp"/>
+        <result column="wx_token" property="wxToken"/>
+        <result column="weibo_token" property="weiboToken"/>
+        <result column="qq_token" property="qqToken"/>
+        <result column="can_use" property="canUse"/>
+        <result column="is_secondary_market" property="isSecondaryMarket"/>
+        <result column="is_available" property="isAvailable"/>
+        <result column="address" property="address"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="last_login_time" property="lastLoginTime"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -30,7 +30,8 @@
     </sql>
 
     <resultMap id="UserInfoVo" type="com.jh.jsuk.entity.vo.UserInfoVo" extends="BaseResultMap">
-        <association property="label" column="flavor_id" select="com.jushang.dao.GoodsLabelDao.selectById"></association>
+        <association property="label" column="flavor_id"
+                     select="com.jh.jsuk.dao.GoodsLabelDao.selectById"></association>
     </resultMap>
 
     <select id="selectInfoById" resultMap="UserInfoVo">
@@ -39,6 +40,8 @@
         FROM t_user
         WHERE id = #{id}
     </select>
+
+
 
     <sql id="Vo_Column_List">
         head_img, nick_name

@@ -4,25 +4,25 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ManagerUser">
-        <id column="id" property="id" />
-        <result column="user_name" property="userName" />
-        <result column="name" property="name" />
-        <result column="password" property="password" />
-        <result column="shop_id" property="shopId" />
-        <result column="user_type" property="userType" />
-        <result column="can_use" property="canUse" />
-        <result column="phone" property="phone" />
-        <result column="tel_phone" property="telPhone" />
-        <result column="province" property="province" />
-        <result column="city" property="city" />
-        <result column="area" property="area" />
-        <result column="address" property="address" />
-        <result column="head_img" property="headImg" />
-        <result column="e_mail" property="eMail" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
-        <result column="login_ip" property="loginIp" />
-        <result column="last_login_time" property="lastLoginTime" />
+        <id column="id" property="id"/>
+        <result column="user_name" property="userName"/>
+        <result column="name" property="name"/>
+        <result column="password" property="password"/>
+        <result column="shop_id" property="shopId"/>
+        <result column="user_type" property="userType"/>
+        <result column="can_use" property="canUse"/>
+        <result column="phone" property="phone"/>
+        <result column="tel_phone" property="telPhone"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="area" property="area"/>
+        <result column="address" property="address"/>
+        <result column="head_img" property="headImg"/>
+        <result column="e_mail" property="eMail"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="login_ip" property="loginIp"/>
+        <result column="last_login_time" property="lastLoginTime"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
