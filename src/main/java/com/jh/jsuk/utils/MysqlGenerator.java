@@ -15,13 +15,13 @@ import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import java.util.*;
 
 public class MysqlGenerator {
-//    private static String[] table =  new String[]{"js_user_remainder"};
-    private static String[] table =  new String[]{"js_user_invitation_pay"};
+
+    private static String[] table = new String[]{"js_user_order_goods"};
     //table名字
     private static String[] prefixs = {"js_sys_", "js_"};            //table前缀
     private static String authorName = "lpf";                //作者
     private static String parent = "com.jh.jsuk";         //父包名
-//    private static String path = System.getProperty("user.dir");
+    //    private static String path = System.getProperty("user.dir");
     private static String path = "E:\\gencode";
     private static String url = "jdbc:mysql://39.108.80.44:3306/jushang_new?characterEncoding=utf8";
     private static String username = "root";
@@ -100,7 +100,7 @@ public class MysqlGenerator {
                 // public User setName(String name) {this.name = name; return this;}
                 // .setEntityBuilderModel(true)
                 // 【实体】是否为lombok模型（默认 false）<a href="https://projectlombok.org/">document</a>
-                 //.setEntityLombokModel(true)
+                //.setEntityLombokModel(true)
                 // Boolean类型字段是否移除is前缀处理
                 // .setEntityBooleanColumnRemoveIsPrefix(true)
                 // .setRestControllerStyle(true)

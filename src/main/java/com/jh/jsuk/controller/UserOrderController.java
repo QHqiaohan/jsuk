@@ -1,6 +1,7 @@
 package com.jh.jsuk.controller;
 
 
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -8,6 +9,7 @@ import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.comparator.DistanceComparator;
 import com.jh.jsuk.entity.dto.UserOrderDTO;
 import com.jh.jsuk.entity.rules.AccountRule;
+import com.jh.jsuk.entity.vo.UserOrderInfoVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.NewsType;
 import com.jh.jsuk.mq.RobbingOrderProducer;
@@ -20,10 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -65,6 +64,9 @@ public class UserOrderController {
     @Autowired
     NewsService newsService;
 
+    @Autowired
+    private UserAddressService userAddressService;
+
     //--------------------骑手端----------------------------------------------//
 
     /**
@@ -101,6 +103,23 @@ public class UserOrderController {
         return new Result().success(orderVoList);
     }
 
+    /**
+     * 待抢单
+     */
+    @ApiOperation("骑手显示待抢单数量")
+    @GetMapping("/grabASingle/count")
+    public Result grabASingleCount() {
+        Wrapper wrapper = new EntityWrapper()
+                .isNull(UserOrder.DISTRIBUTION_USER_ID)
+                .eq(UserOrder.STATUS, 2)
+                .ne(UserOrder.IS_DEL, 4)
+                .ne(UserOrder.IS_DEL, 5)
+                .ne(UserOrder.IS_DEL, 6)
+                .ne(UserOrder.IS_DEL, 7)
+                .orderBy(UserOrder.CREAT_TIME, false);
+        return new Result().success(userOrderService.selectCount(wrapper));
+    }
+
     @Autowired
     RobbingOrderProducer producer;
 
@@ -122,25 +141,18 @@ public class UserOrderController {
     /**
      * 待取货
      */
-    @ApiOperation("骑手显示显示待取货列表")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "current", value = "当前页码",
-                    required = false, paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数",
-                    required = false, paramType = "query", dataType = "integer")
-    })
-    @GetMapping("/readyToTake")
-    public Result readyToTake(Page page, Integer userId) {
-        List<UserOrderVo> orderVoList = userOrderService.findVoByPage(page, new EntityWrapper()
+    @ApiOperation("骑手显示显示待取货数量")
+    @GetMapping("/readyToTake/count")
+    public Result readyToTake(Integer userId) {
+        Wrapper wrapper = new EntityWrapper()
                 .eq(UserOrder.DISTRIBUTION_USER_ID, userId)
                 .eq(UserOrder.STATUS, 3)
                 .ne(UserOrder.IS_DEL, 4)
                 .ne(UserOrder.IS_DEL, 5)
                 .ne(UserOrder.IS_DEL, 6)
                 .ne(UserOrder.IS_DEL, 7)
-                .orderBy(UserOrder.CREAT_TIME, false)
-        );
-        return new Result().success(orderVoList);
+                .orderBy(UserOrder.CREAT_TIME, false);
+        return new Result().success(userOrderService.selectCount(wrapper));
     }
 
     /**
@@ -202,11 +214,12 @@ public class UserOrderController {
         User userC = userService.selectInfoById(order.getUserId());
         UserInvitationPay itu = new UserInvitationPay();
 
-        List<UserInvitationPay> list = userInvitationPayService.selectList(new EntityWrapper<UserInvitationPay>().eq(UserInvitationPay.USER_ID, order.getUserId()));
-        if(list != null && !list.isEmpty()){
+        List<UserInvitationPay> list = userInvitationPayService.selectList(new EntityWrapper<UserInvitationPay>().eq(UserInvitationPay.USER_ID,
+                order.getUserId()));
+        if (list != null && !list.isEmpty()) {
             for (UserInvitationPay userInvitationPay : list) {
                 Integer invitationId = userInvitationPay.getInvitationId();
-                if(invitationId == null)
+                if (invitationId == null)
                     continue;
                 User userI = userService.selectInfoById(invitationId);
                 List<UserInvitationPay> itus = userInvitationPayService.selectInfoByUser(userC.getId(), invitationId);
@@ -343,6 +356,20 @@ public class UserOrderController {
         return new Result().success(orderVoList);
     }
 
+    @ApiOperation("骑手显示待送达数量")
+    @GetMapping("/pendingService/count")
+    public Result pendingService(Integer userId) {
+        Wrapper wrapper = new EntityWrapper()
+                .eq(UserOrder.DISTRIBUTION_USER_ID, userId)
+                .eq(UserOrder.STATUS, 4)
+                .ne(UserOrder.IS_DEL, 4)
+                .ne(UserOrder.IS_DEL, 5)
+                .ne(UserOrder.IS_DEL, 6)
+                .ne(UserOrder.IS_DEL, 7)
+                .orderBy(UserOrder.CREAT_TIME, false);
+        return new Result().success(userOrderService.selectCount(wrapper));
+    }
+
     @ApiOperation("骑手显示已完成数量")
     @GetMapping("/distributionComplete/count")
     public Result distributionComplete(Integer userId) {
@@ -361,6 +388,65 @@ public class UserOrderController {
 
     //--------------------骑手端----------------------------------------------//
 
+    @ApiOperation(value = "用户端-订单列表&订单关键字模糊搜索", notes = "不传=该用户全部订单")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "status", value = "0待付款,1待发货,2=已发货 3=交易成功,4=申请退款,5=退款成功,6=交易关闭,7=售后",
+                    paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "goodsName", value = "商品名称", paramType = "query", dataType = "string")
+    })
+    @RequestMapping(value = "/getOrderByUserId", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getOrderByUserId(Page page, Integer userId, Integer status, String goodsName) {
+        MyEntityWrapper<UserOrderInfoVo> ew = new MyEntityWrapper<>();
+        Page orderPage = userOrderService.getOrderByUserId(page, ew, userId, status, goodsName);
+        return new Result().success(orderPage);
+    }
+
+    @ApiOperation(value = "用户端-订单详情")
+    @RequestMapping(value = "/getOrderInfoById", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getOrderInfoById(@ApiParam(value = "订单ID", required = true) Integer id) {
+        if (id == null) {
+            return new Result().erro("订单ID为空");
+        }
+        UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>()
+                .eq(UserOrder.ID, id));
+        if (userOrder != null) {
+            // 封装结果map
+            Map<String, Object> map = MapUtil.newHashMap();
+            // 用户ID
+            Integer userId = userOrder.getUserId();
+            // 地址
+            UserAddress userAddress = userAddressService.selectOne(new EntityWrapper<UserAddress>()
+                    .eq(UserAddress.USER_ID, userId)
+                    .eq(UserAddress.IS_DEFAULT, 1)
+                    .eq(UserAddress.IS_DEL, 0));
+            map.put("address", userAddress);
+            return new Result().success(map);
+        } else {
+            return new Result().success();
+        }
+    }
+
+    @ApiOperation(value = "用户端-取消订单")
+    @RequestMapping(value = "/cancelOrder", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result cancelOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
+        UserOrder userOrder = new UserOrder();
+        userOrder.setId(id);
+        userOrder.setStatus(6);
+        userOrder.updateById();
+        return new Result().success("取消成功!");
+    }
+
+    @ApiOperation(value = "用户端-删除订单")
+    @RequestMapping(value = "/delOrder", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result delOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
+        UserOrder userOrder = new UserOrder();
+        userOrder.setId(id);
+        userOrder.setIsDel(1);
+        userOrder.updateById();
+        return new Result().success("删除成功!");
+    }
 
 }
 

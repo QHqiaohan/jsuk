@@ -48,8 +48,8 @@ public class JwtFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String servletPath = ((HttpServletRequest) servletRequest).getServletPath();
         String[] split = servletPath.split("\\.");
-        if (split.length > 0 && httpServletRequest.getSession().getAttribute("adminUserName") != null && httpServletRequest.getParameterMap().size
-                () != 0) {
+        if (split.length > 0 && httpServletRequest.getSession().getAttribute("adminUserName") != null
+                && httpServletRequest.getParameterMap().size() != 0) {
             if (!"js".equals(split[split.length - 1]) &&
                     !"css".equals(split[split.length - 1]) &&
                     !"ico".equals(split[split.length - 1]) &&
@@ -141,6 +141,8 @@ public class JwtFilter implements Filter {
                 // 商品类型-品牌相关操作
                 || servletPath.indexOf("/getBrandByCategoryId") != -1
                 || servletPath.indexOf("/getShopGoodsByBrandId") != -1
+                // 地址定位选择API
+                || servletPath.indexOf("/getOpenCityList") != -1
             ////////////////////////////////////////////////
             //方便ios上架开放接口 TODO 上架后最好注掉
             //|| servletPath.indexOf("/banner") != -1

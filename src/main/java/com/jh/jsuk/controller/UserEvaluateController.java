@@ -53,7 +53,7 @@ public class UserEvaluateController {
             @ApiImplicitParam(name = "status", required = true, value = "是否满意 0不满意  1满意", paramType = "query", dataType = "int"),
     })
     @PostMapping("/add")
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class, MessageException.class})
     public Result add(@ModelAttribute UserEvaluate evaluate) throws Exception {
         //获取敏感词
         Dictionary dictionary = dictionaryService.selectOne(new EntityWrapper<Dictionary>().eq("code", "sensitive_words"));
@@ -69,7 +69,7 @@ public class UserEvaluateController {
         evaluate.setCreateTime(new Date());
         evaluate.insert();
         UserOrder order = orderService.selectById(evaluate.getOrderId());
-        if(order == null)
+        if (order == null)
             throw new MessageException("订单不存在！");
         order.setIsEvaluate(1);
         order.updateById();
@@ -169,10 +169,10 @@ public class UserEvaluateController {
                     required = false, paramType = "query", dataType = "integer")
     })
     @RequestMapping("/list/user")
-    public Result userEvaluate(Integer userId,Page page){
+    public Result userEvaluate(Integer userId, Page page) {
         Result<Page> result = new Result<>();
         Wrapper wrapper = new EntityWrapper();
-        Page pg = evaluateService.listUser(userId,page,wrapper);
+        Page pg = evaluateService.listUser(userId, page, wrapper);
         return result.success(pg);
     }
 
