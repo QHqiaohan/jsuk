@@ -13,4 +13,8 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface DistributionUserService extends IService<DistributionUser> {
 
+    /**
+     * 通知骑手接单
+     */
+    void notifyRobbing();
 }

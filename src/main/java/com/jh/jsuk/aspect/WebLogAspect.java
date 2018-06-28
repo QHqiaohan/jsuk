@@ -2,7 +2,6 @@ package com.jh.jsuk.aspect;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jh.jsuk.conf.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -40,7 +39,7 @@ public class WebLogAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
-        log.info("jwt值:{}",request.getHeader(Constant.JWT_HEADER));
+//        log.info("jwt值:{}",request.getHeader(Constant.JWT_HEADER));
 
         // 记录下请求内容
         log.info("地址 : " + request.getRequestURL().toString());

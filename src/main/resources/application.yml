@@ -7,6 +7,14 @@ spring:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
     #default-property-inclusion: non_null
+  rabbitmq:
+    listener:
+      simple:
+        retry:
+          max-attempts: 10
+          enabled: true
+          initial-interval: 5000
+        prefetch: 100
 #mybatis
 mybatis-plus:
   mapper-locations: classpath*:mapper/*Mapper.xml

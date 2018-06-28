@@ -1,5 +1,7 @@
 package com.jh.jsuk.utils;
 
+import cn.jiguang.common.resp.APIConnectionException;
+import cn.jiguang.common.resp.APIRequestException;
 import cn.jpush.api.JPushClient;
 import cn.jpush.api.push.PushResult;
 import cn.jpush.api.push.model.Message;
@@ -46,6 +48,20 @@ public class DisJPushUtils {
         } catch (Exception e) {
             //e.printStackTrace();
         }
+    }
+
+    public static void pushMsg2(String alias, String content, String title, Map<String, String> map) throws APIConnectionException, APIRequestException {
+        JPushClient jPushClient = DisJPushUtils.getJPushClient();
+//        try {
+            PushPayload push = push(alias, content, title, map);
+            PushResult pushResult = jPushClient.sendPush(push);
+//            if (pushResult.isResultOK()) {
+//
+//            }
+//            System.out.println("push result  :  " + pushResult.isResultOK());
+//        } catch (Exception e) {
+//            //e.printStackTrace();
+//        }
     }
 
     public static void pushAllMsg(String content, String title, Map<String, String> map) {

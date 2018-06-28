@@ -13,9 +13,19 @@ public class QueueConfig {
      */
     public static final String QUEUE_ROBBING_ORDER = "robbing_order";
 
-    @Bean
-    public Queue helloQueue() {
+    /**
+     * 推送消息
+     */
+    public static final String QUEUE_PUSH_MESSAGE = "push_message";
+
+    @Bean(name = "robbingOrder")
+    public Queue robbingOrderQueue() {
         return new Queue(QUEUE_ROBBING_ORDER);
+    }
+
+    @Bean(name = "pushMessage")
+    public Queue pushMessageQueue() {
+        return new Queue(QUEUE_PUSH_MESSAGE);
     }
 
 }

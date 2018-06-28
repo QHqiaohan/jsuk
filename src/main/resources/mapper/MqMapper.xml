@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.jsuk.dao.MqDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Mq">
+        <id column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="sent_time" property="sentTime" />
+        <result column="consume_time" property="consumeTime" />
+        <result column="status" property="status" />
+        <result column="queue_name" property="queueName" />
+        <result column="body" property="body" />
+        <result column="failure_reason" property="failureReason" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, create_time, sent_time, consume_time, status, queue_name, body, failure_reason
+    </sql>
+
+</mapper>

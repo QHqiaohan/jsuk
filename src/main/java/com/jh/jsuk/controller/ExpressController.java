@@ -12,6 +12,7 @@ import com.jh.jsuk.entity.dto.RobbingExpressDTO;
 import com.jh.jsuk.envm.DistributionExpressStatus;
 import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.BannerService;
+import com.jh.jsuk.service.DistributionUserService;
 import com.jh.jsuk.service.ExpressService;
 import com.jh.jsuk.service.ExpressTypeService;
 import com.jh.jsuk.utils.MyEntityWrapper;
@@ -43,6 +44,8 @@ public class ExpressController {
     private ExpressTypeService expressTypeService;
     @Autowired
     BannerService bannerService;
+    @Autowired
+    DistributionUserService distributionUserService;
 
     @ApiOperation(value = "用户端-快递跑腿banner")
     @RequestMapping(value = "/expressRunBanner", method = {RequestMethod.POST, RequestMethod.GET})
@@ -79,6 +82,7 @@ public class ExpressController {
             return new Result().erro("用户信息过期");
         } else {
             boolean res = express.insert();
+            distributionUserService.notifyRobbing();
             if (res) {
                 return new Result().success("您的快递订单已提交");
             } else {
