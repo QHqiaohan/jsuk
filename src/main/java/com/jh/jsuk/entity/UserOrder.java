@@ -1,12 +1,13 @@
 package com.jh.jsuk.entity;
 
+import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableName;
-import java.io.Serializable;
 
 /**
  * <p>
@@ -35,6 +36,10 @@ public class UserOrder extends Model<UserOrder> {
      * 配送费
      */
     private BigDecimal distributionFee;
+    /**
+     * 配送状态 1 待抢单 2 待取货 3待送达 仅仅对应订单状态为 已发货 4配送完成
+     */
+    private Integer distributionStatus;
     /**
      * 创建时间
      */
@@ -108,6 +113,13 @@ public class UserOrder extends Model<UserOrder> {
      */
     private String remark;
 
+    public void setDistributionStatus(Integer distributionStatus) {
+        this.distributionStatus = distributionStatus;
+    }
+
+    public Integer getDistributionStatus() {
+        return distributionStatus;
+    }
 
     public Integer getId() {
         return id;
@@ -293,6 +305,8 @@ public class UserOrder extends Model<UserOrder> {
 
     public static final String DISTRIBUTION_FEE = "distribution_fee";
 
+    public static final String DISTRIBUTION_STATUS = "distribution_status";
+
     public static final String CREAT_TIME = "creat_time";
 
     public static final String PAY_TIME = "pay_time";
@@ -337,28 +351,29 @@ public class UserOrder extends Model<UserOrder> {
     @Override
     public String toString() {
         return "UserOrder{" +
-        "id=" + id +
-        ", orderNum=" + orderNum +
-        ", orderPrice=" + orderPrice +
-        ", distributionFee=" + distributionFee +
-        ", creatTime=" + creatTime +
-        ", payTime=" + payTime +
-        ", payType=" + payType +
-        ", status=" + status +
-        ", isUnsubscribe=" + isUnsubscribe +
-        ", isEvaluate=" + isEvaluate +
-        ", isDel=" + isDel +
-        ", managerId=" + managerId +
-        ", addressId=" + addressId +
-        ", userId=" + userId +
-        ", cancelTime=" + cancelTime +
-        ", completeTime=" + completeTime +
-        ", sendTime=" + sendTime +
-        ", couponId=" + couponId +
-        ", distributionUserId=" + distributionUserId +
-        ", orderType=" + orderType +
-        ", logisticsNo=" + logisticsNo +
-        ", remark=" + remark +
-        "}";
+                "id=" + id +
+                ", orderNum='" + orderNum + '\'' +
+                ", orderPrice=" + orderPrice +
+                ", distributionFee=" + distributionFee +
+                ", distributionStatus=" + distributionStatus +
+                ", creatTime=" + creatTime +
+                ", payTime=" + payTime +
+                ", payType=" + payType +
+                ", status=" + status +
+                ", isUnsubscribe=" + isUnsubscribe +
+                ", isEvaluate=" + isEvaluate +
+                ", isDel=" + isDel +
+                ", managerId=" + managerId +
+                ", addressId=" + addressId +
+                ", userId=" + userId +
+                ", cancelTime=" + cancelTime +
+                ", completeTime=" + completeTime +
+                ", sendTime=" + sendTime +
+                ", couponId=" + couponId +
+                ", distributionUserId=" + distributionUserId +
+                ", orderType=" + orderType +
+                ", logisticsNo='" + logisticsNo + '\'' +
+                ", remark='" + remark + '\'' +
+                '}';
     }
 }
