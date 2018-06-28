@@ -18,4 +18,34 @@
         id, comment, publish_time, comment_id, user_id, activity_id, is_del
     </sql>
 
+    <sql id="result1">
+        id, comment, user_id, publish_time, comment_id
+    </sql>
+
+    <select id="getCommentCount" resultType="integer">
+       SELECT
+            count(*)
+        FROM
+            js_market_comment
+        WHERE
+            activity_id = #{activityId}
+    </select>
+
+    <resultMap id="MarketCommentVo" type="com.jh.jsuk.entity.vo.MarketCommentVo" extends="BaseResultMap">
+        <association property="user" column="user_id" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"></association>
+    </resultMap>
+
+    <select id="findCommentByActivityId" resultMap="MarketCommentVo">
+        SELECT
+        <include refid="result1"/>
+        FROM
+        js_market_comment
+        WHERE
+        activity_id = #{activityId}
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
+
 </mapper>

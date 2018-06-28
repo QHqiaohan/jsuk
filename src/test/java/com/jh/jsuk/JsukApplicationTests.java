@@ -13,4 +13,13 @@ public class JsukApplicationTests {
     public void contextLoads() {
     }
 
+    @Test
+    public void test() {
+        Integer num1 = 5;
+        Integer num2 = 5;
+        Integer num3 = 2;
+        int fullStar = (num1 + num2 + num3) / 3;
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+fullStar);
+    }
+
 }

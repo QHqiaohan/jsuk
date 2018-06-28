@@ -39,23 +39,23 @@
 
     <select id="findShopGoodsByModularId" resultMap="GoodsSalesPriceVo">
         SELECT
-        *
+        <include refid="Base_Column_List"/>
         FROM
-            js_shop_goods
+        js_shop_goods
         WHERE
-            is_recommend = '1'
-            AND `status` = '1'
-            AND is_del = '1'
-            AND shop_modular_id = #{modularId}
+        is_recommend = '1'
+        AND `status` = '1'
+        AND is_del = '1'
+        AND shop_modular_id = #{modularId}
         ORDER BY
-            sale_amont DESC
+        sale_amont DESC
         LIMIT 1,
-            4
+        4
     </select>
 
     <select id="shopGoodsListByAttributeId" resultMap="GoodsSalesPriceVo">
         SELECT
-        *
+        <include refid="Base_Column_List"/>
         FROM
         js_shop_goods
         WHERE
@@ -74,7 +74,7 @@
 
     <select id="getShopGoodsByLikeName" resultMap="GoodsSalesPriceVo">
         SELECT
-        *
+        <include refid="Base_Column_List"/>
         FROM
         js_shop_goods
         WHERE
@@ -266,7 +266,7 @@
 
     <select id="shopGoodsListByModularId" resultMap="GoodsSizeVo">
         SELECT
-        *
+        <include refid="Base_Column_List"/>
         FROM js_shop_goods
         WHERE
         shop_modular_id = #{modularId}
@@ -276,15 +276,16 @@
     </select>
 
     <select id="getShopGoodsById" resultMap="GoodsSizeVo">
-        SELECT *
+        SELECT
+        <include refid="Base_Column_List"/>
         FROM js_shop_goods
         WHERE
-            id = #{id}
+        id = #{id}
     </select>
 
     <select id="getShopGoodsByBrandId" resultMap="GoodsSalesPriceVo">
         SELECT
-        *
+        <include refid="Base_Column_List"/>
         FROM js_shop_goods
         WHERE
         brand_id = #{brandId}
@@ -296,7 +297,7 @@
 
     <select id="getIsRecommend" resultMap="GoodsSalesPriceVo">
         SELECT
-        *
+        <include refid="Base_Column_List"/>
         FROM js_shop_goods
         WHERE
         is_recommend = 1

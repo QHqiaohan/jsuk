@@ -37,7 +37,7 @@
     <select id="selectInfoById" resultMap="UserInfoVo">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM t_user
+        FROM js_user
         WHERE id = #{id}
     </select>
 
@@ -50,7 +50,7 @@
     <select id="findUserHeadImgById" resultMap="BaseResultMap">
         SELECT
         <include refid="Vo_Column_List"/>
-        FROM t_user
+        FROM js_user
         WHERE
         id = #{id}
     </select>

@@ -2,14 +2,13 @@ package com.jh.jsuk.controller;
 
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.GoodsBrand;
-import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.service.GoodsBrandService;
 import com.jh.jsuk.service.ShopGoodsService;
-import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,7 +44,7 @@ public class GoodsBrandController {
         return new Result().success(goodsBrandList);
     }
 
-    @ApiOperation("用户端-商品类型里的-根据所选品牌ID查询商品")
+    /*@ApiOperation("用户端-商品类型里的-根据所选品牌ID查询商品")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
@@ -55,7 +54,7 @@ public class GoodsBrandController {
         MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
         Page goodsPage = shopGoodsService.getShopGoodsByBrandId(page, ew, brandId);
         return new Result().success(goodsPage);
-    }
+    }*/
 
 }
 

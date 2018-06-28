@@ -1,9 +1,12 @@
 package com.jh.jsuk.service.impl;
 
-import com.jh.jsuk.entity.MarketComment;
-import com.jh.jsuk.dao.MarketCommentDao;
-import com.jh.jsuk.service.MarketCommentService;
+import com.baomidou.mybatisplus.mapper.SqlHelper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.jh.jsuk.dao.MarketCommentDao;
+import com.jh.jsuk.entity.MarketComment;
+import com.jh.jsuk.service.MarketCommentService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,4 +20,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class MarketCommentServiceImpl extends ServiceImpl<MarketCommentDao, MarketComment> implements MarketCommentService {
 
+    @Override
+    public Page findCommentByActivityId(Page page, Wrapper wrapper, Integer activityId) {
+        wrapper = SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(baseMapper.findCommentByActivityId(page, wrapper, activityId));
+        return page;
+    }
 }

@@ -1,7 +1,9 @@
 package com.jh.jsuk.service;
 
-import com.jh.jsuk.entity.MarketComment;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.MarketComment;
 
 /**
  * <p>
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface MarketCommentService extends IService<MarketComment> {
 
+    Page findCommentByActivityId(Page page, Wrapper wrapper, Integer activityId);
 }
