@@ -2,11 +2,15 @@ package com.jh.jsuk.controller;
 
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.Banner;
 import com.jh.jsuk.entity.Express;
 import com.jh.jsuk.entity.ExpressType;
 import com.jh.jsuk.entity.UserAddress;
+import com.jh.jsuk.entity.dto.RobbingExpressDTO;
+import com.jh.jsuk.envm.DistributionExpressStatus;
+import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.BannerService;
 import com.jh.jsuk.service.ExpressService;
 import com.jh.jsuk.service.ExpressTypeService;
@@ -16,7 +20,9 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -90,8 +96,8 @@ public class ExpressController {
     })
     @RequestMapping(value = "/getExpressList", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getExpressList(Page page, @ModelAttribute Express express,
-                          @ApiParam("状态 1=待接单,2=待送货,3=待评价,0=待付款,4=已完成,5=已取消") @RequestParam(required = false) Integer status,
-                          @ApiParam("订单类型 1=快递,2=跑腿") @RequestParam(required = false) Integer type, Integer userId) {
+                                 @ApiParam("状态 1=待接单,2=待送货,3=待评价,0=待付款,4=已完成,5=已取消") @RequestParam(required = false) Integer status,
+                                 @ApiParam("订单类型 1=快递,2=跑腿") @RequestParam(required = false) Integer type, Integer userId) {
         MyEntityWrapper<UserAddress> ew = new MyEntityWrapper<>();
         Page expressList = expressService.getExpressListBy(page, ew, status, type, userId);
         return new Result().success(expressList);
@@ -148,6 +154,90 @@ public class ExpressController {
         } else {
             return new Result().erro("确认收货失败");
         }
+    }
+
+    @ApiOperation("骑手端-配送单列表-不传表示所有")
+    @GetMapping("/dvr/list")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "current", value = "当前页码",
+                    paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "size", value = "每页条数",
+                    paramType = "query", dataType = "integer"),
+    })
+    public Result deliverList(Integer userId, Page page,
+                              @ApiParam("状态 待抢单：wrb 待取货：wtk 待送达：dvn 已完成：cpt") @RequestParam(required = false) String status,
+                              @ApiParam("订单类型 1=快递,2=跑腿") @RequestParam(required = false) Integer type) throws Exception {
+        Wrapper<Express> ew = new MyEntityWrapper<>();
+        Page expressList = expressService.getDeliverList(page, ew, status, type, userId);
+        return new Result().success(expressList);
+    }
+
+    @Autowired
+    RobbingOrderProducer producer;
+
+    @ApiOperation("骑手端-配送数量")
+    @PostMapping("/dvr/count")
+    public Result deliverCount(Integer userId) {
+        Map<String, Object> map = new HashMap<>();
+        Wrapper<Express> wrapper = new EntityWrapper<>();
+        wrapper.ne(Express.IS_DEL, 1)
+                .in(Express.STATUS, DistributionExpressStatus.WAIT_ROBBING.getKey());
+        map.put(DistributionExpressStatus.WAIT_ROBBING.getsKey(),
+                expressService.selectCount(wrapper));
+
+        Wrapper<Express> wrapper1 = new EntityWrapper<>();
+        wrapper1.eq(Express.DISTRIBUTION_USER_ID,userId)
+                .ne(Express.IS_DEL, 1)
+                .in(Express.STATUS, DistributionExpressStatus.WAIT_TAKE.getKey());
+        map.put(DistributionExpressStatus.WAIT_TAKE.getsKey(),
+                expressService.selectCount(wrapper1));
+
+        Wrapper<Express> wrapper2 = new EntityWrapper<>();
+        wrapper2.eq(Express.DISTRIBUTION_USER_ID,userId)
+                .ne(Express.IS_DEL, 1)
+                .in(Express.STATUS, DistributionExpressStatus.DELIVERING.getKey());
+        map.put(DistributionExpressStatus.DELIVERING.getsKey(),
+                expressService.selectCount(wrapper2));
+        return new Result().success(map);
+    }
+
+    @ApiOperation("骑手端-抢单")
+    @PostMapping("/dvr/robbing")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "expressId", value = "配送单id",
+                    paramType = "query", dataType = "integer")
+    })
+    public Result deliverRobbingOrder(Integer userId, Integer expressId) {
+        producer.send(new RobbingExpressDTO(userId, expressId));
+        return new Result().success();
+    }
+
+    @ApiOperation("骑手端-取货")
+    @PostMapping("/dvr/takeGoods")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "expressId", value = "配送单id",
+                    paramType = "query", dataType = "integer")
+    })
+    public Result deliverTakeGoods(Integer expressId) {
+        Express express = new Express();
+        express.setId(expressId);
+        express.setStatus(4);
+        express.updateById();
+        return new Result().success();
+    }
+
+    @ApiOperation("骑手端-送达")
+    @PostMapping("/dvr/delivered")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "expressId", value = "配送单id",
+                    paramType = "query", dataType = "integer")
+    })
+    public Result deliverDelivered(Integer expressId) {
+        Express express = new Express();
+        express.setId(expressId);
+        express.setStatus(5);
+        express.updateById();
+        return new Result().success();
     }
 
 }

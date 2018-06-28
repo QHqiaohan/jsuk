@@ -20,4 +20,7 @@ public interface ExpressDao extends BaseMapper<Express> {
 
     List getExpressListBy(Page page, @Param("ew") Wrapper wrapper, @Param("status") Integer status, @Param("type") Integer type, @Param("userId")
             Integer userId);
+
+    List getDeliverList(Page page,@Param("ew")  Wrapper ew,@Param("status") Integer[] status,
+                        @Param("type") Integer type,@Param("userId") Integer userId);
 }

@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.comparator.DistanceComparator;
-import com.jh.jsuk.entity.dto.UserOrderDTO;
 import com.jh.jsuk.entity.rules.AccountRule;
 import com.jh.jsuk.entity.vo.UserOrderInfoVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
@@ -123,19 +122,19 @@ public class UserOrderController {
     @Autowired
     RobbingOrderProducer producer;
 
-    /**
-     * 配送员抢单
-     */
-    @ApiOperation("骑手抢单")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "orderId", value = "订单Id",
-                    required = true, paramType = "query", dataType = "integer")
-    })
-    @PostMapping("/takingByDistribution")
-    public Result takingByDistribution(@ModelAttribute UserOrderDTO userOrderDTO) {
-        producer.send(userOrderDTO);
-        return new Result().success();
-    }
+//    /**
+//     * 配送员抢单
+//     */
+//    @ApiOperation("骑手抢单")
+//    @ApiImplicitParams(value = {
+//            @ApiImplicitParam(name = "orderId", value = "订单Id",
+//                    required = true, paramType = "query", dataType = "integer")
+//    })
+//    @PostMapping("/takingByDistribution")
+//    public Result takingByDistribution(@ModelAttribute UserOrderDTO userOrderDTO) {
+//        producer.send(userOrderDTO);
+//        return new Result().success();
+//    }
 
 
     /**

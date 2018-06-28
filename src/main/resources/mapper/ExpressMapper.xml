@@ -51,5 +51,23 @@
             ${ew.sqlSegment}
         </where>
     </select>
+    <select id="getDeliverList" resultMap="ExpressVo">
+        SELECT
+        *
+        FROM
+        js_express
+        WHERE is_del != 1
+        <if test="userId != null">
+            AND distribution_user_id = #{userId}
+        </if>
+        <if test="type != null">
+            AND `type` = #{type}
+        </if>
+        <if test="status != null and status.length > 0">
+            AND status in
+            <foreach collection="status" item="item" open="(" close=")" separator=",">#{item}</foreach>
+        </if>
+        ORDER BY publish_time DESC
+    </select>
 
 </mapper>

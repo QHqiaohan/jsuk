@@ -1,11 +1,12 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -26,6 +27,10 @@ public class Express extends Model<Express> {
      * 用户ID
      */
     private Integer userId;
+    /**
+     * 配送人员id
+     */
+    private Integer distributionUserId;
     /**
      * 寄件人地址ID
      */
@@ -79,6 +84,13 @@ public class Express extends Model<Express> {
      */
     private Date endTime;
 
+    public Integer getDistributionUserId() {
+        return distributionUserId;
+    }
+
+    public void setDistributionUserId(Integer distributionUserId) {
+        this.distributionUserId = distributionUserId;
+    }
 
     public Integer getId() {
         return id;
@@ -204,6 +216,8 @@ public class Express extends Model<Express> {
 
     public static final String USER_ID = "user_id";
 
+    public static final String DISTRIBUTION_USER_ID = "distribution_user_id";
+
     public static final String SENDER_ADDRESS = "sender_address";
 
     public static final String GET_ADDRESS = "get_address";
@@ -229,6 +243,9 @@ public class Express extends Model<Express> {
     public static final String PUBLISH_TIME = "publish_time";
 
     public static final String END_TIME = "end_time";
+
+
+
 
     @Override
     protected Serializable pkVal() {
