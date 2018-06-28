@@ -13,6 +13,7 @@ import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.NewsType;
 import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
+import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
@@ -65,6 +66,9 @@ public class UserOrderController {
 
     @Autowired
     private UserAddressService userAddressService;
+
+    @Autowired
+    private ShopGoodsSizeService shopGoodsSizeService;
 
     //--------------------骑手端----------------------------------------------//
 
@@ -413,12 +417,11 @@ public class UserOrderController {
         if (userOrder != null) {
             // 封装结果map
             Map<String, Object> map = MapUtil.newHashMap();
-            // 用户ID
-            Integer userId = userOrder.getUserId();
-            // 地址
+            // 收货地址ID
+            Integer addressId = userOrder.getAddressId();
+            // 收货地址
             UserAddress userAddress = userAddressService.selectOne(new EntityWrapper<UserAddress>()
-                    .eq(UserAddress.USER_ID, userId)
-                    .eq(UserAddress.IS_DEFAULT, 1)
+                    .eq(UserAddress.ID, addressId)
                     .eq(UserAddress.IS_DEL, 0));
             map.put("address", userAddress);
             return new Result().success(map);
@@ -445,6 +448,22 @@ public class UserOrderController {
         userOrder.setIsDel(1);
         userOrder.updateById();
         return new Result().success("删除成功!");
+    }
+
+    @ApiOperation(value = "用户端-申请售后")
+    @RequestMapping(value = "/addOrderService", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result addOrderService(@ModelAttribute com.jh.jsuk.entity.UserOrderService userOrderService) {
+        userOrderService.insert();
+        return new Result().success("添加成功!");
+    }
+
+    @ApiOperation(value = "用户端-更换商品")
+    @RequestMapping(value = "/changeGoods", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result changeGoods(@ApiParam(value = "规格ID", required = true) Integer goodsSizeId) {
+        List<ShopGoodsSize> goodsSizeList = shopGoodsSizeService.selectList(new EntityWrapper<ShopGoodsSize>()
+                .eq(ShopGoodsSize.ID, goodsSizeId)
+                .eq(ShopGoodsSize.IS_DEL, 0));
+        return new Result().success(goodsSizeList);
     }
 
 }

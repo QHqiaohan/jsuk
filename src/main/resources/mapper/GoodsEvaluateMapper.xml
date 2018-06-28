@@ -13,11 +13,12 @@
         <result column="content" property="content" />
         <result column="image" property="image" />
         <result column="is_del" property="isDel" />
+        <result column="type" property="type" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_id, name, create_time, goods_id, star_number, content, image, is_del
+        id, user_id, name, create_time, goods_id, star_number, content, image, type, is_del
     </sql>
 
   <select id="list" resultType="com.jh.jsuk.entity.GoodsEvaluate">
