@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -26,10 +27,12 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
     /**
      * 用户ID
      */
+    @ApiModelProperty(name = "用户ID", value = "userId")
     private Integer userId;
     /**
      * 用户姓名
      */
+    @ApiModelProperty(name = "用户姓名", value = "name")
     private String name;
     /**
      * 创建时间
@@ -38,6 +41,7 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
     /**
      * 商品Id
      */
+    @ApiModelProperty(name = "商品Id", required = true, value = "goodsId")
     private Integer goodsId;
     /**
      * 星级
@@ -46,11 +50,18 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
     /**
      * 内容
      */
+    @ApiModelProperty(name = "内容", required = true, value = "content")
     private String content;
     /**
      * 图片
      */
+    @ApiModelProperty(name = "图片", required = true, value = "image")
     private String image;
+    /**
+     * 评价等级
+     */
+    @ApiModelProperty(name = "1=好评,2=中评,3=差评", value = "type")
+    private Integer type;
     /**
      * 0:否 1:是
      */
@@ -121,6 +132,14 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
         this.image = image;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     public Integer getIsDel() {
         return isDel;
     }
@@ -147,6 +166,8 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
 
     public static final String IS_DEL = "is_del";
 
+    public static final String TYPE = "type";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -155,15 +176,16 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
     @Override
     public String toString() {
         return "GoodsEvaluate{" +
-        "id=" + id +
-        ", userId=" + userId +
-        ", name=" + name +
-        ", createTime=" + createTime +
-        ", goodsId=" + goodsId +
-        ", starNumber=" + starNumber +
-        ", content=" + content +
-        ", image=" + image +
-        ", isDel=" + isDel +
-        "}";
+                "id=" + id +
+                ", userId=" + userId +
+                ", name='" + name + '\'' +
+                ", createTime=" + createTime +
+                ", goodsId=" + goodsId +
+                ", starNumber=" + starNumber +
+                ", content='" + content + '\'' +
+                ", image='" + image + '\'' +
+                ", type=" + type +
+                ", isDel=" + isDel +
+                '}';
     }
 }

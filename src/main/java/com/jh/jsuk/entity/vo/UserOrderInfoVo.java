@@ -22,6 +22,24 @@ public class UserOrderInfoVo extends UserOrder {
     private String originalPrice;
     private Integer shopId;
     private Integer orderType;
+    private String refundReason;
+    private Integer goodsSizeId;
+
+    public Integer getGoodsSizeId() {
+        return goodsSizeId;
+    }
+
+    public void setGoodsSizeId(Integer goodsSizeId) {
+        this.goodsSizeId = goodsSizeId;
+    }
+
+    public String getRefundReason() {
+        return refundReason;
+    }
+
+    public void setRefundReason(String refundReason) {
+        this.refundReason = refundReason;
+    }
 
     @Override
     public Integer getOrderType() {

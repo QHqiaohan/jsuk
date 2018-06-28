@@ -30,7 +30,9 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_num, order_price, distribution_fee, creat_time, pay_time, pay_type, status, is_unsubscribe, is_evaluate, is_del, manager_id, address_id, user_id, cancel_time, complete_time, send_time, coupon_id, distribution_user_id, order_type, logistics_no, remark
+        id, order_num, order_price, distribution_fee, creat_time, pay_time, pay_type, status, is_unsubscribe, is_evaluate, is_del,
+        manager_id, address_id, user_id, cancel_time, complete_time, send_time, coupon_id, distribution_user_id, order_type, logistics_no,
+        remark
     </sql>
 
     <resultMap id="UserOrderVo" type="com.jh.jsuk.entity.vo.UserOrderVo" extends="BaseResultMap">
@@ -70,6 +72,8 @@
         <result property="originalPrice" column="original_price"/>
         <result property="shopId" column="shopId"/>
         <result property="orderType" column="order_type"/>
+        <result property="refundReason" column="refund_reason"/>
+        <result property="goodsSizeId" column="goods_size_id"/>
     </resultMap>
 
     <select id="getOrderByUserId" resultMap="UserOrderInfoVo">
@@ -77,6 +81,8 @@
         uo.*, uog.num,
         uog.goods_price,
         uog.order_type,
+        uog.goods_size_id,
+        uos.refund_reason,
         sgs.size_name,
         sgs.original_price,
         sgs.sales_price,
@@ -86,6 +92,7 @@
         FROM
         js_user_order uo
         LEFT JOIN js_user_order_goods uog ON uo.id = uog.order_id
+        LEFT JOIN js_user_order_service uos ON uo.id = uos.order_id
         LEFT JOIN js_shop_goods_size sgs ON uog.goods_size_id = sgs.id
         LEFT JOIN js_shop_goods sg ON sgs.shop_goods_id = sg.id
         LEFT JOIN js_shop s ON sg.shop_id = s.id
