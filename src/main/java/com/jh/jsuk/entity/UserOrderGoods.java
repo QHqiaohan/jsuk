@@ -1,12 +1,13 @@
 package com.jh.jsuk.entity;
 
+import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableName;
-import java.io.Serializable;
 
 /**
  * <p>
@@ -14,7 +15,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author lpf
- * @since 2018-06-20
+ * @since 2018-06-28
  */
 @TableName("js_user_order_goods")
 public class UserOrderGoods extends Model<UserOrderGoods> {
@@ -27,6 +28,10 @@ public class UserOrderGoods extends Model<UserOrderGoods> {
      * 订单id
      */
     private Integer orderId;
+    /**
+     * 配送方式,0=快递,1=同城配送,3=到店自提
+     */
+    private Integer orderType;
     /**
      * 商品id
      */
@@ -63,6 +68,14 @@ public class UserOrderGoods extends Model<UserOrderGoods> {
 
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
+    }
+
+    public Integer getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(Integer orderType) {
+        this.orderType = orderType;
     }
 
     public Integer getGoodsId() {
@@ -109,6 +122,8 @@ public class UserOrderGoods extends Model<UserOrderGoods> {
 
     public static final String ORDER_ID = "order_id";
 
+    public static final String ORDER_TYPE = "order_type";
+
     public static final String GOODS_ID = "goods_id";
 
     public static final String NUM = "num";
@@ -129,6 +144,7 @@ public class UserOrderGoods extends Model<UserOrderGoods> {
         return "UserOrderGoods{" +
         "id=" + id +
         ", orderId=" + orderId +
+        ", orderType=" + orderType +
         ", goodsId=" + goodsId +
         ", num=" + num +
         ", publishTime=" + publishTime +

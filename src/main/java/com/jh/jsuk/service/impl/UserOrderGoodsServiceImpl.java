@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author lpf
- * @since 2018-06-20
+ * @since 2018-06-28
  */
 @Service
 public class UserOrderGoodsServiceImpl extends ServiceImpl<UserOrderGoodsDao, UserOrderGoods> implements UserOrderGoodsService {

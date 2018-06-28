@@ -26,4 +26,5 @@ public interface UserOrderDao extends BaseMapper<UserOrder> {
 
     List<UserOrderInfoVo> getOrderByUserId(RowBounds page, @Param("ew") Wrapper wrapper, @Param("userId") Integer userId,
                                            @Param("status") Integer status, @Param("goodsName") String goodsName);
+
 }

@@ -49,7 +49,7 @@ public class UserOrder extends Model<UserOrder> {
      */
     private Date payTime;
     /**
-     * 0支付宝   1微信   2银联
+     * 0在线支付,1=货到付款
      */
     private Integer payType;
     /**

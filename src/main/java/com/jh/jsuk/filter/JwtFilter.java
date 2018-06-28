@@ -48,8 +48,8 @@ public class JwtFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String servletPath = ((HttpServletRequest) servletRequest).getServletPath();
         String[] split = servletPath.split("\\.");
-        if (split.length > 0 && httpServletRequest.getSession().getAttribute("adminUserName") != null && httpServletRequest.getParameterMap().size
-                () != 0) {
+        if (split.length > 0 && httpServletRequest.getSession().getAttribute("adminUserName") != null
+                && httpServletRequest.getParameterMap().size() != 0) {
             if (!"js".equals(split[split.length - 1]) &&
                     !"css".equals(split[split.length - 1]) &&
                     !"ico".equals(split[split.length - 1]) &&

@@ -1,6 +1,7 @@
 package com.jh.jsuk.controller;
 
 
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -21,10 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -65,6 +63,9 @@ public class UserOrderController {
 
     @Autowired
     NewsService newsService;
+
+    @Autowired
+    private UserAddressService userAddressService;
 
     //--------------------骑手端----------------------------------------------//
 
@@ -395,15 +396,40 @@ public class UserOrderController {
                     paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "goodsName", value = "商品名称", paramType = "query", dataType = "string")
     })
-    @PostMapping("/getOrderByUserId")
+    @RequestMapping(value = "/getOrderByUserId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getOrderByUserId(Page page, Integer userId, Integer status, String goodsName) {
         MyEntityWrapper<UserOrderInfoVo> ew = new MyEntityWrapper<>();
         Page orderPage = userOrderService.getOrderByUserId(page, ew, userId, status, goodsName);
         return new Result().success(orderPage);
     }
 
+    @ApiOperation(value = "用户端-订单详情")
+    @RequestMapping(value = "/getOrderInfoById", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getOrderInfoById(@ApiParam(value = "订单ID", required = true) Integer id) {
+        if (id == null) {
+            return new Result().erro("订单ID为空");
+        }
+        UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>()
+                .eq(UserOrder.ID, id));
+        if (userOrder != null) {
+            // 封装结果map
+            Map<String, Object> map = MapUtil.newHashMap();
+            // 用户ID
+            Integer userId = userOrder.getUserId();
+            // 地址
+            UserAddress userAddress = userAddressService.selectOne(new EntityWrapper<UserAddress>()
+                    .eq(UserAddress.USER_ID, userId)
+                    .eq(UserAddress.IS_DEFAULT, 1)
+                    .eq(UserAddress.IS_DEL, 0));
+            map.put("address", userAddress);
+            return new Result().success(map);
+        } else {
+            return new Result().success();
+        }
+    }
+
     @ApiOperation(value = "用户端-取消订单")
-    @PostMapping("/cancelOrder")
+    @RequestMapping(value = "/cancelOrder", method = {RequestMethod.POST, RequestMethod.GET})
     public Result cancelOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
         UserOrder userOrder = new UserOrder();
         userOrder.setId(id);
@@ -413,7 +439,7 @@ public class UserOrderController {
     }
 
     @ApiOperation(value = "用户端-删除订单")
-    @PostMapping("/delOrder")
+    @RequestMapping(value = "/delOrder", method = {RequestMethod.POST, RequestMethod.GET})
     public Result delOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
         UserOrder userOrder = new UserOrder();
         userOrder.setId(id);

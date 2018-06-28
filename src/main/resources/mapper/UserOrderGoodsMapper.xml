@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.UserOrderGoods">
         <id column="id" property="id" />
         <result column="order_id" property="orderId" />
+        <result column="order_type" property="orderType" />
         <result column="goods_id" property="goodsId" />
         <result column="num" property="num" />
         <result column="publish_time" property="publishTime" />
@@ -15,7 +16,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_id, goods_id, num, publish_time, goods_size_id, goods_price
+        id, order_id, order_type, goods_id, num, publish_time, goods_size_id, goods_price
     </sql>
 
 </mapper>
