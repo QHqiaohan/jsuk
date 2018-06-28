@@ -4,32 +4,75 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Activity">
-        <id column="id" property="id" />
-        <result column="phone" property="phone" />
-        <result column="name" property="name" />
-        <result column="title" property="title" />
-        <result column="price" property="price" />
-        <result column="fixed_price" property="fixedPrice" />
-        <result column="content" property="content" />
-        <result column="start_time" property="startTime" />
-        <result column="end_time" property="endTime" />
-        <result column="publish_time" property="publishTime" />
-        <result column="is_del" property="isDel" />
-        <result column="type" property="type" />
-        <result column="user_id" property="userId" />
-        <result column="rank" property="rank" />
-        <result column="class_id" property="classId" />
-        <result column="modular_id" property="modularId" />
-        <result column="car_id" property="carId" />
-        <result column="is_recommend" property="isRecommend" />
-        <result column="images" property="images" />
-        <result column="status" property="status" />
-        <result column="transaction_area_id" property="transactionAreaId" />
+        <id column="id" property="id"/>
+        <result column="phone" property="phone"/>
+        <result column="name" property="name"/>
+        <result column="title" property="title"/>
+        <result column="price" property="price"/>
+        <result column="fixed_price" property="fixedPrice"/>
+        <result column="content" property="content"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="publish_time" property="publishTime"/>
+        <result column="is_del" property="isDel"/>
+        <result column="type" property="type"/>
+        <result column="user_id" property="userId"/>
+        <result column="rank" property="rank"/>
+        <result column="class_id" property="classId"/>
+        <result column="modular_id" property="modularId"/>
+        <result column="car_id" property="carId"/>
+        <result column="is_recommend" property="isRecommend"/>
+        <result column="images" property="images"/>
+        <result column="status" property="status"/>
+        <result column="transaction_area_id" property="transactionAreaId"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, phone, name, title, price, fixed_price, content, start_time, end_time, publish_time, is_del, type, user_id, rank, class_id, modular_id, car_id, is_recommend, images, status, transaction_area_id
     </sql>
+
+    <resultMap id="ActivityVoT" type="com.jh.jsuk.entity.vo.ActivityVoT" extends="BaseResultMap">
+        <association column="id" property="commentCount" select="com.jh.jsuk.dao.MarketCommentDao.getCommentCount"/>
+        <association column="user_id" property="user" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"></association>
+    </resultMap>
+
+    <select id="getActivityList" resultMap="ActivityVoT">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        js_activity
+        WHERE
+        is_del = 0
+        AND type = 3
+        ORDER BY
+        publish_time DESC
+    </select>
+
+    <resultMap id="ActivityVo" type="com.jh.jsuk.entity.vo.ActivityVo" extends="BaseResultMap">
+        <result column="car_name" property="carName"/>
+        <association column="user_id" property="user" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"/>
+        <association column="transaction_area_id" property="activityTransactionArea"
+                     select="com.jh.jsuk.dao.ActivityTransactionAreaDao.findAreaById"/>
+    </resultMap>
+
+    <select id="findActivity" resultMap="ActivityVo">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            `js_activity`
+        WHERE
+            id = #{id}
+    </select>
+
+    <select id="findActivityById" resultMap="ActivityVo">
+        SELECT
+            *
+        FROM
+            `t_activity` a
+        LEFT JOIN t_car c ON a.car_id = c.id
+        WHERE
+            a.id = #{id}
+    </select>
 
 </mapper>

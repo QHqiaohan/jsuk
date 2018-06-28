@@ -30,4 +30,5 @@ public class GoodsSalesPriceVo extends ShopGoods {
 
         return salesPrice;
     }
+
 }

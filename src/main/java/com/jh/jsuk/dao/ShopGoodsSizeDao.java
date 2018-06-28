@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface ShopGoodsSizeDao extends BaseMapper<ShopGoodsSize> {
 
-    List<GoodsSalesPriceVo> getSalesPriceByGoodsId(Integer goodsId);
+    GoodsSalesPriceVo getSalesPriceByGoodsId(Integer goodsId);
 
     List<ShopGoodsSize> getGoodsSizeByGoodsId(Integer goodsId);
 

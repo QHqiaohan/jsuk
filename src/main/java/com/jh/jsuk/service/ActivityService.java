@@ -1,7 +1,10 @@
 package com.jh.jsuk.service;
 
-import com.jh.jsuk.entity.Activity;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.Activity;
+import com.jh.jsuk.entity.vo.ActivityVo;
 
 /**
  * <p>
@@ -13,4 +16,9 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface ActivityService extends IService<Activity> {
 
+    Page getActivityList(Page page, Wrapper wrapper, Integer userId);
+
+    ActivityVo findActivity(Integer id);
+
+    ActivityVo findActivityById(Integer id);
 }

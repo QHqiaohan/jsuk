@@ -4,16 +4,25 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ActivityTransactionArea">
-        <id column="id" property="id" />
-        <result column="transaction_area" property="transactionArea" />
-        <result column="is_del" property="isDel" />
-        <result column="longitude" property="longitude" />
-        <result column="latitude" property="latitude" />
+        <id column="id" property="id"/>
+        <result column="transaction_area" property="transactionArea"/>
+        <result column="is_del" property="isDel"/>
+        <result column="longitude" property="longitude"/>
+        <result column="latitude" property="latitude"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, transaction_area, is_del, longitude, latitude
     </sql>
+
+    <select id="findAreaById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `js_activity_transaction_area`
+        WHERE
+        id = #{id}
+    </select>
 
 </mapper>

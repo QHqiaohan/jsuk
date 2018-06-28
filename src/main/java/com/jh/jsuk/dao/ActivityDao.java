@@ -1,7 +1,13 @@
 package com.jh.jsuk.dao;
 
-import com.jh.jsuk.entity.Activity;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.jh.jsuk.entity.Activity;
+import com.jh.jsuk.entity.vo.ActivityVo;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +19,9 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface ActivityDao extends BaseMapper<Activity> {
 
+    List getActivityList(RowBounds page, @Param("ew") Wrapper wrapper, @Param("userId") Integer userId);
+
+    ActivityVo findActivity(Integer id);
+
+    ActivityVo findActivityById(Integer id);
 }

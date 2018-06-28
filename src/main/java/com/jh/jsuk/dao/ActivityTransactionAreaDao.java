@@ -1,7 +1,7 @@
 package com.jh.jsuk.dao;
 
-import com.jh.jsuk.entity.ActivityTransactionArea;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.jh.jsuk.entity.ActivityTransactionArea;
 
 /**
  * <p>
@@ -12,5 +12,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2018-06-20
  */
 public interface ActivityTransactionAreaDao extends BaseMapper<ActivityTransactionArea> {
+
+    ActivityTransactionArea findAreaById(Integer id);
 
 }
