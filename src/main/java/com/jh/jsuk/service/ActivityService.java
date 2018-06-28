@@ -19,4 +19,6 @@ public interface ActivityService extends IService<Activity> {
     Page getActivityList(Page page, Wrapper wrapper, Integer userId);
 
     ActivityVo findActivity(Integer id);
+
+    ActivityVo findActivityById(Integer id);
 }

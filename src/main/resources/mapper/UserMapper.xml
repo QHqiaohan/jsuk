@@ -41,8 +41,6 @@
         WHERE id = #{id}
     </select>
 
-
-
     <sql id="Vo_Column_List">
         head_img, nick_name
     </sql>

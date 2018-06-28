@@ -51,7 +51,7 @@
 
     <resultMap id="ActivityVo" type="com.jh.jsuk.entity.vo.ActivityVo" extends="BaseResultMap">
         <result column="car_name" property="carName"/>
-        <association column="user_id" property="user" select="com.jushang.dao.UserDao.findUserHeadImgById"/>
+        <association column="user_id" property="user" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"/>
         <association column="transaction_area_id" property="activityTransactionArea"
                      select="com.jh.jsuk.dao.ActivityTransactionAreaDao.findAreaById"/>
     </resultMap>
@@ -63,6 +63,16 @@
             `js_activity`
         WHERE
             id = #{id}
+    </select>
+
+    <select id="findActivityById" resultMap="ActivityVo">
+        SELECT
+            *
+        FROM
+            `t_activity` a
+        LEFT JOIN t_car c ON a.car_id = c.id
+        WHERE
+            a.id = #{id}
     </select>
 
 </mapper>

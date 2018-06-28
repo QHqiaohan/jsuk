@@ -22,4 +22,6 @@ public interface ActivityDao extends BaseMapper<Activity> {
     List getActivityList(RowBounds page, @Param("ew") Wrapper wrapper, @Param("userId") Integer userId);
 
     ActivityVo findActivity(Integer id);
+
+    ActivityVo findActivityById(Integer id);
 }

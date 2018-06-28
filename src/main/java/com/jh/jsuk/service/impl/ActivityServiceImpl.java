@@ -32,4 +32,9 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityDao, Activity> impl
     public ActivityVo findActivity(Integer id) {
         return baseMapper.findActivity(id);
     }
+
+    @Override
+    public ActivityVo findActivityById(Integer id) {
+        return baseMapper.findActivityById(id);
+    }
 }
