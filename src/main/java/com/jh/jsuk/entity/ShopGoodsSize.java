@@ -152,6 +152,8 @@ public class ShopGoodsSize extends Model<ShopGoodsSize> {
         this.salesPrice = salesPrice;
     }
 
+
+
     public String getWeight() {
         return weight;
     }

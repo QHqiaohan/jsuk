@@ -33,8 +33,7 @@
     </sql>
 
     <resultMap id="GoodsSalesPriceVo" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
-        <association property="salesPrice" column="id"
-                     select="com.jh.jsuk.dao.ShopGoodsSizeDao.getSalesPriceByGoodsId"></association>
+        <association property="salesPrice" column="id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.getSalesPriceByGoodsId"/>
     </resultMap>
 
     <select id="findShopGoodsByModularId" resultMap="GoodsSalesPriceVo">
@@ -49,7 +48,7 @@
         AND shop_modular_id = #{modularId}
         ORDER BY
         sale_amont DESC
-        LIMIT 1,
+        LIMIT 0,
         4
     </select>
 
