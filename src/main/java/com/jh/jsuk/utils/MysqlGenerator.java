@@ -22,7 +22,7 @@ public class MysqlGenerator {
     private static String authorName = "lpf";                //作者
     private static String parent = "com.jh.jsuk";         //父包名
     //    private static String path = System.getProperty("user.dir");
-    private static String path = "E:\\gencode";
+    private static String path = System.getProperty("user.dir");
     private static String url = "jdbc:mysql://39.108.80.44:3306/jushang_new?characterEncoding=utf8";
     private static String username = "root";
     private static String password = "ab12345678";
