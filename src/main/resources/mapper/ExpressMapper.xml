@@ -35,7 +35,7 @@
         SELECT
         *
         FROM
-        t_express
+        js_express
         WHERE
         user_id = #{userId}
         <if test="type != null">

@@ -223,6 +223,7 @@ public class PayController {
     @RequestMapping(value = "pre_order", method = RequestMethod.POST)
     @Transactional(propagation = Propagation.REQUIRED)
     public ServerResponse appPay(String orderId, String payWay, Integer userId, String orderType, String isDeduction) {
+
         Callable<ServerResponse> callable = () -> {
             if (StrUtil.isBlank(orderType) || StrUtil.isBlank(isDeduction) || StrUtil.isBlank(payWay)) {
                 return ServerResponse.createByErrorMessage("参数错误!");

@@ -1,7 +1,7 @@
 logging:
   level:
     root: info
-    com.bootdo: debug
+    com: debug
 spring:
   devtools:
     restart:

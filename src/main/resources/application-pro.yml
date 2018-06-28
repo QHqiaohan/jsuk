@@ -1,9 +1,9 @@
 server:
-   port: 8080
+   port: 80
 logging:
   level:
     root: info
-    com.bootdo: debug
+    com: debug
 spring:
   devtools:
     restart:
@@ -13,12 +13,12 @@ spring:
     auto: true
     proxy-target-class: true
   rabbitmq:
-     host: 127.0.0.1
-     port: 5672
+     host: 21251v7v61.imwork.net
+     port: 15266
      username: guest
      password: guest
-#    host: 192.168.0.65
-#    port: 51577
+ #   host: 192.168.0.65
+ #   port: 51577
  #   username: admin
  #   password: 123456
   thymeleaf:
@@ -30,10 +30,10 @@ spring:
   # 数据库配置
       type: com.alibaba.druid.pool.DruidDataSource
       url: jdbc:mysql://39.108.80.44:3306/jushang_new?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false
-#      url: jdbc:mysql:///jushang_new?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false
+  #   url: jdbc:mysql:///jushang_new?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false
       username: root
       password: ab12345678
-#      password: 123456
+  #   password: 123456
       driverClassName: com.mysql.jdbc.Driver
   # druid配置
       initialSize: 1
