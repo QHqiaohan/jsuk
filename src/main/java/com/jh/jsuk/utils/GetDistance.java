@@ -42,7 +42,7 @@ public class GetDistance {
     /**
      * 1.地址转换为经纬度
      */
-    private static String getLonLat(String address) {
+    public static String getLonLat(String address) {
         //返回输入地址address的经纬度信息, 格式是 经度,纬度    
         String queryUrl = "http://restapi.amap.com/v3/geocode/geo?key=c79946f188c7e87f7c4928b666de66da&address=" + address;
         String queryResult = getResponse(queryUrl);  //高德接品返回的是JSON格式的字符串             
@@ -56,8 +56,8 @@ public class GetDistance {
     /**
      * 2.经纬度算出两点间距离
      */
-    private static long getDistance(String startLonLat, String endLonLat) {
-        //返回起始地startAddr与目的地endAddr之间的距离，单位：米    
+    public static long getDistance(String startLonLat, String endLonLat) {
+        //返回起始地startAddr与目的地endAddr之间的距离，单位：米
         Long result = new Long(0);
         String queryUrl = "http://restapi.amap.com/v3/distance?key=c79946f188c7e87f7c4928b666de66da&origins=" + startLonLat + "&destination=" + endLonLat;
         String queryResult = getResponse(queryUrl);
@@ -65,7 +65,7 @@ public class GetDistance {
         JSONArray ja = job.getJSONArray("results");
         JSONObject jobO = JSONObject.parseObject(ja.getString(0));
         result = Long.parseLong(jobO.get("distance").toString());
-        System.out.println("距离2：" + result);
+//        System.out.println("距离2：" + result);
         return result;
     }
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.Express;
+import com.jh.jsuk.entity.vo.ExpressVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -21,6 +22,6 @@ public interface ExpressDao extends BaseMapper<Express> {
     List getExpressListBy(Page page, @Param("ew") Wrapper wrapper, @Param("status") Integer status, @Param("type") Integer type, @Param("userId")
             Integer userId);
 
-    List getDeliverList(Page page,@Param("ew")  Wrapper ew,@Param("status") Integer[] status,
-                        @Param("type") Integer type,@Param("userId") Integer userId);
+    List<ExpressVo> getDeliverList(Page page, @Param("ew")  Wrapper ew, @Param("status") Integer[] status,
+                                   @Param("type") Integer type, @Param("userId") Integer userId);
 }

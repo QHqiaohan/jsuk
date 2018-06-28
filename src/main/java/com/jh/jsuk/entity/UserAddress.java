@@ -1,11 +1,14 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -91,6 +94,18 @@ public class UserAddress extends Model<UserAddress> {
      */
     private Integer invitationId;
 
+    /**
+     * 有正确的位置信息
+     * @return
+     */
+    @JsonIgnore
+    public boolean hasValidLocation(){
+        return StrUtil.isNotBlank(longitude) && StrUtil.isNotBlank(latitude);
+    }
+    
+    public String toCalcLocation(){
+        return longitude + "," + latitude;
+    }
 
     public Integer getId() {
         return id;

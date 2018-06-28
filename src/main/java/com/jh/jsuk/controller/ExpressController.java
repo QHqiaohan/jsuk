@@ -166,9 +166,10 @@ public class ExpressController {
     })
     public Result deliverList(Integer userId, Page page,
                               @ApiParam("状态 待抢单：wrb 待取货：wtk 待送达：dvn 已完成：cpt") @RequestParam(required = false) String status,
-                              @ApiParam("订单类型 1=快递,2=跑腿") @RequestParam(required = false) Integer type) throws Exception {
+                              @ApiParam("订单类型 1=快递,2=跑腿") @RequestParam(required = false) Integer type,
+                              @RequestParam(required = false) String lng, @RequestParam(required = false) String lat) throws Exception {
         Wrapper<Express> ew = new MyEntityWrapper<>();
-        Page expressList = expressService.getDeliverList(page, ew, status, type, userId);
+        Page expressList = expressService.getDeliverList(page, ew, status, type, userId, lng, lat);
         return new Result().success(expressList);
     }
 
@@ -186,14 +187,14 @@ public class ExpressController {
                 expressService.selectCount(wrapper));
 
         Wrapper<Express> wrapper1 = new EntityWrapper<>();
-        wrapper1.eq(Express.DISTRIBUTION_USER_ID,userId)
+        wrapper1.eq(Express.DISTRIBUTION_USER_ID, userId)
                 .ne(Express.IS_DEL, 1)
                 .in(Express.STATUS, DistributionExpressStatus.WAIT_TAKE.getKey());
         map.put(DistributionExpressStatus.WAIT_TAKE.getsKey(),
                 expressService.selectCount(wrapper1));
 
         Wrapper<Express> wrapper2 = new EntityWrapper<>();
-        wrapper2.eq(Express.DISTRIBUTION_USER_ID,userId)
+        wrapper2.eq(Express.DISTRIBUTION_USER_ID, userId)
                 .ne(Express.IS_DEL, 1)
                 .in(Express.STATUS, DistributionExpressStatus.DELIVERING.getKey());
         map.put(DistributionExpressStatus.DELIVERING.getsKey(),

@@ -17,5 +17,5 @@ public interface ExpressService extends IService<Express> {
 
     Page getExpressListBy(Page page, Wrapper wrapper, Integer status, Integer type, Integer userId);
 
-    Page getDeliverList(Page page, Wrapper ew, String status, Integer type, Integer userId) throws Exception;
+    Page getDeliverList(Page page, Wrapper ew, String status, Integer type, Integer userId,String lng,String lat) throws Exception;
 }
