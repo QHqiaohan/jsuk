@@ -19,4 +19,19 @@
         id, bank_id, money, status, user_id, desc, publish_time, poundage
     </sql>
 
+    <resultMap id="UserApplyVo" type="com.jh.jsuk.entity.vo.UserApplyVo" extends="BaseResultMap">
+        <association property="user" column="user_id" select="com.jushang.dao.DistributionUserDao.selectById"></association>
+        <association property="bank" column="bank_id" select="com.jushang.dao.BankDao.selectById"></association>
+    </resultMap>
+
+    <select id="selectPageByUserInfo" resultMap="UserApplyVo">
+        SELECT
+        t1.*
+        FROM js_distribution_apply t1 LEFT JOIN js_distribution_user t2
+        ON t1.user_id = t2.id
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
 </mapper>

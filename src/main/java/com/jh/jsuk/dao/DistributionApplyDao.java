@@ -1,7 +1,13 @@
 package com.jh.jsuk.dao;
 
-import com.jh.jsuk.entity.DistributionApply;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.jh.jsuk.entity.DistributionApply;
+import com.jh.jsuk.entity.vo.UserApplyVo;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,5 +19,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2018-06-20
  */
 public interface DistributionApplyDao extends BaseMapper<DistributionApply> {
-
+    List<UserApplyVo> selectPageByUserInfo(RowBounds page, @Param("ew") Wrapper wrapper);
 }

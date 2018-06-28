@@ -1,9 +1,13 @@
 package com.jh.jsuk.service.impl;
 
-import com.jh.jsuk.entity.DistributionApply;
-import com.jh.jsuk.dao.DistributionApplyDao;
-import com.jh.jsuk.service.DistributionApplyService;
+import com.baomidou.mybatisplus.mapper.SqlHelper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.jh.jsuk.dao.DistributionApplyDao;
+import com.jh.jsuk.entity.DistributionApply;
+import com.jh.jsuk.entity.vo.UserApplyVo;
+import com.jh.jsuk.service.DistributionApplyService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,5 +21,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DistributionApplyServiceImpl extends ServiceImpl<DistributionApplyDao, DistributionApply> implements DistributionApplyService {
+
+
+    @Override
+    public Page<UserApplyVo> selectPageByUserInfo(Page page, Wrapper wrapper) {
+        SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(this.baseMapper.selectPageByUserInfo(page, wrapper));
+        return page;
+    }
 
 }
