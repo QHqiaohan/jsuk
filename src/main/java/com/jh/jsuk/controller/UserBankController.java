@@ -91,7 +91,7 @@ public class UserBankController {
     @PostMapping("/list")
     public Result list(Page page, Integer type, Integer userId) {
         Page bankPage = bankService.selectPage(page, new EntityWrapper<UserBank>()
-//                .eq(UserBank.USER_TYPE, type)
+                .eq(UserBank.USER_TYPE, type)
                 .eq(UserBank.USER_ID, userId)
                 .orderBy(UserBank.CREATE_TIME, false));
         return new Result().success(bankPage);

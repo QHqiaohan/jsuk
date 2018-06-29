@@ -6,14 +6,17 @@ import cn.hutool.core.date.DateUtil;
 import com.aliyuncs.exceptions.ClientException;
 import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Constant;
 import com.jh.jsuk.entity.DistributionUser;
+import com.jh.jsuk.entity.UserBank;
 import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
 import com.jh.jsuk.entity.vo.DistributionUserVo;
 import com.jh.jsuk.service.DistributionUserService;
+import com.jh.jsuk.service.UserBankService;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.*;
 import io.swagger.annotations.*;
@@ -46,8 +49,10 @@ public class DistributionUserController {
     private UserOrderService orderService;
     @Autowired
     private JwtHelper jwtHelper;
+    @Autowired
+    UserBankService userBankService;
 
-    @ApiOperation("骑手登陆")
+    @ApiOperation("骑手-登陆")
     @PostMapping("/login")
     public Result login(@RequestParam @ApiParam(value = "手机号", required = true) String phone, @RequestParam @ApiParam(value = "密码", required = true) String password, HttpServletRequest request) throws Exception {
         Result result = new Result();
@@ -81,7 +86,7 @@ public class DistributionUserController {
         return result;
     }
 
-    @ApiOperation("骑手注册")
+    @ApiOperation("骑手-注册")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "phone", required = true, value = "手机号", paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "password", required = true, value = "密码", paramType = "query", dataType = "string"),
@@ -115,7 +120,7 @@ public class DistributionUserController {
         }
     }
 
-    @ApiOperation("骑手信息修改")
+    @ApiOperation("骑手-信息修改")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "headImg", value = "头像", paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "gender", value = "性别", paramType = "query", dataType = "int"),
@@ -136,6 +141,60 @@ public class DistributionUserController {
         }
         distributionUser.updateById();
         return new Result().success();
+    }
+
+    @ApiOperation("骑手-绑定支付宝")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "bankNumber", value = "支付宝账号", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "phone", value = "手机号", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "code", value = "验证码", paramType = "query", dataType = "string"),
+    })
+    @PostMapping("/binding")
+    public Result binding(UserBank bank,String phone,String code, Integer userId,HttpSession session) {
+        Result result = new Result();
+        String verificationCode = (String) session.getAttribute(phone + "register2");
+        if(verificationCode == null)
+            return result.erro("验证码已失效");
+        Wrapper<UserBank> wrapper = new EntityWrapper<>();
+        wrapper.eq(UserBank.USER_TYPE,1)
+                .eq(UserBank.USER_ID,userId);
+        UserBank userBank = userBankService.selectOne(wrapper);
+        if(userBank != null)
+            return result.erro("已绑定支付宝");
+        bank.setUserType(1);
+        bank.setBankName("支付宝");
+        bank.setUserId(userId);
+        bank.insert();
+        return new Result().success();
+    }
+
+    @ApiOperation("骑手-修改绑定支付宝")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "bankNumber", value = "支付宝账号", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "phone", value = "手机号", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "code", value = "验证码", paramType = "query", dataType = "string"),
+    })
+    @PostMapping("/binding/edit")
+    public Result bindingEdit(UserBank bank,String phone,String code, Integer userId,HttpSession session) {
+        Result result = new Result();
+        String verificationCode = (String) session.getAttribute(phone + "register2");
+        if(verificationCode == null)
+            return result.erro("验证码已失效");
+        Wrapper<UserBank> wrapper = new EntityWrapper<>();
+        wrapper.eq(UserBank.USER_TYPE,1)
+                .eq(UserBank.BANK_NAME,"支付宝")
+                .eq(UserBank.USER_ID,userId);
+        userBankService.update(bank,wrapper);
+        return new Result().success();
+    }
+
+    @ApiOperation("骑手获取支付宝绑定信息")
+    @GetMapping("/binding/get")
+    public Result binding(String userId) {
+        Wrapper<UserBank> wrapper = new EntityWrapper<>();
+        wrapper.eq(UserBank.USER_TYPE,1)
+                .eq(UserBank.USER_ID,userId);
+        return new Result().success(userBankService.selectList(wrapper));
     }
 
     @ApiIgnore
@@ -160,7 +219,7 @@ public class DistributionUserController {
         return new Result().success();
     }
 
-    @ApiOperation("更新骑手坐标")
+    @ApiOperation("骑手-更新骑手坐标")
     @PostMapping("/location")
     public Result location(@ApiParam(value = "经度", required = true) @RequestParam Double longitude, @ApiParam(value = "纬度", required = true) @RequestParam Double latitude, Integer userId) {
         DistributionUser distributionUser = new DistributionUser();
@@ -171,14 +230,14 @@ public class DistributionUserController {
         return new Result().success();
     }
 
-    @ApiOperation("查看骑手资料")
+    @ApiOperation("骑手-查看骑手资料")
     @GetMapping("/getInfo")
     public Result getInfo(Integer userId) {
         DistributionUser distributionUser = distributionUserService.selectById(userId);
         return new Result().success(distributionUser);
     }
 
-    @ApiOperation("修改骑手工作状态")
+    @ApiOperation("骑手-修改骑手工作状态")
     @GetMapping("/editJobStatus")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "int"),
@@ -194,7 +253,7 @@ public class DistributionUserController {
         return new Result().erro("用户不存在");
     }
 
-    @ApiOperation("根据手机验证码修改密码")
+    @ApiOperation("骑手-根据手机验证码修改密码")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "string"),
@@ -217,7 +276,7 @@ public class DistributionUserController {
         return new Result().success();
     }
 
-    @ApiOperation("修改手机号")
+    @ApiOperation("骑手-修改手机号")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "string"),
