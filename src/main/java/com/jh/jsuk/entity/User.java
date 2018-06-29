@@ -1,5 +1,6 @@
 package com.jh.jsuk.entity;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
@@ -133,7 +134,7 @@ public class User extends ParentUser<User> {
     }
 
     public String getHeadImg() {
-        return headImg;
+        return StrUtil.trim(headImg);
     }
 
     public void setHeadImg(String headImg) {
@@ -280,24 +281,24 @@ public class User extends ParentUser<User> {
     @Override
     public String toString() {
         return "User{" +
-        "id=" + id +
-        ", nickName=" + nickName +
-        ", phone=" + phone +
-        ", level=" + level +
-        ", sex=" + sex +
-        ", headImg=" + headImg +
-        ", password=" + password +
-        ", loginIp=" + loginIp +
-        ", wxToken=" + wxToken +
-        ", weiboToken=" + weiboToken +
-        ", qqToken=" + qqToken +
-        ", canUse=" + canUse +
-        ", isSecondaryMarket=" + isSecondaryMarket +
-        ", isAvailable=" + isAvailable +
-        ", address=" + address +
-        ", createTime=" + createTime +
-        ", updateTime=" + updateTime +
-        ", lastLoginTime=" + lastLoginTime +
-        "}";
+                "id=" + id +
+                ", nickName=" + nickName +
+                ", phone=" + phone +
+                ", level=" + level +
+                ", sex=" + sex +
+                ", headImg=" + headImg +
+                ", password=" + password +
+                ", loginIp=" + loginIp +
+                ", wxToken=" + wxToken +
+                ", weiboToken=" + weiboToken +
+                ", qqToken=" + qqToken +
+                ", canUse=" + canUse +
+                ", isSecondaryMarket=" + isSecondaryMarket +
+                ", isAvailable=" + isAvailable +
+                ", address=" + address +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", lastLoginTime=" + lastLoginTime +
+                "}";
     }
 }

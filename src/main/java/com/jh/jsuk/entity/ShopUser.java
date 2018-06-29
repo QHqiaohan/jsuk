@@ -1,5 +1,6 @@
 package com.jh.jsuk.entity;
 
+import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
@@ -12,10 +13,10 @@ import java.io.Serializable;
  * </p>
  *
  * @author lpf
- * @since 2018-06-21
+ * @since 2018-06-29
  */
 @TableName("js_shop_user")
-public class ShopUser extends ParentUser<ShopUser> {
+public class ShopUser extends Model<ShopUser> {
 
     private static final long serialVersionUID = 1L;
 

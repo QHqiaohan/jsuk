@@ -20,8 +20,16 @@ import java.util.Date;
 @TableName("js_user_remainder")
 public class UserRemainder extends Model<UserRemainder> {
 
+    public static final String ID = "id";
+    public static final String CREATE_TIME = "create_time";
+    public static final String TYPE = "type";
+    public static final String REMAINDER = "remainder";
+    public static final String USER_ID = "user_id";
+    public static final String IS_OK = "is_ok";
+    public static final String MEMBER_ID = "member_id";
+    public static final String ID_DEL = "id_del";
+    public static final String ORDER_NUM = "order_num";
     private static final long serialVersionUID = 1L;
-
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     /**
@@ -56,7 +64,18 @@ public class UserRemainder extends Model<UserRemainder> {
      * 单号
      */
     private String orderNum;
+    /**
+     * 平台流水号
+     */
+    private String platformNumber;
 
+    public String getPlatformNumber() {
+        return platformNumber;
+    }
+
+    public void setPlatformNumber(String platformNumber) {
+        this.platformNumber = platformNumber;
+    }
 
     public Integer getId() {
         return id;
@@ -130,24 +149,6 @@ public class UserRemainder extends Model<UserRemainder> {
         this.orderNum = orderNum;
     }
 
-    public static final String ID = "id";
-
-    public static final String CREATE_TIME = "create_time";
-
-    public static final String TYPE = "type";
-
-    public static final String REMAINDER = "remainder";
-
-    public static final String USER_ID = "user_id";
-
-    public static final String IS_OK = "is_ok";
-
-    public static final String MEMBER_ID = "member_id";
-
-    public static final String ID_DEL = "id_del";
-
-    public static final String ORDER_NUM = "order_num";
-
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -156,15 +157,15 @@ public class UserRemainder extends Model<UserRemainder> {
     @Override
     public String toString() {
         return "UserRemainder{" +
-        "id=" + id +
-        ", createTime=" + createTime +
-        ", type=" + type +
-        ", remainder=" + remainder +
-        ", userId=" + userId +
-        ", isOk=" + isOk +
-        ", memberId=" + memberId +
-        ", idDel=" + idDel +
-        ", orderNum=" + orderNum +
-        "}";
+                "id=" + id +
+                ", createTime=" + createTime +
+                ", type=" + type +
+                ", remainder=" + remainder +
+                ", userId=" + userId +
+                ", isOk=" + isOk +
+                ", memberId=" + memberId +
+                ", idDel=" + idDel +
+                ", orderNum=" + orderNum +
+                "}";
     }
 }

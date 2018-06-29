@@ -70,6 +70,9 @@ public class UserOrderController {
     @Autowired
     private ShopGoodsSizeService shopGoodsSizeService;
 
+    @Autowired
+    private ManagerUserService managerUserService;
+
     //--------------------骑手端----------------------------------------------//
 
     /**
@@ -188,7 +191,7 @@ public class UserOrderController {
         AccountRule result = ruleEngineService.executeRuleEngine("myDetail", accountRule);
         result.updateUserAndInsertDetail();
 
-        Shop shop = shopService.selectById(order.getManagerId());
+        Shop shop = shopService.selectById(order.getShopId());
 
         //商家添加money
         shop.setAccountPoint(shop.getAccountPoint().add(order.getOrderPrice()));
@@ -406,7 +409,7 @@ public class UserOrderController {
         return new Result().success(orderPage);
     }
 
-    @ApiOperation(value = "用户端-订单详情")
+    @ApiOperation(value = "用户端&商家端-订单详情")
     @RequestMapping(value = "/getOrderInfoById", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getOrderInfoById(@ApiParam(value = "订单ID", required = true) Integer id) {
         if (id == null) {
@@ -430,7 +433,25 @@ public class UserOrderController {
         }
     }
 
-    @ApiOperation(value = "用户端-取消订单")
+    @ApiOperation(value = "商家端-订单列表", notes = "不传=全部订单")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "status", value = "0待付款,1待发货,3=完成,7=售后",
+                    paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "goodsName", value = "商品名称", paramType = "query", dataType = "string")
+    })
+    @RequestMapping(value = "/getShopOrderByUserId", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getShopOrderByUserId(Page page, Integer userId, Integer status, String goodsName) {
+        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+                .eq(ManagerUser.ID, userId));
+        Integer shopId = managerUser.getShopId();
+        MyEntityWrapper<UserOrderInfoVo> ew = new MyEntityWrapper<>();
+        Page orderPage = userOrderService.getShopOrderByUserId(page, ew, shopId, status, goodsName);
+        return new Result().success(orderPage);
+    }
+
+    @ApiOperation(value = "用户端&商家端-取消订单")
     @RequestMapping(value = "/cancelOrder", method = {RequestMethod.POST, RequestMethod.GET})
     public Result cancelOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
         UserOrder userOrder = new UserOrder();
@@ -438,6 +459,16 @@ public class UserOrderController {
         userOrder.setStatus(6);
         userOrder.updateById();
         return new Result().success("取消成功!");
+    }
+
+    @ApiOperation(value = "商家端-确认发货")
+    @RequestMapping(value = "/sendOrder", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result sendOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
+        UserOrder userOrder = new UserOrder();
+        userOrder.setId(id);
+        userOrder.setStatus(2);
+        userOrder.updateById();
+        return new Result().success("发货成功!");
     }
 
     @ApiOperation(value = "用户端-删除订单")

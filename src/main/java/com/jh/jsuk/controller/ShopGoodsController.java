@@ -4,23 +4,15 @@ package com.jh.jsuk.controller;
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.jh.jsuk.entity.GoodsLabel;
-import com.jh.jsuk.entity.Shop;
-import com.jh.jsuk.entity.ShopGoodsSize;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
-import com.jh.jsuk.service.GoodsLabelService;
-import com.jh.jsuk.service.ShopGoodsService;
-import com.jh.jsuk.service.ShopService;
-import com.jh.jsuk.service.StatisticsPriceService;
+import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -45,6 +37,8 @@ public class ShopGoodsController {
     private ShopService shopService;
     @Autowired
     private StatisticsPriceService statisticsPriceService;
+    @Autowired
+    private ManagerUserService managerUserService;
 
     @ApiOperation("用户端-根据店铺内部的分类-属性查询商品")
     @ApiImplicitParams({
@@ -208,7 +202,7 @@ public class ShopGoodsController {
         }
     }*/
 
-    @ApiOperation("用户端-通用商品搜索&店铺搜索")
+    @ApiOperation("用户端&商家端-通用商品搜索&店铺搜索")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
@@ -226,12 +220,16 @@ public class ShopGoodsController {
     })
     @RequestMapping(value = "/getShopList", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopList(Page page, Integer status, Integer type, String name, Integer shopModularId, Integer attributeId, Integer categoryId,
-                              Integer brandId, String address, Integer goodsType, String lowPrice, String highPrice) {
+                              Integer brandId, String address, Integer goodsType, String lowPrice, String highPrice,Integer userId) {
+        // 获取店铺ID
+        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+                .eq(ManagerUser.ID, userId));
+        Integer shopId = managerUser.getShopId();
         // 商品模糊搜索
         if (status == 1) {
             MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
-            Page goodsPage = shopGoodsService.getShopList(page, ew, type, attributeId, name, shopModularId, categoryId, brandId, address, goodsType,
-                    lowPrice, highPrice);
+            Page goodsPage = shopGoodsService.getShopList(page, ew, type, attributeId, name, shopModularId, categoryId, brandId,
+                    address, goodsType, lowPrice, highPrice,shopId);
             return new Result().success(goodsPage);
         } else if (status == 2) {
             // 店铺模糊查询
@@ -255,12 +253,56 @@ public class ShopGoodsController {
 
             MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
             Page goodsPage = shopGoodsService.getShopList(page, ew, type, attributeId, name, shopModularId, categoryId, brandId, address, goodsType,
-                    lowPrice, highPrice);
+                    lowPrice, highPrice,shopId);
             map.put("shop", shopPage.getRecords());
             map.put("shopGoods", goodsPage);
 
             return new Result().success(map);
         }
+    }
+
+    @ApiOperation("商家端-添加商品列表-查询自己店铺的所有商品")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "userId", value = "商家id", paramType = "query", dataType = "integer")
+    })
+    @RequestMapping(value = "/addShopGoodsList", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result addShopGoodsList(Integer userId, Page page) {
+        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+                .eq(ManagerUser.ID, userId));
+        Integer shopId = managerUser.getShopId();
+        MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
+        Page shopGoods = shopGoodsService.findShopGoodsAndGoodsSizeByShopId(page, ew, shopId);
+        return new Result().success(shopGoods);
+    }
+
+    @ApiOperation("商家端-删除自己店铺的商品")
+    @RequestMapping(value = "/delGoodsByShopId", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result delGoodsByShopId(@ApiParam(value = "商家id") Integer userId) {
+        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+                .eq(ManagerUser.ID, userId));
+        Integer shopId = managerUser.getShopId();
+        ShopGoods shopGoods = new ShopGoods();
+        shopGoods.setId(shopId);
+        shopGoods.setIsDel(0);
+        shopGoods.updateById();
+        return new Result().success();
+    }
+
+    @ApiOperation("商家端-添加商品")
+    @RequestMapping(value = "/addShopGoods", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result addShopGoods(@ModelAttribute ShopGoods shopGoods, ShopGoodsSize shopGoodsSize, Integer userId) {
+        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+                .eq(ManagerUser.ID, userId));
+        Integer shopId = managerUser.getShopId();
+        shopGoods.setShopId(shopId);
+        shopGoods.insert();
+        // 商品ID
+        Integer id = shopGoods.getId();
+        shopGoodsSize.setShopGoodsId(id);
+        shopGoodsSize.insert();
+        return new Result().success();
     }
 
 }

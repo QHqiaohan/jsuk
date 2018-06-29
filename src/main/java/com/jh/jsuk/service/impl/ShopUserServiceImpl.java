@@ -1,9 +1,9 @@
 package com.jh.jsuk.service.impl;
 
-import com.jh.jsuk.entity.ShopUser;
-import com.jh.jsuk.dao.ShopUserDao;
-import com.jh.jsuk.service.ShopUserService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.jh.jsuk.dao.ShopUserDao;
+import com.jh.jsuk.entity.ShopUser;
+import com.jh.jsuk.service.ShopUserService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author lpf
- * @since 2018-06-21
+ * @since 2018-06-29
  */
 @Service
 public class ShopUserServiceImpl extends ServiceImpl<ShopUserDao, ShopUser> implements ShopUserService {

@@ -19,10 +19,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -45,8 +42,8 @@ public class SMSController {
             @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "type", value = "0用户端  1商家端  2骑手端", required = true, paramType = "query", dataType = "int"),
     })
-    @PostMapping("/sendByRegister")
-    public Result sendByRegister(@RequestParam String phone, @RequestParam Integer type, HttpSession session) throws Exception{
+    @RequestMapping(value = "/sendByRegister", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result sendByRegister(@RequestParam String phone, @RequestParam Integer type, HttpSession session) throws Exception {
         try {
             ParentUser user = null;
             if (type == 0) {

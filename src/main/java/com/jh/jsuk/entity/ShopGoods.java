@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -26,18 +27,22 @@ public class ShopGoods extends Model<ShopGoods> {
     /**
      * 店铺id
      */
+    @ApiModelProperty(value = "店铺id", name = "shopId")
     private Integer shopId;
     /**
      * 属性ID
      */
+    @ApiModelProperty(value = "属性ID", name = "attributeId")
     private Integer attributeId;
     /**
      * 品牌ID
      */
+    @ApiModelProperty(value = "品牌ID", name = "brandId")
     private Integer brandId;
     /**
      * 模块ID
      */
+    @ApiModelProperty(value = "模块ID", name = "shopModularId")
     private Integer shopModularId;
     /**
      * 是否推荐,0=不推荐,1=推荐

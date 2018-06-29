@@ -30,4 +30,5 @@ public interface UserOrderService extends IService<UserOrder> {
 
     Page getOrderByUserId(Page page, Wrapper wrapper, Integer userId, Integer status, String goodsName);
 
+    Page getShopOrderByUserId(Page page, Wrapper wrapper, Integer shopId, Integer status, String goodsName);
 }

@@ -143,6 +143,9 @@ public class JwtFilter implements Filter {
                 || servletPath.indexOf("/getShopGoodsByBrandId") != -1
                 // 地址定位选择API
                 || servletPath.indexOf("/getOpenCityList") != -1
+                // 商户端/平台用户相关
+                || servletPath.indexOf("/resultCode") != -1
+                || servletPath.indexOf("/editPassword") != -1
             ////////////////////////////////////////////////
             //方便ios上架开放接口 TODO 上架后最好注掉
             //|| servletPath.indexOf("/banner") != -1

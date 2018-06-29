@@ -118,11 +118,18 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     }
 
     @Override
+    public Page findShopGoodsAndGoodsSizeByShopId(Page page, Wrapper wrapper, Integer shopId) {
+        wrapper = SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(baseMapper.findShopGoodsAndGoodsSizeByShopId(page, wrapper, shopId));
+        return page;
+    }
+
+    @Override
     public Page getShopList(Page page, Wrapper wrapper, Integer type, Integer attributeId, String name, Integer shopModularId, Integer categoryId,
-                            Integer brandId, String address, Integer goodsType, String lowPrice, String highPrice) {
+                            Integer brandId, String address, Integer goodsType, String lowPrice, String highPrice,Integer shopId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.getShopList(page, wrapper, address, attributeId, shopModularId, categoryId, brandId, name, goodsType,
-                lowPrice, highPrice, type));
+                lowPrice, highPrice, type,shopId));
         return page;
     }
 

@@ -2,16 +2,10 @@ package com.jh.jsuk.controller;
 
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.plugins.Page;
-import com.jh.jsuk.entity.Shop;
-import com.jh.jsuk.entity.ShopMonthStatistics;
-import com.jh.jsuk.entity.ShopTodayStatistics;
-import com.jh.jsuk.entity.ShopVisit;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.ShopAttributeVo;
 import com.jh.jsuk.entity.vo.ShopTelPhoneVo;
-import com.jh.jsuk.entity.vo.ShopVisitorVo;
 import com.jh.jsuk.service.*;
-import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -42,19 +36,15 @@ public class ShopController {
     @Autowired
     private ShopService shopService;
     @Autowired
-    private ManagerUserService managerUserService;
-    @Autowired
     private ShopAttributeGoodsService shopAttributeGoodsService;
     @Autowired
     private ShopTodayStatisticsService shopTodayStatisticsService;
     @Autowired
     private ShopMonthStatisticsService shopMonthStatisticsService;
     @Autowired
-    private ShopVisitService shopVisitService;
-    @Autowired
-    private ShopTodayMoneyService shopTodayMoneyService;
-    @Autowired
     private UserRemainderService userRemainderService;
+    @Autowired
+    private ManagerUserService managerUserService;
 
     @ApiOperation("用户端-根据店铺id查看店铺信息")
     @RequestMapping(value = "/getShopById", method = {RequestMethod.POST, RequestMethod.GET})
@@ -102,34 +92,6 @@ public class ShopController {
         return new Result().success(shop);
     }
 
-    @ApiOperation("商家端-查看今日访客列表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "shopId", value = "店铺id", required = true, paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "today", value = "当前日期", required = true, paramType = "query", dataType = "string")
-    })
-    @RequestMapping(value = "/getTodayVisit", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getTodayVisit(Page page, Integer shopId, String today) {
-        MyEntityWrapper<ShopVisitorVo> ew = new MyEntityWrapper<>();
-        Page visitList = shopVisitService.getVisitList(page, ew, shopId, today);
-        return new Result().success(visitList);
-    }
-
-    @ApiOperation("商家端-查看今日交易额列表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "shopId", value = "店铺id", required = true, paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "today", value = "当前日期", required = true, paramType = "query", dataType = "string")
-    })
-    @RequestMapping(value = "/getTodayMoney", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getTodayMoney(Page page, Integer shopId, String today) {
-        MyEntityWrapper<ShopVisitorVo> ew = new MyEntityWrapper<>();
-        Page moneyList = shopTodayMoneyService.getTodayMoneyList(page, ew, shopId, today);
-        return new Result().success(moneyList);
-    }
-
     @ApiOperation("用户端-根据店铺id查看店铺内部的商品分类-属性")
     @RequestMapping(value = "/getShopAttributeByShopId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopAttributeByShopId(@ApiParam(value = "店铺id", required = true) Integer shopId) {
@@ -143,6 +105,18 @@ public class ShopController {
         List<Shop> shops = shopService.findCollectByUserId(userId);
         return new Result().success(shops);
     }
+
+    @ApiOperation("商家端-店铺管理")
+    @RequestMapping(value = "/addShopInfo", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result addShopInfo(@ApiParam(value = "商家id") Integer userId, @ModelAttribute Shop shop) {
+        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+                .eq(ManagerUser.ID, userId));
+        Integer shopId = managerUser.getShopId();
+        shop.setId(shopId);
+        shop.updateById();
+        return new Result().success();
+    }
+
 
     /*    @ApiOperation("用户端-搜索店铺列表")
         @ApiImplicitParams(value = {

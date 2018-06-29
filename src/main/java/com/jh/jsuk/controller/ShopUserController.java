@@ -2,7 +2,6 @@ package com.jh.jsuk.controller;
 
 
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author lpf
- * @since 2018-06-21
+ * @since 2018-06-29
  */
 @RestController
 @RequestMapping("/shopUser")

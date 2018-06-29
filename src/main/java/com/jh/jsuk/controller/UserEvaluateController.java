@@ -74,11 +74,11 @@ public class UserEvaluateController {
         order.setIsEvaluate(1);
         order.updateById();
 //        Integer shopId = order.getShopId();
-        Integer managerId = order.getManagerId();
+        Integer managerId = order.getShopId();
         Shop shop = new Shop();
         shop.setId(managerId);
         shop.setStarNum(evaluateService.calulateStar(UserEvaluate.SHOP_STAR_NUM, new EntityWrapper()
-                .eq(UserOrder.MANAGER_ID, managerId)));
+                .eq(UserOrder.SHOP_ID, managerId)));
         shop.updateById();
         Integer distributionUserId = order.getDistributionUserId();
         if (distributionUserId == null) {

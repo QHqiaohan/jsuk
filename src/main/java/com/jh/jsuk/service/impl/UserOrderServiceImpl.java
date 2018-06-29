@@ -79,7 +79,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 .eq("is_unsubscribe", 0));
         for (UserOrder order : orders) {
             try {
-                Integer shopId = order.getManagerId();
+                Integer shopId = order.getShopId();
                 ShopUser shopUser = shopUserService.selectOne(new EntityWrapper<ShopUser>().eq("shop_id", shopId));
                 ShopJPushUtils.pushMsgMusic(shopUser.getId() + "", "您有新的订单请注意接单", "", null);
             } catch (Exception e) {
@@ -93,6 +93,13 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     public Page getOrderByUserId(Page page, Wrapper wrapper, Integer userId, Integer status, String goodsName) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.getOrderByUserId(page, wrapper, userId, status, goodsName));
+        return page;
+    }
+
+    @Override
+    public Page getShopOrderByUserId(Page page, Wrapper wrapper, Integer shopId, Integer status, String goodsName) {
+        wrapper = SqlHelper.fillWrapper(page, wrapper);
+        page.setRecords(baseMapper.getShopOrderByUserId(page, wrapper, shopId, status, goodsName));
         return page;
     }
 

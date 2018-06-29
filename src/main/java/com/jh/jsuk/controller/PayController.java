@@ -13,15 +13,13 @@ import com.egzosn.pay.common.util.XML;
 import com.egzosn.pay.wx.api.WxPayConfigStorage;
 import com.egzosn.pay.wx.api.WxPayService;
 import com.egzosn.pay.wx.bean.WxTransactionType;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.jh.jsuk.entity.MemberConfig;
-import com.jh.jsuk.entity.User;
-import com.jh.jsuk.entity.UserOrder;
-import com.jh.jsuk.entity.UserRemainder;
-import com.jh.jsuk.service.MemberConfigService;
+import com.jh.jsuk.entity.*;
+import com.jh.jsuk.entity.vo.GoodsVo;
+import com.jh.jsuk.entity.vo.ShoppingCartVo;
+import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
-import com.jh.jsuk.service.UserRemainderService;
-import com.jh.jsuk.service.UserService;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import com.jh.jsuk.utils.ServerResponse;
@@ -46,6 +44,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -66,6 +66,12 @@ public class PayController {
     UserRemainderService userRemainderService;
     @Autowired
     UserService userService;
+    @Autowired
+    ShoppingCartService shoppingCartService;
+    @Autowired
+    ShopGoodsService shopGoodsService;
+    @Autowired
+    UserOrderGoodsService userOrderGoodsService;
     //支付宝服务
     private PayService aliservice = null;
     //微信服务
@@ -144,21 +150,20 @@ public class PayController {
                     required = true, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "carId", value = "购物车ID",
                     required = false, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "orderType", value = "订单类型 0:普通订单 1:秒杀订单 2:会员购买 3:充值",
+            @ApiImplicitParam(name = "orderType", value = "订单类型 0:普通订单 1:秒杀订单 2:会员购买 3:充值 4:到店支付",
                     required = true, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "memberConfigId", value = "充值配置ID",
                     required = false, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "rechargeType", value = "充值类型11:安卓会员购买 12:安卓充值 21:IOS会员购买 22:IOS充值  31:公众号会员购买  32:公众号充值",
-                    required = true, paramType = "query", dataType = "int"),
             @ApiImplicitParam(name = "paymentAmount", value = "到店支付金额",
                     required = true, paramType = "query", dataType = "String")
     })
     @RequestMapping(value = "placeAnOrder", method = RequestMethod.POST)
-    public Result placeAnOrder(Integer userId, String goodsId, String carId, String orderType, Integer memberConfigId, Integer rechargeType, String paymentAmount) {
-        if (ObjectUtil.isNull(userId) || StrUtil.isBlank(goodsId)) {
+    public Result placeAnOrder(Integer userId, String goodsId, String carId, String orderType, Integer memberConfigId, String shopUserId, String paymentAmount) {
+        if (ObjectUtil.isNull(userId)) {
             return new Result().erro("参数错误!");
         }
         Map<String, Object> resultMap = Maps.newHashMap();
+        //订单类型 0:普通订单 1:秒杀订单 2:会员购买 3:充值 4:到店支付
         if (StrUtil.equals(orderType, "2")) {
             //查询充值配置
             MemberConfig memberConfig = memberConfigService.selectOne(new MyEntityWrapper<MemberConfig>().eq(MemberConfig.ID, memberConfigId));
@@ -169,29 +174,111 @@ public class PayController {
             userRemainder.setMemberId(memberConfigId);
             userRemainder.setIsOk(0);
             userRemainder.setType(2);
+            userRemainder.setCreateTime(new Date());
             //新增购买充值记录
             userRemainder.insert();
 
-            //充值类型11:安卓会员购买 12:安卓充值 21:IOS会员购买 22:IOS充值  31:公众号会员购买  32:公众号充值
             resultMap.put("orderType", orderType);
             resultMap.put("orderId", userRemainder.getOrderNum());
             return new Result().success(resultMap);
         } else if (StrUtil.equals(orderType, "0") || StrUtil.equals(orderType, "1")) {
-            resultMap.put("orderType", orderType);
-            resultMap.put("orderId", "JSUKDD" + RandomUtil.randomNumbers(18));
-            return new Result().success(resultMap);
+            //购物车订单
+            if (StrUtil.isNotBlank(carId)) {
+                List<ShoppingCartVo> shoppingCartVos = shoppingCartService.selectVoList(String.valueOf(userId));
+                Map<String, GoodsVo> goodMaps = Maps.newHashMap();
+                for (ShoppingCartVo shoppingCartVo : shoppingCartVos) {
+                    List<GoodsVo> goods = shoppingCartVo.getGoods();
+                    for (GoodsVo good : goods) {
+                        //查询商品是否存在
+                        int count = shopGoodsService.selectCount(new MyEntityWrapper<ShopGoods>().eq(ShopGoods.ID, good.getGoodsId()));
+                        if (good.getChecked() == 1 && good.getNum() > 0 && count > 0) {
+                            goodMaps.put(good.getGoodsId(), good);
+                        }
+                    }
+                }
+
+                UserOrder userOrder = new UserOrder();
+                userOrder.setOrderNum("JSUKOF" + RandomUtil.randomNumbers(18));
+                userOrder.setStatus(0);
+                userOrder.setUserId(userId);
+                userOrder.setRemark(shopUserId);
+                userOrder.setOrderType(Integer.valueOf(orderType));
+                userOrder.setCreatTime(new Date());
+                userOrder.setOrderPrice(new BigDecimal(paymentAmount));
+                //新增到店支付订单记录
+                userOrder.insert();
+                Boolean flag = true;
+                if (StrUtil.equals(orderType, "1")) {
+                    flag = false;
+                }
+                List<UserOrderGoods> list = Lists.newArrayList();
+                //订单商品信息
+                goodMaps.forEach((k, v) -> {
+                    UserOrderGoods userOrderGoods = new UserOrderGoods();
+                    userOrderGoods.setGoodsId(Integer.valueOf(k));
+                    if (StrUtil.equals(orderType, "1")) {
+                        userOrderGoods.setGoodsPrice(new BigDecimal(v.getKillPrice()));
+                    } else if (StrUtil.equals(orderType, "0")) {
+                        userOrderGoods.setGoodsPrice(new BigDecimal(v.getSalesPrice()));
+                    }
+                    userOrderGoods.setPublishTime(new Date());
+                    userOrderGoods.setGoodsId(Integer.valueOf(k));
+                    userOrderGoods.setOrderId(userOrder.getId());
+                    userOrderGoods.setNum(v.getNum());
+                    list.add(userOrderGoods);
+                });
+                boolean batch = userOrderGoodsService.insertBatch(list);
+                logger.error("批量添加商品订单信息: {}", batch ? "成功" : "失败");
+                resultMap.put("orderType", orderType);
+                resultMap.put("orderId", userOrder.getOrderNum());
+                return new Result().success(resultMap);
+            }
+            //直接商品订单
+            if (StrUtil.isNotBlank(goodsId)) {
+                UserOrder userOrder = new UserOrder();
+                userOrder.setOrderNum("JSUKOF" + RandomUtil.randomNumbers(18));
+                userOrder.setStatus(0);
+                userOrder.setUserId(userId);
+                userOrder.setRemark(shopUserId);
+                userOrder.setOrderType(Integer.valueOf(orderType));
+                userOrder.setCreatTime(new Date());
+                userOrder.setOrderPrice(new BigDecimal(paymentAmount));
+                //新增到店支付订单记录
+                userOrder.insert();
+
+                resultMap.put("orderType", orderType);
+                resultMap.put("orderId", userOrder.getOrderNum());
+                return new Result().success(resultMap);
+            }
+            return new Result().erro("参数错误");
         } else if (StrUtil.equals(orderType, "3")) {
             UserRemainder userRemainder = new UserRemainder();
             userRemainder.setUserId(userId);
             userRemainder.setOrderNum("JSUKCZ" + RandomUtil.randomNumbers(18));
             userRemainder.setRemainder(new BigDecimal(paymentAmount));
             userRemainder.setIsOk(0);
-            //充值
             userRemainder.setType(1);
+            userRemainder.setCreateTime(new Date());
             //新增用户充值记录
             userRemainder.insert();
+
             resultMap.put("orderType", orderType);
             resultMap.put("orderId", userRemainder.getOrderNum());
+            return new Result().success(resultMap);
+        } else if (StrUtil.equals(orderType, "4")) {
+            UserOrder userOrder = new UserOrder();
+            userOrder.setOrderNum("JSUKOF" + RandomUtil.randomNumbers(18));
+            userOrder.setStatus(0);
+            userOrder.setUserId(userId);
+            userOrder.setRemark(shopUserId);
+            userOrder.setOrderType(Integer.valueOf(orderType));
+            userOrder.setCreatTime(new Date());
+            userOrder.setOrderPrice(new BigDecimal(paymentAmount));
+            //新增到店支付订单记录
+            userOrder.insert();
+
+            resultMap.put("orderType", orderType);
+            resultMap.put("orderId", userOrder.getOrderNum());
             return new Result().success(resultMap);
         } else {
             return new Result().erro("参数错误!");
@@ -236,7 +323,7 @@ public class PayController {
                 if (StrUtil.isBlank(orderId)) {
                     return ServerResponse.createByErrorMessage("参数错误!");
                 }
-                orderRecord = userOrderService.selectOne(new MyEntityWrapper<UserOrder>().eq(UserOrder.ORDER_NUM, orderId)
+                orderRecord = userOrderService.selectOne(new MyEntityWrapper<UserOrder>().eq(UserOrder.ORDER_NUM, orderId).eq(UserOrder.USER_ID, userId)
                         .eq(UserOrder.STATUS, "0")
                 );
                 if (orderRecord == null) {
@@ -256,7 +343,6 @@ public class PayController {
                 if (userRemainder == null) {
                     return ServerResponse.createByErrorMessage("订单不存在");
                 }
-
                 if (userRemainder.getIsOk() > 0) {
                     return ServerResponse.createByErrorMessage("订单已支付,请勿重复支付");
                 }
@@ -277,7 +363,6 @@ public class PayController {
                 payOrder.setTransactionType(WxTransactionType.APP);
                 Map<String, Object> orderInfo = wxservice.orderInfo(payOrder);
                 //Map转化为对应得参数字符串
-
                 return ServerResponse.createBySuccess(orderInfo);
             }
             if (StrUtil.equals(payWay, "2")) {
@@ -309,39 +394,86 @@ public class PayController {
         //校验
         if (aliservice.verify(params)) {
             //这里处理业务逻辑
-            businessProcess(params, "");
-
-
+            boolean flag = businessProcess(params, 0);
+            if (flag) {
+                return aliservice.getPayOutMessage("success", "成功").toMessage();
+            } else {
+                return aliservice.getPayOutMessage("fail", "失败").toMessage();
+            }
         }
-        logger.error(UriVariables.getMapToParameters(params));
+        logger.info(UriVariables.getMapToParameters(params));
         logger.error("验签失败");
         return aliservice.getPayOutMessage("fail", "失败").toMessage();
     }
 
-    private void businessProcess(Map<String, Object> params, String payWay) {
+    private boolean businessProcess(Map<String, Object> params, Integer payWay) {
         //商户订单号
         String outTradeNo = params.get("out_trade_no") == null ? null : params.get("out_trade_no").toString();
         //这里处理业务逻辑
         logger.info("订单号 " + outTradeNo);
-
         UserOrder userOrder = userOrderService.selectOne(new MyEntityWrapper<UserOrder>().eq(UserOrder.ORDER_NUM, outTradeNo).eq(UserOrder.STATUS, "0"));
         UserRemainder userRemainder = userRemainderService.selectOne(new MyEntityWrapper<UserRemainder>().eq(UserRemainder.ORDER_NUM, outTradeNo).eq(UserRemainder.IS_OK, "0"));
         if (userOrder == null && userRemainder == null) {
             logger.error("订单不存在");
+            return false;
         } else {
+            //平台流水
+            String platform_number = null;
+            if (params != null) {
+                if (payWay == 0) {
+                    platform_number = String.valueOf(params.get("trade_no"));
+                } else if (payWay == 1) {
+                    platform_number = String.valueOf(params.get("transaction_id"));
+                }
+            }
+
             if (userOrder != null) {
                 //TODO 普通订单
-            }
-            if (userRemainder != null) {
+                //0待付款  1待发货  2=已发货 3=交易成功 4=申请退款 5=退款成功 6=交易关闭 7=售后
+                if (userOrder.getStatus() > 0) {
+                    return true;
+                }
+                try {
+                    userOrder.setStatus(1);
+                    userOrder.setPayTime(new Date());
+                    userOrder.setPlatformNumber(platform_number);
+                    return userOrder.updateById();
+                } catch (Exception e) {
+                    logger.error("更改订单状态失败----{}", e.getMessage());
+                    return false;
+                }
+            } else if (userRemainder != null) {
+                //0待付款  1已付款
+                if (userRemainder.getIsOk() > 0) {
+                    return true;
+                }
+                //类型 1=充值,-1=消费,0=其他,2=购买会员
+                Integer type = userRemainder.getType();
+                logger.info("充值类型--->{}", type);
                 //TODO 充值订单
-                userRemainder.setIsOk(1);
-                //更新充值订单状态
-                userRemainder.updateById();
-                MemberConfig memberConfig = memberConfigService.selectOne(new MyEntityWrapper<MemberConfig>().eq(MemberConfig.ID, userRemainder.getMemberId()));
-                User user = userService.selectById(userRemainder.getUserId());
-                user.setLevel(memberConfig.getId());
+                try {
+                    switch (type) {
+                        case 2:
+                            MemberConfig memberConfig = memberConfigService.selectOne(new MyEntityWrapper<MemberConfig>().eq(MemberConfig.ID, userRemainder.getMemberId()));
+                            //更新会员状态
+                            User user = userService.selectById(userRemainder.getUserId());
+                            user.setLevel(memberConfig.getId());
+                            user.updateById();
+                        case 1:
+                            userRemainder.setIsOk(1);
+                            userRemainder.setPlatformNumber(platform_number);
+                            //更新充值订单状态
+                            userRemainder.updateById();
+                            break;
+                    }
+                    return true;
+                } catch (Exception e) {
+                    logger.error("更改充值订单失败----{}", e.getMessage());
+                    return false;
+                }
             }
         }
+        return false;
     }
 
     /**
@@ -362,12 +494,51 @@ public class PayController {
         //校验
         if (wxservice.verify(params)) {
             //验签成功
+            boolean flag = businessProcess(params, 1);
+            if (flag) {
+                return wxservice.getPayOutMessage("success", "成功").toMessage();
+            } else {
+                return wxservice.getPayOutMessage("fail", "失败").toMessage();
+            }
         }
-        System.out.println("****************************************************************");
-        System.out.println(UriVariables.getMapToParameters(params));
-        System.out.println("验签失败");
-        System.out.println("*****************************************************************");
+        logger.info(UriVariables.getMapToParameters(params));
+        logger.error("验签失败");
         return wxservice.getPayOutMessage("fail", "失败").toMessage();
     }
 
+
+    /**
+     * 交易查询
+     *
+     * @param orderId 商户订单ID
+     * @param userId  用户ID
+     * @return
+     */
+   /* @RequestMapping("qRCodePay")
+    @ResponseBody
+    public ServerResponse<Map<String, Object>> qRCodePay(String orderId, String userId) {
+        Callable<ServerResponse<Map<String, Object>>> callable = () -> {
+
+            UserOrderRecord orderRecord = userOrderRecordService.orderParticulars(orderId);
+            PayOrder payOrder = new PayOrder("订单" + orderRecord.getModuleName(), orderRecord.getModuleName(), orderRecord.getPayMoney(), orderId);
+            payOrder.setTransactionType(AliTransactionType.APP);
+            Map<String, Object> orderInfo = aliservice.orderInfo(payOrder);
+            System.out.println(orderInfo);
+            Map<String, Object> data = new HashMap<>();
+            data.put("orderInfo", UriVariables.getMapToParameters(aliservice.orderInfo(payOrder)));
+
+            //获取表单提交对应的字符串，将其序列化到页面即可,
+            String directHtml = aliservice.buildRequest(orderInfo, MethodType.POST);
+            if (null != directHtml) {
+                System.out.println(directHtml);
+            }
+            return null;
+        };
+        try {
+            return callable.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }*/
 }

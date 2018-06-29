@@ -116,6 +116,11 @@ public class ModularPortalController {
     @RequestMapping(value = "/getModularList", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getModularList() {
         List<ModularPortalVo> modularPortalVoList = modularPortalService.getModularList();
+        for (int i = 0; i < modularPortalVoList.size(); i++) {
+            if (modularPortalVoList.get(i).getName().equals("便捷生活")) {
+                modularPortalVoList.remove(i);
+            }
+        }
         return new Result().success(modularPortalVoList);
     }
 

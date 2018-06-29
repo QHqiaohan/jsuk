@@ -47,7 +47,7 @@
 
     <select id="findUserHeadImgById" resultMap="BaseResultMap">
         SELECT
-        <include refid="Vo_Column_List"/>
+        <include refid="Base_Column_List"/>
         FROM js_user
         WHERE
         id = #{id}
