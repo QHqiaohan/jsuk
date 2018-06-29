@@ -22,10 +22,11 @@
 
     <select id="getTodayMoneyList" resultMap="ShopVisitorVo">
         SELECT
-        price, publish_time
-        FROM t_shop_today_money
+        <include refid="Base_Column_List"/>
+        FROM js_shop_today_money
         WHERE
         shop_id = #{shopId}
+        AND publish_time LIKE CONCAT('%', #{today}, '%')
         <where>
             ${ew.sqlSegment}
         </where>

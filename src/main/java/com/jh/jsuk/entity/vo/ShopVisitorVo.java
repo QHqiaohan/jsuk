@@ -1,6 +1,7 @@
 package com.jh.jsuk.entity.vo;
 
 
+import com.jh.jsuk.entity.ShopVisit;
 import com.jh.jsuk.entity.User;
 
 /**
@@ -9,7 +10,7 @@ import com.jh.jsuk.entity.User;
  * @author: XuChuRuo
  * @date: 2018/6/19 13:28
  */
-public class ShopVisitorVo {
+public class ShopVisitorVo extends ShopVisit {
 
     private User user;
 

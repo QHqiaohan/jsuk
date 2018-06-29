@@ -27,7 +27,8 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_name, name, password, shop_id, user_type, can_use, phone, tel_phone, province, city, area, address, head_img, e_mail, create_time, update_time, login_ip, last_login_time
+        id, user_name, name, password, shop_id, user_type, can_use, phone, tel_phone, province, city, area, address, head_img, e_mail, create_time,
+         update_time, login_ip, last_login_time
     </sql>
 
 </mapper>

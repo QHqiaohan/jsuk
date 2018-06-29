@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -32,46 +33,57 @@ public class Shop extends Model<Shop> {
     /**
      * 店铺头像
      */
+    @ApiModelProperty(value = "店铺头像", name = "headImg")
     private String headImg;
     /**
      * 店铺名称
      */
+    @ApiModelProperty(value = "店铺名称", name = "shopName")
     private String shopName;
     /**
      * 地址
      */
+    @ApiModelProperty(value = "地址", name = "address")
     private String address;
     /**
      * 经度
      */
+    @ApiModelProperty(value = "经度", name = "longitude")
     private Double longitude;
     /**
      * 纬度
      */
+    @ApiModelProperty(value = "纬度", name = "latitude")
     private Double latitude;
     /**
      * 店铺图片
      */
+    @ApiModelProperty(value = "店铺图片", name = "shopImg")
     private String shopImg;
     /**
      * 公告
      */
+    @ApiModelProperty(value = "公告", name = "announcement")
     private String announcement;
     /**
      * 营业开始时间
      */
+    @ApiModelProperty(value = "营业开始时间", name = "startTime")
     private Date startTime;
     /**
      * 营业结束时间
      */
+    @ApiModelProperty(value = "营业结束时间", name = "endTime")
     private Date endTime;
     /**
      * 店铺账户
      */
+    @ApiModelProperty(value = "店铺账户", name = "accountPoint")
     private BigDecimal accountPoint;
     /**
      * 总访问量
      */
+    @ApiModelProperty(value = "总访问量", name = "totalVolume")
     private Integer totalVolume;
     /**
      * 起送费
@@ -108,6 +120,7 @@ public class Shop extends Model<Shop> {
     /**
      * 内容
      */
+    @ApiModelProperty(value = "内容", name = "content")
     private String content;
     /**
      * 优惠信息
