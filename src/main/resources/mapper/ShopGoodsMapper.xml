@@ -306,4 +306,19 @@
         </where>
     </select>
 
+    <resultMap id="ShopGoodsVoT" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
+        <association property="shopGoodsSize" column="id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></association>
+    </resultMap>
+
+    <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="ShopGoodsVoT">
+        SELECT
+        *
+        FROM js_shop_goods
+        WHERE
+        shop_id = #{shopId}
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
 </mapper>

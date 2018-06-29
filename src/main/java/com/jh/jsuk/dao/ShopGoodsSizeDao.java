@@ -2,7 +2,6 @@ package com.jh.jsuk.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.jh.jsuk.entity.ShopGoodsSize;
-import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 
 import java.util.List;
 
@@ -16,8 +15,10 @@ import java.util.List;
  */
 public interface ShopGoodsSizeDao extends BaseMapper<ShopGoodsSize> {
 
-    GoodsSalesPriceVo getSalesPriceByGoodsId(Integer goodsId);
+    String getSalesPriceByGoodsId(Integer goodsId);
 
     List<ShopGoodsSize> getGoodsSizeByGoodsId(Integer goodsId);
+
+    List<ShopGoodsSize> selectSizeByGoodsId(Integer goodsId);
 
 }

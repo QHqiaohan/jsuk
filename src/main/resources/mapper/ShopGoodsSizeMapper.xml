@@ -33,7 +33,7 @@
         deductible_jf, goods_type_id, goods_no, kill_price, kill_stock, full_freight
     </sql>
 
-    <select id="getSalesPriceByGoodsId" resultType="string">
+    <select id="getSalesPriceByGoodsId" resultType="String">
         SELECT
             sales_price
         FROM
@@ -44,6 +44,15 @@
     </select>
 
     <select id="getGoodsSizeByGoodsId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        js_shop_goods_size
+        WHERE
+        shop_goods_id=#{goodsId}
+    </select>
+
+    <select id="selectSizeByGoodsId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
