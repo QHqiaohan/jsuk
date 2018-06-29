@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -56,7 +57,7 @@ public class Express extends Model<Express> {
      */
     private Integer isDel;
     /**
-     * 状态 1=待接单,2=待送货,3=待评价,0=待付款,4=已完成,5=已取消
+     * 状态 0:取消 1:待支付 2:待抢单(骑)-待接单(用) 3:待取货(骑)-待送货(用) 4:待送达(骑)-待送货(用) 5:待评价(用)-完成(骑) 6:完成
      */
     private Integer status;
     /**
@@ -83,6 +84,11 @@ public class Express extends Model<Express> {
      * 完成时间
      */
     private Date endTime;
+
+    @JsonIgnore
+    public boolean isCompleted() {
+        return status != null && (status.equals(5) || status.equals(6));
+    }
 
     public Integer getDistributionUserId() {
         return distributionUserId;
@@ -245,8 +251,6 @@ public class Express extends Model<Express> {
     public static final String END_TIME = "end_time";
 
 
-
-
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -255,21 +259,21 @@ public class Express extends Model<Express> {
     @Override
     public String toString() {
         return "Express{" +
-        "id=" + id +
-        ", userId=" + userId +
-        ", senderAddress=" + senderAddress +
-        ", getAddress=" + getAddress +
-        ", goodsType=" + goodsType +
-        ", weight=" + weight +
-        ", realWeight=" + realWeight +
-        ", isDel=" + isDel +
-        ", status=" + status +
-        ", type=" + type +
-        ", price=" + price +
-        ", notes=" + notes +
-        ", requirementTime=" + requirementTime +
-        ", publishTime=" + publishTime +
-        ", endTime=" + endTime +
-        "}";
+                "id=" + id +
+                ", userId=" + userId +
+                ", senderAddress=" + senderAddress +
+                ", getAddress=" + getAddress +
+                ", goodsType=" + goodsType +
+                ", weight=" + weight +
+                ", realWeight=" + realWeight +
+                ", isDel=" + isDel +
+                ", status=" + status +
+                ", type=" + type +
+                ", price=" + price +
+                ", notes=" + notes +
+                ", requirementTime=" + requirementTime +
+                ", publishTime=" + publishTime +
+                ", endTime=" + endTime +
+                "}";
     }
 }

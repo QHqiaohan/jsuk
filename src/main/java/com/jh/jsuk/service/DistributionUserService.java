@@ -1,7 +1,9 @@
 package com.jh.jsuk.service;
 
-import com.jh.jsuk.entity.DistributionUser;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.DistributionUser;
+
+import java.math.BigDecimal;
 
 /**
  * <p>
@@ -17,4 +19,7 @@ public interface DistributionUserService extends IService<DistributionUser> {
      * 通知骑手接单
      */
     void notifyRobbing();
+
+
+    void addAccount(BigDecimal amount,Integer userId);
 }

@@ -32,4 +32,9 @@
         id, phone, password, name, id_card_no, card_front, card_back, last_login_time, login_ip, longitude, latitude, head_img, gender, age, star_num, account, publish_time, can_use, status, desc, is_online
     </sql>
 
+    <update id="updateAccount">
+      update js_distribution_user u set account = ifnull(account,0) + #{amount} where u.id = #{userId}
+    </update>
+
+
 </mapper>

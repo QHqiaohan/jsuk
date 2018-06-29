@@ -1,7 +1,10 @@
 package com.jh.jsuk.dao;
 
-import com.jh.jsuk.entity.DistributionUser;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.jh.jsuk.entity.DistributionUser;
+import org.apache.ibatis.annotations.Param;
+
+import java.math.BigDecimal;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface DistributionUserDao extends BaseMapper<DistributionUser> {
 
+    Integer updateAccount(@Param("amount") BigDecimal amount,@Param("userId") Integer userId);
 }

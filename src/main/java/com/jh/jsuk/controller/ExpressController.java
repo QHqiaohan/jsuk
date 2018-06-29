@@ -4,23 +4,20 @@ package com.jh.jsuk.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.jh.jsuk.entity.Banner;
-import com.jh.jsuk.entity.Express;
-import com.jh.jsuk.entity.ExpressType;
-import com.jh.jsuk.entity.UserAddress;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.dto.RobbingExpressDTO;
 import com.jh.jsuk.envm.DistributionExpressStatus;
 import com.jh.jsuk.mq.RobbingOrderProducer;
-import com.jh.jsuk.service.BannerService;
-import com.jh.jsuk.service.DistributionUserService;
-import com.jh.jsuk.service.ExpressService;
-import com.jh.jsuk.service.ExpressTypeService;
+import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +43,8 @@ public class ExpressController {
     BannerService bannerService;
     @Autowired
     DistributionUserService distributionUserService;
+    @Autowired
+    DistributionDetailService distributionDetailService;
 
     @ApiOperation(value = "用户端-快递跑腿banner")
     @RequestMapping(value = "/expressRunBanner", method = {RequestMethod.POST, RequestMethod.GET})
@@ -237,8 +236,22 @@ public class ExpressController {
             @ApiImplicitParam(name = "expressId", value = "配送单id",
                     paramType = "query", dataType = "integer")
     })
-    public Result deliverDelivered(Integer expressId) {
-        Express express = new Express();
+    @Transactional
+    public Result deliverDelivered(Integer expressId, Integer userId) {
+        Express express = expressService.selectById(expressId);
+        if (express == null)
+            throw new RuntimeException("配送单不存在");
+        if (express.isCompleted())
+            throw new RuntimeException("配送单已完成");
+        String price = express.getPrice();
+        BigDecimal amount = new BigDecimal(price);
+        DistributionDetail detail = new DistributionDetail();
+        detail.setMoney(amount);
+        detail.setDetail("完成配送");
+        detail.setPublishTime(new Date());
+        detail.setUserId(userId);
+        detail.insert();
+        distributionUserService.addAccount(amount, userId);
         express.setId(expressId);
         express.setStatus(5);
         express.updateById();

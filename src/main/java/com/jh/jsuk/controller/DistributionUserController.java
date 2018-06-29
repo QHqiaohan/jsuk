@@ -91,7 +91,7 @@ public class DistributionUserController {
             @ApiImplicitParam(name = "cardBack", required = true, value = "身份证背面图", paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "code", required = true, value = "验证码", paramType = "query", dataType = "string"),
     })
-    @GetMapping("/register")
+    @PostMapping("/register")
     public Result register(@ModelAttribute DistributionUser distributionUser, @RequestParam String code, HttpSession session) {
         try {
             String verificationCode = (String) session.getAttribute(distributionUser.getPhone() + "register2");

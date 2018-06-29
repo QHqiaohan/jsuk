@@ -3,6 +3,7 @@ package com.jh.jsuk.entity;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -30,6 +31,7 @@ public class DistributionUser extends ParentUser<DistributionUser> {
     /**
      * 密码
      */
+    @JsonIgnore
     private String password;
     /**
      * 姓名
@@ -80,7 +82,7 @@ public class DistributionUser extends ParentUser<DistributionUser> {
      */
     private Integer starNum;
     /**
-     * 骑手端账户
+     * 骑手端账户余额
      */
     private BigDecimal account;
     /**

@@ -8,10 +8,12 @@ import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.entity.dto.MessageDTO;
 import com.jh.jsuk.mq.DjsMessageProducer;
 import com.jh.jsuk.service.DistributionUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -22,6 +24,7 @@ import java.util.List;
  * @author lpf
  * @since 2018-06-20
  */
+@Slf4j
 @Service
 public class DistributionUserServiceImpl extends ServiceImpl<DistributionUserDao, DistributionUser> implements DistributionUserService {
 
@@ -41,5 +44,11 @@ public class DistributionUserServiceImpl extends ServiceImpl<DistributionUserDao
             data.setAlias(String.valueOf(user.getId()));
             messageProducer.send(data);
         }
+    }
+
+    @Override
+    public void addAccount(BigDecimal amount, Integer userId) {
+        Integer count = baseMapper.updateAccount(amount, userId);
+        log.info("更新行数量:{}", count);
     }
 }
