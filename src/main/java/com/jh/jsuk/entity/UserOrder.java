@@ -1,5 +1,6 @@
 package com.jh.jsuk.entity;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -20,8 +21,32 @@ import java.util.Date;
 @TableName("js_user_order")
 public class UserOrder extends Model<UserOrder> {
 
+    public static final String ID = "id";
+    public static final String ORDER_NUM = "order_num";
+    public static final String ORDER_PRICE = "order_price";
+    public static final String DISTRIBUTION_FEE = "distribution_fee";
+    public static final String DISTRIBUTION_STATUS = "distribution_status";
+    public static final String CREAT_TIME = "creat_time";
+    public static final String PAY_TIME = "pay_time";
+    public static final String PAY_TYPE = "pay_type";
+    public static final String STATUS = "status";
+    public static final String IS_UNSUBSCRIBE = "is_unsubscribe";
+    public static final String IS_EVALUATE = "is_evaluate";
+    public static final String IS_DEL = "is_del";
+    public static final String MANAGER_ID = "manager_id";
+    public static final String ADDRESS_ID = "address_id";
+    public static final String USER_ID = "user_id";
+    public static final String CANCEL_TIME = "cancel_time";
+    public static final String COMPLETE_TIME = "complete_time";
+    public static final String SEND_TIME = "send_time";
+    public static final String COUPON_ID = "coupon_id";
+    public static final String DISTRIBUTION_USER_ID = "distribution_user_id";
+    public static final String ORDER_TYPE = "order_type";
+    public static final String LOGISTICS_NO = "logistics_no";
+    public static final String REMARK = "remark";
+    public static final String SHOP_ID = "shop_id";
+    public static final String PLATFORM_NUMBER = "platform_number";
     private static final long serialVersionUID = 1L;
-
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     /**
@@ -71,7 +96,7 @@ public class UserOrder extends Model<UserOrder> {
     /**
      * 店铺id
      */
-    private Integer shopId;
+    private Integer managerId;
     /**
      * 收货地址id
      */
@@ -112,13 +137,34 @@ public class UserOrder extends Model<UserOrder> {
      * 备注
      */
     private String remark;
+    /**
+     * 平台流水号
+     */
+    private String platformNumber;
+    private Integer shopId;
 
-    public void setDistributionStatus(Integer distributionStatus) {
-        this.distributionStatus = distributionStatus;
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getPlatformNumber() {
+        return platformNumber;
+    }
+
+    public void setPlatformNumber(String platformNumber) {
+        this.platformNumber = platformNumber;
     }
 
     public Integer getDistributionStatus() {
         return distributionStatus;
+    }
+
+    public void setDistributionStatus(Integer distributionStatus) {
+        this.distributionStatus = distributionStatus;
     }
 
     public Integer getId() {
@@ -209,12 +255,12 @@ public class UserOrder extends Model<UserOrder> {
         this.isDel = isDel;
     }
 
-    public Integer getShopId() {
-        return shopId;
+    public Integer getManagerId() {
+        return managerId;
     }
 
-    public void setShopId(Integer shopId) {
-        this.shopId = shopId;
+    public void setManagerId(Integer managerId) {
+        this.managerId = managerId;
     }
 
     public Integer getAddressId() {
@@ -297,52 +343,6 @@ public class UserOrder extends Model<UserOrder> {
         this.remark = remark;
     }
 
-    public static final String ID = "id";
-
-    public static final String ORDER_NUM = "order_num";
-
-    public static final String ORDER_PRICE = "order_price";
-
-    public static final String DISTRIBUTION_FEE = "distribution_fee";
-
-    public static final String DISTRIBUTION_STATUS = "distribution_status";
-
-    public static final String CREAT_TIME = "creat_time";
-
-    public static final String PAY_TIME = "pay_time";
-
-    public static final String PAY_TYPE = "pay_type";
-
-    public static final String STATUS = "status";
-
-    public static final String IS_UNSUBSCRIBE = "is_unsubscribe";
-
-    public static final String IS_EVALUATE = "is_evaluate";
-
-    public static final String IS_DEL = "is_del";
-
-    public static final String SHOP_ID = "shop_id";
-
-    public static final String ADDRESS_ID = "address_id";
-
-    public static final String USER_ID = "user_id";
-
-    public static final String CANCEL_TIME = "cancel_time";
-
-    public static final String COMPLETE_TIME = "complete_time";
-
-    public static final String SEND_TIME = "send_time";
-
-    public static final String COUPON_ID = "coupon_id";
-
-    public static final String DISTRIBUTION_USER_ID = "distribution_user_id";
-
-    public static final String ORDER_TYPE = "order_type";
-
-    public static final String LOGISTICS_NO = "logistics_no";
-
-    public static final String REMARK = "remark";
-
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -350,30 +350,6 @@ public class UserOrder extends Model<UserOrder> {
 
     @Override
     public String toString() {
-        return "UserOrder{" +
-                "id=" + id +
-                ", orderNum='" + orderNum + '\'' +
-                ", orderPrice=" + orderPrice +
-                ", distributionFee=" + distributionFee +
-                ", distributionStatus=" + distributionStatus +
-                ", creatTime=" + creatTime +
-                ", payTime=" + payTime +
-                ", payType=" + payType +
-                ", status=" + status +
-                ", isUnsubscribe=" + isUnsubscribe +
-                ", isEvaluate=" + isEvaluate +
-                ", isDel=" + isDel +
-                ", shopId=" + shopId +
-                ", addressId=" + addressId +
-                ", userId=" + userId +
-                ", cancelTime=" + cancelTime +
-                ", completeTime=" + completeTime +
-                ", sendTime=" + sendTime +
-                ", couponId=" + couponId +
-                ", distributionUserId=" + distributionUserId +
-                ", orderType=" + orderType +
-                ", logisticsNo='" + logisticsNo + '\'' +
-                ", remark='" + remark + '\'' +
-                '}';
+        return JSONUtil.toJsonStr(this);
     }
 }

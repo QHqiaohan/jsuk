@@ -91,7 +91,7 @@ public class ManagerUserController {
     public Result resultCode(String phone, HttpSession session) {
         // 获取手机验证码
         String verificationCode = (String) session.getAttribute(phone + "register1");
-        return new Result().success(verificationCode);
+        return new Result().success("", verificationCode);
     }
 
     @ApiOperation("商家端-商家注册,保存商家信息")
