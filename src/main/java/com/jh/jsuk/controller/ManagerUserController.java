@@ -155,7 +155,7 @@ public class ManagerUserController {
                 ShopUser shopUser = shopUserService.selectOne(new EntityWrapper<ShopUser>()
                         .eq(ShopUser.MANAGER_USER_ID, managerUser.getId()));
                 if (shopUser.getIsCheck() == 0) {
-                    return new Result().success("店铺审核中");
+                    return new Result().erro("店铺审核中");
                 } else if (shopUser.getIsCheck() == 1) {
                     if (StrUtil.equals(password, managerUser.getPassword())) {
                         Date loginTime = new Date();

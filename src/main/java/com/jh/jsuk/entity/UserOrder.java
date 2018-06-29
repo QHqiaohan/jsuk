@@ -71,7 +71,7 @@ public class UserOrder extends Model<UserOrder> {
     /**
      * 店铺id
      */
-    private Integer managerId;
+    private Integer shopId;
     /**
      * 收货地址id
      */
@@ -209,12 +209,12 @@ public class UserOrder extends Model<UserOrder> {
         this.isDel = isDel;
     }
 
-    public Integer getManagerId() {
-        return managerId;
+    public Integer getShopId() {
+        return shopId;
     }
 
-    public void setManagerId(Integer managerId) {
-        this.managerId = managerId;
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
     }
 
     public Integer getAddressId() {
@@ -321,7 +321,7 @@ public class UserOrder extends Model<UserOrder> {
 
     public static final String IS_DEL = "is_del";
 
-    public static final String MANAGER_ID = "manager_id";
+    public static final String SHOP_ID = "shop_id";
 
     public static final String ADDRESS_ID = "address_id";
 
@@ -363,7 +363,7 @@ public class UserOrder extends Model<UserOrder> {
                 ", isUnsubscribe=" + isUnsubscribe +
                 ", isEvaluate=" + isEvaluate +
                 ", isDel=" + isDel +
-                ", managerId=" + managerId +
+                ", shopId=" + shopId +
                 ", addressId=" + addressId +
                 ", userId=" + userId +
                 ", cancelTime=" + cancelTime +

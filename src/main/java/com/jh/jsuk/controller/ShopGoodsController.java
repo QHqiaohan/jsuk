@@ -202,7 +202,7 @@ public class ShopGoodsController {
         }
     }*/
 
-    @ApiOperation("用户端-通用商品搜索&店铺搜索")
+    @ApiOperation("用户端&商家端-通用商品搜索&店铺搜索")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
@@ -220,12 +220,16 @@ public class ShopGoodsController {
     })
     @RequestMapping(value = "/getShopList", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopList(Page page, Integer status, Integer type, String name, Integer shopModularId, Integer attributeId, Integer categoryId,
-                              Integer brandId, String address, Integer goodsType, String lowPrice, String highPrice) {
+                              Integer brandId, String address, Integer goodsType, String lowPrice, String highPrice,Integer userId) {
+        // 获取店铺ID
+        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+                .eq(ManagerUser.ID, userId));
+        Integer shopId = managerUser.getShopId();
         // 商品模糊搜索
         if (status == 1) {
             MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
-            Page goodsPage = shopGoodsService.getShopList(page, ew, type, attributeId, name, shopModularId, categoryId, brandId, address, goodsType,
-                    lowPrice, highPrice);
+            Page goodsPage = shopGoodsService.getShopList(page, ew, type, attributeId, name, shopModularId, categoryId, brandId,
+                    address, goodsType, lowPrice, highPrice,shopId);
             return new Result().success(goodsPage);
         } else if (status == 2) {
             // 店铺模糊查询
@@ -249,7 +253,7 @@ public class ShopGoodsController {
 
             MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
             Page goodsPage = shopGoodsService.getShopList(page, ew, type, attributeId, name, shopModularId, categoryId, brandId, address, goodsType,
-                    lowPrice, highPrice);
+                    lowPrice, highPrice,shopId);
             map.put("shop", shopPage.getRecords());
             map.put("shopGoods", goodsPage);
 

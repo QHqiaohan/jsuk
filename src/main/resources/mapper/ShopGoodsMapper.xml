@@ -215,6 +215,9 @@
         where
         sg.status = 1
         AND sg.is_del = 1
+        <if test="shopId != null">
+            AND sg.shop_id = #{shopId}
+        </if>
         <if test="attributeId != null">
             AND sg.attribute_id = #{attributeId}
         </if>

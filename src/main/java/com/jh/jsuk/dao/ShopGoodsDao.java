@@ -55,7 +55,7 @@ public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
     List getShopList(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("address") String address, @Param("attributeId") Integer attributeId,
                      @Param("shopModularId") Integer shopModularId, @Param("categoryId") Integer categoryId, @Param("brandId") Integer brandId,
                      @Param("name") String name, @Param("goodsType") Integer goodsType, @Param("lowPrice") String lowPrice,
-                     @Param("highPrice") String highPrice, @Param("type") Integer type);
+                     @Param("highPrice") String highPrice, @Param("type") Integer type, @Param("shopId") Integer shopId);
 
     List<GoodsSizeVo> findShopGoodsAndGoodsSizeByShopId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, Integer shopId);
 }

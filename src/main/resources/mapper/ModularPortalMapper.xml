@@ -4,15 +4,15 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ModularPortal">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <result column="logo" property="logo" />
-        <result column="parent_id" property="parentId" />
-        <result column="sort_order" property="sortOrder" />
-        <result column="status" property="status" />
-        <result column="type" property="type" />
-        <result column="publish_time" property="publishTime" />
-        <result column="update_time" property="updateTime" />
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="logo" property="logo"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="status" property="status"/>
+        <result column="type" property="type"/>
+        <result column="publish_time" property="publishTime"/>
+        <result column="update_time" property="updateTime"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -26,20 +26,21 @@
 
     <select id="getModularList" resultMap="ModularPortalVo">
         SELECT
-            *
+        <include refid="Base_Column_List"/>
         FROM
-            `js_modular_portal`
+        `js_modular_portal`
         ORDER BY
-            sort_order DESC
+        sort_order DESC
+        LIMIT 1,7
     </select>
 
     <select id="findChildrenModular" resultMap="BaseResultMap">
         SELECT
-            *
+        <include refid="Base_Column_List"/>
         FROM
-            `js_modular_portal`
+        `js_modular_portal`
         WHERE
-            parent_id = #{id}
+        parent_id = #{id}
         ORDER BY sort_order DESC
     </select>
 
