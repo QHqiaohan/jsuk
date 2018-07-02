@@ -10,12 +10,14 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Constant;
 import com.jh.jsuk.entity.DistributionUser;
+import com.jh.jsuk.entity.Qa;
 import com.jh.jsuk.entity.UserBank;
 import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
 import com.jh.jsuk.entity.vo.DistributionUserVo;
 import com.jh.jsuk.service.DistributionUserService;
+import com.jh.jsuk.service.QaService;
 import com.jh.jsuk.service.UserBankService;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.*;
@@ -27,9 +29,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 
 /**
  * <p>
@@ -51,6 +51,9 @@ public class DistributionUserController {
     private JwtHelper jwtHelper;
     @Autowired
     UserBankService userBankService;
+
+    @Autowired
+    QaService qaService;
 
     @ApiOperation("骑手-登陆")
     @PostMapping("/login")
@@ -300,6 +303,17 @@ public class DistributionUserController {
         } else {
             return new Result().erro("验证码过期");
         }
+    }
+
+    @ApiOperation("骑手-客服中心")
+    @GetMapping("/kefu")
+    public Result kefu() {
+        Map<String,Object> map = new HashMap<>();
+        Wrapper<Qa> wrapper = new EntityWrapper<>();
+        wrapper.orderBy(Qa.SORT,false);
+        map.put("qa",qaService.selectList(wrapper));
+        return new Result().success(map);
+
     }
 
     @ApiIgnore
