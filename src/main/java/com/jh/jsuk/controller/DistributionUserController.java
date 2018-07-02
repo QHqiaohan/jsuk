@@ -125,9 +125,9 @@ public class DistributionUserController {
 
     @ApiOperation("骑手-信息修改")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "headImg", value = "头像", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "gender", value = "性别", paramType = "query", dataType = "int"),
-            @ApiImplicitParam(name = "age", value = "年龄", paramType = "query", dataType = "int"),
+            @ApiImplicitParam(name = "headImg", required = true, value = "头像", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "gender", required = true, value = "性别", paramType = "query", dataType = "int"),
+            @ApiImplicitParam(name = "age", required = true, value = "年龄", paramType = "query", dataType = "int"),
     })
     @PostMapping("/edit")
     public Result edit(@ModelAttribute DistributionUser distributionUser, Integer userId) {
@@ -148,9 +148,9 @@ public class DistributionUserController {
 
     @ApiOperation("骑手-绑定支付宝")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "bankNumber", value = "支付宝账号", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "phone", value = "手机号", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "code", value = "验证码", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "bankNumber", required = true,value = "支付宝账号", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "phone", required = true, value = "手机号", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "code", required = true, value = "验证码", paramType = "query", dataType = "string"),
     })
     @PostMapping("/binding")
     public Result binding(UserBank bank,String phone,String code, Integer userId,HttpSession session) {
@@ -173,9 +173,9 @@ public class DistributionUserController {
 
     @ApiOperation("骑手-修改绑定支付宝")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "bankNumber", value = "支付宝账号", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "phone", value = "手机号", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "code", value = "验证码", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "bankNumber", required = true, value = "支付宝账号", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "phone",required = true, value = "手机号", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "code",required = true, value = "验证码", paramType = "query", dataType = "string"),
     })
     @PostMapping("/binding/edit")
     public Result bindingEdit(UserBank bank,String phone,String code, Integer userId,HttpSession session) {

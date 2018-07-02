@@ -18,13 +18,13 @@ public enum UserType {
 
     private final ManageUserType manageUserType;
 
-    private final String shopKey;
+    private final String shortKey;
 
-    UserType(Integer key, String value, ManageUserType manageUserType, String shopKey) {
+    UserType(Integer key, String value, ManageUserType manageUserType, String shortKey) {
         this.key = key;
         this.value = value;
         this.manageUserType = manageUserType;
-        this.shopKey = shopKey;
+        this.shortKey = shortKey;
     }
 
     public boolean hasManageUserType() {
@@ -39,8 +39,8 @@ public enum UserType {
         return key;
     }
 
-    public String getShopKey() {
-        return shopKey;
+    public String getShortKey() {
+        return shortKey;
     }
 
     public String getValue() {

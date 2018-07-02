@@ -99,6 +99,8 @@ public class User extends ParentUser<User> {
         ex.setPassword(password);
         ex.setCanUse(canUse);
         ex.setLastLogin(lastLoginTime);
+        ex.setNickName(nickName);
+        ex.setPhone(phone);
         return ex;
     }
 

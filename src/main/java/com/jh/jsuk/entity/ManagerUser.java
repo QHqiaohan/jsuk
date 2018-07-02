@@ -98,6 +98,9 @@ public class ManagerUser extends ParentUser<ManagerUser> {
         ex.setPassword(password);
         ex.setCanUse(canUse);
         ex.setLastLogin(lastLoginTime);
+        ex.setNickName(name);
+        ex.setPhone(phone);
+        ex.setShopId(shopId);
         return ex;
     }
 

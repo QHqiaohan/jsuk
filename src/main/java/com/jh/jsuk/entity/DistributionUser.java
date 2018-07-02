@@ -106,12 +106,14 @@ public class DistributionUser extends ParentUser<DistributionUser> {
      */
     private Integer isOnline;
 
-    public ParentUserEx toParentUser(){
+    public ParentUserEx toParentUser() {
         ParentUserEx ex = new ParentUserEx();
         ex.setUserId(id);
         ex.setPassword(password);
         ex.setCanUse(canUse);
         ex.setLastLogin(lastLoginTime);
+        ex.setNickName(name);
+        ex.setPhone(phone);
         return ex;
     }
 
@@ -333,27 +335,27 @@ public class DistributionUser extends ParentUser<DistributionUser> {
     @Override
     public String toString() {
         return "DistributionUser{" +
-        "id=" + id +
-        ", phone=" + phone +
-        ", password=" + password +
-        ", name=" + name +
-        ", idCardNo=" + idCardNo +
-        ", cardFront=" + cardFront +
-        ", cardBack=" + cardBack +
-        ", lastLoginTime=" + lastLoginTime +
-        ", loginIp=" + loginIp +
-        ", longitude=" + longitude +
-        ", latitude=" + latitude +
-        ", headImg=" + headImg +
-        ", gender=" + gender +
-        ", age=" + age +
-        ", starNum=" + starNum +
-        ", account=" + account +
-        ", publishTime=" + publishTime +
-        ", canUse=" + canUse +
-        ", status=" + status +
-        ", desc=" + desc +
-        ", isOnline=" + isOnline +
-        "}";
+                "id=" + id +
+                ", phone=" + phone +
+                ", password=" + password +
+                ", name=" + name +
+                ", idCardNo=" + idCardNo +
+                ", cardFront=" + cardFront +
+                ", cardBack=" + cardBack +
+                ", lastLoginTime=" + lastLoginTime +
+                ", loginIp=" + loginIp +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", headImg=" + headImg +
+                ", gender=" + gender +
+                ", age=" + age +
+                ", starNum=" + starNum +
+                ", account=" + account +
+                ", publishTime=" + publishTime +
+                ", canUse=" + canUse +
+                ", status=" + status +
+                ", desc=" + desc +
+                ", isOnline=" + isOnline +
+                "}";
     }
 }

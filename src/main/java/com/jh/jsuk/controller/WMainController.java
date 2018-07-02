@@ -60,7 +60,7 @@ public class WMainController {
     @PostMapping("/login")
     public R list(String phone, String password, String type, HttpServletRequest requeset) throws Exception {
         Map<String, Object> map = new HashMap<>();
-        UserType userType = EnumUitl.toEnum(UserType.class, type, "getShopKey");
+        UserType userType = EnumUitl.toEnum(UserType.class, type, "getShortKey");
         ParentUserEx user = null;
         if (UserType.USER.equals(userType)) {
             User us = userService.selectOne(new EntityWrapper<User>().eq("phone", phone));
@@ -88,10 +88,8 @@ public class WMainController {
         if (!user.canUse()) {
             return R.err(-11, "该账号已被禁用");
         }
-        session.setUserId(user.getUserId());
         session.setUserType(userType);
-        session.setLogin(true);
-        session.setLastLogin(user.getLastLogin());
+        session.fromParentUserEx(user);
         userService.updateLoginStatus(user.getUserId(), userType, IpUtil.getIpAddr(requeset));
         map.put("token", jwtHelper.createAccessToken(user.getUserId(), userType.getKey()));
         return R.succ(map);
@@ -109,7 +107,11 @@ public class WMainController {
     public R session() {
         Map<String, Object> map = new HashMap<>();
         map.put("useId", session.getUserId());
-        map.put("type", session.getUserType().getShopKey());
+        map.put("type", session.getUserType());
+        map.put("phone", session.getPhone());
+        map.put("nickName", session.getNickName());
+        map.put("lastLogin", session.getLastLogin());
+        map.put("shopName", session.getShopName());
         return R.succ(map);
     }
 

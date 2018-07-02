@@ -17,7 +17,13 @@ public class ParentUserEx{
 
     private Integer canUse;
 
+    private String phone;
+
+    private String nickName;
+
     private Date lastLogin;
+
+    private Integer shopId;
 
     public boolean canUse(){
         return canUse != null && canUse.equals(1);

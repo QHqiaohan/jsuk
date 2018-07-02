@@ -2,9 +2,7 @@ package com.jh.jsuk.filter;
 
 
 import com.jh.jsuk.conf.Session;
-import com.jh.jsuk.entity.Log;
-import com.jh.jsuk.entity.ManagerUser;
-import com.jh.jsuk.entity.ParentUser;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.jwt.JwtParam;
 import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.exception.OverdueException;
@@ -183,25 +181,37 @@ public class JwtFilter implements Filter {
                 if (null != jwtParam) {
                     try {
                         ParentUser user = null;
+                        ParentUserEx userEx = null;
                         if (!session.isLogin()) {
                             switch (jwtParam.getLoginType()) {
                                 case 1:
                                     ManagerUser managerUser = managerUserService.selectById(jwtParam.getUserId());
-                                    Integer userType = managerUser.getUserType();
-                                    session.setUserType(userType != null && userType.equals(2) ? UserType.SHOP : UserType.ADMIN);
+                                    if (managerUser != null) {
+                                        userEx = managerUser.toParentUser();
+                                        Integer userType = managerUser.getUserType();
+                                        session.setUserType(userType != null && userType.equals(2) ? UserType.SHOP : UserType.ADMIN);
+                                    }
                                     user = managerUser;
                                     break;
                                 case 2:
-                                    user = distributionUserService.selectById(jwtParam.getUserId());
+                                    DistributionUser user1 = distributionUserService.selectById(jwtParam.getUserId());
+                                    if (user1 != null) {
+                                        userEx = user1.toParentUser();
+                                    }
+                                    user = user1;
                                     session.setUserType(UserType.DISTRIBUTION);
                                     break;
                                 case 3:
-                                    user = userService.selectById(jwtParam.getUserId());
+                                    User user2 = userService.selectById(jwtParam.getUserId());
+                                    if (user2 != null) {
+                                        userEx = user2.toParentUser();
+                                    }
+                                    user = user2;
                                     session.setUserType(UserType.USER);
                                     break;
                             }
-                            if (user != null){
-                                session.fromParentUser(user);
+                            if (userEx != null) {
+                                session.fromParentUserEx(userEx);
                                 session.setLogin(true);
                             }
 

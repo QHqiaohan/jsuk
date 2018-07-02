@@ -61,7 +61,7 @@ public class ActivityController {
     @Autowired
     private ActivityJoinService activityJoinService;
 
-    @ApiOperation(value = "获取首页相关信息-上部分")
+    @ApiOperation(value = "用户-获取首页相关信息-上部分")
     @RequestMapping(value = "/getAll", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getAll() {
         // 封装结果map
@@ -113,7 +113,7 @@ public class ActivityController {
         return new Result().success(map);
     }
 
-    @ApiOperation(value = "获取首页相关信息-下部分")
+    @ApiOperation(value = "用户-获取首页相关信息-下部分")
     @RequestMapping(value = "/getAllBelow", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getAllBelow() {
         // 封装结果map
@@ -146,7 +146,7 @@ public class ActivityController {
         return new Result().success(map);
     }
 
-    @ApiOperation("城乡优购&本地商城&聚鲜U客-获取banner/分类/快报")
+    @ApiOperation("用户-城乡优购&本地商城&聚鲜U客-获取banner/分类/快报")
     @RequestMapping(value = "/getNiceChoose", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getNiceChoose(@ApiParam(value = "模块ID", required = true) Integer modularId) {
         // 封装结果map
@@ -246,7 +246,7 @@ public class ActivityController {
         return new Result().success(map);
     }
 
-    @ApiOperation("特色家乡&直销平台-banner/分类")
+    @ApiOperation("用户-特色家乡&直销平台-banner/分类")
     @RequestMapping(value = "/getMoreInfo", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getMoreInfo(@ApiParam(value = "模块ID", required = true) Integer modularId) {
         // 封装结果map
@@ -296,7 +296,7 @@ public class ActivityController {
         return new Result().success(map);
     }
 
-    @ApiOperation("会员商城-获取banner")
+    @ApiOperation("用户-会员商城-获取banner")
     @RequestMapping(value = "/getVipShop", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getVipShop(@ApiParam(value = "模块ID", required = true) Integer modularId) {
         // 封装结果map
@@ -375,7 +375,7 @@ public class ActivityController {
         return new Result().success(activityVo);
     }
 
-    @ApiOperation("二手市场&便捷生活-查询我发布的")
+    @ApiOperation("用户-二手市场&便捷生活-查询我发布的")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer")})
@@ -393,7 +393,7 @@ public class ActivityController {
         }
     }
 
-    @ApiOperation("二手市场&便捷生活-根据ID删除活动")
+    @ApiOperation("用户-二手市场&便捷生活-根据ID删除活动")
     @RequestMapping(value = "/delActivity", method = {RequestMethod.POST, RequestMethod.GET})
     public Result delActivity(Integer userId, @ApiParam(value = "活动ID", required = true) Integer activityId) {
         Activity activity = new Activity();
@@ -424,7 +424,7 @@ public class ActivityController {
         }
     }
 
-    @ApiOperation("二手市场&便捷生活-根据商品ID获取留言")
+    @ApiOperation("用户-二手市场&便捷生活-根据商品ID获取留言")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
@@ -437,7 +437,7 @@ public class ActivityController {
         return new Result().success(commentPage);
     }
 
-    @ApiOperation(value = "二手市场&便捷生活-发表/回复留言", notes = "comment_id为空=新留言,不为空=回复")
+    @ApiOperation(value = "用户-二手市场&便捷生活-发表/回复留言", notes = "comment_id为空=新留言,不为空=回复")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "comment", value = "留言内容",
                     required = true, paramType = "query", dataType = "string"),
@@ -485,7 +485,7 @@ public class ActivityController {
         }
     }
 
-    @ApiOperation(value = "便捷生活&二手市场&乡村旅游-新增活动",
+    @ApiOperation(value = "用户-便捷生活&二手市场&乡村旅游-新增活动",
             notes = "type按类型必填!!! 1=乡村旅游,2=便捷生活,3=二手市场',如果是便捷生活,classId必填!!如果是乡村旅游,modularId必填!!二手市场不用填")
     @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.GET})
     public Result add(@ModelAttribute Activity activity) {
@@ -497,7 +497,7 @@ public class ActivityController {
         }
     }
 
-    @ApiOperation("乡村旅游-参与活动")
+    @ApiOperation("用户-乡村旅游-参与活动")
     @RequestMapping(value = "/join", method = {RequestMethod.POST, RequestMethod.GET})
     public Result join(Integer activityId, Integer userId) {
         ActivityJoin activityJoin = new ActivityJoin();
@@ -507,7 +507,7 @@ public class ActivityController {
         return new Result().success("参与成功!");
     }
 
-    @ApiOperation("乡村旅游-根据状态查询我的活动")
+    @ApiOperation("用户-乡村旅游-根据状态查询我的活动")
     @RequestMapping(value = "/getInfoByStatus", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getInfoByStatus(@ApiParam(name = "0=待付款,1=进行中,2=完成", required = true) Integer status, Integer userId) {
         // 封装活动信息list
