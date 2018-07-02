@@ -185,6 +185,7 @@ public class PayController {
             //购物车订单
             if (StrUtil.isNotBlank(carId)) {
                 List<ShoppingCartVo> shoppingCartVos = shoppingCartService.selectVoList(String.valueOf(userId));
+                logger.info("购物车商品数量:{}", shoppingCartVos.size());
                 Map<String, GoodsVo> goodMaps = Maps.newHashMap();
                 for (ShoppingCartVo shoppingCartVo : shoppingCartVos) {
                     List<GoodsVo> goods = shoppingCartVo.getGoods();
@@ -207,10 +208,7 @@ public class PayController {
                 userOrder.setOrderPrice(new BigDecimal(paymentAmount));
                 //新增到店支付订单记录
                 userOrder.insert();
-                Boolean flag = true;
-                if (StrUtil.equals(orderType, "1")) {
-                    flag = false;
-                }
+
                 List<UserOrderGoods> list = Lists.newArrayList();
                 //订单商品信息
                 goodMaps.forEach((k, v) -> {
@@ -227,6 +225,7 @@ public class PayController {
                     userOrderGoods.setNum(v.getNum());
                     list.add(userOrderGoods);
                 });
+                logger.error("订单商品信息数量:{}",list.size());
                 boolean batch = userOrderGoodsService.insertBatch(list);
                 logger.error("批量添加商品订单信息: {}", batch ? "成功" : "失败");
                 resultMap.put("orderType", orderType);
