@@ -78,7 +78,7 @@ public class UserOrderController {
     /**
      * 待抢单
      */
-    @ApiOperation("骑手显示待抢单列表")
+    @ApiOperation("骑手-显示待抢单列表")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码",
                     required = false, paramType = "query", dataType = "integer"),
@@ -112,7 +112,7 @@ public class UserOrderController {
     /**
      * 待抢单
      */
-    @ApiOperation("骑手显示待抢单数量")
+    @ApiOperation("骑手-显示待抢单数量")
     @GetMapping("/grabASingle/count")
     public Result grabASingleCount() {
         Wrapper wrapper = new EntityWrapper()
@@ -147,7 +147,7 @@ public class UserOrderController {
     /**
      * 待取货
      */
-    @ApiOperation("骑手显示显示待取货数量")
+    @ApiOperation("骑手-显示显示待取货数量")
     @GetMapping("/readyToTake/count")
     public Result readyToTake(Integer userId) {
         Wrapper wrapper = new EntityWrapper()

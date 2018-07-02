@@ -44,7 +44,7 @@ public class LifeClassController {
     @Autowired
     private ActivityTransactionAreaService activityTransactionAreaService;
 
-    @ApiOperation("便捷生活-获取banner/商品列表")
+    @ApiOperation("用户-便捷生活-获取banner/商品列表")
     @RequestMapping(value = "/getLifeInfo", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getLifeInfo() {
         // 封装结果map
@@ -66,14 +66,14 @@ public class LifeClassController {
         return new Result().success(map);
     }
 
-    @ApiOperation("便捷生活-获取分类列表")
+    @ApiOperation("用户-便捷生活-获取分类列表")
     @RequestMapping(value = "/findLifeClass", method = {RequestMethod.POST, RequestMethod.GET})
     public Result findLifeClass() {
         List<LifeClass> lifeClassList = lifeClassService.selectList(new EntityWrapper<>());
         return new Result().success(lifeClassList);
     }
 
-    @ApiOperation("便捷生活-车辆列表")
+    @ApiOperation("用户-便捷生活-车辆列表")
     @RequestMapping(value = "/getCarList", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getCarList() {
         List<Car> carList = carService.selectList(new EntityWrapper<Car>()
@@ -84,7 +84,7 @@ public class LifeClassController {
         return new Result().success(carList);
     }
 
-    @ApiOperation("便捷生活-根据分类选择车辆")
+    @ApiOperation("用户-便捷生活-根据分类选择车辆")
     @RequestMapping(value = "/getCarByClassId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getCarByClassId(@ApiParam(value = "分类ID", required = true) Integer classId) {
         List<Car> carList = carService.selectList(new EntityWrapper<Car>()
@@ -124,7 +124,7 @@ public class LifeClassController {
         return new Result().success(map);
     }
 
-    @ApiOperation("便捷生活-更多共享婚车商品列表,分商家和需求方")
+    @ApiOperation("用户-便捷生活-更多共享婚车商品列表,分商家和需求方")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码",
                     paramType = "query", dataType = "integer"),
@@ -157,7 +157,7 @@ public class LifeClassController {
         return new Result().success(map);
     }
 
-    @ApiOperation("便捷生活-根据分类ID查询商品列表")
+    @ApiOperation("用户-便捷生活-根据分类ID查询商品列表")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码",
                     paramType = "query", dataType = "integer"),
@@ -173,14 +173,14 @@ public class LifeClassController {
         return new Result().success(activityPage);
     }
 
-    @ApiOperation("便捷生活-根据商品ID查询商品详细信息")
+    @ApiOperation("用户-便捷生活-根据商品ID查询商品详细信息")
     @RequestMapping(value = "/getActivityById", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getActivityById(@ApiParam(value = "商品ID", required = true) Integer id) {
         ActivityVo activityVo = activityService.findActivityById(id);
         return new Result().success(activityVo);
     }
 
-    @ApiOperation("便捷生活-根据活动ID查询留言内容/总数")
+    @ApiOperation("用户-便捷生活-根据活动ID查询留言内容/总数")
     @RequestMapping(value = "/getComment", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getComment(@ApiParam(value = "活动ID", required = true) Integer activityId) {
         // 封装结果map
@@ -195,7 +195,7 @@ public class LifeClassController {
         return new Result().success(map);
     }
 
-    @ApiOperation("便捷生活-交易区域选择")
+    @ApiOperation("用户-便捷生活-交易区域选择")
     @RequestMapping(value = "/chooseArea", method = {RequestMethod.POST, RequestMethod.GET})
     public Result chooseArea() {
         List<ActivityTransactionArea> areaList = activityTransactionAreaService.selectList(new EntityWrapper<>());

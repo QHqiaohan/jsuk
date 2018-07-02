@@ -38,7 +38,7 @@ public class CollectController {
     @Autowired
     private ShopGoodsService shopGoodsService;
 
-    @ApiOperation("添加收藏")
+    @ApiOperation("用户-添加收藏")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", paramType = "query", dataType = "int"),
             @ApiImplicitParam(name = "shopId", required = true, value = "店铺id", paramType = "query", dataType = "int")
@@ -59,7 +59,7 @@ public class CollectController {
         }
     }
 
-    @ApiOperation("判断该店铺是否在收藏列表")
+    @ApiOperation("用户-判断该店铺是否在收藏列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "shopId", required = true, value = "店铺id", paramType = "query", dataType = "int"),
     })
@@ -75,7 +75,7 @@ public class CollectController {
         }
     }
 
-    @ApiOperation(value = "用户商品收藏列表", notes = "展示收藏商品列表，进入页面提取20个数据，下拉加载更多，每次加载20个")
+    @ApiOperation(value = "用户-用户商品收藏列表", notes = "展示收藏商品列表，进入页面提取20个数据，下拉加载更多，每次加载20个")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码",
                     required = true, paramType = "query", dataType = "integer"),

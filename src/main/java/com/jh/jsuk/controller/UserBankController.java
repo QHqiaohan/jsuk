@@ -32,7 +32,7 @@ public class UserBankController {
     @Autowired
     private UserBankService bankService;
 
-    @ApiOperation("添加银行卡")
+    @ApiOperation("用户-添加银行卡")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "type", value = "0商家端  1骑手端  2用户端",
                     required = true, paramType = "query", dataType = "integer"),
@@ -50,7 +50,7 @@ public class UserBankController {
         return new Result().success();
     }
 
-    @ApiOperation("修改银行卡")
+    @ApiOperation("用户-修改银行卡")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "id", value = "表id",
                     required = true, paramType = "query", dataType = "integer"),
@@ -68,7 +68,7 @@ public class UserBankController {
     }
 
 
-    @ApiOperation("删除银行卡")
+    @ApiOperation("用户-删除银行卡")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "id", value = "表id",
                     required = true, paramType = "query", dataType = "integer"),
@@ -79,7 +79,7 @@ public class UserBankController {
         return new Result().success();
     }
 
-    @ApiOperation("查看自己银行卡列表")
+    @ApiOperation("用户-查看自己银行卡列表")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码",
                     required = false, paramType = "query", dataType = "integer"),

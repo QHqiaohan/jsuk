@@ -34,7 +34,7 @@ public class CouponController {
     @Autowired
     private UserCouponService userCouponService;
 
-    @ApiOperation("查询用户优惠卷列表")
+    @ApiOperation("用户-查询用户优惠卷列表")
     @PostMapping("/listByUserId")
     public Result listByUserId(Integer userId) {
         // 用户优惠券信息
@@ -104,7 +104,7 @@ public class CouponController {
         return new Result().success(map);
     }*/
 
-    @ApiOperation("显示店铺可用优惠卷列表")
+    @ApiOperation("用户-显示店铺可用优惠卷列表")
     @PostMapping("/listByShopId")
     public Result listByShop(CoupQueryParam param
                              /*Integer userId, @ApiParam(value = "店铺id",required = true)
@@ -164,7 +164,7 @@ public class CouponController {
         }
     }
 
-    @ApiOperation("显示优惠券领取列表")
+    @ApiOperation("用户-显示优惠券领取列表")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码",
                     required = false, paramType = "query", dataType = "integer"),

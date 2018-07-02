@@ -40,7 +40,7 @@ public class Session {
 
     private String shopName;
 
-    public Integer getShopId() throws MessageException {
+    public Integer confirmShopId() throws MessageException {
         if (!UserType.SHOP.equals(userType)) {
             throw new MessageException("非店铺没有shopId");
         }

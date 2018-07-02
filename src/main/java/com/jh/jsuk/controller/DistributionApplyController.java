@@ -48,7 +48,7 @@ public class DistributionApplyController {
     @Autowired
     UserBankService userBankService;
 
-    @ApiOperation("申请提现")
+    @ApiOperation("骑手-申请提现")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "bankId", value = "银行卡id",
                     required = false, paramType = "query", dataType = "integer"),
@@ -83,7 +83,7 @@ public class DistributionApplyController {
         return new Result().success();
     }
 
-    @ApiOperation("提现申请列表")
+    @ApiOperation("骑手-提现申请列表")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码",
                     required = false, paramType = "query", dataType = "integer"),

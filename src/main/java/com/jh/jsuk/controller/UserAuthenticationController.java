@@ -25,7 +25,7 @@ public class UserAuthenticationController {
     @Autowired
     private UserAuthenticationService userAuthenticationService;
 
-    @ApiOperation("新增认证信息")
+    @ApiOperation("用户-新增认证信息")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "realName", value = "真实姓名",
                     paramType = "query", dataType = "string"),
@@ -52,7 +52,7 @@ public class UserAuthenticationController {
         }
     }
 
-    @ApiOperation("获取认证状态")
+    @ApiOperation("用户-获取认证状态")
     @PostMapping("/getStatusByUserId")
     public Result getStatusByUserId(@ApiParam("用户ID") @RequestParam Integer userId) {
         UserAuthentication userAuthentication = userAuthenticationService.selectOne(new EntityWrapper<UserAuthentication>()
@@ -78,7 +78,7 @@ public class UserAuthenticationController {
         return new Result().erro("没有该用户认证信息");
     }
 
-    @ApiOperation("查询认证信息")
+    @ApiOperation("用户-查询认证信息")
     @PostMapping("/getInfoByUserId")
     public Result getInfoByUserId(@ApiParam("用户ID") @RequestParam Integer userId) {
         UserAuthentication userAuthentication = userAuthenticationService.selectOne(new EntityWrapper<UserAuthentication>()

@@ -25,7 +25,7 @@ public class GoodsEvaluateController {
     @Autowired
     GoodsEvaluateService goodsEvaluateService;
 
-    @ApiOperation("获取指定数量的评价数据")
+    @ApiOperation("用户-获取指定数量的评价数据")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "goodsId", required = true, value = "商品id", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "count", value = "数量(默认1)", paramType = "query", dataType = "integer")
@@ -35,19 +35,19 @@ public class GoodsEvaluateController {
         return new Result().success(goodsEvaluateService.get(goodsId, count));
     }
 
-    @ApiOperation("获取评价数量")
+    @ApiOperation("用户-获取评价数量")
     @RequestMapping(value = "/count", method = {RequestMethod.POST, RequestMethod.GET})
     public Result count(Integer goodsId) throws Exception {
         return new Result().success(goodsEvaluateService.count(goodsId));
     }
 
-    @ApiOperation("各类型评价数量")
+    @ApiOperation("用户-各类型评价数量")
     @RequestMapping(value = "/counts", method = {RequestMethod.POST, RequestMethod.GET})
     public Result counts(Integer goodsId) throws Exception {
         return new Result().success(goodsEvaluateService.counts(goodsId));
     }
 
-    @ApiOperation("获取评价分页数据")
+    @ApiOperation("用户-获取评价分页数据")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "goodsId", required = true, value = "商品id", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "type", value = "评价类型 全部:all(默认),好评:gd 中评:mdm  差评:ngt",

@@ -32,7 +32,7 @@ public class UserRemainderController {
     @Autowired
     private UserRemainderService userRemainderService;
 
-    @ApiOperation(value = "查询余额账单明细")
+    @ApiOperation(value = "用户-查询余额账单明细")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码",
                     paramType = "query", dataType = "integer"),
@@ -48,7 +48,7 @@ public class UserRemainderController {
         return new Result().success(remainderPage);
     }
 
-    @ApiOperation(value = "获取总余额")
+    @ApiOperation(value = "用户-获取总余额")
     @PostMapping("/getCount")
     public Result getCount(@ApiParam(hidden = true) @RequestParam Integer userId) {
         List<UserRemainder> userRemainderList = userRemainderService.selectList(new EntityWrapper<UserRemainder>()

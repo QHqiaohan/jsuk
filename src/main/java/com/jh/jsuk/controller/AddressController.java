@@ -27,7 +27,7 @@ public class AddressController {
     @Autowired
     private UserAddressService addressService;
 
-    @ApiOperation("添加地址")
+    @ApiOperation("用户-添加地址")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name", required = true, value = "姓名", paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "phone", required = true, value = "手机号", paramType = "query", dataType = "string"),
@@ -51,7 +51,7 @@ public class AddressController {
         return new Result().success();
     }
 
-    @ApiOperation("修改地址")
+    @ApiOperation("用户-修改地址")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", required = true, value = "地址id", paramType = "query", dataType = "int"),
             @ApiImplicitParam(name = "name", required = true, value = "姓名", paramType = "query", dataType = "string"),
@@ -68,7 +68,7 @@ public class AddressController {
         return new Result().success();
     }
 
-    @ApiOperation("删除地址")
+    @ApiOperation("用户-删除地址")
     @PostMapping("/del")
     public Result del(@ApiParam(value = "地址id", required = true) @RequestParam Integer addressId) {
         UserAddress address = new UserAddress();
@@ -78,7 +78,7 @@ public class AddressController {
         return new Result().success();
     }
 
-    @ApiOperation("设置默认地址")
+    @ApiOperation("用户-设置默认地址")
     @PostMapping("/setDefault")
     public Result setDefault(@ApiParam(value = "地址id", required = true) @RequestParam Integer addressId, Integer userId) {
         List<UserAddress> addresses = addressService.selectList(new EntityWrapper<UserAddress>()
@@ -96,7 +96,7 @@ public class AddressController {
         return new Result().success();
     }
 
-    @ApiOperation("显示用户地址列表")
+    @ApiOperation("用户-显示用户地址列表")
     @PostMapping("/list")
     public Result list(Integer userId) {
         List<UserAddress> addresses = addressService.selectList(new EntityWrapper<UserAddress>()
@@ -106,7 +106,7 @@ public class AddressController {
         return new Result().success(addresses);
     }
 
-    @ApiOperation("获取用户默认地址")
+    @ApiOperation("用户-获取用户默认地址")
     @PostMapping("/getDefault")
     public Result getDefalut(Integer userId) {
         UserAddress address = addressService.selectOne(new EntityWrapper<UserAddress>()

@@ -27,14 +27,14 @@ public class UserCouponController {
     @Autowired
     private UserCouponService userCouponService;
 
-    @ApiOperation("优惠券总数")
+    @ApiOperation("用户-优惠券总数")
     @PostMapping("/getCount")
     public Result getCount(@RequestParam @ApiParam(value = "用户ID", required = true) Integer userId) {
         UserCoupon userCoupon = userCouponService.selectById(userId);
         return new Result().success(userCoupon);
     }
 
-    @ApiOperation("查询优惠券")
+    @ApiOperation("用户-查询优惠券")
     @PostMapping("/getUserCoupon")
     public Result getUserCoupon(@RequestParam @ApiParam(value = "用户ID", required = true) Integer userId) {
         UserCoupon userCoupon = userCouponService.selectById(userId);

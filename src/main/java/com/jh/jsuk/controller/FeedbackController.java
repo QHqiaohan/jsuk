@@ -29,7 +29,7 @@ public class FeedbackController {
     @Autowired
     private FeedbackService feedbackService;
 
-    @ApiOperation("新增意见反馈")
+    @ApiOperation("骑手-新增意见反馈")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "content", required = true, value = "反馈内容", paramType = "query", dataType = "string"),
     })
@@ -39,7 +39,7 @@ public class FeedbackController {
         return new Result().success();
     }
 
-    @ApiOperation("获取意见反馈")
+    @ApiOperation("骑手-获取意见反馈")
     @RequestMapping("/ui/list")
     public Result uiList(Page page) {
         Page feedbackPage = feedbackService.selectPage(page, new EntityWrapper<Feedback>()

@@ -31,7 +31,7 @@ public class CollectGoodsController {
     @Autowired
     CollectGoodsService collectGoodsService;
 
-    @ApiOperation("判断商品是否在收藏列表")
+    @ApiOperation("用户-判断商品是否在收藏列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "goodsId", required = true, value = "商品id", paramType = "query", dataType = "int"),
     })
@@ -47,7 +47,7 @@ public class CollectGoodsController {
         }
     }
 
-    @ApiOperation("添加/取消 收藏")
+    @ApiOperation("用户-添加/取消 收藏")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", paramType = "query", dataType = "int"),
             @ApiImplicitParam(name = "goodsId", required = true, value = "商品id", paramType = "query", dataType = "int")

@@ -31,7 +31,7 @@ public class DistributionDetailController {
     @Autowired
     private DistributionDetailService distributionDetailService;
 
-    @ApiOperation("骑手端我的收入明细")
+    @ApiOperation("骑手-骑手端我的收入明细")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码",
                     required = false, paramType = "query", dataType = "integer"),
