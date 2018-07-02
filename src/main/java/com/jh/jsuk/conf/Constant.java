@@ -31,4 +31,5 @@ public class Constant {
      * 天气接口地址
      */
     public static final String MEIZU_WEATHER_URL = "http://aider.meizu.com/app/weather/listWeather";
+
 }

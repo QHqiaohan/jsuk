@@ -1,9 +1,12 @@
 package com.jh.jsuk.filter;
 
 
+import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.Log;
+import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.ParentUser;
 import com.jh.jsuk.entity.jwt.JwtParam;
+import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.exception.OverdueException;
 import com.jh.jsuk.service.DistributionUserService;
 import com.jh.jsuk.service.LogService;
@@ -33,6 +36,9 @@ public class JwtFilter implements Filter {
     private UserService userService;
     @Autowired
     private LogService adminLogService;
+
+    @Autowired
+    Session session;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -74,6 +80,7 @@ public class JwtFilter implements Filter {
             }
         }
         if (servletPath.indexOf("/login") != -1
+                || servletPath.indexOf("favicon") != -1
                 || servletPath.indexOf("swagger") != -1
                 || servletPath.indexOf("bindAccount") != -1
                 || servletPath.indexOf("editPasswordByCode") != -1
@@ -176,16 +183,30 @@ public class JwtFilter implements Filter {
                 if (null != jwtParam) {
                     try {
                         ParentUser user = null;
-                        switch (jwtParam.getLoginType()) {
-                            case 1:
-                                user = managerUserService.selectById(jwtParam.getUserId());
-                                break;
-                            case 2:
-                                user = distributionUserService.selectById(jwtParam.getUserId());
-                                break;
-                            case 3:
-                                user = userService.selectById(jwtParam.getUserId());
-                                break;
+                        if (!session.isLogin()) {
+                            switch (jwtParam.getLoginType()) {
+                                case 1:
+                                    ManagerUser managerUser = managerUserService.selectById(jwtParam.getUserId());
+                                    Integer userType = managerUser.getUserType();
+                                    session.setUserType(userType != null && userType.equals(2) ? UserType.SHOP : UserType.ADMIN);
+                                    user = managerUser;
+                                    break;
+                                case 2:
+                                    user = distributionUserService.selectById(jwtParam.getUserId());
+                                    session.setUserType(UserType.DISTRIBUTION);
+                                    break;
+                                case 3:
+                                    user = userService.selectById(jwtParam.getUserId());
+                                    session.setUserType(UserType.USER);
+                                    break;
+                            }
+                            if (user != null){
+                                session.fromParentUser(user);
+                                session.setLogin(true);
+                            }
+
+                        } else {
+                            user = session.toParentUser();
                         }
                         if (user.getCanUse() == 0) {
                             RequestDispatcher dispatcher = request.getRequestDispatcher("/noLogin");

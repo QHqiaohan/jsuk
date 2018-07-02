@@ -92,6 +92,14 @@ public class ManagerUser extends ParentUser<ManagerUser> {
      */
     private Date lastLoginTime;
 
+    public ParentUserEx toParentUser(){
+        ParentUserEx ex = new ParentUserEx();
+        ex.setUserId(id);
+        ex.setPassword(password);
+        ex.setCanUse(canUse);
+        ex.setLastLogin(lastLoginTime);
+        return ex;
+    }
 
     public Integer getId() {
         return id;

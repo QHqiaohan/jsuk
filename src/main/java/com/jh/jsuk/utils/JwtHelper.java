@@ -3,6 +3,7 @@ package com.jh.jsuk.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jh.jsuk.conf.Constant;
+import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
@@ -19,6 +20,19 @@ import java.util.Date;
 public class JwtHelper {
 
     private String profiles = "jsuk";
+
+    public AccessToken createAccessToken(Integer userId,Integer userType) throws Exception {
+        AccessToken token = new AccessToken();
+        JwtParam jwtParam = new JwtParam();
+        jwtParam.setUserId(userId);
+        jwtParam.setLoginTime(new Date());
+        jwtParam.setLoginType(2);
+        String subject = JwtHelper.generalSubject(jwtParam);
+        String jwt = createJWT(Constant.JWT_ID, subject);
+        token.setAccess_id(userId);
+        token.setAccess_token(jwt);
+        return token;
+    }
 
     public static void main(String[] args) throws Exception {
         Claims claims = new JwtHelper().parseJWT

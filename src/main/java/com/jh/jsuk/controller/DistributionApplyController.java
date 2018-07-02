@@ -3,16 +3,10 @@ package com.jh.jsuk.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.jh.jsuk.entity.Dictionary;
-import com.jh.jsuk.entity.DistributionApply;
-import com.jh.jsuk.entity.DistributionDetail;
-import com.jh.jsuk.entity.DistributionUser;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.rules.AccountRule;
 import com.jh.jsuk.entity.vo.UserApplyVo;
-import com.jh.jsuk.service.DictionaryService;
-import com.jh.jsuk.service.DistributionApplyService;
-import com.jh.jsuk.service.DistributionUserService;
-import com.jh.jsuk.service.RuleEngineService;
+import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.DisJPushUtils;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
@@ -51,6 +45,9 @@ public class DistributionApplyController {
     @Autowired
     private DictionaryService dictionaryService;
 
+    @Autowired
+    UserBankService userBankService;
+
     @ApiOperation("申请提现")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "bankId", value = "银行卡id",
@@ -66,7 +63,9 @@ public class DistributionApplyController {
         if (account.compareTo(apply.getMoney()) == -1) {
             throw new RuntimeException("申请失败,您的提款金额大于了账户金额！");
         }
-
+        UserBank userBank = userBankService.selectById(apply.getBankId());
+        if(userBank == null)
+            throw new RuntimeException("银行卡不存在！");
         DistributionDetail detail = new DistributionDetail();
         detail.setDetail("提现");
         detail.setMoney(apply.getMoney().negate());

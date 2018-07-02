@@ -69,7 +69,8 @@ public class SMSController {
                 // 存入session
                 session.setAttribute(phone + "register" + type, code);
                 session.setMaxInactiveInterval(60 * 60 * 5 * 1000);
-                return new Result().success(code, "发送成功");
+//                return new Result().success(code, "发送成功");
+                return new Result().success("发送成功");
             } else {
                 System.out.println(sendSmsResponse.getMessage());
                 return new Result().erro("发送失败");

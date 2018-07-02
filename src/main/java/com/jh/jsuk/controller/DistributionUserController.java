@@ -155,7 +155,7 @@ public class DistributionUserController {
     @PostMapping("/binding")
     public Result binding(UserBank bank,String phone,String code, Integer userId,HttpSession session) {
         Result result = new Result();
-        String verificationCode = (String) session.getAttribute(phone + "register2");
+        String verificationCode = (String) session.getAttribute(phone + "bind0");
         if(verificationCode == null)
             return result.erro("验证码已失效");
         Wrapper<UserBank> wrapper = new EntityWrapper<>();
@@ -180,7 +180,7 @@ public class DistributionUserController {
     @PostMapping("/binding/edit")
     public Result bindingEdit(UserBank bank,String phone,String code, Integer userId,HttpSession session) {
         Result result = new Result();
-        String verificationCode = (String) session.getAttribute(phone + "register2");
+        String verificationCode = (String) session.getAttribute(phone + "bind0");
         if(verificationCode == null)
             return result.erro("验证码已失效");
         Wrapper<UserBank> wrapper = new EntityWrapper<>();

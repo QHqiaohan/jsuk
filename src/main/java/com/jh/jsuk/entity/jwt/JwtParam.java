@@ -8,6 +8,14 @@ public class JwtParam {
     private Date loginTime;
     private Integer loginType;
 
+    public JwtParam(){}
+
+    public JwtParam(Integer userId, Date loginTime, Integer loginType) {
+        this.userId = userId;
+        this.loginTime = loginTime;
+        this.loginType = loginType;
+    }
+
     public Integer getUserId() {
         return userId;
     }
