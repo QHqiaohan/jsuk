@@ -1,9 +1,6 @@
-/*
 package com.jh.jsuk.utils.wx;
 
 import com.alibaba.druid.util.StringUtils;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.jh.jsuk.utils.MSGUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -11,81 +8,60 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-*/
 /**
  * Created by LUTAO on 2018/1/16.
- *//*
-
+ */
 public class WxPay {
-    */
-/**
-     * 微信商户号
-     *//*
-
-    public static final String MCHID = "1495002222";
-    */
-/**
-     * 微信交易类型
-     *//*
-
-    public static final String TRADETYPE = "APP";
-    */
-/**
-     * 微信APIKEY
-     *//*
-
-    public static final String APIKEY = "uMONQLKx5jM5oHx9M9HtcYoq1c6GlVDe";
-    */
-/**
-     * 微信APPID
-     *//*
-
-    public static final String APPID = "wxecb014ee8fd771fb";
-    */
-/**
-     * 微信操作密码
-     *//*
-
-    public static final String caozuoPsd = "mamahui666+";
-    */
-/**
-     * 微信操作密码
-     *//*
-
-    public static final String P12FILE = "C:\\www\\mombraise\\wxR\\apiclient_cert.p12";//服务器
-    */
-/**
+    /**
      * 微信统一下单接口路径
-     *//*
-
+     */
     private static final String UNIFORMORDER = "https://api.mch.weixin.qq.com/pay/unifiedorder";
-    */
-/**
+    /**
      * 微信退款路径
-     *//*
-
+     */
     private static final String WXREFUND = "https://api.mch.weixin.qq.com/secapi/pay/refund";
-    //public static final String P12FILE ="C:\\Users\\SharPei\\Desktop\\apiclient_cert.p12";//本地
+
+    /**
+     * 微信商户号
+     */
+    public static final String MCHID = "1489533372";
+    /**
+     * 微信交易类型
+     */
+    public static final String TRADETYPE = "APP";
+    /**
+     * 微信APIKEY
+     */
+    public static final String APIKEY = "8ff0ef743c7d71d47fb7496a1636278a";
+
+    /**
+     * 微信APPID
+     */
+    public static final String APPID = "wx7b306f3324f3ecd4";
+    /**
+     * 微信操作密码
+     */
+    public static final String caozuoPsd = "swycjj18@";
+    /**
+     * 微信操作密码
+     */
+    public static final String P12FILE = "/usr/local/wxR/apiclient_cert.p12";//服务器
+    //public static final String P12FILE = "G:\\apiclient_cert.p12";//本地
 
     public static void main(String[] args) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         //uniformorder("211.149.159:9999/",0.1,"451561141541");
     }
 
-    */
-/**
+    /**
      * 微信统一下单
      *
      * @return
      * @throws
-     *//*
-
+     */
     public static MSGUtil uniformorder(HttpServletRequest request, String nofityUrl, Double money, String orderNum) throws UnsupportedEncodingException,
             NoSuchAlgorithmException {
         //ResultObject result = new ResultObject();// 返回数据结果集合
@@ -110,7 +86,7 @@ public class WxPay {
             parame.put("total_fee", (new Double(money * 100)).intValue());// 消费金额
             //String ip = getIpAddr(request);
             // TODO
-            String ip = "39.108.92.203";
+            String ip = "39.107.100.154";
             if (StringUtils.isEmpty(ip)) {
                 parame.put("spbill_create_ip", "127.0.0.1");// 消费IP地址
             } else {
@@ -160,18 +136,16 @@ public class WxPay {
         }
     }
 
-    */
-/**
+    /**
      * 微信退款
-     *//*
-
+     */
     public static MSGUtil wxPayRefund(Double money, String orderNum) throws UnsupportedEncodingException {
         //request.setCharacterEncoding("UTF-8");
         MSGUtil rt = new MSGUtil(MSGUtil.OK, "");
         try {
             SortedMap<Object, Object> parame = new TreeMap<Object, Object>();
-            parame.put("appid", APPID);
-            parame.put("mch_id", MCHID);// 商家账号。
+            parame.put("appid", "wx7b306f3324f3ecd4");
+            parame.put("mch_id", "1489533372");// 商家账号。
             String randomStr = getRandomString(18).toUpperCase();
             parame.put("nonce_str", randomStr);// 随机字符串
             parame.put("fee_type", "CNY");
@@ -181,7 +155,8 @@ public class WxPay {
             //money=0.01;
             parame.put("total_fee", (new Double(money * 100)).intValue());// 消费金额
             parame.put("refund_fee", (new Double(money * 100)).intValue());// 消费金额
-            //parame.put("notify_url", nofityUrl);// 回调地址
+            parame.put("notify_url", "http:///39.107.100.154:8080/repair/sys/order/tuikuanOK");// 回调地址
+            //parame.put("notify_url", "http://xcr.free.ngrok.cc/sys/order/tuikuanOK");// 本地测试地址
             String sign = createSign(parame);
             parame.put("sign", sign);// 数字签证
             String xml = getRequestXML(parame);
@@ -194,8 +169,16 @@ public class WxPay {
             if (code.equalsIgnoreCase("FAIL")) {
                 rt.setState(MSGUtil.ERRO);
                 rt.setMsg("微信退款失败");
+                data.add(renturn.get("NOTENOUGH"));
+                data.add(renturn.get("USER_ACCOUNT_ABNORMAL"));
+                data.add(renturn.get("REQUIRE_POST_METHOD"));
+                data.add(renturn.get("FREQUENCY_LIMITED "));
                 rt.setData(data);
             } else if (code.equalsIgnoreCase("SUCCESS")) {
+                // 退款单号
+                String outRefundNo = renturn.get("out_refund_no");
+                // 保存到数据库
+                //Db.update("update `repair-order` set tuikuannum = ? where dd_id = ?", outRefundNo, orderNum);
                 rt.setState(MSGUtil.OK);
                 rt.setMsg("微信退款成功!");
             }
@@ -226,50 +209,6 @@ public class WxPay {
         return map;
     }
 
-    */
-/**
-     * 回掉，获取订单号
-     *
-     * @param request
-     * @return
-     *//*
-
-    public static String getOrderNo(HttpServletRequest request) {
-        try {
-            request.setCharacterEncoding("UTF-8");
-            InputStream in = request.getInputStream();
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int len = 0;
-            while ((len = in.read(buffer)) != -1) {
-                out.write(buffer, 0, len);
-            }
-            out.close();
-            in.close();
-            String content = new String(out.toByteArray(), "utf-8");//xml数据
-
-            JSONObject jsonObject = JSONObject.parseObject(XmlToJsonUtil.xml2JSON(content));
-            JSONObject result_xml = jsonObject.getJSONObject("xml");
-            JSONArray result_code = result_xml.getJSONArray("result_code");
-            String code = (String) result_code.get(0);
-
-            if (code.equalsIgnoreCase("FAIL")) {
-                return null;
-            } else if (code.equalsIgnoreCase("SUCCESS")) {
-                JSONArray out_trade_no = result_xml.getJSONArray("out_trade_no");//订单编号
-                String orderNo = (String) out_trade_no.get(0);
-                return orderNo;
-            }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-
-    }
-
-
     // 随机字符串生成
     public static String getRandomString(int length) { // length表示生成字符串的长度
         String base = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -281,7 +220,6 @@ public class WxPay {
         }
         return sb.toString();
     }
-
 
     //拼接xml 请求路径
     public static String getRequestXML(SortedMap<Object, Object> parame) {
@@ -306,33 +244,6 @@ public class WxPay {
         return buffer.toString();
     }
 
-    //拼接xml 请求路径
-    public static String getRequestXML2(SortedMap<Object, Object> parame) {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("<xml>");
-        Set set = parame.entrySet();
-        Iterator iterator = set.iterator();
-        while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String key = (String) entry.getKey();
-            String value = entry.getValue().toString();
-            //过滤相关字段sign
-           */
-/* if("sign".equalsIgnoreCase(key)){
-                buffer.append("<"+key+">"+"<![CDATA["+value+"]]>"+"</"+key+">");
-                //buffer.append("<"+key+">"+value+"</"+key+">");
-            }else{*//*
-
-            buffer.append("<" + key + ">" + value + "</" + key + ">");
-            */
-/* }*//*
-
-        }
-        buffer.append("</xml>");
-        System.out.println(buffer.toString());
-        return buffer.toString();
-    }
-
     //创建md5 数字签证
     public static String createSign(SortedMap<Object, Object> parame) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         StringBuffer buffer = new StringBuffer();
@@ -346,52 +257,14 @@ public class WxPay {
                 buffer.append(key + "=" + value + "&");
             }
         }
-        buffer.append("key=" + APIKEY);
+        buffer.append("key=" + "8ff0ef743c7d71d47fb7496a1636278a");
         System.out.println("签名参数after ：" + buffer.toString());
         String sign = MD5Util.getDigest(buffer.toString()).toUpperCase();
         System.out.println("签名参数：" + sign);
 
         return sign;
 
-    }
-
-    //创建md5 数字签证
-    public static String createSignWx(SortedMap<Object, Object> parame) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        StringBuffer buffer = new StringBuffer();
-        Set set = parame.entrySet();
-        Iterator iterator = set.iterator();
-        while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            String key = (String) entry.getKey();
-            Object value = entry.getValue() + "";
-            if (null != value && !"".equals(value) && !"sign".equals(key) && !"key".equals(key)) {
-                buffer.append(key + "=" + value + "&");
-            }
-        }
-        buffer.append("key=5c1d13551b0e9ccdd85dfcbfa600f127");
-        System.out.println("签名参数after ：" + buffer.toString());
-        String sign = MD5Util.getDigest(buffer.toString()).toUpperCase();
-        System.out.println("签名参数：" + sign);
-
-        return sign;
-
-    }
-
-    //返回微信服务
-    public static String setXml(String return_code, String return_msg) {
-        return "<xml><return_code><![CDATA[" + return_code + "]]></return_code><return_msg><![CDATA[" + return_msg + "]]></return_msg></xml>";
-    }
-
-    //模拟微信回调接口
-    public static String callbakcXml(String orderNum) {
-        return "<xml><appid><![CDATA[wx2421b1c4370ec43b]]></appid><attach><![CDATA[支付测试]]></attach><bank_type><![CDATA[CFT]]></bank_type><fee_type><![CDATA" +
-                "[CNY]]></fee_type> <is_subscribe><![CDATA[Y]]></is_subscribe><mch_id><![CDATA[10000100]]></mch_id><nonce_str><![CDATA" +
-                "[5d2b6c2a8db53831f7eda20af46e531c]]></nonce_str><openid><![CDATA[oUpF8uMEb4qRXf22hE3X68TekukE]]></openid> <out_trade_no><![CDATA[" +
-                orderNum + "]]></out_trade_no>  <result_code><![CDATA[SUCCESS]]></result_code> " +
-                "<return_code><![CDATA[SUCCESS]]></return_code><sign><![CDATA[B552ED6B279343CB493C5DD0D78AB241]]></sign><sub_mch_id><![CDATA[10000100" +
-                "]]></sub_mch_id> <time_end><![CDATA[20140903131540]]></time_end><total_fee>1</total_fee><trade_type><![CDATA[JSAPI]]></trade_type><transaction_id><![CDATA[1004400740201409030005092168]]></transaction_id></xml>";
     }
 
 
 }
-*/

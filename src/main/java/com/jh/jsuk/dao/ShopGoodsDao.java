@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
-import com.jh.jsuk.entity.vo.ShopGoodsVo2;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 

@@ -315,7 +315,7 @@
 
     <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="ShopGoodsVoT">
         SELECT
-        *
+        <include refid="Base_Column_List"/>
         FROM js_shop_goods
         WHERE
         shop_id = #{shopId}

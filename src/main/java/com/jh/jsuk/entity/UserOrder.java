@@ -33,7 +33,7 @@ public class UserOrder extends Model<UserOrder> {
     public static final String IS_UNSUBSCRIBE = "is_unsubscribe";
     public static final String IS_EVALUATE = "is_evaluate";
     public static final String IS_DEL = "is_del";
-    public static final String MANAGER_ID = "manager_id";
+    public static final String SHOP_ID = "shop_id";
     public static final String ADDRESS_ID = "address_id";
     public static final String USER_ID = "user_id";
     public static final String CANCEL_TIME = "cancel_time";
@@ -44,7 +44,6 @@ public class UserOrder extends Model<UserOrder> {
     public static final String ORDER_TYPE = "order_type";
     public static final String LOGISTICS_NO = "logistics_no";
     public static final String REMARK = "remark";
-    public static final String SHOP_ID = "shop_id";
     public static final String PLATFORM_NUMBER = "platform_number";
     private static final long serialVersionUID = 1L;
     @TableId(value = "id", type = IdType.AUTO)
@@ -78,7 +77,7 @@ public class UserOrder extends Model<UserOrder> {
      */
     private Integer payType;
     /**
-     * 0待付款  1待发货  2=已发货 3=交易成功 4=申请退款 5=退款成功 6=交易关闭
+     * 0待付款  1待发货  2=已发货 3=交易成功 4=申请退款 5=退款成功 6=交易关闭 7=售后 8=申请换货 9=同意换货
      */
     private Integer status;
     /**
@@ -96,7 +95,7 @@ public class UserOrder extends Model<UserOrder> {
     /**
      * 店铺id
      */
-    private Integer managerId;
+    private Integer shopId;
     /**
      * 收货地址id
      */
@@ -141,15 +140,8 @@ public class UserOrder extends Model<UserOrder> {
      * 平台流水号
      */
     private String platformNumber;
-    private Integer shopId;
 
-    public Integer getShopId() {
-        return shopId;
-    }
 
-    public void setShopId(Integer shopId) {
-        this.shopId = shopId;
-    }
 
     public String getPlatformNumber() {
         return platformNumber;
@@ -255,12 +247,12 @@ public class UserOrder extends Model<UserOrder> {
         this.isDel = isDel;
     }
 
-    public Integer getManagerId() {
-        return managerId;
+    public Integer getShopId() {
+        return shopId;
     }
 
-    public void setManagerId(Integer managerId) {
-        this.managerId = managerId;
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
     }
 
     public Integer getAddressId() {
