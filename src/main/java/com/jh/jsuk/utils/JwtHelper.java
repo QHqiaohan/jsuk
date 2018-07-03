@@ -21,17 +21,17 @@ public class JwtHelper {
 
     private String profiles = "jsuk";
 
-    public AccessToken createAccessToken(Integer userId,Integer userType) throws Exception {
+    public String createAccessToken(Integer userId,Integer userType) throws Exception {
         AccessToken token = new AccessToken();
         JwtParam jwtParam = new JwtParam();
         jwtParam.setUserId(userId);
         jwtParam.setLoginTime(new Date());
-        jwtParam.setLoginType(2);
+        jwtParam.setLoginType(userType);
         String subject = JwtHelper.generalSubject(jwtParam);
         String jwt = createJWT(Constant.JWT_ID, subject);
         token.setAccess_id(userId);
         token.setAccess_token(jwt);
-        return token;
+        return token.getAccess_token();
     }
 
     public static void main(String[] args) throws Exception {

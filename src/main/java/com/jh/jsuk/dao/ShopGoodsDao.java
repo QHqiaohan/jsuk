@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
+import com.jh.jsuk.entity.vo.ShopGoodsVo2;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 
@@ -58,4 +59,10 @@ public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
                      @Param("highPrice") String highPrice, @Param("type") Integer type, @Param("shopId") Integer shopId);
 
     List<GoodsSizeVo> findShopGoodsAndGoodsSizeByShopId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, Integer shopId);
+
+    List<ShopGoodsVo2> shopGoodsList(Page page, @Param("status") Integer status, @Param("categoryId") String categoryId,
+                                     @Param("keyWord") String keyWord, @Param("brandId") String brandId,@Param("shopId") Integer shopId);
+
+    List<ShopGoodsVo2> shopGoodsRecycleList(Page page, @Param("categoryId") String categoryId,
+                                            @Param("keyWord") String keyWord, @Param("brandId") String brandId,@Param("shopId") Integer shopId);
 }

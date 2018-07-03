@@ -5,6 +5,8 @@ import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.vo.UserInfoVo;
 import com.jh.jsuk.envm.UserType;
 
+import java.util.Date;
+
 /**
  * <p>
  * 普通用户 服务类
@@ -22,7 +24,8 @@ public interface UserService extends IService<User> {
      * @param userId
      * @param userType
      * @param ipAddr
+     * @param login
      */
-    void updateLoginStatus(Integer userId, UserType userType, String ipAddr);
+    void updateLoginStatus(Integer userId, UserType userType, String ipAddr, Date login);
 
 }

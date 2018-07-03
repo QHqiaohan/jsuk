@@ -3,6 +3,7 @@ package com.jh.jsuk.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -12,6 +13,7 @@ import com.jh.jsuk.entity.GoodsCategory;
 import com.jh.jsuk.service.BannerService;
 import com.jh.jsuk.service.GoodsCategoryService;
 import com.jh.jsuk.utils.MyEntityWrapper;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,6 +45,13 @@ public class GoodsCategoryController {
     private BannerService bannerService;
     @Autowired
     private GoodsCategoryService goodsCategoryService;
+
+    @GetMapping("/list")
+    public R list() {
+        Wrapper<GoodsCategory> wrapper = new EntityWrapper<>();
+        wrapper.eq(GoodsCategory.STATUS, 1);
+        return R.succ(goodsCategoryService.selectList(wrapper));
+    }
 
     @ApiOperation("用户端-获取商品所有类型")
     @RequestMapping(value = "/getAllCategory")

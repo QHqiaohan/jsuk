@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,7 +91,12 @@ public class WMainController {
         }
         session.setUserType(userType);
         session.fromParentUserEx(user);
-        userService.updateLoginStatus(user.getUserId(), userType, IpUtil.getIpAddr(requeset));
+        session.setLogin(true);
+        Date login = new Date();
+        long date = Math.round((double) new Date().getTime() / 1000) * 1000;
+        login.setTime(date);
+        userService.updateLoginStatus(user.getUserId(), userType, IpUtil.getIpAddr(requeset), login);
+        session.setLastLogin(login);
         map.put("token", jwtHelper.createAccessToken(user.getUserId(), userType.getKey()));
         return R.succ(map);
     }

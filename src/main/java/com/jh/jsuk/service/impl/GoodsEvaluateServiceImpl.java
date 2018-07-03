@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.GoodsEvaluateDao;
 import com.jh.jsuk.entity.GoodsEvaluate;
+import com.jh.jsuk.entity.vo.GoodsEvaluateVo;
 import com.jh.jsuk.envm.GoodsEvalType;
 import com.jh.jsuk.service.GoodsEvaluateService;
 import com.jh.jsuk.utils.EnumUitl;
@@ -71,5 +72,15 @@ public class GoodsEvaluateServiceImpl extends ServiceImpl<GoodsEvaluateDao, Good
             map.put(evalType.getKey(),selectCount(wrapper));
         }
         return map;
+    }
+
+    @Override
+    public Page listEvaluate(Page page, String categoryId, String keyWord, String brandId, Integer shopId, String nickName) {
+        if (keyWord != null)
+            keyWord = "%" + keyWord.trim() + "%";
+        if(nickName != null)
+            nickName = "%" + nickName.trim() + "%";
+        List<GoodsEvaluateVo> list = baseMapper.listEvaluate(page, categoryId, keyWord, brandId,shopId,nickName);
+        return page.setRecords(list);
     }
 }

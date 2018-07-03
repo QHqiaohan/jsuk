@@ -24,4 +24,6 @@ public interface GoodsEvaluateService extends IService<GoodsEvaluate> {
     Page listPage(Integer goodsId, String type, Page page) throws Exception;
 
     Map<String,Object> counts(Integer goodsId) throws Exception;
+
+    Page listEvaluate(Page page, String categoryId, String kw, String brandId, Integer shopId, String nickName);
 }

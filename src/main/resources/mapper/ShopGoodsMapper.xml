@@ -324,4 +324,38 @@
         </where>
     </select>
 
+    <resultMap id="shopGoodsVo2" type="com.jh.jsuk.entity.vo.ShopGoodsVo2" extends="BaseResultMap">
+        <association property="brandInfo" column="id" select="com.jh.jsuk.dao.GoodsBrandDao.selectById"/>
+        <association property="categoryInfo" column="id" select="com.jh.jsuk.dao.GoodsCategoryDao.selectById"/>
+    </resultMap>
+  <select id="shopGoodsList" resultMap="shopGoodsVo2">
+      select * from js_shop_goods
+      where is_del != 1
+      <if test="keyWord != null">
+         and goods_name like #{keyWord}
+      </if>
+      <if test="categoryId != null">
+          and category_id = #{categoryId}
+      </if>
+      <if test="brandId">
+          and brand_id = #{brandId}
+      </if>
+      <if test="status != null">
+          and status = #{status}
+      </if>
+  </select>
+    <select id="shopGoodsRecycleList" resultMap="shopGoodsVo2">
+        select * from js_shop_goods
+        where is_del = 1
+        <if test="keyWord != null">
+            and goods_name like #{keyWord}
+        </if>
+        <if test="categoryId != null">
+            and category_id = #{categoryId}
+        </if>
+        <if test="brandId">
+            and brand_id = #{brandId}
+        </if>
+    </select>
+
 </mapper>

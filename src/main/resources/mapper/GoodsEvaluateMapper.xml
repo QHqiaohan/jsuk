@@ -29,4 +29,27 @@
       limit #{count}
   </select>
 
+    <resultMap id="goodsEvaluateVo" type="com.jh.jsuk.entity.vo.GoodsEvaluateVo" extends="BaseResultMap">
+        <association property="userInfo" column="user_id" select="com.jh.jsuk.dao.UserDao.selectById"></association>
+        <association property="goodsInfo" column="goods_id" select="com.jh.jsuk.dao.ShopGoodsDao.selectById"></association>
+    </resultMap>
+
+  <select id="listEvaluate" resultMap="goodsEvaluateVo">
+      SELECT e.* FROM `js_goods_evaluate` e left join js_shop_goods g on e.goods_id = g.id
+      left join js_user u on u.id = e.user_id
+      where 1=1
+      <if test="keyWord != null">
+          and g.goods_name like #{keyWord}
+      </if>
+      <if test="categoryId != null">
+          and g.category_id = #{categoryId}
+      </if>
+      <if test="brandId">
+          and g.brand_id = #{brandId}
+      </if>
+      <if test="nickName != null">
+          and u.nickName like #{nickName}
+      </if>
+  </select>
+
 </mapper>

@@ -29,26 +29,26 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     }
 
     @Override
-    public void updateLoginStatus(Integer userId, UserType userType, String ipAddr) {
+    public void updateLoginStatus(Integer userId, UserType userType, String ipAddr, Date login) {
         if (userType == null) {
             return;
         }
         if (UserType.USER.equals(userType)) {
             User user = new User();
             user.setId(userId);
-            user.setLastLoginTime(new Date());
+            user.setLastLoginTime(login);
             user.setLoginIp(ipAddr);
             user.updateById();
         } else if (UserType.DISTRIBUTION.equals(userType)) {
             DistributionUser user = new DistributionUser();
             user.setId(userId);
-            user.setLastLoginTime(new Date());
+            user.setLastLoginTime(login);
             user.setLoginIp(ipAddr);
             user.updateById();
         } else if (userType.hasManageUserType()) {
             ManagerUser user = new ManagerUser();
             user.setId(userId);
-            user.setLastLoginTime(new Date());
+            user.setLastLoginTime(login);
             user.setLoginIp(ipAddr);
             user.updateById();
         }

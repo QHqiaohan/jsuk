@@ -8,6 +8,8 @@ import com.jh.jsuk.dao.ShopGoodsDao;
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
+import com.jh.jsuk.entity.vo.ShopGoodsVo2;
+import com.jh.jsuk.envm.ShopGoodsStatus;
 import com.jh.jsuk.service.ShopGoodsService;
 import org.springframework.stereotype.Service;
 
@@ -125,11 +127,27 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     }
 
     @Override
+    public Page list(Page page, ShopGoodsStatus status, String categoryId, String keyWord, String brandId, Integer shopId) {
+        if (keyWord != null)
+            keyWord = "%" + keyWord.trim() + "%";
+        List<ShopGoodsVo2> list = baseMapper.shopGoodsList(page, status != null ? status.getKey() : null, categoryId, keyWord, brandId,shopId);
+        return page.setRecords(list);
+    }
+
+    @Override
+    public Page listRecycle(Page page, String categoryId, String keyWord, String brandId, Integer shopId) {
+        if (keyWord != null)
+            keyWord = "%" + keyWord.trim() + "%";
+        List<ShopGoodsVo2> list = baseMapper.shopGoodsRecycleList(page, categoryId, keyWord, brandId,shopId);
+        return page.setRecords(list);
+    }
+
+    @Override
     public Page getShopList(Page page, Wrapper wrapper, Integer type, Integer attributeId, String name, Integer shopModularId, Integer categoryId,
-                            Integer brandId, String address, Integer goodsType, String lowPrice, String highPrice,Integer shopId) {
+                            Integer brandId, String address, Integer goodsType, String lowPrice, String highPrice, Integer shopId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.getShopList(page, wrapper, address, attributeId, shopModularId, categoryId, brandId, name, goodsType,
-                lowPrice, highPrice, type,shopId));
+                lowPrice, highPrice, type, shopId));
         return page;
     }
 
