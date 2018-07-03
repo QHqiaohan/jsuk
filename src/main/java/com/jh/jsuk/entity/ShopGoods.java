@@ -47,30 +47,37 @@ public class ShopGoods extends Model<ShopGoods> {
     /**
      * 是否推荐,0=不推荐,1=推荐
      */
+    @ApiModelProperty(value = "是否推荐,0=不推荐,1=推荐", name = "isRecommend")
     private Integer isRecommend;
     /**
      * 商品标签id
      */
+    @ApiModelProperty(value = "商品标签id", name = "goodsLabelId")
     private Integer goodsLabelId;
     /**
      * 商品名称
      */
+    @ApiModelProperty(value = "商品名称", name = "goodsName")
     private String goodsName;
     /**
      * 商品详情图片
      */
+    @ApiModelProperty(value = "商品详情图片", name = "goodsImg")
     private String goodsImg;
     /**
      * 商品描述
      */
+    @ApiModelProperty(value = "商品描述", name = "goodsDesc")
     private String goodsDesc;
     /**
      * 商品状态.0-待审核 1-在售 2-下架
      */
+    @ApiModelProperty(value = "商品状态.0-待审核 1-在售 2-下架", name = "status")
     private Integer status;
     /**
      * 0删除  1未删除
      */
+    @ApiModelProperty(value = "0删除  1未删除", name = "isDel")
     private Integer isDel;
     /**
      * 添加时间
@@ -83,26 +90,32 @@ public class ShopGoods extends Model<ShopGoods> {
     /**
      * 商品头图
      */
+    @ApiModelProperty(value = "商品头图", name = "mainImage")
     private String mainImage;
     /**
      * 商品备注
      */
+    @ApiModelProperty(value = "商品备注", name = "goodsBreak")
     private String goodsBreak;
     /**
      * 销售量
      */
+    @ApiModelProperty(value = "销售量", name = "saleAmont")
     private Integer saleAmont;
     /**
      * 类型,1=包邮,2=促销,3=新品
      */
+    @ApiModelProperty(value = "类型,1=包邮,2=促销,3=新品", name = "goodsType")
     private Integer goodsType;
     /**
      * 类型ID
      */
+    @ApiModelProperty(value = "类型ID", name = "categoryId")
     private Integer categoryId;
     /**
      * 地址
      */
+    @ApiModelProperty(value = "地址", name = "address")
     private String address;
 
 

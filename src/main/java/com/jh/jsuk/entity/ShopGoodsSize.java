@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
@@ -25,82 +26,102 @@ public class ShopGoodsSize extends Model<ShopGoodsSize> {
     /**
      * 商品ID
      */
+    @ApiModelProperty(value = "商品ID", name = "shopGoodsId")
     private Integer shopGoodsId;
     /**
      * 规格名称
      */
+    @ApiModelProperty(value = "规格名称", name = "sizeName")
     private String sizeName;
     /**
      * 库存
      */
+    @ApiModelProperty(value = "库存", name = "stock")
     private Integer stock;
     /**
      * 原价
      */
+    @ApiModelProperty(value = "原价", name = "originalPrice")
     private String originalPrice;
     /**
      * 销售价格
      */
+    @ApiModelProperty(value = "销售价格", name = "salesPrice")
     private String salesPrice;
     /**
      * 重量
      */
+    @ApiModelProperty(value = "重量", name = "weight")
     private String weight;
     /**
      * 体积
      */
+    @ApiModelProperty(value = "体积", name = "volume")
     private String volume;
     /**
      * 运费 0=包邮
      */
+    @ApiModelProperty(value = "运费 0=包邮", name = "freight")
     private String freight;
     /**
      * 满多少包邮
      */
+    @ApiModelProperty(value = "满多少包邮", name = "fullFreight")
     private String fullFreight;
     /**
      * 状态,备用
      */
+    @ApiModelProperty(value = "预留字段", name = "status")
     private Integer status;
     /**
-     * 类型,备用
+     * 是否满减,1=是,0=否
      */
+    @ApiModelProperty(value = "是否满减,1=是,0=否", name = "type")
     private Integer type;
     /**
      * 是否删除,0=未删除,1=删除
      */
+    @ApiModelProperty(value = "是否删除,0=未删除,1=删除", name = "isDel")
     private Integer isDel;
     /**
      * 图片
      */
+    @ApiModelProperty(value = "图片", name = "img")
     private String img;
     /**
      * 商品品牌
      */
+    @ApiModelProperty(value = "商品品牌", name = "brand")
     private String brand;
     /**
      * 赠送积分
      */
+    @ApiModelProperty(value = "赠送积分", name = "sendJf")
     private String sendJf;
     /**
      * 抵扣积分
      */
+    @ApiModelProperty(value = "抵扣积分", name = "deductibleJf")
     private String deductibleJf;
     /**
      * 商品类别
      */
+    @ApiModelProperty(value = "商品类别", name = "goodsTypeId")
     private Integer goodsTypeId;
     /**
      * 货号
      */
+    @ApiModelProperty(value = "货号", name = "goodsNo")
     private String goodsNo;
     /**
      * 秒杀价
      */
+    @ApiModelProperty(value = "秒杀价", name = "killPrice")
     private String killPrice;
     /**
      * 秒杀库存
      */
+    @ApiModelProperty(value = "秒杀库存", name = "killStock")
     private Integer killStock;
 
 

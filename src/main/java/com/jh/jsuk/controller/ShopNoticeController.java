@@ -7,16 +7,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 问答Q&A表 前端控制器
+ * 商家端-提醒通知 前端控制器
  * </p>
  *
  * @author lpf
- * @since 2018-06-29
+ * @since 2018-07-01
  */
-@Api(tags = {"问答Q&A"})
+@Api(tags = {"商家端-接收消息/通知"})
 @RestController
-@RequestMapping("/qa")
-public class QaController {
+@RequestMapping("/shopNotice")
+public class ShopNoticeController {
 
 }
 

@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -26,58 +27,72 @@ public class User extends ParentUser<User> {
     /**
      * 昵称
      */
+    @ApiModelProperty(value = "昵称", name = "nickName")
     private String nickName;
     /**
      * 手机号
      */
+    @ApiModelProperty(value = "手机号", name = "phone")
     private String phone;
     /**
      * 等级 0:普通 1:铜牌 2:银牌 3:金牌会员
      */
+    @ApiModelProperty(value = "等级 0:普通 1:铜牌 2:银牌 3:金牌会员", name = "level")
     private Integer level;
     /**
      * 0:女 1:男
      */
+    @ApiModelProperty(value = "0:女 1:男", name = "sex")
     private Integer sex;
     /**
      * 头像
      */
+    @ApiModelProperty(value = "头像", name = "headImg")
     private String headImg;
     /**
      * 密码
      */
+    @ApiModelProperty(value = "密码", name = "password")
     private String password;
     /**
      * 登录IP
      */
+    @ApiModelProperty(value = "登录IP", name = "loginIp")
     private String loginIp;
     /**
      * 微信Token
      */
+    @ApiModelProperty(value = "微信Token", name = "wxToken")
     private String wxToken;
     /**
      * 微博Token
      */
+    @ApiModelProperty(value = "微博Token", name = "weiboToken")
     private String weiboToken;
     /**
      * QQtoken
      */
+    @ApiModelProperty(value = "QQtoken", name = "qqToken")
     private String qqToken;
     /**
-     * 1:可用 0禁用
+     * 账号状态:1:可用 0禁用
      */
+    @ApiModelProperty(value = "账号状态:1:可用 0禁用", name = "canUse")
     private Integer canUse;
     /**
-     * 1:开启  0:禁用
+     * 二手市场:1:开启  0:禁用
      */
+    @ApiModelProperty(value = "二手市场:1:开启  0:禁用", name = "isSecondaryMarket")
     private Integer isSecondaryMarket;
     /**
      * 是否领取过优惠券 0:否 1:是
      */
+    @ApiModelProperty(value = "是否领取过优惠券 0:否 1:是", name = "isAvailable")
     private Integer isAvailable;
     /**
      * 住址
      */
+    @ApiModelProperty(value = "住址", name = "address")
     private String address;
     /**
      * 创建时间
@@ -90,10 +105,11 @@ public class User extends ParentUser<User> {
     /**
      * 上次登录时间
      */
+    @ApiModelProperty(value = "上次登录时间", name = "lastLoginTime")
     private Date lastLoginTime;
 
 
-    public ParentUserEx toParentUser(){
+    public ParentUserEx toParentUser() {
         ParentUserEx ex = new ParentUserEx();
         ex.setUserId(id);
         ex.setPassword(password);
