@@ -1,5 +1,7 @@
 package com.jh.jsuk.service;
 
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.GoodsBrand;
 
@@ -13,4 +15,5 @@ import com.jh.jsuk.entity.GoodsBrand;
  */
 public interface GoodsBrandService extends IService<GoodsBrand> {
 
+    Page selectMPage(Page page, String kw, Wrapper<GoodsBrand> wrapper);
 }

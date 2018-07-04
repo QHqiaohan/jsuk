@@ -18,4 +18,15 @@
         id, category_id, name, status, sort_order, publish_time, update_time
     </sql>
 
+    <resultMap id="goodsBrandVo" type="com.jh.jsuk.entity.vo.GoodsBrandVo" extends="BaseResultMap">
+        <association property="categoryInfo" column="category_id" select="com.jh.jsuk.dao.GoodsCategoryDao.selectById"></association>
+    </resultMap>
+
+  <select id="selectMPage" resultMap="goodsBrandVo">
+      select <include refid="Base_Column_List"/> from js_goods_brand
+      <where>
+          ${ew.sqlSegment}
+      </where>
+  </select>
+
 </mapper>

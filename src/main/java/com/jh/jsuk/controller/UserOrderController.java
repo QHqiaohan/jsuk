@@ -4,15 +4,19 @@ package com.jh.jsuk.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.comparator.DistanceComparator;
 import com.jh.jsuk.entity.rules.AccountRule;
 import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.NewsType;
+import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
+import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.MyEntityWrapper;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -37,6 +38,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/userOrder")
 public class UserOrderController {
+
+    @Autowired
+    Session session;
 
     @Autowired
     UserOrderService userOrderService;
@@ -73,6 +77,29 @@ public class UserOrderController {
 
     @Autowired
     private ManagerUserService managerUserService;
+
+    @GetMapping("/page")
+    public R userOrderPage(Page page, String[] date, String kw, String status) throws Exception {
+        OrderStatus orderStatus = null;
+        if (status != null && !"all".equals(status)) {
+            orderStatus = EnumUitl.toEnum(OrderStatus.class, status, "getShortKey");
+        }
+        return R.succ(userOrderService.listPage(page, date == null ? null : Arrays.asList(date), kw, orderStatus));
+    }
+
+    @GetMapping("/count")
+    public R count() {
+        Map<String, Object> map = new HashMap<>();
+        OrderStatus[] statuses = {OrderStatus.DUE_PAY, OrderStatus.WAIT_DELIVER, OrderStatus.DELIVERED, OrderStatus.SUCCESS, OrderStatus.CLOSED};
+        int all = 0;
+        for (OrderStatus status : statuses) {
+            int cnt = userOrderService.statusCount(status, session.getShopId());
+            all += cnt;
+            map.put(status.getShortKey(), cnt);
+        }
+        map.put("all", all);
+        return R.succ(map);
+    }
 
     //--------------------骑手端----------------------------------------------//
 

@@ -1,7 +1,13 @@
 package com.jh.jsuk.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.GoodsBrand;
+import com.jh.jsuk.entity.vo.GoodsBrandVo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +19,5 @@ import com.jh.jsuk.entity.GoodsBrand;
  */
 public interface GoodsBrandDao extends BaseMapper<GoodsBrand> {
 
+    List<GoodsBrandVo> selectMPage(Page page,@Param("ew") Wrapper<GoodsBrand> wrapper);
 }

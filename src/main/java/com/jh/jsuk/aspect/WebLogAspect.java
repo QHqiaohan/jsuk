@@ -1,8 +1,5 @@
 package com.jh.jsuk.aspect;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jh.jsuk.conf.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -40,7 +37,7 @@ public class WebLogAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
-        log.info("jwt值:{}",request.getHeader(Constant.JWT_HEADER));
+//        log.info("jwt值:{}",request.getHeader(Constant.JWT_HEADER));
 
         // 记录下请求内容
         log.info("地址 : " + request.getRequestURL().toString());
@@ -55,8 +52,8 @@ public class WebLogAspect {
     public void doAfterReturning(Object ret) {
         // 处理完请求，返回内容
         try {
-            log.info("返回内容 : {}", new ObjectMapper().writeValueAsString(ret));
-        } catch (JsonProcessingException e) {
+//            log.info("返回内容 : {}", new ObjectMapper().writeValueAsString(ret));
+        } catch (Exception e) {
             log.error(e.getMessage());
         }
         log.info("花费时间 : " + (System.currentTimeMillis() - startTime.get()) + "毫秒");

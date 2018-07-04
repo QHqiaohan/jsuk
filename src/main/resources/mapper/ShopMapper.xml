@@ -52,11 +52,11 @@
 
     <select id="findCollectByUserId" resultMap="BaseResultMap">
         SELECT
-            t_shop.*
+            js_shop.*
         FROM
-            t_collect
-            LEFT JOIN t_shop
-            ON  t_collect.shop_id = t_shop.id
+            js_collect
+            LEFT JOIN js_shop
+            ON  js_collect.shop_id = js_shop.id
         WHERE user_id = #{userId}
         ORDER BY t_collect.publish_time DESC
     </select>
@@ -68,12 +68,12 @@
 
     <select id="selectShopPhoneById" resultMap="ShopPhoneVo">
         SELECT
-            t_shop.*, phone
+            js_shop.*, phone
         FROM
-            t_shop
-            LEFT JOIN t_shop_user ON t_shop.id = t_shop_user.shop_id
+            js_shop
+            LEFT JOIN js_manager_user mu ON js_shop.id = mu.shop_id
         WHERE
-            t_shop.id = #{id}
+            js_shop.id = #{id}
     </select>
 
 </mapper>

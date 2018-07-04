@@ -1,5 +1,7 @@
 package com.jh.jsuk.service.impl;
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.SqlHelper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
@@ -11,6 +13,7 @@ import com.jh.jsuk.entity.ShopUser;
 import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.UserOrderGoods;
 import com.jh.jsuk.entity.vo.UserOrderVo;
+import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.service.ShopGoodsService;
 import com.jh.jsuk.service.ShopUserService;
 import com.jh.jsuk.service.UserOrderService;
@@ -31,6 +34,7 @@ import java.util.List;
 @Service
 public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> implements UserOrderService {
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private UserOrderGoodsDao orderGoodsDao;
 
@@ -39,6 +43,16 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Autowired
     private ShopUserService shopUserService;
+
+    @Override
+    public int statusCount(OrderStatus orderStatus, Integer shopId) {
+        EntityWrapper<UserOrder> wrapper = new EntityWrapper<>();
+        if (orderStatus != null) {
+            wrapper.eq(UserOrder.STATUS, orderStatus.getKey());
+        }
+        wrapper.ne(UserOrder.IS_DEL,1);
+        return selectCount(wrapper);
+    }
 
     @Override
     public List<UserOrderVo> findVoByPage(Page page, Wrapper wrapper) {
@@ -101,6 +115,32 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         wrapper = SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.getShopOrderByUserId(page, wrapper, shopId, status, goodsName));
         return page;
+    }
+
+    @Override
+    public Page listPage(Page page, List<String> date, String kw, OrderStatus orderStatus) {
+        String start = null, stop = null;
+        if (date != null && !date.isEmpty()) {
+            start = date.get(0);
+            stop = date.get(1);
+        }
+        if (kw != null) {
+            kw = "%" + kw.trim() + "%";
+        }
+        EntityWrapper wrapper = new EntityWrapper();
+        if (StrUtil.isNotBlank(kw)) {
+            wrapper.eq(UserOrder.ORDER_NUM, kw);
+        }
+        if (StrUtil.isNotBlank(start) && StrUtil.isNotBlank(stop)) {
+            wrapper.gt(UserOrder.CREAT_TIME, DateTime.of(start, "yyyy-MM-dd"));
+            wrapper.lt(UserOrder.CREAT_TIME, DateTime.of(stop, "yyyy-MM-dd"));
+        }
+        if (orderStatus != null) {
+            wrapper.eq(UserOrder.STATUS, orderStatus.getKey());
+        }
+        wrapper.ne(UserOrder.IS_DEL,1);
+        List<UserOrderVo> list = baseMapper.findVoByPage(page, wrapper);
+        return page.setRecords(list);
     }
 
 }

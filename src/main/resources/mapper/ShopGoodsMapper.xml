@@ -330,7 +330,7 @@
     </resultMap>
   <select id="shopGoodsList" resultMap="shopGoodsVo2">
       select * from js_shop_goods
-      where is_del != 1
+      where is_del != 1 and shop_id = #{shopId}
       <if test="keyWord != null">
          and goods_name like #{keyWord}
       </if>
@@ -346,7 +346,7 @@
   </select>
     <select id="shopGoodsRecycleList" resultMap="shopGoodsVo2">
         select * from js_shop_goods
-        where is_del = 1
+        where is_del = 1 and shop_id = #{shopId}
         <if test="keyWord != null">
             and goods_name like #{keyWord}
         </if>

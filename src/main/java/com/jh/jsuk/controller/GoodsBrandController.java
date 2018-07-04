@@ -3,6 +3,7 @@ package com.jh.jsuk.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.GoodsBrand;
 import com.jh.jsuk.service.GoodsBrandService;
 import com.jh.jsuk.service.ShopGoodsService;
@@ -10,6 +11,7 @@ import com.jh.jsuk.utils.R;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,6 +38,25 @@ public class GoodsBrandController {
         Wrapper<GoodsBrand> wrapper = new EntityWrapper<>();
         wrapper.eq(GoodsBrand.STATUS, 1);
         return R.succ(goodsBrandService.selectList(wrapper));
+    }
+
+    @GetMapping("/page")
+    public R list(Page page,String kw) {
+        Wrapper<GoodsBrand> wrapper = new EntityWrapper<>();
+        wrapper.eq(GoodsBrand.STATUS, 1);
+        return R.succ(goodsBrandService.selectMPage(page,kw,wrapper));
+    }
+
+    @PostMapping("/add")
+    public R add(GoodsBrand goodsBrand){
+        goodsBrand.insert();
+        return R.succ();
+    }
+
+    @PostMapping("/edit")
+    public R edit(GoodsBrand goodsBrand){
+        goodsBrand.updateById();
+        return R.succ();
     }
 
 }
