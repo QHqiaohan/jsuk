@@ -21,7 +21,7 @@ import java.util.List;
 public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartDao, ShoppingCart> implements ShoppingCartService {
 
     @Override
-    public List<ShoppingCartVo> selectVoList(String userId) {
-        return baseMapper.selectVoList(userId);
+    public List<ShoppingCartVo> selectVoList(String userId,String goodsName) {
+        return baseMapper.selectVoList(userId,goodsName);
     }
 }

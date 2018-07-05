@@ -105,8 +105,8 @@ public class ShoppingCartController {
 
     @ApiOperation("显示购物车列表")
     @PostMapping("/list")
-    public Result list(Integer userId) {
-        List<ShoppingCartVo> shoppingCarts = shoppingCartService.selectVoList(String.valueOf(userId));
+    public Result list(Integer userId, String goodsName) {
+        List<ShoppingCartVo> shoppingCarts = shoppingCartService.selectVoList(String.valueOf(userId), goodsName);
         return new Result().success(shoppingCarts);
     }
 }

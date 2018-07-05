@@ -271,13 +271,14 @@ public class UserController {
                 result.setMsg("非常抱歉，系统维护中，十万火急请打电话");
             } else if (StrUtil.equals(password, user.getPassword())) {
                 Date loginTime = new Date();
+                user.setLastLoginTime(loginTime);
+                user.setLoginIp(IpUtil.getIpAddr(request));
+                userService.updateById(user);
+
                 JwtParam jwtParam = new JwtParam();
                 jwtParam.setUserId(user.getId());
                 jwtParam.setLoginTime(loginTime);
                 jwtParam.setLoginType(3);
-                user.setLastLoginTime(loginTime);
-                user.setLoginIp(IpUtil.getIpAddr(request));
-                userService.updateById(user);
                 String subject = JwtHelper.generalSubject(jwtParam);
                 String jwt = jwtHelper.createJWT(Constant.JWT_ID, subject);
                 AccessToken accessToken = new AccessToken();

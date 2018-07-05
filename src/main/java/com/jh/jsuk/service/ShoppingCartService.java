@@ -16,5 +16,5 @@ import java.util.List;
  */
 public interface ShoppingCartService extends IService<ShoppingCart> {
 
-    List<ShoppingCartVo> selectVoList(String userId);
+    List<ShoppingCartVo> selectVoList(String userId, String goodsName);
 }

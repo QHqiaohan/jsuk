@@ -16,6 +16,6 @@ import java.util.List;
  * @since 2018-06-24
  */
 public interface ShoppingCartDao extends BaseMapper<ShoppingCart> {
-    List<ShoppingCartVo> selectVoList(@Param("userId") String userId);
+    List<ShoppingCartVo> selectVoList(@Param("userId") String userId,@Param("goodsName") String goodsName);
 
 }
