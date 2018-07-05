@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Constant;
 import com.jh.jsuk.entity.*;
@@ -14,10 +15,8 @@ import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
-import com.jh.jsuk.utils.IpUtil;
-import com.jh.jsuk.utils.JwtHelper;
-import com.jh.jsuk.utils.MyEntityWrapper;
-import com.jh.jsuk.utils.Result;
+import com.jh.jsuk.service.UserOrderService;
+import com.jh.jsuk.utils.*;
 import com.jh.jsuk.utils.wx.MD5Util;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +57,64 @@ public class UserController {
     private ManagerUserService managerUserService;
     @Autowired
     private UserIntegralService userIntegralService;
+
+    @Autowired
+    UserAddressService userAddressService;
+
+    @Autowired
+    UserOrderService userOrderService;
+
+    @PostMapping("/update")
+    public R update(User user){
+        user.setPassword(null);
+        user.setQqToken(null);
+        user.setWeiboToken(null);
+        user.setWxToken(null);
+        user.updateById();
+        return R.succ();
+    }
+
+    @GetMapping("/page")
+    public R listPage(Page page, String kw, String nickName, String[] date) {
+        List<String> dates = null;
+        if (date != null && StrUtil.isNotBlank(date[0]) && StrUtil.isNotBlank(date[1])) {
+            dates = Arrays.asList(date);
+        }
+        return R.succ(userService.listPage(page, kw, nickName, dates));
+    }
+
+    @GetMapping("/order")
+    public R userORder(Page page,Integer id) {
+        return R.succ(userOrderService.userOrder(page,id));
+    }
+
+    @GetMapping("/info")
+    public R userInfo(Integer id) {
+        R r = new R();
+        Map<String, Object> map = new HashMap<>();
+        User user = userService.selectById(id);
+        if (user == null) {
+            return r;
+        }
+        user.setPassword(null);
+        user.setQqToken(null);
+        user.setWeiboToken(null);
+        user.setWxToken(null);
+        map.put("base", user);
+        Wrapper<UserAddress> wrapper = new EntityWrapper<>();
+        wrapper.ne(UserAddress.IS_DEL,1)
+                .eq(UserAddress.USER_ID,id);
+        Map<String,Object> statInfo = new HashMap<>();
+
+        statInfo.put("consumption",userRemainderService.getConsumption(id));
+        statInfo.put("orderCount",userOrderService.orderCount(id));
+        statInfo.put("integral",userIntegralService.getIntegral(id));
+
+        map.put("stat",statInfo);
+        map.put("recvAddress",userAddressService.selectList(wrapper));
+        r.success(map);
+        return r;
+    }
 
     @ApiOperation(value = "绑定账户", notes = "")
     @PostMapping("/bindAccount")
@@ -302,7 +359,7 @@ public class UserController {
         try {
             // 效验手机验证码
             String verificationCode = (String) session.getAttribute(user.getPhone() + "register0");
-            if(verificationCode == null) {
+            if (verificationCode == null) {
                 throw new MessageException("验证码错误");
             }
             if (!code.equals(verificationCode)) {

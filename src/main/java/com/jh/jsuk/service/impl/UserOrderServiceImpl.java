@@ -12,6 +12,7 @@ import com.jh.jsuk.dao.UserOrderGoodsDao;
 import com.jh.jsuk.entity.ShopUser;
 import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.UserOrderGoods;
+import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.service.ShopGoodsService;
@@ -138,6 +139,28 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (orderStatus != null) {
             wrapper.eq(UserOrder.STATUS, orderStatus.getKey());
         }
+        wrapper.ne(UserOrder.IS_DEL,1);
+        List<UserOrderVo> list = baseMapper.findVoByPage(page, wrapper);
+        return page.setRecords(list);
+    }
+
+    @Override
+    public UserOrderDetailVo userOrderDetail(Integer orderId) {
+        return baseMapper.userOrderDetail(orderId);
+    }
+
+    @Override
+    public Integer orderCount(Integer userId) {
+        EntityWrapper<UserOrder> wrapper = new EntityWrapper<>();
+        wrapper.ne(UserOrder.IS_DEL,1)
+                .eq(UserOrder.USER_ID,userId);
+        return selectCount(wrapper);
+    }
+
+    @Override
+    public Page userOrder(Page page, Integer id) {
+        EntityWrapper wrapper = new EntityWrapper();
+        wrapper.eq(UserOrder.USER_ID,id);
         wrapper.ne(UserOrder.IS_DEL,1);
         List<UserOrderVo> list = baseMapper.findVoByPage(page, wrapper);
         return page.setRecords(list);

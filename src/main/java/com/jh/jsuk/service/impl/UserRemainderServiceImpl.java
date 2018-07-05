@@ -23,7 +23,7 @@ import java.util.List;
 public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, UserRemainder> implements UserRemainderService {
 
     @Override
-    public BigDecimal getRemainder(Integer userId){
+    public BigDecimal getRemainder(Integer userId) {
         List<UserRemainder> list = selectList(new EntityWrapper<UserRemainder>()
                 .eq(UserRemainder.USER_ID, userId));
         // 初始化记录总余额
@@ -44,12 +44,28 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
     }
 
     @Override
-    public boolean hasRemain(Integer userId) {
-        return hasRemain(userId,new BigDecimal("0.00"));
+    public BigDecimal getConsumption(Integer userId) {
+        List<UserRemainder> list = selectList(new EntityWrapper<UserRemainder>()
+                .eq(UserRemainder.USER_ID, userId)
+                .eq(UserRemainder.TYPE, -1));
+        // 初始化记录总余额
+        BigDecimal remain = new BigDecimal("0.00");
+        if (list == null || list.isEmpty())
+            return remain;
+        // 如果余额表有该用户信息
+        for (UserRemainder remainder : list) {
+            remain = remain.add(remainder.getRemainder());
+        }
+        return remain;
     }
 
     @Override
-    public boolean hasRemain(Integer userId, BigDecimal bigDecimal){
+    public boolean hasRemain(Integer userId) {
+        return hasRemain(userId, new BigDecimal("0.00"));
+    }
+
+    @Override
+    public boolean hasRemain(Integer userId, BigDecimal bigDecimal) {
         return getRemainder(userId).compareTo(bigDecimal) > 0;
     }
 

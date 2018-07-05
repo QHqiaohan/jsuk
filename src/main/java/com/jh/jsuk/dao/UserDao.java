@@ -1,8 +1,14 @@
 package com.jh.jsuk.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.vo.UserInfoVo;
+import com.jh.jsuk.entity.vo.UserListVo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,4 +24,5 @@ public interface UserDao extends BaseMapper<User> {
 
     User findUserHeadImgById(Integer id);
 
+    List<UserListVo> listPage(Page page,@Param("ew") EntityWrapper wrapper);
 }

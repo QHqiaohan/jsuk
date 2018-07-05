@@ -19,4 +19,15 @@
         id, order_id, order_type, goods_id, num, publish_time, goods_size_id, goods_price
     </sql>
 
+    <resultMap id="userOrderGoodsDetailVo" type="com.jh.jsuk.entity.vo.UserOrderGoodsDetailVo" extends="BaseResultMap">
+        <association property="goodsInfo" column="goods_id" select="com.jh.jsuk.dao.ShopGoodsDao.selectById"></association>
+        <association property="sizeInfo" column="goods_size_id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectById"></association>
+    </resultMap>
+
+  <select id="orderGoodsDetail" resultMap="userOrderGoodsDetailVo">
+      select
+        <include refid="Base_Column_List"/>
+      from js_user_order_goods where order_id = #{orderId}
+  </select>
+
 </mapper>

@@ -1,16 +1,26 @@
 package com.jh.jsuk.service.impl;
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.UserDao;
 import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.vo.UserInfoVo;
+import com.jh.jsuk.entity.vo.UserListVo;
 import com.jh.jsuk.envm.UserType;
+import com.jh.jsuk.service.UserIntegralService;
+import com.jh.jsuk.service.UserOrderService;
+import com.jh.jsuk.service.UserRemainderService;
 import com.jh.jsuk.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -22,6 +32,15 @@ import java.util.Date;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserService {
+
+    @Autowired
+    UserIntegralService userIntegralService;
+
+    @Autowired
+    UserRemainderService userRemainderService;
+
+    @Autowired
+    UserOrderService userOrderService;
 
     @Override
     public UserInfoVo selectInfoById(Integer id) {
@@ -52,6 +71,41 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             user.setLoginIp(ipAddr);
             user.updateById();
         }
+    }
+
+    @Override
+    public Page listPage(Page page, String kw, String nickName, List<String> date) {
+        String start = null, stop = null;
+        if (date != null && !date.isEmpty()) {
+            start = date.get(0);
+            stop = date.get(1);
+        }
+        if (kw != null) {
+            kw = "%" + kw.trim() + "%";
+        }
+        if (nickName != null) {
+            nickName = "%" + nickName.trim() + "%";
+        }
+        EntityWrapper wrapper = new EntityWrapper();
+        if (StrUtil.isNotBlank(kw)) {
+            wrapper.like(User.PHONE, kw);
+        }
+        if (StrUtil.isNotBlank(nickName)) {
+            wrapper.like(User.NICK_NAME, nickName);
+        }
+        if (StrUtil.isNotBlank(start) && StrUtil.isNotBlank(stop)) {
+            wrapper.gt(User.CREATE_TIME, DateTime.of(start, "yyyy-MM-dd"));
+            wrapper.lt(User.CREATE_TIME, DateTime.of(stop, "yyyy-MM-dd"));
+        }
+
+        wrapper.eq(User.CAN_USE, 1);
+        List<UserListVo> list = baseMapper.listPage(page, wrapper);
+        for (UserListVo vo : list) {
+            vo.setIntegral(userIntegralService.getIntegral(vo.getId()));
+            vo.setConsumption(userRemainderService.getConsumption(vo.getId()));
+            vo.setOrderCount(userOrderService.orderCount(vo.getId()));
+        }
+        return page.setRecords(list);
     }
 
 }

@@ -102,7 +102,7 @@ public class WMainController {
     }
 
     @ApiOperation("后台-退出")
-    @GetMapping("/loginOut")
+    @PostMapping("/quit")
     public R loginOut(HttpSession session) {
         session.invalidate();
         return R.succ();

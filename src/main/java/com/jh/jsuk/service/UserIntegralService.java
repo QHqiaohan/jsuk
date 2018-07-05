@@ -13,4 +13,11 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface UserIntegralService extends IService<UserIntegral> {
 
+    /**
+     * 获取用户积分
+     * @param userId
+     * @return
+     */
+    Integer getIntegral(Integer userId);
+
 }

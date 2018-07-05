@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
@@ -62,16 +63,19 @@ public class User extends ParentUser<User> {
     /**
      * 微信Token
      */
+    @JsonIgnore
     @ApiModelProperty(value = "微信Token", name = "wxToken")
     private String wxToken;
     /**
      * 微博Token
      */
+    @JsonIgnore
     @ApiModelProperty(value = "微博Token", name = "weiboToken")
     private String weiboToken;
     /**
      * QQtoken
      */
+    @JsonIgnore
     @ApiModelProperty(value = "QQtoken", name = "qqToken")
     private String qqToken;
     /**

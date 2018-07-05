@@ -148,4 +148,21 @@
         </where>
     </select>
 
+    <resultMap id="UserOrderDetailVo" type="com.jh.jsuk.entity.vo.UserOrderDetailVo" extends="BaseResultMap">
+        <association property="shop" column="shop_id" select="com.jh.jsuk.dao.ShopDao.selectShopPhoneById"></association>
+        <association property="distributionUser" column="distribution_user_id" select="com.jh.jsuk.dao.DistributionUserDao.selectById"></association>
+        <association property="coupon" column="coupon_id" select="com.jh.jsuk.dao.CouponDao.selectById"></association>
+        <association property="address" column="address_id" select="com.jh.jsuk.dao.UserAddressDao.selectById"></association>
+        <collection property="goodsList" column="id" ofType="com.jh.jsuk.entity.vo.UserOrderDetailVo"
+                    select="com.jh.jsuk.dao.UserOrderGoodsDao.orderGoodsDetail"></collection>
+    </resultMap>
+
+    <select id="userOrderDetail" resultMap="UserOrderDetailVo">
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM js_user_order
+        WHERE
+        id = #{id}
+    </select>
+
 </mapper>

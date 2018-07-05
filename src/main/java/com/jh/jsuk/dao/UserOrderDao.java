@@ -3,6 +3,7 @@ package com.jh.jsuk.dao;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.jh.jsuk.entity.UserOrder;
+import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderInfoVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
 import org.apache.ibatis.annotations.Param;
@@ -29,4 +30,7 @@ public interface UserOrderDao extends BaseMapper<UserOrder> {
 
     List<UserOrderInfoVo> getShopOrderByUserId(RowBounds page, @Param("ew") Wrapper wrapper, @Param("shopId") Integer shopId,
                               @Param("status") Integer status, @Param("goodsName") String goodsName);
+
+    UserOrderDetailVo userOrderDetail(Integer orderId);
+
 }

@@ -26,6 +26,13 @@ public interface UserRemainderService extends IService<UserRemainder> {
     BigDecimal getRemainder(Integer userId);
 
     /**
+     * 用户消费了多少
+     * @param userId
+     * @return
+     */
+    BigDecimal getConsumption(Integer userId);
+
+    /**
      * 用户的余额大于 0
      *
      * @param userId

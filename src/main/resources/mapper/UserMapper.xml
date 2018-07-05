@@ -53,4 +53,16 @@
         id = #{id}
     </select>
 
+    <resultMap id="userListVo" type="com.jh.jsuk.entity.vo.UserListVo" extends="BaseResultMap" >
+    </resultMap>
+
+  <select id="listPage" resultMap="userListVo">
+      SELECT
+      <include refid="Base_Column_List"/>
+      FROM js_user
+      <where>
+          ${ew.sqlSegment}
+      </where>
+  </select>
+
 </mapper>

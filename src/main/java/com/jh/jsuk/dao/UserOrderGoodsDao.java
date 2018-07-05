@@ -2,6 +2,7 @@ package com.jh.jsuk.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.jh.jsuk.entity.UserOrderGoods;
+import com.jh.jsuk.entity.vo.UserOrderGoodsDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderGoodsVo;
 import org.apache.ibatis.annotations.Select;
 
@@ -20,7 +21,9 @@ public interface UserOrderGoodsDao extends BaseMapper<UserOrderGoods> {
     @Select({
             "select * from js_user_order_goods where order_id = #{orderId}"
     })
-//    @ResultMap("com.jh.jsuk.dao.OrderGoodsDao.OrderGoodsVo")
+//    @ResultMap("com.jh.jsuk.dao.UserOrderGoodsDao.OrderGoodsVo")
     List<UserOrderGoodsVo> findByOrderId(Integer orderId);
+
+    List<UserOrderGoodsDetailVo> orderGoodsDetail(Integer orderId);
 
 }

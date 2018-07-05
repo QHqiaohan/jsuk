@@ -87,6 +87,29 @@ public class UserOrderController {
         return R.succ(userOrderService.listPage(page, date == null ? null : Arrays.asList(date), kw, orderStatus));
     }
 
+    @GetMapping("/detail")
+    public R userOrderDetail(@RequestParam Integer orderId){
+        return R.succ(userOrderService.userOrderDetail(orderId));
+    }
+
+    @PostMapping("/close")
+    public R userOrderClose(Integer orderId){
+        UserOrder order = new UserOrder();
+        order.setId(orderId);
+        order.setStatus(OrderStatus.CLOSED.getKey());
+        order.updateById();
+        return R.succ();
+    }
+
+    @PostMapping("/confirm")
+    public R userOrderConfirm(Integer orderId){
+        UserOrder order = new UserOrder();
+        order.setId(orderId);
+        order.setStatus(OrderStatus.SUCCESS.getKey());
+        order.updateById();
+        return R.succ();
+    }
+
     @GetMapping("/count")
     public R count() {
         Map<String, Object> map = new HashMap<>();
