@@ -39,25 +39,29 @@
 
     <select id="selectVoList" resultMap="ShoppingCartVo">
         SELECT
-            jsc.id       AS jsc_id,
-            jsc.user_id  AS user_id,
-            jsc.num,
-            jsc.create_time,
-            jsc.checked,
-            jsc.is_past,
-            jmu.`name`   as shop_name,
-            jsc.shop_id  as shop_id,
-            jsc.goods_id as goods_id,
-            jsg.goods_name,
-            jsg.main_image,
-            jsgs.sales_price,
-            jsgs.kill_price
+        jsc.id AS jsc_id,
+        jsc.user_id AS user_id,
+        jsc.num,
+        jsc.create_time,
+        jsc.checked,
+        jsc.is_past,
+        jmu.`name` as shop_name,
+        jsc.shop_id as shop_id,
+        jsc.goods_id as goods_id,
+        jsg.goods_name,
+        jsg.main_image,
+        jsgs.sales_price,
+        jsgs.kill_price
         FROM
-            js_shopping_cart jsc
-            LEFT JOIN js_manager_user jmu ON jsc.shop_id = jmu.id
-            LEFT JOIN js_shop_goods jsg ON jsc.goods_id = jsg.id
-            LEFT JOIN js_shop_goods_size jsgs ON jsgs.shop_goods_id = jsg.id
-        WHERE
+        js_shopping_cart jsc
+        LEFT JOIN js_manager_user jmu ON jsc.shop_id = jmu.id
+        LEFT JOIN js_shop_goods jsg ON jsc.goods_id = jsg.id
+        LEFT JOIN js_shop_goods_size jsgs ON jsgs.shop_goods_id = jsg.id
+        <where>
             jsc.user_id = #{userId}
+            <if test="goodsName !=null and goodsName!=''">
+                and jsg.goods_name like CONCAT('%', #{goodsName}, '%')
+            </if>
+        </where>
     </select>
 </mapper>

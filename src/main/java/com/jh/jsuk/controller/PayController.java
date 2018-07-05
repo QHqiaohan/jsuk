@@ -22,7 +22,6 @@ import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
-import com.jh.jsuk.utils.ServerResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -152,7 +151,7 @@ public class PayController {
                     required = false, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "orderType", value = "订单类型 0:普通订单 1:秒杀订单 2:会员购买 3:充值 4:到店支付",
                     required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "memberConfigId", value = "充值配置ID",
+            @ApiImplicitParam(name = "memberConfigId", value = "购买会员配置ID",
                     required = false, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "paymentAmount", value = "到店支付金额",
                     required = true, paramType = "query", dataType = "String")
@@ -184,7 +183,7 @@ public class PayController {
         } else if (StrUtil.equals(orderType, "0") || StrUtil.equals(orderType, "1")) {
             //购物车订单
             if (StrUtil.isNotBlank(carId)) {
-                List<ShoppingCartVo> shoppingCartVos = shoppingCartService.selectVoList(String.valueOf(userId));
+                List<ShoppingCartVo> shoppingCartVos = shoppingCartService.selectVoList(String.valueOf(userId), "");
                 logger.info("购物车商品数量:{}", shoppingCartVos.size());
                 Map<String, GoodsVo> goodMaps = Maps.newHashMap();
                 for (ShoppingCartVo shoppingCartVo : shoppingCartVos) {
@@ -225,7 +224,7 @@ public class PayController {
                     userOrderGoods.setNum(v.getNum());
                     list.add(userOrderGoods);
                 });
-                logger.error("订单商品信息数量:{}",list.size());
+                logger.error("订单商品信息数量:{}", list.size());
                 boolean batch = userOrderGoodsService.insertBatch(list);
                 logger.error("批量添加商品订单信息: {}", batch ? "成功" : "失败");
                 resultMap.put("orderType", orderType);
@@ -308,11 +307,11 @@ public class PayController {
     })
     @RequestMapping(value = "pre_order", method = RequestMethod.POST)
     @Transactional(propagation = Propagation.REQUIRED)
-    public ServerResponse appPay(String orderId, String payWay, Integer userId, String orderType, String isDeduction) {
+    public Result appPay(String orderId, String payWay, Integer userId, String orderType, String isDeduction) {
 
-        Callable<ServerResponse> callable = () -> {
+        Callable<Result> callable = () -> {
             if (StrUtil.isBlank(orderType) || StrUtil.isBlank(isDeduction) || StrUtil.isBlank(payWay)) {
-                return ServerResponse.createByErrorMessage("参数错误!");
+                return new Result().erro("参数错误!");
             }
             UserOrder orderRecord = null;
             UserRemainder userRemainder = null;
@@ -320,16 +319,16 @@ public class PayController {
             //当为普通/秒杀订单时OrderId必须
             if (StrUtil.equals(orderType, "1") || StrUtil.equals(orderType, "0")) {
                 if (StrUtil.isBlank(orderId)) {
-                    return ServerResponse.createByErrorMessage("参数错误!");
+                    return new Result().erro("参数错误!");
                 }
                 orderRecord = userOrderService.selectOne(new MyEntityWrapper<UserOrder>().eq(UserOrder.ORDER_NUM, orderId).eq(UserOrder.USER_ID, userId)
                         .eq(UserOrder.STATUS, "0")
                 );
                 if (orderRecord == null) {
-                    return ServerResponse.createByErrorMessage("订单不存在");
+                    return new Result().erro("订单不存在");
                 }
                 if (orderRecord.getStatus() > 2) {
-                    return ServerResponse.createByErrorMessage("订单已支付,请勿重复支付");
+                    return new Result().erro("订单已支付,请勿重复支付");
                 }
                 payOrder = new PayOrder("巨商U客订单" + orderRecord.getOrderNum(), "巨商U客订单", orderRecord.getOrderPrice(), orderId);
             }
@@ -340,12 +339,12 @@ public class PayController {
                         .eq(UserRemainder.IS_OK, "0")
                 );
                 if (userRemainder == null) {
-                    return ServerResponse.createByErrorMessage("订单不存在");
+                    return new Result().erro("订单不存在");
                 }
                 if (userRemainder.getIsOk() > 0) {
-                    return ServerResponse.createByErrorMessage("订单已支付,请勿重复支付");
+                    return new Result().erro("订单已支付,请勿重复支付");
                 }
-                payOrder = new PayOrder("巨商U客订单" + userRemainder.getOrderNum(), "巨商U客充值会员订单", userRemainder.getRemainder(), orderId);
+                payOrder = new PayOrder("巨商U客订单" + userRemainder.getOrderNum(), "巨商U客充值会员订单", new BigDecimal("2"), orderId);
             }
 
             //支付方式(0:支付宝，1:微信，2:苹果内购)
@@ -355,26 +354,26 @@ public class PayController {
                 Map<String, Object> orderInfo = aliservice.orderInfo(payOrder);
                 System.out.println("\n" + orderInfo);
                 //Map转化为对应得参数字符串
-                return ServerResponse.createBySuccess(UriVariables.getMapToParameters(aliservice.orderInfo(payOrder)));
+                return new Result().success("预下单成功", UriVariables.getMapToParameters(aliservice.orderInfo(payOrder)));
             }
             if (StrUtil.equals(payWay, "1")) {
                 //TODO 微信支付
                 payOrder.setTransactionType(WxTransactionType.APP);
                 Map<String, Object> orderInfo = wxservice.orderInfo(payOrder);
                 //Map转化为对应得参数字符串
-                return ServerResponse.createBySuccess(orderInfo);
+                return new Result().success(orderInfo);
             }
             if (StrUtil.equals(payWay, "2")) {
                 //TODO 苹果内购
                 //扣除余额
             }
-            return ServerResponse.createByErrorMessage("参数错误!");
+            return new Result().erro("参数错误!");
         };
         try {
             return callable.call();
         } catch (Exception e) {
             e.printStackTrace();
-            return ServerResponse.createByErrorMessage("系统繁忙,请稍后再试");
+            return new Result().erro("系统繁忙,请稍后再试");
         }
     }
 
