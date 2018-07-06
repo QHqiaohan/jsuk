@@ -197,8 +197,9 @@ public class JwtFilter implements Filter {
                                 filterChain.doFilter(request, response);
                             } else {
                                 System.out.println("认证过期");
-                                RequestDispatcher dispatcher = request.getRequestDispatcher("/overdue");
-                                dispatcher.forward(request, response);
+//                                RequestDispatcher dispatcher = request.getRequestDispatcher("/overdue");
+//                                dispatcher.forward(request, response);
+                                filterChain.doFilter(request, response);
                             }
                         } else {
                             //没有找到该用户
