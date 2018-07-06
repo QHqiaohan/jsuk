@@ -1,7 +1,13 @@
 package com.jh.jsuk.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.ShopRushBuySize;
+import com.jh.jsuk.entity.vo.ShopRushBuySizeVo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +18,7 @@ import com.jh.jsuk.entity.ShopRushBuySize;
  * @since 2018-06-26
  */
 public interface ShopRushBuySizeDao extends BaseMapper<ShopRushBuySize> {
+
+    List<ShopRushBuySizeVo> listPage(Page page,@Param("ew") Wrapper wrapper);
 
 }

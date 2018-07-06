@@ -61,4 +61,14 @@
         shop_goods_id=#{goodsId}
     </select>
 
+    <resultMap id="shopGoodsSizeVo" type="com.jh.jsuk.entity.vo.ShopGoodsSizeVo">
+        <association property="goodsInfo" column="shop_goods_id"
+         select="com.jh.jsuk.dao.ShopGoodsDao.selectById"/>
+    </resultMap>
+
+    <select id="findVoById" resultMap="shopGoodsSizeVo">
+        select <include refid="Base_Column_List"/> from js_shop_goods_size where id = #{shopGoodsSizeId}
+    </select>
+
+
 </mapper>

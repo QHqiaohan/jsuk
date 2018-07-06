@@ -3,6 +3,7 @@ package com.jh.jsuk.controller;
 
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.ShopRushBuy;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
@@ -11,6 +12,7 @@ import com.jh.jsuk.service.ShopRushBuyService;
 import com.jh.jsuk.service.ShopRushBuySizeService;
 import com.jh.jsuk.utils.DatecConvertUtils;
 import com.jh.jsuk.utils.MyEntityWrapper;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -18,6 +20,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,6 +47,13 @@ public class ShopRushBuyController {
     private ShopRushBuyService shopRushBuyService;
     @Autowired
     private ShopRushBuySizeService shopRushBuySizeService;
+
+    @GetMapping("/page")
+    public R listPage(Page page){
+        Wrapper<ShopRushBuy> wrapper = new EntityWrapper<>();
+        wrapper.ne(ShopRushBuy.IS_DEL,1);
+        return R.succ(shopRushBuyService.selectPage(page, wrapper));
+    }
 
     @ApiOperation("秒杀时间列表")
     @RequestMapping("/getKillTime")

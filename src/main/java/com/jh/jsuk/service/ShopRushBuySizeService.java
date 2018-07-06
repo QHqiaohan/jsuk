@@ -1,5 +1,6 @@
 package com.jh.jsuk.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.ShopRushBuySize;
 
@@ -13,4 +14,5 @@ import com.jh.jsuk.entity.ShopRushBuySize;
  */
 public interface ShopRushBuySizeService extends IService<ShopRushBuySize> {
 
+    Page listPage(Page page);
 }

@@ -1,5 +1,7 @@
 package com.jh.jsuk.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ShopRushBuySizeDao;
 import com.jh.jsuk.entity.ShopRushBuySize;
@@ -17,4 +19,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShopRushBuySizeServiceImpl extends ServiceImpl<ShopRushBuySizeDao, ShopRushBuySize> implements ShopRushBuySizeService {
 
+    @Override
+    public Page listPage(Page page) {
+        EntityWrapper<ShopRushBuySize> wrapper = new EntityWrapper<>();
+        return page.setRecords(baseMapper.listPage(page,wrapper));
+    }
 }

@@ -1,5 +1,6 @@
 package com.jh.jsuk.conf;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ConversionServiceFactoryBean;
@@ -15,6 +16,7 @@ import java.util.Set;
 /**
  * Created by lyq on 2017/7/17.
  */
+@Slf4j
 @Configuration
 public class SpringMVCConfig {
 
@@ -50,7 +52,7 @@ public class SpringMVCConfig {
                 try {
                     date = sdf.parse(source);
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    log.error(e.getLocalizedMessage(), e);
                 }
                 return date;
             }

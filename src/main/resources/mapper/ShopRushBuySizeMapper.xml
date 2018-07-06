@@ -16,4 +16,20 @@
         id, rush_buy_id, goods_size_id, is_del, publish_time
     </sql>
 
+    <resultMap id="shopRushBuySizeVo" type="com.jh.jsuk.entity.vo.ShopRushBuySizeVo" extends="BaseResultMap">
+        <association property="goodsInfo" column="goods_size_id"
+            select="com.jh.jsuk.dao.ShopGoodsSizeDao.findVoById"/>
+    </resultMap>
+
+    <select id="listPage" resultMap="shopRushBuySizeVo">
+        select <include refid="Base_Column_List"/> from js_shop_rush_buy_size
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
+
+
+
+
+
 </mapper>
