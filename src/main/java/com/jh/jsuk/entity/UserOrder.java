@@ -60,10 +60,10 @@ public class UserOrder extends Model<UserOrder> {
      * 配送费
      */
     private BigDecimal distributionFee;
-    /**
-     * 配送状态 1 待抢单 2 待取货 3待送达 仅仅对应订单状态为 已发货 4配送完成
-     */
-    private Integer distributionStatus;
+//    /**
+//     * 配送状态 1 待抢单 2 待取货 3待送达 仅仅对应订单状态为 已发货 4配送完成
+//     */
+//    private Integer distributionStatus;
     /**
      * 创建时间
      */
@@ -151,13 +151,13 @@ public class UserOrder extends Model<UserOrder> {
         this.platformNumber = platformNumber;
     }
 
-    public Integer getDistributionStatus() {
-        return distributionStatus;
-    }
+//    public Integer getDistributionStatus() {
+//        return distributionStatus;
+//    }
 
-    public void setDistributionStatus(Integer distributionStatus) {
-        this.distributionStatus = distributionStatus;
-    }
+//    public void setDistributionStatus(Integer distributionStatus) {
+//        this.distributionStatus = distributionStatus;
+//    }
 
     public Integer getId() {
         return id;
