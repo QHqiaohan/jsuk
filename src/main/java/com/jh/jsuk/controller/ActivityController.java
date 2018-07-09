@@ -415,7 +415,7 @@ public class ActivityController {
         if (activity == null) {
             return new Result().erro("必填数据为空");
         } else {
-            boolean res = activity.insert();
+            boolean res = activity.updateById();
             if (res) {
                 return new Result().success();
             } else {

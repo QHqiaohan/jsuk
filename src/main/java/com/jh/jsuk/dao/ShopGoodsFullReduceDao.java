@@ -9,7 +9,7 @@ import com.jh.jsuk.entity.ShopGoodsFullReduce;
  * </p>
  *
  * @author lpf
- * @since 2018-07-01
+ * @since 2018-07-04
  */
 public interface ShopGoodsFullReduceDao extends BaseMapper<ShopGoodsFullReduce> {
 

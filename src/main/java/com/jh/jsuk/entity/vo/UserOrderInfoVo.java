@@ -1,8 +1,10 @@
 package com.jh.jsuk.entity.vo;
 
-import com.jh.jsuk.entity.UserOrder;
+import com.jh.jsuk.entity.ShopGoods;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,13 +12,13 @@ import java.math.BigDecimal;
  * @author: XuChuRuo
  * @date: 2018/6/27 15:09
  */
-public class UserOrderInfoVo extends UserOrder {
+public class UserOrderInfoVo {
 
     private Integer num;
     private BigDecimal buyPrice;
     private String sizeName;
-    private String goodsName;
-    private String goodsHeadImg;
+    //private String goodsName;
+    //private String goodsHeadImg;
     private String shopName;
     private String salesPrice;
     private String originalPrice;
@@ -24,6 +26,48 @@ public class UserOrderInfoVo extends UserOrder {
     private Integer orderType;
     private String refundReason;
     private Integer goodsSizeId;
+    private BigDecimal discount;
+    private Integer id;
+    private Integer status;
+    private Date creatTime;
+    private Date sendTime;
+    private List<ShopGoods> shopGoodsList;
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public Integer getStatus() {
+        return status;
+    }
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+    public Date getCreatTime() {
+        return creatTime;
+    }
+    public void setCreatTime(Date creatTime) {
+        this.creatTime = creatTime;
+    }
+    public Date getSendTime() {
+        return sendTime;
+    }
+    public void setSendTime(Date sendTime) {
+        this.sendTime = sendTime;
+    }
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
+    }
+    public List<ShopGoods> getShopGoodsList() {
+        return shopGoodsList;
+    }
+    public void setShopGoodsList(List<ShopGoods> shopGoodsList) {
+        this.shopGoodsList = shopGoodsList;
+    }
 
     public Integer getGoodsSizeId() {
         return goodsSizeId;
@@ -41,12 +85,10 @@ public class UserOrderInfoVo extends UserOrder {
         this.refundReason = refundReason;
     }
 
-    @Override
     public Integer getOrderType() {
         return orderType;
     }
 
-    @Override
     public void setOrderType(Integer orderType) {
         this.orderType = orderType;
     }
@@ -83,21 +125,9 @@ public class UserOrderInfoVo extends UserOrder {
         this.sizeName = sizeName;
     }
 
-    public String getGoodsName() {
-        return goodsName;
-    }
 
-    public void setGoodsName(String goodsName) {
-        this.goodsName = goodsName;
-    }
 
-    public String getGoodsHeadImg() {
-        return goodsHeadImg;
-    }
 
-    public void setGoodsHeadImg(String goodsHeadImg) {
-        this.goodsHeadImg = goodsHeadImg;
-    }
 
     public String getShopName() {
         return shopName;

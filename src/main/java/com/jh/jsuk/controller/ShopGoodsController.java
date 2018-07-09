@@ -216,20 +216,24 @@ public class ShopGoodsController {
             @ApiImplicitParam(name = "address", value = "区域地址", paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "goodsType", value = "1=包邮,2=促销,3=新品", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "lowPrice", value = "最低价格", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "highPrice", value = "最高价格", paramType = "query", dataType = "string")
+            @ApiImplicitParam(name = "highPrice", value = "最高价格", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "userId", value = "商家端-用户ID", paramType = "query", dataType = "integer")
     })
     @RequestMapping(value = "/getShopList", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopList(Page page, Integer status, Integer type, String name, Integer shopModularId, Integer attributeId, Integer categoryId,
-                              Integer brandId, String address, Integer goodsType, String lowPrice, String highPrice,Integer userId) {
+                              Integer brandId, String address, Integer goodsType, String lowPrice, String highPrice, Integer userId) {
         // 获取店铺ID
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
-        Integer shopId = managerUser.getShopId();
+        Integer shopId = null;
+        if (managerUser != null) {
+            shopId = managerUser.getShopId();
+        }
         // 商品模糊搜索
         if (status == 1) {
             MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
             Page goodsPage = shopGoodsService.getShopList(page, ew, type, attributeId, name, shopModularId, categoryId, brandId,
-                    address, goodsType, lowPrice, highPrice,shopId);
+                    address, goodsType, lowPrice, highPrice, shopId);
             return new Result().success(goodsPage);
         } else if (status == 2) {
             // 店铺模糊查询
@@ -253,7 +257,7 @@ public class ShopGoodsController {
 
             MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
             Page goodsPage = shopGoodsService.getShopList(page, ew, type, attributeId, name, shopModularId, categoryId, brandId, address, goodsType,
-                    lowPrice, highPrice,shopId);
+                    lowPrice, highPrice, shopId);
             map.put("shop", shopPage.getRecords());
             map.put("shopGoods", goodsPage);
 
@@ -292,7 +296,7 @@ public class ShopGoodsController {
 
     @ApiOperation("商家端-添加商品")
     @RequestMapping(value = "/addShopGoods", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addShopGoods(@ModelAttribute ShopGoods shopGoods, ShopGoodsSize shopGoodsSize, Integer userId) {
+    public Result addShopGoods(@ModelAttribute ShopGoods shopGoods, @ModelAttribute ShopGoodsSize shopGoodsSize, Integer userId) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
         Integer shopId = managerUser.getShopId();
@@ -303,6 +307,19 @@ public class ShopGoodsController {
         shopGoodsSize.setShopGoodsId(id);
         shopGoodsSize.insert();
         return new Result().success();
+    }
+
+    @ApiOperation("商家端-修改商品")
+    @RequestMapping(value = "/updateShopGoods", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result updateShopGoods(@ModelAttribute ShopGoods shopGoods, @ModelAttribute ShopGoodsSize shopGoodsSize,
+                                  Integer shopGoodsId, Integer sizeId) {
+        shopGoods.setId(shopGoodsId);
+        shopGoods.updateById();
+        // 规格id
+        shopGoodsSize.setId(sizeId);
+        shopGoodsSize.updateById();
+        return new Result().success();
+
     }
 
 }

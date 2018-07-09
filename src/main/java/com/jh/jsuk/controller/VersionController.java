@@ -28,7 +28,6 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequestMapping("/version")
 public class VersionController {
-
     @Autowired
     private VersionService versionService;
 

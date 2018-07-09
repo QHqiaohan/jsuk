@@ -146,6 +146,7 @@ public class ManagerUserController {
     public Result login(@RequestParam @ApiParam(value = "手机号", required = true) String phone,
                         @RequestParam @ApiParam(value = "密码", required = true) String password,
                         HttpServletRequest request) throws Exception {
+        Result result = new Result();
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.PHONE, phone));
         if (managerUser != null) {
@@ -154,9 +155,9 @@ public class ManagerUserController {
             } else {
                 ShopUser shopUser = shopUserService.selectOne(new EntityWrapper<ShopUser>()
                         .eq(ShopUser.MANAGER_USER_ID, managerUser.getId()));
-                if (shopUser.getIsCheck() == 1) {
+                if (shopUser.getIsCheck() == 0) {
                     return new Result().erro("店铺审核中");
-                } else if (shopUser.getIsCheck() == 0) {
+                } else if (shopUser.getIsCheck() == 1) {
                     if (StrUtil.equals(password, managerUser.getPassword())) {
                         Date loginTime = new Date();
                         JwtParam jwtParam = new JwtParam();
@@ -171,7 +172,11 @@ public class ManagerUserController {
                         AccessToken accessToken = new AccessToken();
                         accessToken.setAccess_id(managerUser.getId());
                         accessToken.setAccess_token(jwt);
-                        return new Result().success("登录成功", accessToken);
+                        Map<String, Object> p = new HashMap<>();
+                        p.put("userId", managerUser.getId());
+                        result.setData(p);
+                        result.success("登录成功", accessToken);
+                        return result;
                     } else {
                         return new Result().erro("密码错误");
                     }

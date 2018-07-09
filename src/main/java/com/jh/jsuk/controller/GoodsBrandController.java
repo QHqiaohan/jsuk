@@ -8,12 +8,13 @@ import com.jh.jsuk.entity.GoodsBrand;
 import com.jh.jsuk.service.GoodsBrandService;
 import com.jh.jsuk.service.ShopGoodsService;
 import com.jh.jsuk.utils.R;
+import io.swagger.annotations.Api;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 

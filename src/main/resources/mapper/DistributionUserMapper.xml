@@ -29,7 +29,8 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, phone, password, name, id_card_no, card_front, card_back, last_login_time, login_ip, longitude, latitude, head_img, gender, age, star_num, account, publish_time, can_use, status, desc, is_online
+        id, phone, password, name, id_card_no, card_front, card_back, last_login_time, login_ip, longitude, latitude, head_img, gender, age,
+        star_num, account, publish_time, can_use, status, desc, is_online
     </sql>
 
     <update id="updateAccount">

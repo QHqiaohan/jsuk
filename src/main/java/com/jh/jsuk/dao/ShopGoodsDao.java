@@ -51,18 +51,18 @@ public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
 
     List getShopGoodsByBrandId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("brandId") Integer brandId);
 
-    List<GoodsSalesPriceVo> getIsRecommend(Page page, Wrapper wrapper);
+    List<GoodsSalesPriceVo> getIsRecommend(Page page, @Param("ew") Wrapper wrapper);
 
     List getShopList(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("address") String address, @Param("attributeId") Integer attributeId,
                      @Param("shopModularId") Integer shopModularId, @Param("categoryId") Integer categoryId, @Param("brandId") Integer brandId,
                      @Param("name") String name, @Param("goodsType") Integer goodsType, @Param("lowPrice") String lowPrice,
                      @Param("highPrice") String highPrice, @Param("type") Integer type, @Param("shopId") Integer shopId);
 
-    List<GoodsSizeVo> findShopGoodsAndGoodsSizeByShopId(RowBounds rowBounds, @Param("ew") Wrapper wrapper,@Param("shopId") Integer shopId);
+    List<GoodsSizeVo> findShopGoodsAndGoodsSizeByShopId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("shopId") Integer shopId);
 
     List<ShopGoodsVo2> shopGoodsList(Page page, @Param("status") Integer status, @Param("categoryId") String categoryId,
                                      @Param("keyWord") String keyWord, @Param("brandId") String brandId, @Param("shopId") Integer shopId);
 
     List<ShopGoodsVo2> shopGoodsRecycleList(Page page, @Param("categoryId") String categoryId,
-                                            @Param("keyWord") String keyWord, @Param("brandId") String brandId,@Param("shopId") Integer shopId);
+                                            @Param("keyWord") String keyWord, @Param("brandId") String brandId, @Param("shopId") Integer shopId);
 }

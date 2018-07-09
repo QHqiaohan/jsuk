@@ -1,12 +1,14 @@
 package com.jh.jsuk.entity;
 
+import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import io.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableName;
-import java.io.Serializable;
 
 /**
  * <p>
@@ -26,82 +28,102 @@ public class Activity extends Model<Activity> {
     /**
      * 手机
      */
+    @ApiModelProperty(value = "手机", name = "phone")
     private String phone;
     /**
      * 联系人
      */
+    @ApiModelProperty(value = "联系人", name = "name")
     private String name;
     /**
      * 活动标题
      */
+    @ApiModelProperty(value = "活动标题", name = "title")
     private String title;
     /**
      * 价格
      */
+    @ApiModelProperty(value = "价格", name = "price")
     private BigDecimal price;
     /**
      * 定金
      */
+    @ApiModelProperty(value = "定金", name = "fixedPrice")
     private BigDecimal fixedPrice;
     /**
      * 内容
      */
+    @ApiModelProperty(value = "内容", name = "content")
     private String content;
     /**
      * 活动开始时间
      */
+    @ApiModelProperty(value = "活动开始时间", name = "startTime")
     private String startTime;
     /**
      * 活动结束时间
      */
+    @ApiModelProperty(value = "活动结束时间", name = "endTime")
     private String endTime;
     /**
      * 创建时间
      */
+    @ApiModelProperty(value = "创建时间", name = "publishTime")
     private Date publishTime;
     /**
      * 0=未删除, 1=删除
      */
+    @ApiModelProperty(value = "0=未删除, 1=删除", name = "isDel")
     private Integer isDel;
     /**
      * 1=乡村旅游,2=便捷生活,3=二手市场
      */
+    @ApiModelProperty(value = "1=乡村旅游,2=便捷生活,3=二手市场", name = "type")
     private Integer type;
     /**
      * 用户ID
      */
+    @ApiModelProperty(value = "用户ID", name = "userId")
     private Integer userId;
     /**
      * 数值越大越靠前
      */
+    @ApiModelProperty(value = "数值越大越靠前", name = "rank")
     private String rank;
     /**
      * 分类ID
      */
+    @ApiModelProperty(value = "分类ID", name = "classId")
     private Integer classId;
     /**
      * 模块ID
      */
+    @ApiModelProperty(value = "模块ID", name = "modularId")
     private Integer modularId;
     /**
      * 车辆ID
      */
+    @ApiModelProperty(value = "车辆ID", name = "carId")
     private Integer carId;
     /**
      * 是否推荐,0=不推荐,1=推荐
      */
+    @ApiModelProperty(value = "是否推荐,0=不推荐,1=推荐", name = "isRecommend")
     private Integer isRecommend;
     /**
      * 图片
      */
+    @ApiModelProperty(value = "图片", name = "images")
     private String images;
     /**
      * 1=商家,2=需求
      */
+    @ApiModelProperty(value = "1=商家,2=需求", name = "status")
     private Integer status;
     /**
      * 交易区域ID
      */
+    @ApiModelProperty(value = "交易区域ID", name = "transactionAreaId")
     private Integer transactionAreaId;
 
 

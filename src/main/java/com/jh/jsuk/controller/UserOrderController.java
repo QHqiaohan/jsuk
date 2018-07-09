@@ -16,10 +16,8 @@ import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
-import com.jh.jsuk.utils.EnumUitl;
-import com.jh.jsuk.utils.MyEntityWrapper;
-import com.jh.jsuk.utils.R;
-import com.jh.jsuk.utils.Result;
+import com.jh.jsuk.utils.*;
+import com.jh.jsuk.utils.wx.WxPay;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -538,7 +536,7 @@ public class UserOrderController {
     @RequestMapping(value = "/addOrderService", method = {RequestMethod.POST, RequestMethod.GET})
     public Result addOrderService(@ModelAttribute com.jh.jsuk.entity.UserOrderService userOrderService) {
         userOrderService.insert();
-        return new Result().success("添加成功!");
+        return new Result().success("操作成功!");
     }
 
     @ApiOperation(value = "用户端-更换商品")
@@ -548,6 +546,59 @@ public class UserOrderController {
                 .eq(ShopGoodsSize.ID, goodsSizeId)
                 .eq(ShopGoodsSize.IS_DEL, 0));
         return new Result().success(goodsSizeList);
+    }
+
+    @ApiOperation(value = "商家端-确认换货")
+    @RequestMapping(value = "/enterChangeGoods", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result enterChangeGoods(@ApiParam(value = "订单ID", required = true) Integer id) {
+        UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>()
+                .eq(UserOrder.ID, id));
+        if (userOrder == null) {
+            return new Result().success("没有该订单", null);
+        } else {
+            userOrder.setStatus(9);
+            userOrder.updateById();
+            return new Result().success("操作成功!");
+        }
+    }
+
+    @ApiOperation(value = "商家端-确认退款")
+    @RequestMapping(value = "/enterTuiKuan", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result enterTuiKuan(@ApiParam(value = "订单ID", required = true) Integer id,
+                               @ApiParam(value = "退款金额", required = true) String price) {
+        UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>()
+                .eq(UserOrder.ID, id));
+        if (userOrder == null) {
+            return new Result().erro("订单信息为空");
+        } else {
+            try {
+                // 微信退款
+                MSGUtil msgUtil = WxPay.wxPayRefund(Double.parseDouble(price), userOrder.getOrderNum());
+                if (msgUtil.getState() == 500) {
+                    return new Result().erro(msgUtil.getMsg(), msgUtil.getData());
+                } else {
+                    List<UserOrderGoods> userOrderGoods = userOrderGoodsService.selectList(new EntityWrapper<UserOrderGoods>()
+                            .eq(UserOrderGoods.ORDER_ID, userOrder.getId()));
+                    for (UserOrderGoods orderGoods : userOrderGoods) {
+                        // 规格ID
+                        Integer sizeId = orderGoods.getGoodsSizeId();
+                        // 购买的数量
+                        Integer num = orderGoods.getNum();
+                        // 返还库存
+                        ShopGoodsSize goodsSize = shopGoodsSizeService.selectOne(new EntityWrapper<ShopGoodsSize>()
+                                .eq(ShopGoodsSize.ID, sizeId));
+                        Integer stock = goodsSize.getStock();
+                        stock = stock + num;
+                        goodsSize.setStock(stock);
+                        goodsSize.updateById();
+                        return new Result().success("退款成功");
+                    }
+                }
+            } catch (Exception e) {
+                return new Result().erro("退款失败", e);
+            }
+        }
+        return new Result().erro("退款失败");
     }
 
 }

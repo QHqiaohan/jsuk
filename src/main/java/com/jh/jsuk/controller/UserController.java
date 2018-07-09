@@ -360,7 +360,7 @@ public class UserController {
         try {
             // 效验手机验证码
             String verificationCode = (String) session.getAttribute(user.getPhone() + "register0");
-            if (verificationCode == null) {
+            if(verificationCode == null) {
                 throw new MessageException("验证码错误");
             }
             if (!code.equals(verificationCode)) {

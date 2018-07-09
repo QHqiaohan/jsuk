@@ -27,7 +27,6 @@ import java.util.List;
 @Api(tags = "购物车")
 @RequestMapping("/shoppingCart")
 public class ShoppingCartController {
-
     @Autowired
     ManagerUserService managerUserService;
     @Autowired

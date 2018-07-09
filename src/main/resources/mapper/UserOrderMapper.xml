@@ -65,8 +65,8 @@
         <result property="num" column="num"/>
         <result property="buyPrice" column="goods_price"/>
         <result property="sizeName" column="size_name"/>
-        <result property="goodsName" column="goods_name"/>
-        <result property="goodsHeadImg" column="main_image"/>
+        <!--<result property="goodsName" column="goods_name"/>-->
+        <!--<result property="goodsHeadImg" column="main_image"/>-->
         <result property="shopName" column="shop_name"/>
         <result property="salesPrice" column="sales_price"/>
         <result property="originalPrice" column="original_price"/>
@@ -74,28 +74,41 @@
         <result property="orderType" column="orderType"/>
         <result property="refundReason" column="refund_reason"/>
         <result property="goodsSizeId" column="goods_size_id"/>
+        <result property="discount" column="discount"/>
+        <result property="id" column="id"/>
+        <result property="creatTime" column="creat_time"/>
+        <result property="status" column="status"/>
+        <result property="sendTime" column="send_time"/>
+        <collection property="shopGoodsList" column="goods_id" select="com.jh.jsuk.dao.ShopGoodsDao.selectById"/>
     </resultMap>
 
     <select id="getOrderByUserId" resultMap="UserOrderInfoVo">
         SELECT
-        uo.*, uog.num,
+        uo.id,
+        uo.creat_time,
+        uo.status,
+        uo.send_time,
+        uog.num,
         uog.goods_price,
         uog.order_type as orderType,
         uog.goods_size_id,
+        uog.goods_id,
         uos.refund_reason,
         sgs.size_name,
         sgs.original_price,
         sgs.sales_price,
-        sg.goods_name,
-        sg.main_image,
+--         sg.goods_name,
+--         sg.main_image,
+        c.discount,
         s.shop_name
         FROM
-        js_user_order uo
-        LEFT JOIN js_user_order_goods uog ON uo.id = uog.order_id
+        js_user_order_goods uog
+        LEFT JOIN js_user_order uo ON uo.id = uog.order_id
         LEFT JOIN js_user_order_service uos ON uo.id = uos.order_id
         LEFT JOIN js_shop_goods_size sgs ON uog.goods_size_id = sgs.id
         LEFT JOIN js_shop_goods sg ON sgs.shop_goods_id = sg.id
         LEFT JOIN js_shop s ON sg.shop_id = s.id
+        LEFT JOIN js_coupon c ON uo.coupon_id = c.id
         WHERE
         uo.user_id = #{userId}
         AND uo.is_del = 0
@@ -114,24 +127,31 @@
 
     <select id="getShopOrderByUserId" resultMap="UserOrderInfoVo">
         SELECT
-        uo.*, uog.num,
+        uo.id,
+        uo.creat_time,
+        uo.status,
+        uo.send_time,
+        uog.num,
         uog.goods_price,
         uog.order_type as orderType,
         uog.goods_size_id,
+        uog.goods_id,
         uos.refund_reason,
         sgs.size_name,
         sgs.original_price,
         sgs.sales_price,
-        sg.goods_name,
-        sg.main_image,
+        --         sg.goods_name,
+        --         sg.main_image,
+        c.discount,
         s.shop_name
         FROM
-        js_user_order uo
-        LEFT JOIN js_user_order_goods uog ON uo.id = uog.order_id
+        js_user_order_goods uog
+        LEFT JOIN js_user_order uo ON uo.id = uog.order_id
         LEFT JOIN js_user_order_service uos ON uo.id = uos.order_id
         LEFT JOIN js_shop_goods_size sgs ON uog.goods_size_id = sgs.id
         LEFT JOIN js_shop_goods sg ON sgs.shop_goods_id = sg.id
         LEFT JOIN js_shop s ON sg.shop_id = s.id
+        LEFT JOIN js_coupon c ON uo.coupon_id = c.id
         WHERE
         uo.shop_id = #{shopId}
         AND uo.is_del = 0

@@ -23,6 +23,8 @@ public class ShopGoodsFullReduce extends Model<ShopGoodsFullReduce> {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+    @ApiModelProperty(value = "店铺ID", required = true, name = "shopId")
+    private Integer shopId;
     @ApiModelProperty(value = "商品ID", name = "goodsId")
     private Integer goodsId;
     @ApiModelProperty(value = "规格ID", name = "sizeId")
@@ -30,12 +32,12 @@ public class ShopGoodsFullReduce extends Model<ShopGoodsFullReduce> {
     /**
      * 满多少
      */
-    @ApiModelProperty(value = "满多少", name = "full")
+    @ApiModelProperty(value = "满多少", required = true, name = "full")
     private String full;
     /**
      * 减多少
      */
-    @ApiModelProperty(value = "减多少", name = "reduce")
+    @ApiModelProperty(value = "减多少", required = true, name = "reduce")
     private String reduce;
 
 
@@ -45,6 +47,12 @@ public class ShopGoodsFullReduce extends Model<ShopGoodsFullReduce> {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+    public Integer getShopId() {
+        return shopId;
+    }
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
     }
 
     public Integer getGoodsId() {
@@ -81,6 +89,7 @@ public class ShopGoodsFullReduce extends Model<ShopGoodsFullReduce> {
 
     public static final String ID = "id";
 
+    public static final String SHOP_ID = "shop_id";
     public static final String GOODS_ID = "goods_id";
 
     public static final String SIZE_ID = "size_id";
@@ -98,6 +107,7 @@ public class ShopGoodsFullReduce extends Model<ShopGoodsFullReduce> {
     public String toString() {
         return "ShopGoodsFullReduce{" +
         "id=" + id +
+                ", shopId=" + shopId +
         ", goodsId=" + goodsId +
         ", sizeId=" + sizeId +
         ", full=" + full +
