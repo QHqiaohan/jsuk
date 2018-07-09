@@ -9,6 +9,7 @@ import com.jh.jsuk.entity.vo.CoupQueryParam;
 import com.jh.jsuk.entity.vo.CouponVo;
 import com.jh.jsuk.service.CouponService;
 import com.jh.jsuk.service.UserCouponService;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,10 @@ public class CouponController {
     private CouponService couponService;
     @Autowired
     private UserCouponService userCouponService;
+
+    public R page(Page page){
+        return null;
+    }
 
     @ApiOperation("用户-查询用户优惠卷列表")
     @PostMapping("/listByUserId")
