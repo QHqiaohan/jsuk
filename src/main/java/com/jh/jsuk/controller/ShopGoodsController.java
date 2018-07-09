@@ -145,9 +145,12 @@ public class ShopGoodsController {
     @ApiOperation("用户端-根据商品ID查看商品信息")
     @RequestMapping(value = "/getShopGoodsById", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopGoodsById(@ApiParam(value = "商品ID", required = true) @RequestParam Integer id) {
+        Result result = new Result();
         // 封装结果map
         Map<String, Object> map = MapUtil.newHashMap();
         GoodsSizeVo goodsSizeVo = shopGoodsService.getShopGoodsById(id);
+        if(goodsSizeVo == null)
+            return result.erro("商品不存在");
         map.put("shopGoods", goodsSizeVo);
         // 获取标签ID
         Integer labelId = goodsSizeVo.getGoodsLabelId();
@@ -156,7 +159,7 @@ public class ShopGoodsController {
                 .eq(GoodsLabel.IS_DEL, 1)
                 .orderBy(GoodsLabel.RANK, false));
         map.put("goodsLabel", goodsLabel);
-        return new Result().success(map);
+        return result.success(map);
     }
 
    /* @ApiOperation("用户端-商品搜索&店铺搜索")
