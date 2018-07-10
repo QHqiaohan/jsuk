@@ -1,11 +1,12 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -31,7 +32,7 @@ public class GoodsLabel extends Model<GoodsLabel> {
      */
     private Integer rank;
     /**
-     * 0删除  1未删除
+     * 1删除  0未删除
      */
     private Integer isDel;
     private Date createTime;

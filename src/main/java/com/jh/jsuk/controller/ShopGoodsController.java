@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+//import com.jh.jsuk.entity.vo.ShopRushBuySizeVo;
+
 /**
  * <p>
  * 商品表 前端控制器
@@ -39,6 +41,12 @@ public class ShopGoodsController {
     private StatisticsPriceService statisticsPriceService;
     @Autowired
     private ManagerUserService managerUserService;
+
+//    @Autowired
+//    ShopRushBuySizeService shopRushBuySizeService;
+
+    @Autowired
+    ShopRushBuyService shopRushBuyService;
 
     @ApiOperation("用户端-根据店铺内部的分类-属性查询商品")
     @ApiImplicitParams({
@@ -152,11 +160,32 @@ public class ShopGoodsController {
         if(goodsSizeVo == null)
             return result.erro("商品不存在");
         map.put("shopGoods", goodsSizeVo);
+//        List<ShopGoodsSize> list = goodsSizeVo.getShopGoodsSize();
+//        if(list != null && !list.isEmpty()){
+//            for (ShopGoodsSize goodsSize : list) {
+//                Integer sizeId = goodsSize.getId();
+//                EntityWrapper<ShopRushBuySize> wrapper = new EntityWrapper<>();
+//                wrapper.eq(ShopRushBuySize.GOODS_SIZE_ID,sizeId)
+//                        .eq(ShopRushBuySize.IS_USE,1)
+//                        .ne(ShopRushBuySize.IS_DEL,1);
+//                List<ShopRushBuySize> shopRushBuySizes = shopRushBuySizeService.selectList(wrapper);
+//                if( shopRushBuySizes == null || shopRushBuySizes.isEmpty())
+//                    continue;
+//                for (ShopRushBuySize shopRushBuySize : shopRushBuySizes) {
+//                    EntityWrapper<ShopRushBuy> wrapper1 = new EntityWrapper<>();
+//                    wrapper1.eq(ShopRushBuy.ID,shopRushBuySize.getRushBuyId());
+//                    wrapper1.ne(ShopRushBuy.IS_DEL,1);
+//                    ShopRushBuy shopRushBuy = shopRushBuyService.selectOne(wrapper1);
+//                    ShopRushBuySizeVo vo = new ShopRushBuySizeVo();
+//
+//                }
+//            }
+//        }
         // 获取标签ID
         Integer labelId = goodsSizeVo.getGoodsLabelId();
         GoodsLabel goodsLabel = goodsLabelService.selectOne(new EntityWrapper<GoodsLabel>()
                 .eq(GoodsLabel.ID, labelId)
-                .eq(GoodsLabel.IS_DEL, 1)
+                .ne(GoodsLabel.IS_DEL, 1)
                 .orderBy(GoodsLabel.RANK, false));
         map.put("goodsLabel", goodsLabel);
         return result.success(map);

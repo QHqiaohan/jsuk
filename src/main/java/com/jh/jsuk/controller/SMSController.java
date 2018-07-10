@@ -34,6 +34,10 @@ public class SMSController {
     @Autowired
     private DistributionUserService distributionUserService;
 
+
+    public final static String USER_REGISTER="user_register";
+
+
     @Autowired
     ManagerUserService managerUserService;
 

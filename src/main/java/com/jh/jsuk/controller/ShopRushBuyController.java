@@ -9,7 +9,7 @@ import com.jh.jsuk.entity.ShopRushBuy;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.service.ShopGoodsService;
 import com.jh.jsuk.service.ShopRushBuyService;
-import com.jh.jsuk.service.ShopRushBuySizeService;
+//import com.jh.jsuk.service.ShopRushBuySizeService;
 import com.jh.jsuk.utils.DatecConvertUtils;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.R;
@@ -45,8 +45,8 @@ public class ShopRushBuyController {
     private ShopGoodsService shopGoodsService;
     @Autowired
     private ShopRushBuyService shopRushBuyService;
-    @Autowired
-    private ShopRushBuySizeService shopRushBuySizeService;
+//    @Autowired
+//    private ShopRushBuySizeService shopRushBuySizeService;
 
     @GetMapping("/page")
     public R listPage(Page page){
