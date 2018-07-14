@@ -1,7 +1,12 @@
 package com.jh.jsuk.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.jh.jsuk.entity.SpecialTheme;
+import com.jh.jsuk.entity.vo.SpecialThemeVo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +18,5 @@ import com.jh.jsuk.entity.SpecialTheme;
  */
 public interface SpecialThemeDao extends BaseMapper<SpecialTheme> {
 
+    List<SpecialThemeVo> getVoByList(@Param("ew") Wrapper wrapper);
 }

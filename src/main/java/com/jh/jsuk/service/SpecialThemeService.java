@@ -1,7 +1,11 @@
 package com.jh.jsuk.service;
 
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.SpecialTheme;
+import com.jh.jsuk.entity.vo.SpecialThemeVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,5 @@ import com.jh.jsuk.entity.SpecialTheme;
  */
 public interface SpecialThemeService extends IService<SpecialTheme> {
 
+    List<SpecialThemeVo> getVoByList(Wrapper wrapper);
 }

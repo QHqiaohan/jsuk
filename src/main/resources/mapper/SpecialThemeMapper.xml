@@ -17,4 +17,16 @@
         id, title, main_image, is_del, rank, goods_id
     </sql>
 
+    <resultMap id="specialThenVo" type="com.jh.jsuk.entity.vo.SpecialThemeVo" extends="BaseResultMap">
+        <collection property="goodsInfo" column="goods_id"
+            select="com.jh.jsuk.dao.ShopGoodsDao.selectById"></collection>
+    </resultMap>
+
+  <select id="getVoByList" resultMap="specialThenVo">
+      select <include refid="Base_Column_List"/> from js_special_theme
+      <where>
+          ${ew.sqlSegment}
+      </where>
+  </select>
+
 </mapper>
