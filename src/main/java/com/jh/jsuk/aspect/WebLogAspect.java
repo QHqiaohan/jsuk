@@ -13,6 +13,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.Enumeration;
 
 /**
  * Web层日志切面
@@ -38,6 +39,12 @@ public class WebLogAspect {
         HttpServletRequest request = attributes.getRequest();
 
 //        log.info("jwt值:{}",request.getHeader(Constant.JWT_HEADER));
+
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String element = headerNames.nextElement();
+            log.info("{} -> {}", element,request.getHeader(element));
+        }
 
         // 记录下请求内容
         log.info("地址 : " + request.getRequestURL().toString());

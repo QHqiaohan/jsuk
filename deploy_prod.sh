@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-server1="192.168.1.25"
+server1="172.16.91.130"
 
 
 tmpDir="/tmp/jsuk-server"

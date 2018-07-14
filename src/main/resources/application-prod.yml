@@ -1,5 +1,5 @@
 server:
-   port: 80
+   port: 8080
 logging:
   level:
     root: info
@@ -13,14 +13,14 @@ spring:
     auto: true
     proxy-target-class: true
   rabbitmq:
-     host: 21251v7v61.imwork.net
-     port: 15266
-     username: guest
-     password: guest
- #   host: 192.168.0.65
- #   port: 51577
- #   username: admin
- #   password: 123456
+#     host: 21251v7v61.imwork.net
+#     port: 15266
+#     username: guest
+#     password: guest
+    host: 127.0.0.1
+    port: 5672
+    username: admin
+    password: 123456
   thymeleaf:
       cache: false
       mode: LEGACYHTML5
@@ -29,7 +29,7 @@ spring:
   datasource:
   # 数据库配置
       type: com.alibaba.druid.pool.DruidDataSource
-      url: jdbc:mysql://39.108.80.44:3306/jushang_new?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false
+      url: jdbc:mysql://127.0.0.1:3306/jushang_new?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false
   #   url: jdbc:mysql:///jushang_new?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false
       username: root
       password: ab12345678

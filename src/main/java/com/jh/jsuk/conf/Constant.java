@@ -23,7 +23,7 @@ public class Constant {
      */
     public static final String JWT_ID = "jwt";
     public static final String JWT_SECRET = "5bc9a23bb5994ef8565ed1e657192fee";
-    public static final String JWT_HEADER = "ACCESS_TOKEN";
+    public static final String JWT_HEADER = "access-token";
     public static final int JWT_TTL = 60 * 60 * 1000;  //millisecond
     public static final int JWT_REFRESH_INTERVAL = 55 * 60 * 1000;  //millisecond
     public static final int JWT_REFRESH_TTL = 12 * 60 * 60 * 1000;  //millisecond

@@ -9,7 +9,22 @@
 [后台文档](https://shimo.im/sheet/pCRSwqIezSUgzgZr/cQc6n/)
 
 ### 正式环境
-[正式环境swagger](http://39.108.80.44/swagger-ui.html#/)
+[正式环境swagger](http://47.99.45.67/api/v1/swagger-ui.html#/)
 
 ### 时间安排
 [时间安排](https://docs.qq.com/sheet/BIvRjE1Otl8A4YzDgC14WVct0H08qE1Bvz6g0)
+
+### 快速打包
+
+```bash
+npm install -g yarn
+yarn
+
+#打包
+yarn pkg
+#上传服务器
+yarn ci upload -e prod -p (服务器密码)
+#运行部署
+yarn ci exe -e prod -p (服务器密码) deploy_prod.sh
+
+```

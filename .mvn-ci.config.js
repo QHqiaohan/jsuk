@@ -10,8 +10,8 @@ var config = {
   configs: [{
     env: 'prod',
     user: 'root',
-    middleServer: '192.168.1.22',
-    targetServer: ['192.168.1.25'],
+    middleServer: '47.99.45.67',
+    targetServer: ['172.16.91.130'],
     // buildCmd:['npm run build'],
   }, {
     env: 'test',
