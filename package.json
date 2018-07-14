@@ -1,0 +1,17 @@
+{
+  "name": "jsuk",
+  "version": "1.0.0",
+  "description": "sdfs",
+  "main": "index.js",
+  "repository": "https://git.coding.net/luopanfeng/jsuk.git",
+  "author": "tj <tang123jian@126.com>",
+  "license": "MIT",
+  "scripts": {
+    "ci":"mvn-ci",
+    "pkg":"yarn ci clean && yarn ci package"
+  },
+  "dependencies": {
+    "apidoc": "^0.17.6",
+    "mvn-ci": "^1.0.0"
+  }
+}
