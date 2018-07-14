@@ -15,10 +15,7 @@ import com.jh.jsuk.utils.SensitiveWordUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -66,6 +63,7 @@ public class ActivityController {
     public Result getAll() {
         // 封装结果map
         Map<String, Object> map = MapUtil.newHashMap();
+
         /**
          * 首页banner
          */
@@ -87,6 +85,7 @@ public class ActivityController {
                         // 1=有效
                         .eq(ModularPortal.STATUS, 1)
                         .orderBy(ModularPortal.SORT_ORDER, false));
+
         map.put("modular", modularPortalPage.getRecords());
         /**
          * 快报
@@ -100,6 +99,7 @@ public class ActivityController {
                         .eq(ExpressNews.IS_DEL, 0)
                         .orderBy(ExpressNews.PUBLISH_TIME, false));
         map.put("news", expressNewsPage.getRecords());
+
         /**
          * 活动模块
          */
@@ -497,16 +497,8 @@ public class ActivityController {
         }
     }
 
-    @ApiOperation("用户-乡村旅游-参与活动")
-    @RequestMapping(value = "/join", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result join(Integer activityId, Integer userId) {
-        ActivityJoin activityJoin = new ActivityJoin();
-        activityJoin.setActivityId(activityId);
-        activityJoin.setUserId(userId);
-        activityJoin.insert();
-        return new Result().success("参与成功!");
-    }
 
+    //查询活动列表
     @ApiOperation("用户-乡村旅游-根据状态查询我的活动")
     @RequestMapping(value = "/getInfoByStatus", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getInfoByStatus(@ApiParam(name = "0=待付款,1=进行中,2=完成", required = true) Integer status, Integer userId) {
@@ -530,6 +522,81 @@ public class ActivityController {
         } else {
             return new Result().success(resList);
         }
+    }
+
+    /**
+     * 亲子、户外拓展、采摘活动、酒店住宿、特产购买
+     * 根据modularId查询模块对应的活动列表
+     */
+    @ApiOperation("用户-乡村旅游-查询亲子、户外拓展、采摘活动、酒店住宿、特产购买对应活动")
+    @RequestMapping(value="/getActivityListByModularId",method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getActivityListByModularId(Integer modularId){
+        Result result=new Result();
+
+        try{
+            List<Activity> activityList= activityService.getActivityListByModularId(modularId);
+            if(activityList!=null && activityList.size()>0){
+                result.success(activityList);
+            }else{
+                result.setMsg("没有相关活动");
+                result.setCode(-10L);
+                result.success();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    /**
+     * 根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情
+     */
+    @ApiOperation("用户-乡村旅游-根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情")
+    @RequestMapping("getActivityInfoById")
+    public Result getActivityInfoById(Integer id){
+        Result result=new Result();
+
+        try{
+            Activity activity=activityService.getActivityInfoById(id);
+            result.success(activity);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+/*
+     *活动报名，需要修改
+    @ApiOperation("用户-乡村旅游-活动-活动详情-活动报名")
+    @RequestMapping(value = "/join", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result join(Integer activityId, Integer userId) {
+        ActivityJoin activityJoin = new ActivityJoin();
+        activityJoin.setActivityId(activityId);
+        activityJoin.setUserId(userId);
+        activityJoin.insert();
+        return new Result().success("参与成功!");
+    }*/
+
+    /**
+     * 活动报名
+     */
+    @ApiOperation("用户-乡村旅游-活动-活动详情-活动报名")
+    @RequestMapping("/join")
+    public Result join(Integer activityId,Integer userId, @RequestBody ActivityJoin activityJoin){
+        Result result=new Result();
+
+        try{
+            activityJoin.setActivityId(activityId);
+            activityJoin.setUserId(userId);
+            activityJoin.insert();
+            return result.success("参与成功!");
+        }catch(Exception e){
+            e.printStackTrace();
+            return result.erro("参加活动失败");
+        }
+
     }
 
 }
