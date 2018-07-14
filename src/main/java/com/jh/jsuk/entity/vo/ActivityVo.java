@@ -38,4 +38,5 @@ public class ActivityVo extends Activity {
 
         return carName;
     }
+
 }

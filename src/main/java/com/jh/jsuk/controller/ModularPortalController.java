@@ -59,6 +59,7 @@ public class ModularPortalController {
                         .eq(Shop.IS_RECOMMEND, 1)
                         .eq(Shop.MODULAR_ID, modularId)
                         .orderBy(Shop.TOTAL_VOLUME, false));
+
         map.put("shop", shopPage.getRecords());
         /**
          * 商品列表

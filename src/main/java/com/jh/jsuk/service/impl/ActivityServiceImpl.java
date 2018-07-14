@@ -10,6 +10,9 @@ import com.jh.jsuk.entity.vo.ActivityVo;
 import com.jh.jsuk.service.ActivityService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.List;
+
 /**
  * <p>
  * 发布活动相关表 服务实现类
@@ -20,6 +23,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ActivityServiceImpl extends ServiceImpl<ActivityDao, Activity> implements ActivityService {
+
+    @Resource
+    private ActivityDao activityDao;
 
     @Override
     public Page getActivityList(Page page, Wrapper wrapper, Integer userId) {
@@ -37,4 +43,23 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityDao, Activity> impl
     public ActivityVo findActivityById(Integer id) {
         return baseMapper.findActivityById(id);
     }
+
+    /**
+     * 亲子、户外拓展、采摘活动、酒店住宿、特产购买
+     * 根据modularId查询模块对应的活动
+     */
+    @Override
+    public List<Activity> getActivityListByModularId(Integer modularId){
+        return activityDao.getActivityListByModularId(modularId);
+    }
+
+    /**
+     * 根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情
+     */
+    @Override
+    public Activity getActivityInfoById(Integer id) {
+        return activityDao.getActivityInfoById(id);
+    }
+
+
 }

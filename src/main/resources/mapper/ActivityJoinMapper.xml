@@ -9,11 +9,14 @@
         <result column="user_id" property="userId" />
         <result column="is_del" property="isDel" />
         <result column="status" property="status" />
+        <result column="name" property="name" />
+        <result column="telephone" property="telephone" />
+        <result column="id_card" property="idCard" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, activity_id, user_id, is_del, status
+        id, activity_id, user_id, is_del, status,name,telephone,id_card
     </sql>
 
 </mapper>
