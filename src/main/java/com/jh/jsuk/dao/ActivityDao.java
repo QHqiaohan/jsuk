@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.jh.jsuk.entity.Activity;
 import com.jh.jsuk.entity.vo.ActivityVo;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
@@ -24,12 +25,6 @@ public interface ActivityDao extends BaseMapper<Activity> {
     ActivityVo findActivity(Integer id);
 
     ActivityVo findActivityById(Integer id);
-
-    /**
-     * 亲子、户外拓展、采摘活动、酒店住宿、特产购买
-     * 根据modularId查询模块对应的活动
-     */
-    List<Activity> getActivityListByModularId(Integer modularId);
 
     /**
      * 根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情

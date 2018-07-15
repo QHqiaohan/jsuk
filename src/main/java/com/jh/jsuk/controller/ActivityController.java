@@ -2,7 +2,9 @@ package com.jh.jsuk.controller;
 
 
 import cn.hutool.core.map.MapUtil;
+import com.baomidou.mybatisplus.enums.SqlLike;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.Dictionary;
@@ -498,30 +500,130 @@ public class ActivityController {
     }
 
 
-    //查询活动列表
+    //用户-乡村旅游-乡村旅游banner
+    @ApiOperation("用户-乡村旅游-乡村旅游banner")
+    @RequestMapping(value="/getVillageBanner",method = {RequestMethod.POST,RequestMethod.GET})
+    public Result getVillageBanner(){
+        Result result=new Result();
+
+        List<Banner> villageBannerList=bannerService.selectList(new EntityWrapper<Banner>()
+                                     .eq(Banner.BANNER_LOCATION,4)    // 4:乡村旅游
+                                     .eq(Banner.IS_VALID,1)          //  是否有效 0:无效 1:有效
+                                     .orderBy(Banner.SORT,false)     //    排序 数字越大越靠前
+        );
+        return result.success(villageBannerList);
+    }
+
+
+    //用户-乡村旅游-关键字搜索
+    @ApiOperation("用户-乡村旅游-关键字搜索")
+    @RequestMapping(value="/searchActivityByKeywords",method={RequestMethod.GET,RequestMethod.POST})
+    public Result searchActivityByKeywords(String keywords){
+        Result result=new Result();
+        keywords=keywords.trim();   //去除前后空格
+        EntityWrapper ew=new EntityWrapper();
+        ew.setEntity(new Activity());
+        ew.like("title",keywords, SqlLike.DEFAULT);
+        List<Activity> searchList=activityService.selectList(ew);
+
+        if(searchList==null || searchList.size()==0){
+           return result.erro("抱歉,暂时还没有发布相关活动...");
+        }
+        return result.success(searchList);
+    }
+
+
+    //用户-乡村旅游-乡村旅游子模块(亲子，户外拓展...)
+    @ApiOperation("用户-乡村旅游-乡村旅游子模块(亲子，户外拓展...)")
+    @RequestMapping("/getChildModularByParentId")
+    public Result getChildModularByParentId(Integer id){
+        Result result=new Result();
+        List<ModularPortal> childModularList=modularPortalService.selectList(new EntityWrapper<ModularPortal>()
+                                            .eq(ModularPortal.PARENT_ID,id)
+
+        );
+        return result.success(childModularList);
+    }
+
+    //用户-乡村旅游-热门推荐
+    @ApiOperation("用户-乡村旅游-热门推荐")
+    @RequestMapping("/getHotActivityList")
+    public Result getHotActivityList(){
+        Result result=new Result();
+        Page<Activity> activityPage = activityService.selectPage(new Page<Activity>(1,2),
+                                                                 new EntityWrapper<Activity>()
+                                                                         .eq(Activity.IS_DEL,0)
+                                                                         .orderBy(Activity.PUBLISH_TIME,false)
+        );
+        if(activityPage.getRecords()==null || activityPage.getRecords().size()==0){
+            return result.erro("亲，暂时没有热门活动哦...");
+        }
+        return result.success(activityPage.getRecords());
+    }
+
+
+    //查询我参加的活动列表
     @ApiOperation("用户-乡村旅游-根据状态查询我的活动")
     @RequestMapping(value = "/getInfoByStatus", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getInfoByStatus(@ApiParam(name = "0=待付款,1=进行中,2=完成", required = true) Integer status, Integer userId) {
-        // 封装活动信息list
-        List<Object> resList = new ArrayList<>();
+
+        // 封装活动信息的list
+        Map<String,Activity> activityMap=new HashMap<>();
+        List<Activity> activityList=new ArrayList<>();
+
+        //从js_activity_join表中查询我参加的活动列表,显示全部活动列表时status传null
         List<ActivityJoin> activityJoinList = activityJoinService.selectList(new EntityWrapper<ActivityJoin>()
                 .eq(ActivityJoin.STATUS, status)
                 .eq(ActivityJoin.USER_ID, userId));
+
+        if(activityJoinList==null || activityJoinList.size()==0){
+            return new Result().setMsg("暂时还没有参与的活动信息").setCode(-10L);
+        }
+
         // 获取活动ID
         for (ActivityJoin activityJoin : activityJoinList) {
             Integer activityId = activityJoin.getActivityId();
             // 根据活动ID查询活动信息
-            List<Activity> activityList = activityService.selectList(new EntityWrapper<Activity>()
-                    .eq(Activity.ID, activityId)
-                    .eq(Activity.IS_DEL, 1)
-                    .orderBy(Activity.PUBLISH_TIME, false));
-            resList.add(activityList);
+            Activity activity=activityService.selectOne(new EntityWrapper<Activity>()
+                                          .eq(Activity.ID,activityId)
+                                           //is_del,是否删除,0:未删除,1:删除
+                                          .eq(Activity.IS_DEL,0)
+                                          .orderBy(Activity.PUBLISH_TIME,false)
+            );
+            activityList.add(activity);
         }
-        if (resList.size() == 0) {
-            return new Result().erro("该用户没有活动信息");
-        } else {
-            return new Result().success(resList);
+
+        return new Result().success(activityList);
+    }
+
+    /**
+     * 页面加载方法
+     * 根据活动的modular_id连js_modular_portal表查询该活动对应的模块类型(亲子,户外拓展...)
+     */
+    @ApiOperation("用户-乡村旅游-我的活动列表-页面加载时调用(根据活动的modular_id查询该活动对应的模块类型)")
+    @RequestMapping("/getMudularName")
+    public Result getMudularName(Integer modularId){
+       ModularPortal modular= modularPortalService.selectById(modularId);
+       return new Result().success(modular.getName());
+    }
+
+
+    //用户-乡村旅游-我的活动列表-删除活动
+    @ApiOperation("用户-乡村旅游-我的活动列表-删除活动")
+    @RequestMapping("/deleteActivityById")
+    public Result deleteActivityById(Integer activityId){
+        Result result=new Result();
+        try{
+            activityJoinService.delete(new EntityWrapper<ActivityJoin>()
+                    .eq(ActivityJoin.ACTIVITY_ID,activityId)
+            );
+            result.success("删除活动成功");
+        }catch(Exception e){
+            e.printStackTrace();
+            result.excption("抱歉!出错啦...我们会尽快解决");
         }
+
+        return result;
     }
 
     /**
@@ -540,7 +642,6 @@ public class ActivityController {
             }else{
                 result.setMsg("没有相关活动");
                 result.setCode(-10L);
-                result.success();
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -567,22 +668,11 @@ public class ActivityController {
         return result;
     }
 
-/*
-     *活动报名，需要修改
-    @ApiOperation("用户-乡村旅游-活动-活动详情-活动报名")
-    @RequestMapping(value = "/join", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result join(Integer activityId, Integer userId) {
-        ActivityJoin activityJoin = new ActivityJoin();
-        activityJoin.setActivityId(activityId);
-        activityJoin.setUserId(userId);
-        activityJoin.insert();
-        return new Result().success("参与成功!");
-    }*/
-
     /**
      * 活动报名
+     * 支付定金完成后调用该方法
      */
-    @ApiOperation("用户-乡村旅游-活动-活动详情-活动报名")
+    @ApiOperation("用户-乡村旅游-活动-活动详情-活动报名(支付定金完成后调用该方法)")
     @RequestMapping("/join")
     public Result join(Integer activityId,Integer userId, @RequestBody ActivityJoin activityJoin){
         Result result=new Result();
@@ -590,6 +680,9 @@ public class ActivityController {
         try{
             activityJoin.setActivityId(activityId);
             activityJoin.setUserId(userId);
+            activityJoin.setIsDel(0);
+            activityJoin.setStatus(1);   //状态 0=待付款,1=进行中,2=完成
+
             activityJoin.insert();
             return result.success("参与成功!");
         }catch(Exception e){

@@ -1,5 +1,6 @@
 package com.jh.jsuk.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.SqlHelper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -24,9 +25,6 @@ import java.util.List;
 @Service
 public class ActivityServiceImpl extends ServiceImpl<ActivityDao, Activity> implements ActivityService {
 
-    @Resource
-    private ActivityDao activityDao;
-
     @Override
     public Page getActivityList(Page page, Wrapper wrapper, Integer userId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
@@ -50,7 +48,11 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityDao, Activity> impl
      */
     @Override
     public List<Activity> getActivityListByModularId(Integer modularId){
-        return activityDao.getActivityListByModularId(modularId);
+        EntityWrapper ew=new EntityWrapper();
+        ew.setEntity(new Activity());
+        ew.where("modular_id={0}",modularId);
+
+        return baseMapper.selectList(ew);
     }
 
     /**
@@ -58,8 +60,8 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityDao, Activity> impl
      */
     @Override
     public Activity getActivityInfoById(Integer id) {
-        return activityDao.getActivityInfoById(id);
-    }
 
+        return baseMapper.getActivityInfoById(id);
+    }
 
 }
