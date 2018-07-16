@@ -3,6 +3,7 @@ package com.jh.jsuk.entity.vo;
 
 import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.entity.Express;
+import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.UserAddress;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +23,7 @@ public class ExpressVo2 extends Express {
     private UserAddress senderAddressInfo;
     private UserAddress getAddressInfo;
 
-    private UserVo userInfo;
+    private User userInfo;
     private DistributionUser distributionUserInfo;
 
     private Double senderDistance;

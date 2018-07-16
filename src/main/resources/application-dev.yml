@@ -23,7 +23,8 @@ spring:
   datasource:
   # 数据库配置
       type: com.alibaba.druid.pool.DruidDataSource
-      url: jdbc:mysql://47.99.45.67:3306/jushang_new?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false
+#      url: jdbc:mysql://47.99.45.67:3306/jushang_new?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false
+      url: jdbc:mysql://39.108.80.44:3306/jushang_new?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false
 #      url: jdbc:mysql:///jushang_new?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false
 #      url: jdbc:mysql://192.168.0.70:3306/jushang_new?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false
       username: root

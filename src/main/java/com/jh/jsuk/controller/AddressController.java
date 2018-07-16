@@ -35,7 +35,7 @@ public class AddressController {
             @ApiImplicitParam(name = "longitude", required = true, value = "经度", paramType = "query", dataType = "double"),
             @ApiImplicitParam(name = "latitude", required = true, value = "纬度", paramType = "query", dataType = "double"),
             @ApiImplicitParam(name = "address", required = true, value = "地址名称", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "homeNum", required = true, value = "门牌号", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "roomNumber", required = true, value = "门牌号", paramType = "query", dataType = "string"),
     })
     @PostMapping("/add")
     public Result add(@ModelAttribute UserAddress address) {
@@ -60,7 +60,7 @@ public class AddressController {
             @ApiImplicitParam(name = "longitude", required = true, value = "经度", paramType = "query", dataType = "double"),
             @ApiImplicitParam(name = "latitude", required = true, value = "纬度", paramType = "query", dataType = "double"),
             @ApiImplicitParam(name = "address", required = true, value = "地址名称", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "homeNum", required = true, value = "门牌号", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "roomNumber", required = true, value = "门牌号", paramType = "query", dataType = "string"),
     })
     @PostMapping("/edit")
     public Result edit(@ModelAttribute UserAddress address) {

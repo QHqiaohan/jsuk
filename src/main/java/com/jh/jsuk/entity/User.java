@@ -53,6 +53,7 @@ public class User extends ParentUser<User> {
     /**
      * 密码
      */
+    @JsonIgnore
     @ApiModelProperty(value = "密码", name = "password")
     private String password;
     /**
