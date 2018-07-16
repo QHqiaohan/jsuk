@@ -337,6 +337,7 @@ public class ActivityController {
         return new Result().success(goodsPage);
     }
 
+    //首页-二手市场，展示banner和活动列表
     @ApiOperation(value = "二手市场-获取banner/商品列表/留言总数", notes = "isSecondaryMarket:0=未开启二手市场,1=开启")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码",
@@ -348,7 +349,7 @@ public class ActivityController {
     public Result getToMarket(Page page, Integer userId) {
         // 封装结果map
         Map<String, Object> map = new HashMap<>();
-        // 查询该用户是否开启二手市场
+        // 查询该用户是否开启二手市场  1:开启  0:禁用
         User user = userService.selectById(userId);
         Integer isSecondaryMarket = user.getIsSecondaryMarket();
         map.put("isSecondaryMarket", isSecondaryMarket);
@@ -362,7 +363,7 @@ public class ActivityController {
                 .orderBy(Banner.SORT, false));
         map.put("banner", bannerList);
         /**
-         * 获取二手市场商品列表
+         * 获取二手市场商品(活动)列表
          */
         MyEntityWrapper<User> ew = new MyEntityWrapper<>();
         Page activityList = activityService.getActivityList(page, ew, userId);
@@ -370,12 +371,18 @@ public class ActivityController {
         return new Result().success(map);
     }
 
+    //首页-二手市场-活动列表-点击查看活动详情
     @ApiOperation("二手市场-商品详细信息")
     @RequestMapping(value = "/toMarketInfo", method = {RequestMethod.POST, RequestMethod.GET})
+    //接收前台传过来的activityId
     public Result toMarketInfo(@ApiParam(value = "商品ID", required = true) Integer id) {
         ActivityVo activityVo = activityService.findActivity(id);
         return new Result().success(activityVo);
     }
+
+
+    //首页-二手市场-点击右上角查询我发布的二手市场列表,如果查询我发布的二手市场列表,前台传type=3
+    //首页-便捷生活-点击右上角查询我发布的便捷生活列表，前台传type=2
 
     @ApiOperation("用户-二手市场&便捷生活-查询我发布的")
     @ApiImplicitParams({
@@ -395,11 +402,13 @@ public class ActivityController {
         }
     }
 
+    //首页-二手市场-我发表的二手市场列表-删除
+    //首页-便捷生活-我发表的便捷生活列表-删除
     @ApiOperation("用户-二手市场&便捷生活-根据ID删除活动")
     @RequestMapping(value = "/delActivity", method = {RequestMethod.POST, RequestMethod.GET})
     public Result delActivity(Integer userId, @ApiParam(value = "活动ID", required = true) Integer activityId) {
         Activity activity = new Activity();
-        // 0=删除
+        // 0=未删除，1=删除
         activity.setIsDel(1);
         boolean res = activity.update(new EntityWrapper<Activity>()
                 .eq(Activity.USER_ID, userId)
@@ -411,6 +420,8 @@ public class ActivityController {
         }
     }
 
+    //首页-二手市场-我发布的二手市场列表-编辑
+    //首页-便捷生活-我发布的便捷生活列表-编辑
     @ApiOperation("二手市场&便捷生活-编辑我发布的活动")
     @RequestMapping(value = "/updateActivity", method = {RequestMethod.POST, RequestMethod.GET})
     public Result updateActivity(@ModelAttribute Activity activity) {
@@ -426,6 +437,9 @@ public class ActivityController {
         }
     }
 
+
+    //用户-首页-二手市场-查看活动详情-根据活动id获取留言
+    //用户-首页-便捷生活-查看活动详情-根据活动id获取留言
     @ApiOperation("用户-二手市场&便捷生活-根据商品ID获取留言")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
@@ -438,6 +452,8 @@ public class ActivityController {
         Page commentPage = marketCommentService.findCommentByActivityId(page, ew, activityId);
         return new Result().success(commentPage);
     }
+
+
 
     @ApiOperation(value = "用户-二手市场&便捷生活-发表/回复留言", notes = "comment_id为空=新留言,不为空=回复")
     @ApiImplicitParams(value = {
