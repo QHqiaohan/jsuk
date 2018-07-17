@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.jsuk.dao.ShopRushBuyActivityDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopRushBuyActivity">
+        <id column="id" property="id" />
+        <result column="activity_name" property="activityName" />
+        <result column="rush_buy_id" property="rushBuyId" />
+        <result column="goods_size_id" property="goodsSizeId" />
+        <result column="is_del" property="isDel" />
+        <result column="publish_time" property="publishTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, activity_name, rush_buy_id, goods_size_id, is_del, publish_time
+    </sql>
+
+</mapper>
