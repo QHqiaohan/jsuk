@@ -1,13 +1,12 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -40,6 +39,12 @@ public class ShopRushBuyActivity extends Model<ShopRushBuyActivity> {
      * 1=删除,0=未删除
      */
     private Integer isDel;
+
+    /**
+     * 1=上架,0=下架
+     */
+    private Integer isUse;
+
     private Date publishTime;
 
 
@@ -91,6 +96,14 @@ public class ShopRushBuyActivity extends Model<ShopRushBuyActivity> {
         this.publishTime = publishTime;
     }
 
+    public void setIsUse(Integer isUse) {
+        this.isUse = isUse;
+    }
+
+    public Integer getIsUse() {
+        return isUse;
+    }
+
     public static final String ID = "id";
 
     public static final String ACTIVITY_NAME = "activity_name";
@@ -100,6 +113,8 @@ public class ShopRushBuyActivity extends Model<ShopRushBuyActivity> {
     public static final String GOODS_SIZE_ID = "goods_size_id";
 
     public static final String IS_DEL = "is_del";
+
+    public static final String IS_USE = "is_use";
 
     public static final String PUBLISH_TIME = "publish_time";
 
@@ -116,6 +131,7 @@ public class ShopRushBuyActivity extends Model<ShopRushBuyActivity> {
         ", rushBuyId=" + rushBuyId +
         ", goodsSizeId=" + goodsSizeId +
         ", isDel=" + isDel +
+        ", isUse=" + isUse +
         ", publishTime=" + publishTime +
         "}";
     }

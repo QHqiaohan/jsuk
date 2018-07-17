@@ -2,11 +2,10 @@ package com.jh.jsuk.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.ShopRushBuy;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.session.RowBounds;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,5 +18,6 @@ import java.util.List;
  */
 public interface ShopRushBuyDao extends BaseMapper<ShopRushBuy> {
 
-    List getShopRushBuyList(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("startTime") Date startTime, @Param("endTime")Date endTime);
+    List getShopRushBuyList(Page page,@Param("rushBuyId") Integer rushBuyId,@Param("ew") Wrapper wrapper);
+
 }

@@ -31,16 +31,11 @@
         sgs.kill_stock,
         sg.*
         FROM
-        js_shop_rush_buy_size srbs
-        LEFT JOIN js_shop_rush_buy srb ON srbs.rush_buy_id = srb.id
-        LEFT JOIN js_shop_goods_size sgs ON sgs.id = srbs.goods_size_id
+        js_shop_rush_buy_activity a
+        LEFT JOIN js_shop_rush_buy srb ON a.rush_buy_id = srb.id
+        LEFT JOIN js_shop_goods_size sgs ON sgs.id = a.goods_size_id
         LEFT JOIN js_shop_goods sg ON sgs.shop_goods_id = sg.id
-        WHERE
-        srb.start_time &gt;= #{startTime}
-        AND srb.end_time &lt;= #{endTime}
-        <where>
-            ${ew.sqlSegment}
-        </where>
+        where a.rush_buy_id = #{rushBuyId}
     </select>
 
 </mapper>

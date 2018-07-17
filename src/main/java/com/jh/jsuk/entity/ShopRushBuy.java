@@ -33,9 +33,9 @@ public class ShopRushBuy extends Model<ShopRushBuy> {
     private Integer status;
 
     /**
-     * 被删除
+     * 1 启用 2禁用
      */
-    private Integer isDel;
+    private Integer isUse;
 
 
 //    public Integer getId() {
@@ -78,7 +78,7 @@ public class ShopRushBuy extends Model<ShopRushBuy> {
 
     public static final String STATUS = "status";
 
-    public static final String IS_DEL = "is_del";
+    public static final String IS_USE = "is_use";
 
     @Override
     protected Serializable pkVal() {
