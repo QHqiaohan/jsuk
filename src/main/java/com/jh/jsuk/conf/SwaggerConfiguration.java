@@ -37,7 +37,7 @@ public class SwaggerConfiguration {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("巨客U城api")
+                .title("qiaohan success")
                 .description("巨客U城api")
                 .version("1.0")
                 .build();

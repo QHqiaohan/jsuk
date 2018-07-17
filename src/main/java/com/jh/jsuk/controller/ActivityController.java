@@ -454,7 +454,8 @@ public class ActivityController {
     }
 
 
-
+    //首页-二手市场-活动列表-活动详情-发表/回复留言
+    //首页-便捷生活-活动列表-活动详情-留言/回复留言
     @ApiOperation(value = "用户-二手市场&便捷生活-发表/回复留言", notes = "comment_id为空=新留言,不为空=回复")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "comment", value = "留言内容",
@@ -465,7 +466,7 @@ public class ActivityController {
                     paramType = "query", dataType = "Integer"),
     })
     @RequestMapping(value = "/addComment", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addComment(MarketComment marketComment) {
+    public Result addComment(@RequestBody MarketComment marketComment) {
         //获取敏感词
         Dictionary dictionary = dictionaryService.selectOne(new EntityWrapper<Dictionary>().eq("code", "sensitive_words"));
         String sensitiveWord = dictionary.getValue();
@@ -482,7 +483,7 @@ public class ActivityController {
             String content = SensitiveWordUtil.replaceSensitiveWord(marketComment.getComment(), '*');
             marketComment.setComment(content);
             // comment_id为空=新评论,不为空=回复
-            if (marketComment.getCommentId() == null) {
+            if (marketComment.getCommentId() == null) {     //发表评论
                 boolean res = marketComment.insert();
                 if (res) {
                     return new Result().success("发表留言成功!");
@@ -490,6 +491,10 @@ public class ActivityController {
                     return new Result().erro("发表留言失败,请稍后再试", res);
                 }
             } else {
+                /*
+                回复留言
+                前端需要把回复的评论对象id作为传过来的marketComment的comment_id
+                 */
                 boolean res = marketComment.insert();
                 if (res) {
                     return new Result().success("回复留言成功!");
@@ -503,6 +508,9 @@ public class ActivityController {
         }
     }
 
+    //乡村旅游现在不需要新增活动的功能
+    //首页-二手市场-发布活动
+    //首页-便捷生活-发布活动
     @ApiOperation(value = "用户-便捷生活&二手市场&乡村旅游-新增活动",
             notes = "type按类型必填!!! 1=乡村旅游,2=便捷生活,3=二手市场',如果是便捷生活,classId必填!!如果是乡村旅游,modularId必填!!二手市场不用填")
     @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.GET})
@@ -661,6 +669,7 @@ public class ActivityController {
             }
         }catch(Exception e){
             e.printStackTrace();
+            return result.erro("出错啦，稍后重试");
         }
 
         return result;
@@ -677,11 +686,12 @@ public class ActivityController {
         try{
             Activity activity=activityService.getActivityInfoById(id);
             result.success(activity);
+            return result;
         }catch(Exception e){
             e.printStackTrace();
+            result.erro("出错啦，稍后重试");
+            return result;
         }
-
-        return result;
     }
 
     /**

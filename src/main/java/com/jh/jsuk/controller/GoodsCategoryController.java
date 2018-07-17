@@ -74,6 +74,11 @@ public class GoodsCategoryController {
         List<GoodsCategory> goodsCategories = goodsCategoryService.selectList(new MyEntityWrapper<GoodsCategory>()
                 .orderBy(GoodsCategory.SORT_ORDER, false));
         List<Menu> rootMenu = Lists.newArrayList();
+
+        /**
+         * 遍历商品分类集合goodsCategories
+         * 分类信息添加到rootMenu集合
+         */
         goodsCategories.forEach(category -> {
             Menu menu = new Menu();
             menu.setId(String.valueOf(category.getId()));
@@ -83,8 +88,10 @@ public class GoodsCategoryController {
             menu.setParentId(String.valueOf(category.getParentId()));
             rootMenu.add(menu);
         });
+
         // 最后的结果
         List<Menu> menuList = Lists.newArrayList();
+
         // 先找到所有的一级菜单
         for (int i = 0; i < rootMenu.size(); i++) {
             // 一级菜单 parentId=0
@@ -92,10 +99,12 @@ public class GoodsCategoryController {
                 menuList.add(rootMenu.get(i));
             }
         }
+
         // 为一级菜单设置子菜单，getChild是递归调用的
         for (Menu menu : menuList) {
             menu.setChildMenus(getChild(menu.getId(), rootMenu));
         }
+
         Map<String, Object> map = Maps.newHashMap();
         map.put("goodsCategory", menuList);
         /**
@@ -114,6 +123,13 @@ public class GoodsCategoryController {
         return new Result().success(map);
     }
 
+
+    /**
+     * 查询二级分类下面的子级分类
+     * @param session   ?
+     * @param categoryId    前端传当前(二级)分类id
+     * @return
+     */
     @ApiIgnore
     @RequestMapping("/get_category")
     public Result getChildrenParallelCategory(HttpSession session, @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
@@ -121,6 +137,7 @@ public class GoodsCategoryController {
         return goodsCategoryService.getChildrenParallelCategory(categoryId);
     }
 
+    //客户(用户)端不应该有添加商品分类的功能
     @ApiIgnore
     @PostMapping("add_category")
     public Result addCategory(HttpSession session, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") int parentId) {
@@ -128,6 +145,7 @@ public class GoodsCategoryController {
         return goodsCategoryService.addCategory(categoryName, parentId);
     }
 
+    //更新商品分类 ?
     @ApiIgnore
     @PostMapping("set_category_name")
     public Result setCategoryName(HttpSession session, Integer categoryId, String categoryName, String status) {
@@ -139,7 +157,6 @@ public class GoodsCategoryController {
         }
         //更新categoryName
         return goodsCategoryService.updateCategoryName(categoryId, categoryName, stas);
-
     }
 
     @ApiIgnore
