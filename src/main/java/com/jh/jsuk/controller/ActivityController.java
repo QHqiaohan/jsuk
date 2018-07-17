@@ -248,9 +248,10 @@ public class ActivityController {
         return new Result().success(map);
     }
 
-    @ApiOperation("用户-特色家乡&直销平台-banner/分类")
+    @ApiOperation("用户-特色家乡&直销平台-banner/分类/店铺列表/商品列表")
     @RequestMapping(value = "/getMoreInfo", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getMoreInfo(@ApiParam(value = "模块ID", required = true) Integer modularId) {
+    public Result getMoreInfo(@ApiParam(value = "模块ID", required = true) Integer modularId,
+                              @ApiParam(value = "当前用户ID", required = true) Integer userId) {
         // 封装结果map
         Map<String, Object> map = new HashMap<>();
         if (modularId == 3) {
@@ -273,6 +274,11 @@ public class ActivityController {
                             .eq(ModularPortal.STATUS, 1)
                             .orderBy(ModularPortal.SORT_ORDER));
             map.put("modular", modularPortalPage.getRecords());
+            /**
+             * 店铺列表
+             */
+            List<Shop> shopList = shopService.findShopsByUserArea(userService.selectInfoById(userId));
+            map.put("shops", shopList);
         } else if (modularId == 8) {
             /**
              * 获取banner
@@ -293,12 +299,21 @@ public class ActivityController {
                             .eq(ModularPortal.STATUS, 1)
                             .orderBy(ModularPortal.SORT_ORDER));
             map.put("modular", modularPortalPage.getRecords());
+            /**
+             * 店铺列表
+             */
+            List<Shop> shopList = shopService.findShopsByUserArea(null);
+            map.put("shops", shopList);
         }
-
+        /**
+         * 商品列表
+         */
+        List<GoodsSalesPriceVo> shopGoodsByModularId = shopGoodsService.findShopGoodsByModularId(modularId);
+        map.put("shopGoods", shopGoodsByModularId);
         return new Result().success(map);
     }
 
-    @ApiOperation("用户-会员商城-获取banner")
+    @ApiOperation("用户-会员商城-获取banner-店铺列表/分类/商品列表")
     @RequestMapping(value = "/getVipShop", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getVipShop(@ApiParam(value = "模块ID", required = true) Integer modularId) {
         // 封装结果map
@@ -322,6 +337,16 @@ public class ActivityController {
                         .eq(ModularPortal.STATUS, 1)
                         .orderBy(ModularPortal.SORT_ORDER));
         map.put("modular", modularPortalPage.getRecords());
+        /**
+         * 店铺列表
+         */
+        List<Shop> shopList = shopService.findShopsByUserArea(null);
+        map.put("shops", shopList);
+        /**
+         * 商品列表
+         */
+        List<GoodsSalesPriceVo> shopGoodsByModularId = shopGoodsService.findShopGoodsByModularId(modularId);
+        map.put("shopGoods", shopGoodsByModularId);
         return new Result().success(map);
     }
 
