@@ -179,7 +179,7 @@ public class CouponController {
     @PostMapping("/list")
     public Result list(Page page) {
         Page couponPage = couponService.selectPage(page, new EntityWrapper<Coupon>()
-                .eq(Coupon.IS_DEL, 1)
+                .ne(Coupon.IS_DEL, 1)
                 .gt(Coupon.NUM, 0)
                 .orderBy(Coupon.PUBLISH_TIME, false));
         return new Result().success(couponPage);
