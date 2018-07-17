@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -27,30 +28,37 @@ public class Express extends Model<Express> {
     /**
      * 用户ID
      */
+    @ApiModelProperty(value = "用户ID", name = "userId")
     private Integer userId;
     /**
      * 配送人员id
      */
+    @ApiModelProperty(value = "配送人员id", name = "distributionUserId")
     private Integer distributionUserId;
     /**
      * 寄件人地址ID
      */
+    @ApiModelProperty(value = "寄件人地址ID", name = "senderAddress")
     private Integer senderAddress;
     /**
      * 收件人地址ID
      */
+    @ApiModelProperty(value = "收件人地址ID", name = "getAddress")
     private Integer getAddress;
     /**
      * 物品类型ID
      */
+    @ApiModelProperty(value = "物品类型ID", name = "goodsType")
     private Integer goodsType;
     /**
      * 预估重量
      */
+    @ApiModelProperty(value = "预估重量", name = "weight")
     private String weight;
     /**
      * 真实重量
      */
+    @ApiModelProperty(value = "真实重量", name = "realWeight")
     private String realWeight;
     /**
      * 是否删除 0=未删除,1=删除
@@ -63,18 +71,22 @@ public class Express extends Model<Express> {
     /**
      * 订单类型 1=快递,2=跑腿
      */
+    @ApiModelProperty(value = "订单类型 1=快递,2=跑腿", name = "type")
     private Integer type;
     /**
      * 价格
      */
+    @ApiModelProperty(value = "价格", name = "price")
     private String price;
     /**
      * 备注
      */
+    @ApiModelProperty(value = "备注", name = "notes")
     private String notes;
     /**
      * 要求送达时间
      */
+    @ApiModelProperty(value = "要求送达时间", name = "requirementTime")
     private Date requirementTime;
     /**
      * 创建时间
