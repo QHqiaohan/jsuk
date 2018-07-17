@@ -41,22 +41,22 @@
 
     <select id="getShopById" resultMap="ShopTelPhoneVo">
         SELECT
-            s.*, mu.tel_phone
+            s.*,
+            mu.tel_phone
         FROM
             js_shop s
             LEFT JOIN js_manager_user mu
-            ON s.id = mu.shop_id
+                ON s.id = mu.shop_id
         WHERE
             s.id = #{shopId}
     </select>
 
     <select id="findCollectByUserId" resultMap="BaseResultMap">
-        SELECT
-            js_shop.*
+        SELECT js_shop.*
         FROM
             js_collect
             LEFT JOIN js_shop
-            ON  js_collect.shop_id = js_shop.id
+                ON js_collect.shop_id = js_shop.id
         WHERE user_id = #{userId}
         ORDER BY t_collect.publish_time DESC
     </select>
@@ -68,12 +68,20 @@
 
     <select id="selectShopPhoneById" resultMap="ShopPhoneVo">
         SELECT
-            js_shop.*, phone
+            js_shop.*,
+            phone
         FROM
             js_shop
             LEFT JOIN js_manager_user mu ON js_shop.id = mu.shop_id
         WHERE
             js_shop.id = #{id}
+    </select>
+    <select id="findShopsByUserArea" resultMap="BaseResultMap">
+        select *
+        from js_shop
+        <if test="address != null and address != ''">
+            where address like CONCAT(CONCAT('%',#{address},'%'));
+        </if>
     </select>
 
 </mapper>
