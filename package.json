@@ -8,7 +8,11 @@
   "license": "MIT",
   "scripts": {
     "ci":"mvn-ci",
-    "pkg":"yarn ci clean && yarn ci package"
+    "pkg":"yarn ci clean && yarn ci package",
+    "uploadp":"yarn ci upload -e prod",
+    "exep":"yarn ci exe -e prod deploy_prod.sh",
+    "pkg":"yarn ci clean && yarn ci package",
+    "prod":"yarn pkg && yarn uploadp && yarn exep"
   },
   "dependencies": {
     "apidoc": "^0.17.6",

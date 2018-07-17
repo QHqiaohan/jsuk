@@ -5,12 +5,16 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ShopGoodsDao;
+import com.jh.jsuk.dao.ShopRushBuyActivityDao;
 import com.jh.jsuk.entity.ShopGoods;
+import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
 import com.jh.jsuk.entity.vo.ShopGoodsVo2;
 import com.jh.jsuk.envm.ShopGoodsStatus;
 import com.jh.jsuk.service.ShopGoodsService;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +29,10 @@ import java.util.List;
  */
 @Service
 public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> implements ShopGoodsService {
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Autowired
+    ShopRushBuyActivityDao shopRushBuyActivityDao;
 
     @Override
     public List<GoodsSalesPriceVo> findShopGoodsByModularId(Integer modularId) {
@@ -75,7 +83,17 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
 
     @Override
     public GoodsSizeVo getShopGoodsById(Integer id) {
-        return baseMapper.getShopGoodsById(id);
+        GoodsSizeVo vo = baseMapper.getShopGoodsById(id);
+        if (vo != null) {
+            List<ShopGoodsSize> sizes = vo.getShopGoodsSize();
+            if (CollectionUtils.isNotEmpty(sizes)) {
+                for (ShopGoodsSize size : sizes) {
+                    if (size != null)
+                        vo.addRushBuyInfo(shopRushBuyActivityDao.findVoByGoodsSizeId(size.getId()));
+                }
+            }
+        }
+        return vo;
     }
 
     @Override
@@ -130,7 +148,7 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     public Page list(Page page, ShopGoodsStatus status, String categoryId, String keyWord, String brandId, Integer shopId) {
         if (keyWord != null)
             keyWord = "%" + keyWord.trim() + "%";
-        List<ShopGoodsVo2> list = baseMapper.shopGoodsList(page, status != null ? status.getKey() : null, categoryId, keyWord, brandId,shopId);
+        List<ShopGoodsVo2> list = baseMapper.shopGoodsList(page, status != null ? status.getKey() : null, categoryId, keyWord, brandId, shopId);
         return page.setRecords(list);
     }
 
@@ -138,7 +156,7 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     public Page listRecycle(Page page, String categoryId, String keyWord, String brandId, Integer shopId) {
         if (keyWord != null)
             keyWord = "%" + keyWord.trim() + "%";
-        List<ShopGoodsVo2> list = baseMapper.shopGoodsRecycleList(page, categoryId, keyWord, brandId,shopId);
+        List<ShopGoodsVo2> list = baseMapper.shopGoodsRecycleList(page, categoryId, keyWord, brandId, shopId);
         return page.setRecords(list);
     }
 

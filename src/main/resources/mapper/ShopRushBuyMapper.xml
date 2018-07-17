@@ -36,6 +36,7 @@
         LEFT JOIN js_shop_goods_size sgs ON sgs.id = a.goods_size_id
         LEFT JOIN js_shop_goods sg ON sgs.shop_goods_id = sg.id
         where a.rush_buy_id = #{rushBuyId}
+        and sgs.kill_stock > 0
     </select>
 
 </mapper>

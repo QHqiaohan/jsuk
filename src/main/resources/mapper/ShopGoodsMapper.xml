@@ -215,6 +215,7 @@
         where
         sg.status = 1
         AND sg.is_del = 1
+        and sgs.stock > 0
         <if test="shopId != null">
             AND sg.shop_id = #{shopId}
         </if>

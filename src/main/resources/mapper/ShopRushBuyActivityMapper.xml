@@ -18,4 +18,12 @@
         id, activity_name, rush_buy_id, goods_size_id, is_del,is_use, publish_time
     </sql>
 
+    <select id="findVoByGoodsSizeId" resultType="com.jh.jsuk.entity.vo.RushBuyVo">
+        select start_time,end_time,#{goodsSizeId} goods_size_id from js_shop_rush_buy b where
+        b.id =  (SELECT rush_buy_id FROM `js_shop_rush_buy_activity` a
+        where a.is_use and not a.is_del and a.goods_size_id = #{goodsSizeId})
+        limit 1
+    </select>
+
+
 </mapper>
