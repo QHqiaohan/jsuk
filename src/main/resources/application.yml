@@ -16,6 +16,15 @@ spring:
           enabled: true
           initial-interval: 5000
         prefetch: 100
+  redis:
+    database: 0
+    pool:
+      max-active: 100
+      max-idle: 10
+      max-wait: -1
+      min-idle: 2
+    timeout: 5000
+
 #mybatis
 mybatis-plus:
   mapper-locations: classpath*:mapper/*Mapper.xml

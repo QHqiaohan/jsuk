@@ -157,6 +157,7 @@ public class PayController {
             @ApiImplicitParam(name = "paymentAmount", value = "到店支付金额",
                     required = true, paramType = "query", dataType = "String")
     })
+    @Transactional
     @RequestMapping(value = "placeAnOrder", method = RequestMethod.POST)
     public Result placeAnOrder(Integer userId, String goodsId, String carId, String orderType, Integer memberConfigId, String shopUserId, String paymentAmount) {
         if (ObjectUtil.isNull(userId)) {
@@ -164,6 +165,7 @@ public class PayController {
         }
         Map<String, Object> resultMap = Maps.newHashMap();
         //订单类型 0:普通订单 1:秒杀订单 2:会员购买 3:充值 4:到店支付
+        //会员购买
         if (StrUtil.equals(orderType, "2")) {
             //查询充值配置
             MemberConfig memberConfig = memberConfigService.selectOne(new MyEntityWrapper<MemberConfig>().eq(MemberConfig.ID, memberConfigId));

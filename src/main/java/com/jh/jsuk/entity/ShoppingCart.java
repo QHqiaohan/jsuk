@@ -56,6 +56,11 @@ public class ShoppingCart extends Model<ShoppingCart> {
      */
     private Integer sizeId;
 
+    /**
+     * 是否是秒杀 1：秒杀 0：普通
+     */
+    private Integer isRushBuy;
+
 
     public Integer getId() {
         return id;
@@ -129,6 +134,14 @@ public class ShoppingCart extends Model<ShoppingCart> {
         this.sizeId = sizeId;
     }
 
+    public void setIsRushBuy(Integer isRushBuy) {
+        this.isRushBuy = isRushBuy;
+    }
+
+    public Integer getIsRushBuy() {
+        return isRushBuy;
+    }
+
     public static final String ID = "id";
 
     public static final String USER_ID = "user_id";
@@ -146,6 +159,8 @@ public class ShoppingCart extends Model<ShoppingCart> {
     public static final String IS_PAST = "is_past";
 
     public static final String SIZE_ID = "size_id";
+
+    public static final String IS_RUSH_BUY = "is_rush_buy";
 
     @Override
     protected Serializable pkVal() {
