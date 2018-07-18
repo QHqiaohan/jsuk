@@ -12,11 +12,12 @@
         <result column="desc" property="desc" />
         <result column="publish_time" property="publishTime" />
         <result column="poundage" property="poundage" />
+        <result column="user_nick_name" property="userNickName" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, bank_id, money, status, user_id, desc, publish_time, poundage
+        id, bank_id, money, status, user_id, desc, publish_time, poundage,user_nick_name
     </sql>
 
     <resultMap id="UserApplyVo" type="com.jh.jsuk.entity.vo.UserApplyVo" extends="BaseResultMap">

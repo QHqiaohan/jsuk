@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.DistributionUserDao;
+import com.jh.jsuk.entity.DistributionDetail;
 import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.entity.dto.MessageDTO;
 import com.jh.jsuk.mq.DjsMessageProducer;
+import com.jh.jsuk.service.DistributionDetailService;
 import com.jh.jsuk.service.DistributionUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +52,26 @@ public class DistributionUserServiceImpl extends ServiceImpl<DistributionUserDao
     public void addAccount(BigDecimal amount, Integer userId) {
         Integer count = baseMapper.updateAccount(amount, userId);
         log.info("更新行数量:{}", count);
+    }
+
+    @Autowired
+    DistributionDetailService distributionDetailService;
+
+    @Override
+    public BigDecimal getRemainder(Integer distributionUserId) {
+        BigDecimal bigDecimal = new BigDecimal("0.00");
+        Wrapper<DistributionDetail> wrapper = new EntityWrapper<>();
+        wrapper.eq(DistributionDetail.USER_ID, distributionUserId);
+        List<DistributionDetail> distributionDetails = distributionDetailService.selectList(wrapper);
+        if (distributionDetails == null || distributionDetails.isEmpty())
+            return bigDecimal;
+        for (DistributionDetail detail : distributionDetails) {
+            BigDecimal money = detail.getMoney();
+            if (money == null) {
+                continue;
+            }
+            bigDecimal.add(money);
+        }
+        return bigDecimal;
     }
 }

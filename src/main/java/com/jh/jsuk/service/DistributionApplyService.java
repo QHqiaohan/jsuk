@@ -16,6 +16,7 @@ import com.jh.jsuk.entity.vo.UserApplyVo;
  * @since 2018-06-20
  */
 public interface DistributionApplyService extends IService<DistributionApply> {
+
     Page<UserApplyVo> selectPageByUserInfo(Page page, Wrapper wrapper);
 
 }
