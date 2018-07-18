@@ -28,3 +28,8 @@ yarn ci upload -e prod -p (服务器密码)
 yarn ci exe -e prod -p (服务器密码) deploy_prod.sh
 
 ```
+
+### 数据库命名规范
+
+
+> 数据库命名 所有 bool值已 is_ 开始 1 表示true 0 表示 false 

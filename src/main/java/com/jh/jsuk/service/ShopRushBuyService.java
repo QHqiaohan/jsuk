@@ -1,11 +1,8 @@
 package com.jh.jsuk.service;
 
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.ShopRushBuy;
-
-import java.util.Date;
 
 /**
  * <p>
@@ -17,5 +14,6 @@ import java.util.Date;
  */
 public interface ShopRushBuyService extends IService<ShopRushBuy> {
 
-    Page getShopRushBuyList(Page page, Wrapper wrapper, Date startTime, Date endTime);
+    Page getShopRushBuyList(Page page,Integer rushBuyId);
+
 }

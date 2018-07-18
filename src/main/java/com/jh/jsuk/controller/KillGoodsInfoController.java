@@ -1,10 +1,6 @@
 package com.jh.jsuk.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
-
 /**
  * <p>
  * 秒杀商品信息 前端控制器
@@ -13,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lpf
  * @since 2018-06-20
  */
-@RestController
-@RequestMapping("/killGoodsInfo")
-public class KillGoodsInfoController {
-
-}
+//@RestController
+//@RequestMapping("/killGoodsInfo")
+//public class KillGoodsInfoController {
+//
+//}
 

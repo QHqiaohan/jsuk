@@ -378,13 +378,13 @@ public class UserOrderController {
 //        return new Result().success();
 //    }
 
-    public void addCoupon(Coupon coupon) {
-        coupon.insert();
-    }
+//    public void addCoupon(Coupon coupon) {
+//        coupon.insert();
+//    }
 
-    public void sendCouponForUser(UserCoupon up) {
-        up.insert();
-    }
+//    public void sendCouponForUser(UserCoupon up) {
+//        up.insert();
+//    }
 
     /**
      * 待送达
