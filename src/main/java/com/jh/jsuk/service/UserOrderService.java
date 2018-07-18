@@ -49,4 +49,11 @@ public interface UserOrderService extends IService<UserOrder> {
     Integer orderCount(Integer userId);
 
     Page userOrder(Page page, Integer id);
+
+    /**
+     * 催一催
+     * @param orderId 订单id
+     * @return 操作结果
+     */
+    String pushAPush(Integer orderId);
 }
