@@ -28,6 +28,23 @@
     <resultMap id="CouponVo" type="com.jh.jsuk.entity.vo.CouponVo" extends="BaseResultMap">
         <association property="userCoupon" column="{couponId=id,userId=user_id}" select="com.jh.jsuk.dao.UserCouponDao.selectByCouponId"></association>
     </resultMap>
+
+
+    <select id="selectCouponList" resultMap="BaseResultMap">
+        select
+        js_coupon.*
+        from js_coupon join js_coupon_goods
+        on
+        js_coupon.id=js_coupon_goods.coupon_id
+        where js_coupon_goods.goods_id=#{goodsId}
+        and
+        js_coupon.shop_id=#{shopId}
+
+    </select>
+
+
+
+
     <!--<resultMap id="CouponVo" type="com.jushang.entity.vo.CouponVo" extends="BaseResultMap">
       <association property="userCoupon" column="id" select="com.jushang.dao.UserCouponDao.selectByCouponId"></association>
     </resultMap>-->

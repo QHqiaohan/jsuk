@@ -14,6 +14,8 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +44,8 @@ public class ShopGoodsController {
     private StatisticsPriceService statisticsPriceService;
     @Autowired
     private ManagerUserService managerUserService;
+    @Autowired
+    private CouponService couponService;
 
 //    @Autowired
 //    ShopRushBuySizeService shopRushBuySizeService;
@@ -247,14 +251,48 @@ public class ShopGoodsController {
 
 
     //用户端-首页-商品(王阳明全集...)详情-根据商品id查询该商品对应的优惠券列表
+    @ApiOperation("用户端-首页-商品详情-优惠券列表")
+    @RequestMapping("/getCouponListByGoodsId")
     public Result getCouponListByGoodsId(Integer goodsId){
         /**
          * 根据商品id查询商品对应的店铺
          */
         ShopGoods shopgoods = shopGoodsService.selectById(goodsId);
+        Integer shopId = shopgoods.getShopId();
+        List<Coupon> list=couponService.selectCouponList(goodsId,shopId);
+        if(list==null || list.size()==0){
+            return new Result().erro("没有优惠券");
+        }
+        return new Result().success(list);
+    }
 
+    //用户端-首页-商品(王阳明全集...)详情-根据商品id查询该商品对应的优惠券列表-领取优惠券
+    @ApiOperation("用户端-首页-商品详情-优惠券列表-领取")
+    @RequestMapping("/getCoupon")
+    public  Result getCoupon(String price,Integer userId,@RequestBody Coupon coupon){
+        double goods_price=Double.parseDouble(price);
+        /**
+         * 判断商品价格是否满足优惠券门槛价格
+         */
+        if(new BigDecimal(goods_price).doubleValue()>=coupon.getFullPrice().doubleValue()){   //满足门槛价格
+            UserCoupon uc=new UserCoupon();
+            uc.setUserId(userId);
+            uc.setCouponId(coupon.getId());
 
-        return new Result();
+            if(new Date().before(coupon.getStartTime())){  //未开始
+                uc.setStatus(2);
+            }else if(new Date().after(coupon.getEndTime())){     //时间已经结束
+                uc.setStatus(3);
+            }else{
+                uc.setStatus(1);    //未使用
+            }
+            uc.insert();
+            return new Result().success("领取优惠券成功");
+
+        }else{
+            return new Result().erro("商品价格不满足优惠券领取价格");
+        }
+
     }
 
 

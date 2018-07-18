@@ -268,6 +268,14 @@
             <groupId>com.github.tj123.common</groupId>
             <artifactId>common-redis-springboot-starter</artifactId>
         </dependency>
+
+        <!--微信支付-->
+        <dependency>
+            <groupId>com.github.wxpay</groupId>
+            <artifactId>wxpay-sdk</artifactId>
+            <version>0.0.3</version>
+        </dependency>
+
     </dependencies>
 
     <build>
