@@ -20,4 +20,5 @@ public interface ModularPortalDao extends BaseMapper<ModularPortal> {
 
     List<ModularPortal> findChildrenModular();
 
+    List<ModularPortal> findChildListByParentId(Integer id);
 }
