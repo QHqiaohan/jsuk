@@ -18,4 +18,5 @@ public interface ModularPortalService extends IService<ModularPortal> {
 
     List<ModularPortalVo> getModularList();
 
+    List<ModularPortal> findChildListByParentId(Integer id);
 }

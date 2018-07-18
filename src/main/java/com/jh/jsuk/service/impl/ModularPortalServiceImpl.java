@@ -7,6 +7,7 @@ import com.jh.jsuk.entity.vo.ModularPortalVo;
 import com.jh.jsuk.service.ModularPortalService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -20,8 +21,16 @@ import java.util.List;
 @Service
 public class ModularPortalServiceImpl extends ServiceImpl<ModularPortalDao, ModularPortal> implements ModularPortalService {
 
+    @Resource
+    private ModularPortalDao modularPortalDao;
+
     @Override
     public List<ModularPortalVo> getModularList() {
         return baseMapper.getModularList();
+    }
+
+    @Override
+    public List<ModularPortal> findChildListByParentId(Integer id) {
+        return modularPortalDao.findChildListByParentId(id);
     }
 }

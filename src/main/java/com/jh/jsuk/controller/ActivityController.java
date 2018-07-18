@@ -582,16 +582,19 @@ public class ActivityController {
     }
 
 
+    //乡村旅游-获取子模块
     //用户-乡村旅游-乡村旅游子模块(亲子，户外拓展...)
     @ApiOperation("用户-乡村旅游-乡村旅游子模块(亲子，户外拓展...)")
     @RequestMapping("/getChildModularByParentId")
     public Result getChildModularByParentId(Integer id){
         Result result=new Result();
-        List<ModularPortal> childModularList=modularPortalService.selectList(new EntityWrapper<ModularPortal>()
+/*        List<ModularPortal> childModularList=modularPortalService.selectList(new EntityWrapper<ModularPortal>()
                                             .eq(ModularPortal.PARENT_ID,id)
 
-        );
-        return result.success(childModularList);
+        );*/
+
+        List<ModularPortal> list=modularPortalService.findChildListByParentId(id);
+        return result.success(list);
     }
 
 
@@ -608,7 +611,7 @@ public class ActivityController {
         if(activityPage.getRecords()==null || activityPage.getRecords().size()==0){
             return result.erro("亲，暂时没有热门活动哦...");
         }
-        return result.success(activityPage.getRecords());
+        return result.success(activityPage);
     }
 
 
