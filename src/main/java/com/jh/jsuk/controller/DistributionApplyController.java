@@ -1,7 +1,9 @@
 package com.jh.jsuk.controller;
 
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.rules.AccountRule;
@@ -9,22 +11,20 @@ import com.jh.jsuk.entity.vo.UserApplyVo;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.DisJPushUtils;
 import com.jh.jsuk.utils.MyEntityWrapper;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
 /**
  * <p>
  * 配送端提现申请
- 前端控制器
+ * 前端控制器
  * </p>
  *
  * @author lpf
@@ -48,6 +48,15 @@ public class DistributionApplyController {
     @Autowired
     UserBankService userBankService;
 
+    @Autowired
+    DistributionUserService distributionUserService;
+
+    @ApiOperation("骑手-余额")
+    @GetMapping("/remainder")
+    public R remainder(Integer userId) {
+        return R.succ(distributionUserService.getRemainder(userId));
+    }
+
     @ApiOperation("骑手-申请提现")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "bankId", value = "银行卡id",
@@ -64,7 +73,7 @@ public class DistributionApplyController {
             throw new RuntimeException("申请失败,您的提款金额大于了账户金额！");
         }
         UserBank userBank = userBankService.selectById(apply.getBankId());
-        if(userBank == null)
+        if (userBank == null)
             throw new RuntimeException("银行卡不存在！");
         DistributionDetail detail = new DistributionDetail();
         detail.setDetail("提现");
@@ -89,12 +98,21 @@ public class DistributionApplyController {
                     required = false, paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "size", value = "每页条数",
                     required = false, paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "startDate", value = "开始日期 格式：yyyy-MM-dd 为空查所有",
+                    required = false, paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "stopDate", value = "结束日期 格式：yyyy-MM-dd",
+                    required = false, paramType = "query", dataType = "integer"),
     })
     @GetMapping("/list")
-    public Result list(Page page, Integer userId) {
-        Page applyPage = applyService.selectPage(page, new EntityWrapper<DistributionApply>()
+    public Result list(Page page, Integer userId, @RequestParam(required = false) String startDate,
+                       @RequestParam(required = false)  String stopDate) {
+        Wrapper<DistributionApply> wrapper = new EntityWrapper<DistributionApply>()
                 .eq(DistributionApply.USER_ID, userId)
-                .orderBy(DistributionApply.PUBLISH_TIME, false));
+                .orderBy(DistributionApply.PUBLISH_TIME, false);
+        if (StrUtil.isNotBlank(startDate) && StrUtil.isNotBlank(stopDate)) {
+            wrapper.between(DistributionApply.PUBLISH_TIME,startDate + " 00:00:00",stopDate + " 23:59:59");
+        }
+        Page applyPage = applyService.selectPage(page, wrapper);
         return new Result().success(applyPage);
     }
 

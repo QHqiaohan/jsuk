@@ -1,12 +1,13 @@
 package com.jh.jsuk.entity;
 
+import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableName;
-import java.io.Serializable;
 
 /**
  * <p>
@@ -41,6 +42,15 @@ public class DistributionApply extends Model<DistributionApply> {
      */
     private BigDecimal poundage;
 
+    private String userNickName;
+
+    public String getUserNickName() {
+        return userNickName;
+    }
+
+    public void setUserNickName(String userNickName) {
+        this.userNickName = userNickName;
+    }
 
     public Integer getId() {
         return id;

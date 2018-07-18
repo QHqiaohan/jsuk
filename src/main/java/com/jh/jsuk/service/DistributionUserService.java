@@ -22,4 +22,11 @@ public interface DistributionUserService extends IService<DistributionUser> {
 
 
     void addAccount(BigDecimal amount,Integer userId);
+
+    /**
+     * 获取骑手端用户余额
+     * @param distributionUserId
+     * @return
+     */
+    BigDecimal getRemainder(Integer distributionUserId);
 }
