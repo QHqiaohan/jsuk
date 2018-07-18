@@ -65,4 +65,6 @@ public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
 
     List<ShopGoodsVo2> shopGoodsRecycleList(Page page, @Param("categoryId") String categoryId,
                                             @Param("keyWord") String keyWord, @Param("brandId") String brandId, @Param("shopId") Integer shopId);
+
+    List<GoodsSizeVo> getShopGoodsByKeywords(String keywords);
 }

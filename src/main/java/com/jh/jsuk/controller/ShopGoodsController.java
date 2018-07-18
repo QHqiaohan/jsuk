@@ -14,6 +14,7 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 //import com.jh.jsuk.entity.vo.ShopRushBuySizeVo;
@@ -62,6 +63,9 @@ public class ShopGoodsController {
         return new Result().success(goodsPage);
     }
 
+
+    //首页-分类-点击第三级分类-查看商品列表,按照价格、筛选(暂不确定) 排序
+    //shopId在后台没有用,前台随便传一个数字即可
     @ApiOperation(value = "用户端-店铺内部的全部商品-根据综合/价格/销量/新品查询商品")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
@@ -86,6 +90,9 @@ public class ShopGoodsController {
         return new Result().success("暂无数据", null);
     }
 
+
+    //首页-分类-点击第三级分类-查看商品列表
+    //按照分类查询商品列表的时候已经按照销量降序排序，因此综合和销量都调这个接口
     @ApiOperation(value = "用户端-根据商品类型获取商品列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
@@ -150,6 +157,9 @@ public class ShopGoodsController {
         return new Result().success(goodsPage);
     }*/
 
+
+   //用户端-首页-王阳明全集
+   //首页-分类-点击三级分类-查看商品详情
     @ApiOperation("用户端-根据商品ID查看商品信息")
     @RequestMapping(value = "/getShopGoodsById", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopGoodsById(@ApiParam(value = "商品ID", required = true) @RequestParam Integer id) {
@@ -157,8 +167,9 @@ public class ShopGoodsController {
         // 封装结果map
         Map<String, Object> map = MapUtil.newHashMap();
         GoodsSizeVo goodsSizeVo = shopGoodsService.getShopGoodsById(id);
-        if(goodsSizeVo == null)
+        if(goodsSizeVo == null){
             return result.erro("商品不存在");
+        }
         map.put("shopGoods", goodsSizeVo);
 //        List<ShopGoodsSize> list = goodsSizeVo.getShopGoodsSize();
 //        if(list != null && !list.isEmpty()){
@@ -185,7 +196,7 @@ public class ShopGoodsController {
         Integer labelId = goodsSizeVo.getGoodsLabelId();
         GoodsLabel goodsLabel = goodsLabelService.selectOne(new EntityWrapper<GoodsLabel>()
                 .eq(GoodsLabel.ID, labelId)
-                .ne(GoodsLabel.IS_DEL, 1)
+                .ne(GoodsLabel.IS_DEL, 0)
                 .orderBy(GoodsLabel.RANK, false));
         map.put("goodsLabel", goodsLabel);
         return result.success(map);
@@ -233,6 +244,31 @@ public class ShopGoodsController {
             return new Result().success(map);
         }
     }*/
+
+
+    //用户端-首页-商品(王阳明全集...)详情-根据商品id查询该商品对应的优惠券列表
+    public Result getCouponListByGoodsId(Integer goodsId){
+        /**
+         * 根据商品id查询商品对应的店铺
+         */
+        ShopGoods shopgoods = shopGoodsService.selectById(goodsId);
+
+
+        return new Result();
+    }
+
+
+   //首页-分类-点击三级分类-商品搜索
+    @ApiOperation("首页-分类-点击三级分类-商品搜索")
+    @RequestMapping(value="/searchGoods",method = {RequestMethod.POST, RequestMethod.GET})
+    public Result searchGoods(String keywords){
+       List <GoodsSizeVo> goodsSizeVoList = shopGoodsService.getShopGoodsByKeywords(keywords);
+       if(goodsSizeVoList==null || goodsSizeVoList.size()==0){
+           return new Result().erro("没有搜索到相关商品");
+       }
+       return new Result().success(goodsSizeVoList);
+    }
+
 
     @ApiOperation("用户端&商家端-通用商品搜索&店铺搜索")
     @ApiImplicitParams({

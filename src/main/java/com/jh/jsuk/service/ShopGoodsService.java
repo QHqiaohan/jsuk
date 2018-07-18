@@ -54,4 +54,6 @@ public interface ShopGoodsService extends IService<ShopGoods> {
     Page list(Page page, ShopGoodsStatus status, String categoryId, String keyWord, String brandId, Integer shopId);
 
     Page listRecycle(Page page, String categoryId, String kw, String brandId, Integer shopId);
+
+    List<GoodsSizeVo> getShopGoodsByKeywords(String keywords);
 }

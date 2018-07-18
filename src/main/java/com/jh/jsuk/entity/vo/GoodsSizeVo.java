@@ -27,11 +27,11 @@ public class GoodsSizeVo extends ShopGoods {
 //        }
 //        rushBuyInfo.add(shopRushBuySizeVo);
 //    }
-//    public List<ShopGoodsSize> getShopGoodsSize() {
-//        return shopGoodsSize;
-//    }
-//
-//    public void setShopGoodsSize(List<ShopGoodsSize> shopGoodsSize) {
-//        this.shopGoodsSize = shopGoodsSize;
-//    }
+    public List<ShopGoodsSize> getShopGoodsSize() {
+        return shopGoodsSize;
+   }
+
+    public void setShopGoodsSize(List<ShopGoodsSize> shopGoodsSize) {
+       this.shopGoodsSize = shopGoodsSize;
+   }
 }

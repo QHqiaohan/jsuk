@@ -3,6 +3,7 @@ package com.jh.jsuk.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.jh.jsuk.entity.ShoppingCart;
+import com.jh.jsuk.entity.vo.GoodsVo;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
 import com.jh.jsuk.service.ManagerUserService;
 import com.jh.jsuk.service.ShoppingCartService;
@@ -55,10 +56,14 @@ public class ShoppingCartController {
             shoppingCart.insert();
         } else {
             shoppingCart1.setNum(shoppingCart1.getNum() + 1);
+            //更新数据库中的购物车
+           // shoppingCartService.updateById(shoppingCart1);
+            shoppingCart1.updateById();
         }
         return new Result().success();
     }
 
+    //编辑购物车,只涉及商品数量的增减
     @ApiOperation("修改购物车")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "id", value = "购物车id",
@@ -76,6 +81,9 @@ public class ShoppingCartController {
         return new Result().success();
     }
 
+    /**
+     *如果要批量删除可在前端循环调用controller
+     */
     @ApiOperation("根据购物车id删除购物车")
     @PostMapping("/del")
     public Result del(@ApiParam(value = "购物车id", required = true) @RequestParam Integer shoppingCartId, Integer userId) {
@@ -102,10 +110,27 @@ public class ShoppingCartController {
         return new Result().success();
     }
 
+
+    //首页-购物车-显示我的购物车列表
     @ApiOperation("显示购物车列表")
     @PostMapping("/list")
+    /**
+     * goodsName可传可不传
+     */
     public Result list(Integer userId, String goodsName) {
         List<ShoppingCartVo> shoppingCarts = shoppingCartService.selectVoList(String.valueOf(userId), goodsName);
+/*        for (ShoppingCartVo vo:shoppingCarts) {
+            vo.getShopName();//店铺名
+            List<GoodsVo> list = vo.getGoods();
+            for (GoodsVo gvo:list) {
+                gvo.getGoodsName();
+                gvo.getSalesPrice();
+                gvo.getNum();
+            }
+        }*/
+        if(shoppingCarts==null || shoppingCarts.size()==0){
+               return new Result().erro("购物车空空如也");
+        }
         return new Result().success(shoppingCarts);
     }
 }
