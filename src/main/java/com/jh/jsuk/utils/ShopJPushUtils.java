@@ -1,5 +1,7 @@
 package com.jh.jsuk.utils;
 
+import cn.jiguang.common.resp.APIConnectionException;
+import cn.jiguang.common.resp.APIRequestException;
 import cn.jpush.api.JPushClient;
 import cn.jpush.api.push.PushResult;
 import cn.jpush.api.push.model.Options;
@@ -28,23 +30,26 @@ public class ShopJPushUtils {
     private static final String masterSecret = "d7bbf38e56539cb1cd60a41a";
 
     /**
+     *推送消息
      * @param alias
      * @param content
      * @param title
      * @param map
+     * @return 消息推送成功返回true 否则返回false
      */
-    public static void pushMsg(String alias, String content, String title, Map<String, String> map) {
+    public static boolean pushMsg(String alias, String content, String title, Map<String, String> map) {
         JPushClient jPushClient = ShopJPushUtils.getJPushClient();
+        PushPayload push = push(alias, content, title, map);
         try {
-            PushPayload push = push(alias, content, title, map);
             PushResult pushResult = jPushClient.sendPush(push);
+            LOG.info("push result : " + pushResult.isResultOK());
             if (pushResult.isResultOK()) {
-
+                return true;
             }
-            System.out.println("push result  :  " + pushResult.isResultOK());
-        } catch (Exception e) {
-            //e.printStackTrace();
+        } catch (APIConnectionException | APIRequestException e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     public static void pushMsgMusic(String alias, String content, String title, Map<String, String> map) {
@@ -63,19 +68,6 @@ public class ShopJPushUtils {
         }
     }
 
-    public static void pushAllMsg(String content, String title, Map<String, String> map) {
-        JPushClient jPushClient = ShopJPushUtils.getJPushClient();
-        try {
-            PushPayload push = pushAll(content, title, map);
-            PushResult pushResult = jPushClient.sendPush(push);
-            if (pushResult.isResultOK()) {
-
-            }
-            System.out.println("push result  :  " + pushResult.isResultOK());
-        } catch (Exception e) {
-            //e.printStackTrace();
-        }
-    }
 
     public static void main(String[] args) {
         //HashMap<String, String> stringStringHashMap = new HashMap<>();

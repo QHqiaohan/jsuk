@@ -85,12 +85,12 @@ public class UserOrderController {
     }
 
     @GetMapping("/detail")
-    public R userOrderDetail(@RequestParam Integer orderId){
+    public R userOrderDetail(@RequestParam Integer orderId) {
         return R.succ(userOrderService.userOrderDetail(orderId));
     }
 
     @PostMapping("/close")
-    public R userOrderClose(Integer orderId){
+    public R userOrderClose(Integer orderId) {
         UserOrder order = new UserOrder();
         order.setId(orderId);
         order.setStatus(OrderStatus.CLOSED.getKey());
@@ -99,7 +99,7 @@ public class UserOrderController {
     }
 
     @PostMapping("/confirm")
-    public R userOrderConfirm(Integer orderId){
+    public R userOrderConfirm(Integer orderId) {
         UserOrder order = new UserOrder();
         order.setId(orderId);
         order.setStatus(OrderStatus.SUCCESS.getKey());
@@ -441,7 +441,6 @@ public class UserOrderController {
 
 
     //--------------------骑手端----------------------------------------------//
-
     @ApiOperation(value = "用户端-订单列表&订单关键字模糊搜索", notes = "不传=该用户全部订单")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
@@ -598,5 +597,10 @@ public class UserOrderController {
         return new Result().erro("退款失败");
     }
 
+    @ApiOperation(value = "用户端-催一催")
+    @RequestMapping(value = "/pushAPush", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result pushAPush(@ApiParam(value = "订单ID", required = true) Integer id) {
+        return new Result().setMsg(userOrderService.pushAPush(id));
+    }
 }
 
