@@ -161,6 +161,11 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     }
 
     @Override
+    public List<GoodsSizeVo> getShopGoodsByKeywords(String keywords) {
+        return baseMapper.getShopGoodsByKeywords(keywords);
+    }
+
+    @Override
     public Page getShopList(Page page, Wrapper wrapper, Integer type, Integer attributeId, String name, Integer shopModularId, Integer categoryId,
                             Integer brandId, String address, Integer goodsType, String lowPrice, String highPrice, Integer shopId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);

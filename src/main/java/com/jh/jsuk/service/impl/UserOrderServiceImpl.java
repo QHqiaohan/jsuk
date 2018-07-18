@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.UserOrderDao;
 import com.jh.jsuk.dao.UserOrderGoodsDao;
 import com.jh.jsuk.entity.ShopUser;
+import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.UserOrderGoods;
 import com.jh.jsuk.entity.vo.UserOrderDetailVo;
@@ -18,6 +19,7 @@ import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.service.ShopGoodsService;
 import com.jh.jsuk.service.ShopUserService;
 import com.jh.jsuk.service.UserOrderService;
+import com.jh.jsuk.service.UserService;
 import com.jh.jsuk.utils.ShopJPushUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private UserOrderGoodsDao orderGoodsDao;
-
+    @Autowired
+    private UserService userService;
     @Autowired
     private ShopGoodsService shopGoodsService;
 
@@ -51,7 +54,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (orderStatus != null) {
             wrapper.eq(UserOrder.STATUS, orderStatus.getKey());
         }
-        wrapper.ne(UserOrder.IS_DEL,1);
+        wrapper.ne(UserOrder.IS_DEL, 1);
         return selectCount(wrapper);
     }
 
@@ -139,7 +142,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (orderStatus != null) {
             wrapper.eq(UserOrder.STATUS, orderStatus.getKey());
         }
-        wrapper.ne(UserOrder.IS_DEL,1);
+        wrapper.ne(UserOrder.IS_DEL, 1);
         List<UserOrderVo> list = baseMapper.findVoByPage(page, wrapper);
         return page.setRecords(list);
     }
@@ -152,18 +155,30 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     @Override
     public Integer orderCount(Integer userId) {
         EntityWrapper<UserOrder> wrapper = new EntityWrapper<>();
-        wrapper.ne(UserOrder.IS_DEL,1)
-                .eq(UserOrder.USER_ID,userId);
+        wrapper.ne(UserOrder.IS_DEL, 1)
+                .eq(UserOrder.USER_ID, userId);
         return selectCount(wrapper);
     }
 
     @Override
     public Page userOrder(Page page, Integer id) {
         EntityWrapper wrapper = new EntityWrapper();
-        wrapper.eq(UserOrder.USER_ID,id);
-        wrapper.ne(UserOrder.IS_DEL,1);
+        wrapper.eq(UserOrder.USER_ID, id);
+        wrapper.ne(UserOrder.IS_DEL, 1);
         List<UserOrderVo> list = baseMapper.findVoByPage(page, wrapper);
         return page.setRecords(list);
     }
 
+    @Override
+    public String pushAPush(Integer orderId) {
+        //获取订单详情
+        UserOrderDetailVo orderDetail = userOrderDetail(orderId);
+        //获取商家信息
+        ShopUser shopUser = shopUserService.selectOne(new EntityWrapper<ShopUser>().eq("shop_id", orderDetail.getShopId()));
+        //获取买家信息
+        User user = userService.selectOne(new EntityWrapper<User>().eq("id", orderDetail.getUserId()));
+        return  ShopJPushUtils.pushMsg(shopUser.getId() + "",
+                "订单(" + orderId + ")请尽快发货！催单人：" + user.getNickName() + "",
+                "用户催单", null)?"催单成功":"催单失败";
+    }
 }

@@ -594,6 +594,7 @@ public class ActivityController {
         return result.success(childModularList);
     }
 
+
     //用户-乡村旅游-热门推荐
     @ApiOperation("用户-乡村旅游-热门推荐")
     @RequestMapping("/getHotActivityList")

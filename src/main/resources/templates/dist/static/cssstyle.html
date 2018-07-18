@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style lang="">
+    * {
+      padding: 0;
+      margin: 0;
+    }
+    div {
+      width: 40px;
+      height: 40px;
+      border: 1px solid red;
+    }
+    .s:last-child {
+      background: black;
+    }
+    .f>div:nth-child(2) {
+      background: red;
+    }
+    /* .f>div:not(:first-child) {
+            background: yellow;
+        } */
+    .s__s {
+      background: purple;
+    }
+  </style>
+</head>
+<body>
+  <div class="f">
+    <div class="s__s">
+      1
+    </div>
+    <div class="s">
+      2
+    </div>
+    <div class="s">
+      3
+    </div>
+  </div>
+</body>
+</html>
+:first-child find by index :last-child 是在一个集合中查找序号，并不是在父元素的子类中找元素的序号。

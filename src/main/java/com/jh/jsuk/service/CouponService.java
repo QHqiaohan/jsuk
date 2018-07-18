@@ -24,4 +24,5 @@ public interface CouponService extends IService<Coupon> {
 
     List<CouponVo> selectVoList2(CoupQueryParam param);
 
+    List<Coupon> selectCouponList(Integer goodsId, Integer shopId);
 }

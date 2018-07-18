@@ -27,6 +27,8 @@ public class UserCouponController {
     @Autowired
     private UserCouponService userCouponService;
 
+
+    //用户-我的-优惠券-优惠券总数
     @ApiOperation("用户-优惠券总数")
     @PostMapping("/getCount")
     public Result getCount(@RequestParam @ApiParam(value = "用户ID", required = true) Integer userId) {

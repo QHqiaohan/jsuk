@@ -144,22 +144,6 @@ public class GoodsCategoryController {
     }
 
 
-    /**
-     *查询三级分类下面的商品列表
-     */
-    @ApiOperation("首页-分类-查询三级分类下面的商品列表")
-    public Result getGoodsListByCategoryId(Integer categoryId){
-        Page goodsList = shopGoodsService.getShopGoodsByCategoryId(new Page(1, 12),
-                new EntityWrapper<ShopGoods>()
-                        .eq(ShopGoods.STATUS, 1)
-                        .eq(ShopGoods.IS_DEL, 1)
-                ,
-                categoryId
-        );
-
-        return new Result().success(goodsList.getRecords());
-    }
-
 
     //客户(用户)端不应该有添加商品分类的功能
     @ApiIgnore

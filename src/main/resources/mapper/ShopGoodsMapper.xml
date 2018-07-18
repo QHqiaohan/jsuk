@@ -100,8 +100,8 @@
         LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
         WHERE
         sg.status = 1
-        and sg.is_del = 1
-        and sg.shop_id = #{shopId}
+        and sg.is_del = 0
+       <!-- and sg.shop_id = #{shopId}-->
         <if test="type == 2">
             ORDER BY
             sg.sale_amont DESC
@@ -128,8 +128,8 @@
         LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
         WHERE
         sg.status = 1
-        and sg.is_del = 1
-        and sg.shop_id = #{shopId}
+        and sg.is_del = 0
+        <!--and sg.shop_id = #{shopId}-->
         <if test="type == 1">
             ORDER BY
             sgs.sales_price + 0 DESC
@@ -177,7 +177,7 @@
         LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
         WHERE sg.category_id = #{categoryId}
         and sg.status = 1
-        and sg.is_del = 1
+        and sg.is_del = 0
         ORDER BY sg.sale_amont DESC
         <where>
             ${ew.sqlSegment}
@@ -266,6 +266,17 @@
         <association property="shopGoodsSize" column="id"
                      select="com.jh.jsuk.dao.ShopGoodsSizeDao.getGoodsSizeByGoodsId"></association>
     </resultMap>
+
+
+    <!--首页-分类-点击三级分类-商品搜索-->
+    <select id="getShopGoodsByKeywords" parameterType="java.lang.String" resultMap="GoodsSizeVo">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM js_shop_goods
+        WHERE
+        goods_name like concat('%',#{keywords},'%')
+    </select>
+
 
     <select id="shopGoodsListByModularId" resultMap="GoodsSizeVo">
         SELECT

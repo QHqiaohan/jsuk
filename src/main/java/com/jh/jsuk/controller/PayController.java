@@ -3,6 +3,7 @@ package com.jh.jsuk.controller;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.toolkit.IdWorker;
 import com.egzosn.pay.ali.api.AliPayConfigStorage;
 import com.egzosn.pay.ali.api.AliPayService;
 import com.egzosn.pay.ali.bean.AliTransactionType;
@@ -13,6 +14,7 @@ import com.egzosn.pay.common.util.XML;
 import com.egzosn.pay.wx.api.WxPayConfigStorage;
 import com.egzosn.pay.wx.api.WxPayService;
 import com.egzosn.pay.wx.bean.WxTransactionType;
+import com.github.wxpay.sdk.WXPayUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jh.jsuk.entity.*;
@@ -23,6 +25,7 @@ import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import com.jh.jsuk.utils.ServerResponse;
+import com.jh.jsuk.utils.UuidUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -45,6 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -542,4 +546,29 @@ public class PayController {
             return null;
         }
     }*/
+
+
+    /**
+     * 乡村旅游定金支付
+     */
+    @RequestMapping(value="/payDingJin",method=RequestMethod.POST)
+    public Result payDingJin(String totalAmount,String userId,Integer activity_id){
+        /*
+        封装参数,创建微信交易对象
+         */
+        Map<String,Object> paramMap=new HashMap<>();
+
+        paramMap.put("appid",env.getProperty("APP_ID"));       //公众号id
+        paramMap.put("mch_id",env.getProperty("MCH_ID"));     // 商户号
+        paramMap.put("nonce_str",WXPayUtil.generateNonceStr());    //生成随机字符串
+        paramMap.put("total_fee",1);        //测试金额，单位为分
+        paramMap.put("trade_type","APP");    //支付类型
+        paramMap.put("notify_url",env.getProperty("NOTIFYURL"));  //通知地址
+        paramMap.put("out_trade_no", UuidUtil.getUUID());       //商户订单号
+
+
+
+        return null;
+    }
+
 }

@@ -44,4 +44,9 @@ public class CouponServiceImpl extends ServiceImpl<CouponDao, Coupon> implements
         return baseMapper.selectVoList2(param);
     }
 
+    @Override
+    public List<Coupon> selectCouponList(Integer goodsId, Integer shopId) {
+        return baseMapper.selectCouponList(goodsId,shopId);
+    }
+
 }
