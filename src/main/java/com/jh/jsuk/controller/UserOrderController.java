@@ -3,11 +3,13 @@ package com.jh.jsuk.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
 import com.jh.jsuk.entity.rules.AccountRule;
+import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderInfoVo;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.mq.RobbingOrderProducer;
@@ -87,7 +89,7 @@ public class UserOrderController {
         }
         return R.succ(userOrderService.listPage(page, date == null ? null : Arrays.asList(date), kw, orderStatus));
     }
-
+    @ApiOperation(value = "用户端&商家端-订单详情/再次购买")
     @GetMapping("/detail")
     public R userOrderDetail(@RequestParam Integer orderId) {
         return R.succ(userOrderService.userOrderDetail(orderId));
@@ -477,29 +479,25 @@ public class UserOrderController {
         return new Result().success(orderPage);
     }
 
-    @ApiOperation(value = "用户端&商家端-订单详情")
+    /*@ApiOperation(value = "用户端&商家端-订单详情")
     @RequestMapping(value = "/getOrderInfoById", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getOrderInfoById(@ApiParam(value = "订单ID", required = true) Integer id) {
-        if (id == null) {
-            return new Result().erro("订单ID为空");
-        }
         UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>()
                 .eq(UserOrder.ID, id));
-        if (userOrder != null) {
-            // 封装结果map
-            Map<String, Object> map = MapUtil.newHashMap();
-            // 收货地址ID
-            Integer addressId = userOrder.getAddressId();
-            // 收货地址
-            UserAddress userAddress = userAddressService.selectOne(new EntityWrapper<UserAddress>()
-                    .eq(UserAddress.ID, addressId)
-                    .eq(UserAddress.IS_DEL, 0));
-            map.put("address", userAddress);
-            return new Result().success(map);
-        } else {
-            return new Result().success();
+        if (userOrder == null) {
+            return new Result().erro("没有该订单");
         }
-    }
+        // 封装结果map
+        Map<String, Object> map = MapUtil.newHashMap();
+        // 收货地址ID
+        Integer addressId = userOrder.getAddressId();
+        // 收货地址
+        UserAddress userAddress = userAddressService.selectOne(new EntityWrapper<UserAddress>()
+                .eq(UserAddress.ID, addressId)
+                .eq(UserAddress.IS_DEL, 0));
+        UserOrderDetailVo userOrderDetailVo = new UserOrderDetailVo();
+        return new Result().success(userOrderDetailVo);
+    }*/
 
     @ApiOperation(value = "商家端-订单列表", notes = "不传=全部订单")
     @ApiImplicitParams(value = {
@@ -522,8 +520,7 @@ public class UserOrderController {
     @ApiOperation(value = "用户端&商家端-取消订单")
     @RequestMapping(value = "/cancelOrder", method = {RequestMethod.POST, RequestMethod.GET})
     public Result cancelOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
-        UserOrder userOrder = new UserOrder();
-        userOrder.setId(id);
+        UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
         userOrder.setStatus(6);
         userOrder.updateById();
         return new Result().success("取消成功!");
@@ -532,8 +529,7 @@ public class UserOrderController {
     @ApiOperation(value = "商家端-确认发货")
     @RequestMapping(value = "/sendOrder", method = {RequestMethod.POST, RequestMethod.GET})
     public Result sendOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
-        UserOrder userOrder = new UserOrder();
-        userOrder.setId(id);
+        UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
         userOrder.setStatus(2);
         userOrder.updateById();
         return new Result().success("发货成功!");
@@ -542,8 +538,7 @@ public class UserOrderController {
     @ApiOperation(value = "用户端-删除订单")
     @RequestMapping(value = "/delOrder", method = {RequestMethod.POST, RequestMethod.GET})
     public Result delOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
-        UserOrder userOrder = new UserOrder();
-        userOrder.setId(id);
+        UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
         userOrder.setIsDel(1);
         userOrder.updateById();
         return new Result().success("删除成功!");
@@ -563,6 +558,20 @@ public class UserOrderController {
                 .eq(ShopGoodsSize.ID, goodsSizeId)
                 .eq(ShopGoodsSize.IS_DEL, 0));
         return new Result().success(goodsSizeList);
+    }
+
+    @ApiOperation(value = "用户端-确认收货 ")
+    @RequestMapping(value = "/confirmReceipt", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result confirmReceipt(@ApiParam(value = "订单ID", required = true) Integer id) {
+        UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
+        if (userOrder == null) {
+            return new Result().success("没有该订单", null);
+        } else {
+            //交易成功
+            userOrder.setStatus(3);
+            userOrder.updateById();
+            return new Result().success("操作成功!");
+        }
     }
 
     @ApiOperation(value = "商家端-确认换货")
