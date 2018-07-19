@@ -491,7 +491,7 @@ public class ActivityController {
                     paramType = "query", dataType = "Integer"),
     })
     @RequestMapping(value = "/addComment", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addComment(@RequestBody MarketComment marketComment) {
+    public Result addComment(MarketComment marketComment) {
         //获取敏感词
         Dictionary dictionary = dictionaryService.selectOne(new EntityWrapper<Dictionary>().eq("code", "sensitive_words"));
         String sensitiveWord = dictionary.getValue();
