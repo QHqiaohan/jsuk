@@ -2,10 +2,7 @@ package com.jh.jsuk.controller;
 
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.jh.jsuk.entity.Coupon;
-import com.jh.jsuk.entity.ShopGoodsFullReduce;
-import com.jh.jsuk.entity.ShoppingCart;
-import com.jh.jsuk.entity.UserIntegral;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.GoodsVo;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
 import com.jh.jsuk.service.*;
@@ -42,6 +39,12 @@ public class ShoppingCartController {
     private UserIntegralService userIntegralService;
     @Autowired
     private ShopGoodsFullReduceService shopGoodsFullReduceService;
+    @Autowired
+    private IntegralRuleService integralRuleService;
+    @Autowired
+    private ShopGoodsService shopGoodsService;
+    @Autowired
+    private ShopGoodsSizeService shopGoodsSizeService;
 
     @ApiOperation("加入购物车")
     @ApiImplicitParams(value = {
@@ -150,7 +153,9 @@ public class ShoppingCartController {
     给前台返回积分抵扣规则
      */
     @ApiOperation("获取用户积分总数、满减对象、积分抵扣规则")
-    public Result getJfAndFullReduce(Integer userId,Integer [] shopIds){
+    @RequestMapping(value="/getIntegralAndFullReduce",method={RequestMethod.POST})
+    public Result getIntegralAndFullReduce(Integer userId,Integer [] goodsIds){
+        //封装返回结果的map
         Map<String,Object> map=new HashMap<>();
 
         //查询用户总积分
@@ -163,20 +168,39 @@ public class ShoppingCartController {
             map.put("jfCount",userIntegral.getIntegralNumber());
         }
 
-        //查询满减对象
+        //满减对象Map
         Map<Integer,ShopGoodsFullReduce> reduceMap=new HashMap<>();
-        for(Integer shopId:shopIds){
+        //积分抵扣规则Map
+        Map<Integer,IntegralRule> integralMap=new HashMap<>();
+        for(Integer goodsId:goodsIds){
+            //先根据goodsId查shopId
+            Integer shopId=shopGoodsService.selectOne(new EntityWrapper<ShopGoods>().eq(ShopGoods.ID,goodsId)).getShopId();
+           //查询满减券对象
             ShopGoodsFullReduce shopGoodsFullReduce = shopGoodsFullReduceService
                                                      .selectOne(new EntityWrapper<ShopGoodsFullReduce>()
                                                                 .eq(ShopGoodsFullReduce.SHOP_ID, shopId)
+                                                                .eq(ShopGoodsFullReduce.GOODS_ID,goodsId)
             );
-            //前台根据店铺id shopId取对应的满减对象
-            reduceMap.put(shopId,shopGoodsFullReduce);
+            //前台根据goodsId 取对应的满减对象
+            reduceMap.put(goodsId,shopGoodsFullReduce);
+
+            /*
+                查询积分抵扣规则
+             */
+            //根据goodsId查询goods_size
+            ShopGoodsSize shopGoodsSize = shopGoodsSizeService.selectOne(new EntityWrapper<ShopGoodsSize>()
+                                                                        .eq(ShopGoodsSize.SHOP_GOODS_ID, goodsId)
+            );
+            //查询该商品对应的积分抵扣规则
+            IntegralRule interRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>()
+                                                                   .eq(IntegralRule.SHOP_ID,shopId)
+                                                                   .eq(IntegralRule.GOODS_SIZE_ID,shopGoodsSize.getId())
+            );
+            integralMap.put(goodsId,interRule);
         }
+
         map.put("shopGoodsFullReduceMap",reduceMap);
-
-        //查询积分抵扣规则
-
+        map.put("integralMap",integralMap);
 
         return new Result().success(map);
     }
@@ -190,16 +214,35 @@ public class ShoppingCartController {
      */
     /**
      *
-     * @param cartPrice   前端传过来的购物车金额
-     * @param coupon      优惠券
-     * @param jfCount     可抵扣的积分数量
+     * @param userId            用户id
+     * @param cartPrice        购物车金额,没有使用满减、优惠券、积分的金额
+     * @param orderPrice       订单金额,前台计算的使用满减、优惠券、积分的金额,后台再算一遍
+     * @param coupons          可用优惠券数组
+     * @param goodsIds         商品id数组
      * @return
      */
     @ApiOperation("用户-购物车-去结算-计算订单金额")
     @RequestMapping(value="/getOrderAmount",method ={RequestMethod.POST})
-    public Result getOrderAmount(double cartPrice,
-                                 @RequestBody Coupon coupon,
-                                 Integer jfCount){
+    public Result getOrderAmount(Integer userId,
+                                 double cartPrice,
+                                 double orderPrice,
+                                 @RequestBody Coupon [] coupons,
+                                 Integer goodsIds[]){
+
+        //查询用户总积分
+        UserIntegral userIntegral = userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
+                                                                 .eq(UserIntegral.USER_ID, userId)
+        );
+        Integer integralNum=userIntegral.getIntegralNumber();   //积分总数量
+
+        for(Integer goodsId:goodsIds){
+
+        }
+
+
+        if(integralNum>0){
+
+        }
 
         return null;
     }
