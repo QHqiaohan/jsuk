@@ -601,9 +601,11 @@ public class ActivityController {
     //用户-乡村旅游-热门推荐
     @ApiOperation("用户-乡村旅游-热门推荐")
     @RequestMapping("/getHotActivityList")
-    public Result getHotActivityList(){
+    public Result getHotActivityList(Integer current,Integer size){
+        current=current==null?1:current;
+        size=size==null?10:size;
         Result result=new Result();
-        Page<Activity> activityPage = activityService.selectPage(new Page<Activity>(1,2),
+        Page<Activity> activityPage = activityService.selectPage(new Page<Activity>(current,size),
                                                                  new EntityWrapper<Activity>()
                                                                          .eq(Activity.IS_DEL,0)
                                                                          .orderBy(Activity.PUBLISH_TIME,false)

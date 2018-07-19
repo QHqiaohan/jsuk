@@ -193,6 +193,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Override
     public BigDecimal orderPrice(List<ShopSubmitOrderDto> orderDto) throws Exception {
+
+
         return new BigDecimal("0.0");
     }
 
