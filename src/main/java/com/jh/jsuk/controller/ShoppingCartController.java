@@ -2,19 +2,20 @@ package com.jh.jsuk.controller;
 
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.jh.jsuk.entity.ShoppingCart;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.GoodsVo;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
-import com.jh.jsuk.service.ManagerUserService;
-import com.jh.jsuk.service.ShoppingCartService;
-import com.jh.jsuk.service.UserService;
+import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -34,6 +35,16 @@ public class ShoppingCartController {
     UserService userService;
     @Autowired
     private ShoppingCartService shoppingCartService;
+    @Autowired
+    private UserIntegralService userIntegralService;
+    @Autowired
+    private ShopGoodsFullReduceService shopGoodsFullReduceService;
+    @Autowired
+    private IntegralRuleService integralRuleService;
+    @Autowired
+    private ShopGoodsService shopGoodsService;
+    @Autowired
+    private ShopGoodsSizeService shopGoodsSizeService;
 
     @ApiOperation("加入购物车")
     @ApiImplicitParams(value = {
@@ -87,7 +98,9 @@ public class ShoppingCartController {
     @ApiOperation("根据购物车id删除购物车")
     @PostMapping("/del")
     public Result del(@ApiParam(value = "购物车id", required = true) @RequestParam Integer shoppingCartId, Integer userId) {
-        shoppingCartService.delete(new MyEntityWrapper<ShoppingCart>().eq(ShoppingCart.USER_ID, userId).eq(ShoppingCart.ID, shoppingCartId));
+        shoppingCartService.delete(new MyEntityWrapper<ShoppingCart>()
+                                      .eq(ShoppingCart.USER_ID, userId)
+                                      .eq(ShoppingCart.ID, shoppingCartId));
         return new Result().success();
     }
 
@@ -132,6 +145,106 @@ public class ShoppingCartController {
                return new Result().erro("购物车空空如也");
         }
         return new Result().success(shoppingCarts);
+    }
+
+    /*
+    给前台返回用户总积分
+    给前台返回满减对象
+    给前台返回积分抵扣规则
+     */
+    @ApiOperation("获取用户积分总数、满减对象、积分抵扣规则")
+    @RequestMapping(value="/getIntegralAndFullReduce",method={RequestMethod.POST})
+    public Result getIntegralAndFullReduce(Integer userId,Integer [] goodsIds){
+        //封装返回结果的map
+        Map<String,Object> map=new HashMap<>();
+
+        //查询用户总积分
+        UserIntegral userIntegral = userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
+                                                                     .eq(UserIntegral.USER_ID, userId)
+        );
+        if(userIntegral==null || userIntegral.getIntegralNumber()==null){
+            map.put("jfCount",0);
+        }else{
+            map.put("jfCount",userIntegral.getIntegralNumber());
+        }
+
+        //满减对象Map
+        Map<Integer,ShopGoodsFullReduce> reduceMap=new HashMap<>();
+        //积分抵扣规则Map
+        Map<Integer,IntegralRule> integralMap=new HashMap<>();
+        for(Integer goodsId:goodsIds){
+            //先根据goodsId查shopId
+            Integer shopId=shopGoodsService.selectOne(new EntityWrapper<ShopGoods>().eq(ShopGoods.ID,goodsId)).getShopId();
+           //查询满减券对象
+            ShopGoodsFullReduce shopGoodsFullReduce = shopGoodsFullReduceService
+                                                     .selectOne(new EntityWrapper<ShopGoodsFullReduce>()
+                                                                .eq(ShopGoodsFullReduce.SHOP_ID, shopId)
+                                                                .eq(ShopGoodsFullReduce.GOODS_ID,goodsId)
+            );
+            //前台根据goodsId 取对应的满减对象
+            reduceMap.put(goodsId,shopGoodsFullReduce);
+
+            /*
+                查询积分抵扣规则
+             */
+            //根据goodsId查询goods_size
+            ShopGoodsSize shopGoodsSize = shopGoodsSizeService.selectOne(new EntityWrapper<ShopGoodsSize>()
+                                                                        .eq(ShopGoodsSize.SHOP_GOODS_ID, goodsId)
+            );
+            //查询该商品对应的积分抵扣规则
+            IntegralRule interRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>()
+                                                                   .eq(IntegralRule.SHOP_ID,shopId)
+                                                                   .eq(IntegralRule.GOODS_SIZE_ID,shopGoodsSize.getId())
+            );
+            integralMap.put(goodsId,interRule);
+        }
+
+        map.put("shopGoodsFullReduceMap",reduceMap);
+        map.put("integralMap",integralMap);
+
+        return new Result().success(map);
+    }
+
+
+    /**
+     * 用户-购物车-去结算
+     * 金额计算（折扣、优惠券、积分来计算订单价格）
+     * 计算订单金额
+     * 更新用户积分总数
+     */
+    /**
+     *
+     * @param userId            用户id
+     * @param cartPrice        购物车金额,没有使用满减、优惠券、积分的金额
+     * @param orderPrice       订单金额,前台计算的使用满减、优惠券、积分的金额,后台再算一遍
+     * @param coupons          可用优惠券数组
+     * @param goodsIds         商品id数组
+     * @return
+     */
+    @ApiOperation("用户-购物车-去结算-计算订单金额")
+    @RequestMapping(value="/getOrderAmount",method ={RequestMethod.POST})
+    public Result getOrderAmount(Integer userId,
+                                 double cartPrice,
+                                 double orderPrice,
+                                 @RequestBody Coupon [] coupons,
+                                 Integer goodsIds[]){
+
+        //查询用户总积分
+        UserIntegral userIntegral = userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
+                                                                 .eq(UserIntegral.USER_ID, userId)
+        );
+        Integer integralNum=userIntegral.getIntegralNumber();   //积分总数量
+
+        for(Integer goodsId:goodsIds){
+
+        }
+
+
+        if(integralNum>0){
+
+        }
+
+        return null;
     }
 }
 

@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.UserOrder;
+import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
+import com.jh.jsuk.entity.dto.SubmitOrderDto;
 import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.OrderStatus;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -56,4 +59,20 @@ public interface UserOrderService extends IService<UserOrder> {
      * @return 操作结果
      */
     String pushAPush(Integer orderId);
+
+    /**
+     * 提交订单
+     * @param orderDto
+     * @return 订单id
+     * @throws Exception
+     */
+    Integer submit(SubmitOrderDto orderDto) throws Exception;
+
+    /**
+     * 计算订单价格
+     * @param orderDto
+     * @return
+     * @throws Exception
+     */
+    BigDecimal orderPrice(List<ShopSubmitOrderDto> orderDto) throws Exception;
 }
