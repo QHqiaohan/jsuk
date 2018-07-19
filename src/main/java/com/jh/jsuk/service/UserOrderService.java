@@ -63,10 +63,11 @@ public interface UserOrderService extends IService<UserOrder> {
     /**
      * 提交订单
      * @param orderDto
+     * @param userId
      * @return 订单id
      * @throws Exception
      */
-    Integer submit(SubmitOrderDto orderDto) throws Exception;
+    Integer submit(SubmitOrderDto orderDto, Integer userId) throws Exception;
 
     /**
      * 计算订单价格
@@ -74,5 +75,5 @@ public interface UserOrderService extends IService<UserOrder> {
      * @return
      * @throws Exception
      */
-    BigDecimal orderPrice(List<ShopSubmitOrderDto> orderDto) throws Exception;
+    BigDecimal orderPrice(ShopSubmitOrderDto orderDto) throws Exception;
 }

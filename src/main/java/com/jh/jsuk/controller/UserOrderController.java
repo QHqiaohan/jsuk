@@ -456,11 +456,11 @@ public class UserOrderController {
 //            @ApiImplicitParam(name = "goodsName", value = "商品名称", paramType = "query", dataType = "string")
 //    })
     @PostMapping(value = "/submit")
-    public Result submit(@RequestBody @Valid SubmitOrderDto orderDto,BindingResult result) throws Exception{
+    public Result submit(@RequestBody @Valid SubmitOrderDto orderDto,BindingResult result,Integer userId) throws Exception{
         if (result.hasErrors()) {
             throw new BindException(result);
         }
-        return new Result().success(userOrderService.submit(orderDto));
+        return new Result().success(userOrderService.submit(orderDto,userId));
     }
 
     @ApiOperation(value = "用户端-订单列表&订单关键字模糊搜索", notes = "不传=该用户全部订单")

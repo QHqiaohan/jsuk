@@ -4,7 +4,6 @@ package com.jh.jsuk.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
-import com.jh.jsuk.entity.vo.GoodsVo;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -261,7 +259,7 @@ public class ShoppingCartController {
         return null;
     }
 
-    public Result getMoney(List<ShopSubmitOrderDto> orderDto) {
+    public Result getMoney(ShopSubmitOrderDto orderDto) {
         BigDecimal money = null;
         try {
             money = userOrderService.orderPrice(orderDto);

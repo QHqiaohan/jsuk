@@ -12,11 +12,9 @@ import com.github.tj123.common.RedisUtils;
 import com.jh.jsuk.conf.RedisKeys;
 import com.jh.jsuk.dao.UserOrderDao;
 import com.jh.jsuk.dao.UserOrderGoodsDao;
-import com.jh.jsuk.entity.ShopUser;
-import com.jh.jsuk.entity.User;
-import com.jh.jsuk.entity.UserOrder;
-import com.jh.jsuk.entity.UserOrderGoods;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
+import com.jh.jsuk.entity.dto.ShopSubmitOrderGoodsDto;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
 import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
@@ -24,16 +22,14 @@ import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
 import com.jh.jsuk.exception.OrderException;
 import com.jh.jsuk.service.*;
+import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.ShopJPushUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -64,7 +60,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Autowired
     RedisUtils redisUtils;
-
 
 
     @Override
@@ -223,43 +218,64 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         }
     }
 
-    private Integer createOrder(SubmitOrderDto orderDto, List<ShopSubmitOrderDto> orderDtos, OrderType orderType) throws Exception {
+    private Integer createOrder(SubmitOrderDto orderDto, ShopSubmitOrderDto orderGoods,
+                                OrderType orderType,  Integer userId) throws Exception {
         UserOrder o = new UserOrder();
-        for (ShopSubmitOrderDto dto : orderDtos) {
-            int stock = shopGoodsSizeService.getAccurateStock(dto.getGoodsSizeId(), orderType);
-            if(stock < dto.getNum()){
+        List<ShopSubmitOrderGoodsDto> goods = orderGoods.getGoods();
+        for (ShopSubmitOrderGoodsDto good : goods) {
+            int stock = shopGoodsSizeService.getAccurateStock(good.getGoodsSizeId(), orderType);
+            if (stock < good.getNum()) {
                 throw new OrderException(OrderException.ExceptionType.UNDER_STOCK);
             }
         }
-        o.setAddressId(orderDto.getAddressId());
         o.setOrderNum(createOrderNum());
-        o.setOrderPrice(orderPrice(orderDtos));
+        o.setOrderPrice(orderPrice(orderGoods));
         o.setDistributionTime(orderDto.getDistributionTime());
-        return null;
+        o.setDistributionType(orderDto.getDistributionType());
+        Date creatTime = new Date();
+        o.setCreatTime(creatTime);
+        o.setStatus(OrderStatus.DUE_PAY.getKey());
+        o.setIsUserDel(0);
+        o.setIsShopDel(0);
+        o.setIsClosed(0);
+        o.setShopId(orderGoods.getShopId());
+        o.setAddressId(orderDto.getAddressId());
+        o.setUserId(userId);
+        o.setCouponId(orderGoods.getUserCouponId());
+        o.setOrderType(orderDto.getOrderType());
+        o.setIntegralRuleId(orderGoods.getIntegralRuleId());
+        o.setFullReduceId(orderGoods.getFullReduceId());
+        o.insert();
+        Integer orderId = o.getId();
+        for (ShopSubmitOrderGoodsDto good : goods) {
+            UserOrderGoods g = new UserOrderGoods();
+            g.setOrderId(orderId);
+            g.setGoodsId(good.getGoodsId());
+            g.setNum(good.getNum());
+            g.setGoodsPrice(good.getGoodsPrice());
+            g.setPublishTime(creatTime);
+        }
+        return orderId;
     }
 
     @Override
-    public Integer submit(SubmitOrderDto orderDto) throws Exception {
+    public Integer submit(SubmitOrderDto orderDto, Integer userId) throws Exception {
         System.out.println(orderDto);
         List<ShopSubmitOrderDto> shops = orderDto.getShops();
+        OrderType orderType = EnumUitl.toEnum(OrderType.class, orderDto.getOrderType());
         Map<Integer, List<ShopSubmitOrderDto>> map = new HashMap<>();
         for (ShopSubmitOrderDto shop : shops) {
             Integer shopId = shop.getShopId();
             List<ShopSubmitOrderDto> list = map.computeIfAbsent(shopId, sid -> new ArrayList<>());
             list.add(shop);
+            createOrder(orderDto, shop, orderType, userId);
         }
-        OrderType orderType = EnumUitl.toEnum(OrderType.class, orderDto.getOrderType());
-        for (Map.Entry<Integer, List<ShopSubmitOrderDto>> entry : map.entrySet()) {
-            List<ShopSubmitOrderDto> list = entry.getValue();
-            if (!list.isEmpty()) {
-                createOrder(orderDto, list, orderType);
-            }
-        }
+
         return null;
     }
 
     @Override
-    public BigDecimal orderPrice(List<ShopSubmitOrderDto> orderDto) throws Exception {
+    public BigDecimal orderPrice(ShopSubmitOrderDto orderDto) throws Exception {
 
 
         return new BigDecimal("0.0");
