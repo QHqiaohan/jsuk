@@ -16,14 +16,15 @@ import java.util.*;
 
 public class MysqlGenerator {
 
-    private static String[] table = new String[]{"js_shop_gorrrods_full_reduce"};
+    private static String[] table = new String[]{"js_user_order"};
 //    private static String[] table = new String[]{"js_shop_rush_buy_activity"};
     //table名字
     private static String[] prefixs = {"js_sys_", "js_"};            //table前缀
     private static String authorName = "tj";                //作者
     private static String parent = "com.jh.jsuk";         //父包名
     //    private static String path = System.getProperty("user.dir");
-    private static String path = System.getProperty("user.dir");
+//    private static String path = System.getProperty("user.dir");
+    private static String path = "E:/delcode";
     private static String url = "jdbc:mysql://47.99.45.67:3306/jushang_new?characterEncoding=utf8&useSSL=false";
     private static String username = "root";
     private static String password = "ab12345678";
