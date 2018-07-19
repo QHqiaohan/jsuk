@@ -35,10 +35,9 @@ public class CouponController {
     @Autowired
     private UserCouponService userCouponService;
 
-    public R page(Page page){
+    public R page(Page page) {
         return null;
     }
-
 
 
     //用户-我的-优惠券-查询用户优惠卷列表
@@ -79,10 +78,10 @@ public class CouponController {
     //用户-我的-优惠券-获取优惠券数量
     @ApiOperation("用户-我的-优惠券-获取优惠券数量")
     @RequestMapping("/getCouponNum")
-    public Result getCouponNum(Integer userId){
+    public Result getCouponNum(Integer userId) {
         // 用户优惠券信息
         List<CouponVo> couponList = couponService.findByUserId(userId);
-        if(couponList==null){
+        if (couponList == null) {
             return new Result().success(0);
         }
         return new Result().success(couponList.size());
@@ -124,7 +123,7 @@ public class CouponController {
         return new Result().success(map);
     }*/
 
-    @ApiOperation("用户-显示店铺可用优惠卷列表")
+    @ApiOperation("用户-显示店铺可用优惠券列表")
     @PostMapping("/listByShopId")
     public Result listByShop(CoupQueryParam param
                              /*Integer userId, @ApiParam(value = "店铺id",required = true)
@@ -220,4 +219,6 @@ public class CouponController {
         coupon.updateById();
         return new Result().success();
     }
+
+
 }

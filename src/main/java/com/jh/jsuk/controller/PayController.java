@@ -551,8 +551,11 @@ public class PayController {
     /**
      * 乡村旅游定金支付
      */
-    @RequestMapping(value="/payDingJin",method=RequestMethod.POST)
+   // @RequestMapping(value="/payDingJin",method=RequestMethod.POST)
     public Result payDingJin(String totalAmount,String userId,Integer activity_id){
+        if(Double.parseDouble(totalAmount)<=0){
+            return new Result().erro("支付金额错误");
+        }
         /*
         封装参数,创建微信交易对象
          */
@@ -561,12 +564,12 @@ public class PayController {
         paramMap.put("appid",env.getProperty("APP_ID"));       //公众号id
         paramMap.put("mch_id",env.getProperty("MCH_ID"));     // 商户号
         paramMap.put("nonce_str",WXPayUtil.generateNonceStr());    //生成随机字符串
-        paramMap.put("total_fee",1);        //测试金额，单位为分
+        paramMap.put("total_fee","1");        //测试金额，单位为分,非测试为totalAmount*100
         paramMap.put("trade_type","APP");    //支付类型
         paramMap.put("notify_url",env.getProperty("NOTIFYURL"));  //通知地址
         paramMap.put("out_trade_no", UuidUtil.getUUID());       //商户订单号
-
-
+        paramMap.put("body","乡村旅游定金支付");
+        paramMap.put("spbill_create_ip", "127.0.0.1");
 
         return null;
     }
