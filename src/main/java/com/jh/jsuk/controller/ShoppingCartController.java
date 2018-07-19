@@ -3,15 +3,18 @@ package com.jh.jsuk.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.jh.jsuk.entity.*;
+import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
 import com.jh.jsuk.entity.vo.GoodsVo;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
 import com.jh.jsuk.service.*;
+import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +48,8 @@ public class ShoppingCartController {
     private ShopGoodsService shopGoodsService;
     @Autowired
     private ShopGoodsSizeService shopGoodsSizeService;
+    @Autowired
+    private UserOrderService userOrderService;
 
     @ApiOperation("加入购物车")
     @ApiImplicitParams(value = {
@@ -236,6 +241,15 @@ public class ShoppingCartController {
         Integer integralNum=userIntegral.getIntegralNumber();   //积分总数量
 
         for(Integer goodsId:goodsIds){
+            //先根据goodsId查shopId
+            Integer shopId=shopGoodsService.selectOne(new EntityWrapper<ShopGoods>().eq(ShopGoods.ID,goodsId)).getShopId();
+            //查询满减券对象
+            ShopGoodsFullReduce shopGoodsFullReduce = shopGoodsFullReduceService
+                    .selectOne(new EntityWrapper<ShopGoodsFullReduce>()
+                            .eq(ShopGoodsFullReduce.SHOP_ID, shopId)
+                            .eq(ShopGoodsFullReduce.GOODS_ID,goodsId)
+                    );
+
 
         }
 
@@ -245,6 +259,18 @@ public class ShoppingCartController {
         }
 
         return null;
+    }
+
+    public Result getMoney(List<ShopSubmitOrderDto> orderDto) {
+        BigDecimal money = null;
+        try {
+            money = userOrderService.orderPrice(orderDto);
+            return new Result().success(money);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result().erro("出错啦");
+        }
+
     }
 }
 

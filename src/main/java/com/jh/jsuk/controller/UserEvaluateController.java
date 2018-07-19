@@ -81,12 +81,12 @@ public class UserEvaluateController {
         shop.setStarNum(evaluateService.calulateStar(UserEvaluate.SHOP_STAR_NUM, new EntityWrapper()
                 .eq(UserOrder.SHOP_ID, managerId)));
         shop.updateById();
-        Integer distributionUserId = order.getDistributionUserId();
-        if (distributionUserId == null) {
-            return new Result().success();
-        }
+//        Integer distributionUserId = order.getDistributionUserId();
+//        if (distributionUserId == null) {
+//            return new Result().success();
+//        }
         DistributionUser distributionUser = new DistributionUser();
-        distributionUser.setId(distributionUserId);
+//        distributionUser.setId(distributionUserId);
 //        distributionUser.setStarNum(evaluateService.calulateStar(UserEvaluate.DISTRIBUTION_STAR_NUM, new EntityWrapper()
 //                .eq(UserEvaluate.DISTRIBUTION_USER_ID, distributionUserId)));
         distributionUser.updateById();

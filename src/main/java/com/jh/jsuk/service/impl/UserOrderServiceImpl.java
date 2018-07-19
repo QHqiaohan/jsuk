@@ -1,12 +1,15 @@
 package com.jh.jsuk.service.impl;
 
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.SqlHelper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.github.tj123.common.RedisUtils;
+import com.jh.jsuk.conf.RedisKeys;
 import com.jh.jsuk.dao.UserOrderDao;
 import com.jh.jsuk.dao.UserOrderGoodsDao;
 import com.jh.jsuk.entity.ShopUser;
@@ -18,16 +21,21 @@ import com.jh.jsuk.entity.dto.SubmitOrderDto;
 import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.OrderStatus;
-import com.jh.jsuk.service.ShopGoodsService;
-import com.jh.jsuk.service.ShopUserService;
-import com.jh.jsuk.service.UserOrderService;
-import com.jh.jsuk.service.UserService;
+import com.jh.jsuk.envm.OrderType;
+import com.jh.jsuk.exception.OrderException;
+import com.jh.jsuk.service.*;
+import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.ShopJPushUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * <p>
@@ -49,7 +57,15 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     private ShopGoodsService shopGoodsService;
 
     @Autowired
+    ShopGoodsSizeService shopGoodsSizeService;
+
+    @Autowired
     private ShopUserService shopUserService;
+
+    @Autowired
+    RedisUtils redisUtils;
+
+
 
     @Override
     public int statusCount(OrderStatus orderStatus, Integer shopId) {
@@ -57,7 +73,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (orderStatus != null) {
             wrapper.eq(UserOrder.STATUS, orderStatus.getKey());
         }
-        wrapper.ne(UserOrder.IS_DEL, 1);
+        wrapper.ne(UserOrder.IS_USER_DEL, 1);
         return selectCount(wrapper);
     }
 
@@ -145,7 +161,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (orderStatus != null) {
             wrapper.eq(UserOrder.STATUS, orderStatus.getKey());
         }
-        wrapper.ne(UserOrder.IS_DEL, 1);
+        wrapper.ne(UserOrder.IS_USER_DEL, 1);
         List<UserOrderVo> list = baseMapper.findVoByPage(page, wrapper);
         return page.setRecords(list);
     }
@@ -158,7 +174,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     @Override
     public Integer orderCount(Integer userId) {
         EntityWrapper<UserOrder> wrapper = new EntityWrapper<>();
-        wrapper.ne(UserOrder.IS_DEL, 1)
+        wrapper.ne(UserOrder.IS_USER_DEL, 1)
                 .eq(UserOrder.USER_ID, userId);
         return selectCount(wrapper);
     }
@@ -167,7 +183,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     public Page userOrder(Page page, Integer id) {
         EntityWrapper wrapper = new EntityWrapper();
         wrapper.eq(UserOrder.USER_ID, id);
-        wrapper.ne(UserOrder.IS_DEL, 1);
+        wrapper.ne(UserOrder.IS_USER_DEL, 1);
         List<UserOrderVo> list = baseMapper.findVoByPage(page, wrapper);
         return page.setRecords(list);
     }
@@ -185,16 +201,68 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 "用户催单", null) ? "催单成功" : "催单失败";
     }
 
+    /**
+     * 生成订单号
+     *
+     * @return
+     */
+    public String createOrderNum() throws Exception {
+        String key = RedisKeys.SHOP_GOODS_ORDER_NUM;
+        Lock lock = new ReentrantLock();
+        try {
+            lock.lock();
+            Long count = null;
+            if (redisUtils.hasKey(key)) {
+                count = redisUtils.autoIncrement(key);
+            }
+            if (count == null)
+                count = (long) selectCount(null);
+            return RandomUtil.randomNumbers(6) + String.format("%06d", count);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private Integer createOrder(SubmitOrderDto orderDto, List<ShopSubmitOrderDto> orderDtos, OrderType orderType) throws Exception {
+        UserOrder o = new UserOrder();
+        for (ShopSubmitOrderDto dto : orderDtos) {
+            int stock = shopGoodsSizeService.getAccurateStock(dto.getGoodsSizeId(), orderType);
+            if(stock < dto.getNum()){
+                throw new OrderException(OrderException.ExceptionType.UNDER_STOCK);
+            }
+        }
+        o.setAddressId(orderDto.getAddressId());
+        o.setOrderNum(createOrderNum());
+        o.setOrderPrice(orderPrice(orderDtos));
+        o.setDistributionTime(orderDto.getDistributionTime());
+        return null;
+    }
+
     @Override
     public Integer submit(SubmitOrderDto orderDto) throws Exception {
         System.out.println(orderDto);
+        List<ShopSubmitOrderDto> shops = orderDto.getShops();
+        Map<Integer, List<ShopSubmitOrderDto>> map = new HashMap<>();
+        for (ShopSubmitOrderDto shop : shops) {
+            Integer shopId = shop.getShopId();
+            List<ShopSubmitOrderDto> list = map.computeIfAbsent(shopId, sid -> new ArrayList<>());
+            list.add(shop);
+        }
+        OrderType orderType = EnumUitl.toEnum(OrderType.class, orderDto.getOrderType());
+        for (Map.Entry<Integer, List<ShopSubmitOrderDto>> entry : map.entrySet()) {
+            List<ShopSubmitOrderDto> list = entry.getValue();
+            if (!list.isEmpty()) {
+                createOrder(orderDto, list, orderType);
+            }
+        }
         return null;
     }
 
     @Override
     public BigDecimal orderPrice(List<ShopSubmitOrderDto> orderDto) throws Exception {
+
+
         return new BigDecimal("0.0");
     }
-
 
 }
