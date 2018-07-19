@@ -17,4 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShopGoodsSizeServiceImpl extends ServiceImpl<ShopGoodsSizeDao, ShopGoodsSize> implements ShopGoodsSizeService {
 
+    @Override
+    public Integer getStock(Integer goodsSizeId) {
+        return null;
+    }
 }

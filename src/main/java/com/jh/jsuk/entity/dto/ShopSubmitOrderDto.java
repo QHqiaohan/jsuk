@@ -3,6 +3,7 @@ package com.jh.jsuk.entity.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -19,6 +20,7 @@ public class ShopSubmitOrderDto implements Serializable {
 
     @ApiModelProperty(value = "数量", name = "num",required = true)
     @NotNull
+    @Min(1)
     private Integer num;
 
     @ApiModelProperty(value = "优惠券id", name = "userCouponId")
