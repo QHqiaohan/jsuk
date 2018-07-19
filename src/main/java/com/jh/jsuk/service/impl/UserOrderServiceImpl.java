@@ -13,6 +13,8 @@ import com.jh.jsuk.entity.ShopUser;
 import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.UserOrderGoods;
+import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
+import com.jh.jsuk.entity.dto.SubmitOrderDto;
 import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.OrderStatus;
@@ -24,6 +26,7 @@ import com.jh.jsuk.utils.ShopJPushUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -177,8 +180,21 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         ShopUser shopUser = shopUserService.selectOne(new EntityWrapper<ShopUser>().eq("shop_id", orderDetail.getShopId()));
         //获取买家信息
         User user = userService.selectOne(new EntityWrapper<User>().eq("id", orderDetail.getUserId()));
-        return  ShopJPushUtils.pushMsg(shopUser.getId() + "",
+        return ShopJPushUtils.pushMsg(shopUser.getId() + "",
                 "订单(" + orderId + ")请尽快发货！催单人：" + user.getNickName() + "",
-                "用户催单", null)?"催单成功":"催单失败";
+                "用户催单", null) ? "催单成功" : "催单失败";
     }
+
+    @Override
+    public Integer submit(SubmitOrderDto orderDto) throws Exception {
+        System.out.println(orderDto);
+        return null;
+    }
+
+    @Override
+    public BigDecimal orderPrice(List<ShopSubmitOrderDto> orderDto) throws Exception {
+        return new BigDecimal("0.0");
+    }
+
+
 }

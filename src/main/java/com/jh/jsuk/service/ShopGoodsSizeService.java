@@ -13,4 +13,11 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface ShopGoodsSizeService extends IService<ShopGoodsSize> {
 
+    /**
+     * 获取库存
+     * @param goodsSizeId
+     * @return
+     */
+    Integer getStock(Integer goodsSizeId);
+
 }
