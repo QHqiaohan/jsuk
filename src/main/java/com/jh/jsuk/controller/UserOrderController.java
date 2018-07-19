@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
+import com.jh.jsuk.entity.dto.SubmitOrderDto;
 import com.jh.jsuk.entity.rules.AccountRule;
 import com.jh.jsuk.entity.vo.UserOrderInfoVo;
 import com.jh.jsuk.envm.OrderStatus;
@@ -16,8 +17,11 @@ import com.jh.jsuk.utils.*;
 import com.jh.jsuk.utils.wx.WxPay;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -441,6 +445,23 @@ public class UserOrderController {
 
 
     //--------------------骑手端----------------------------------------------//
+
+    @ApiOperation(value = "用户端-提交订单")
+//    @ApiImplicitParams(value = {
+//            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
+//            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
+//            @ApiImplicitParam(name = "status", value = "0待付款,1待发货,2=已发货 3=交易成功,4=申请退款,5=退款成功,6=交易关闭,7=售后",
+//                    paramType = "query", dataType = "integer"),
+//            @ApiImplicitParam(name = "goodsName", value = "商品名称", paramType = "query", dataType = "string")
+//    })
+    @PostMapping(value = "/submit")
+    public Result submit(@RequestBody @Valid SubmitOrderDto orderDto,BindingResult result) throws Exception{
+        if (result.hasErrors()) {
+            throw new BindException(result);
+        }
+        return new Result().success(userOrderService.submit(orderDto));
+    }
+
     @ApiOperation(value = "用户端-订单列表&订单关键字模糊搜索", notes = "不传=该用户全部订单")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
