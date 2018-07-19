@@ -9,14 +9,19 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.UserOrderDao;
 import com.jh.jsuk.dao.UserOrderGoodsDao;
-import com.jh.jsuk.entity.*;
+import com.jh.jsuk.entity.ShopUser;
+import com.jh.jsuk.entity.User;
+import com.jh.jsuk.entity.UserOrder;
+import com.jh.jsuk.entity.UserOrderGoods;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
 import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.OrderStatus;
-import com.jh.jsuk.service.*;
+import com.jh.jsuk.service.ShopGoodsService;
+import com.jh.jsuk.service.ShopUserService;
 import com.jh.jsuk.service.UserOrderService;
+import com.jh.jsuk.service.UserService;
 import com.jh.jsuk.utils.ShopJPushUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,10 +47,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     private UserService userService;
     @Autowired
     private ShopGoodsService shopGoodsService;
+
     @Autowired
     private ShopUserService shopUserService;
-    @Autowired
-    private ShopGoodsSizeService shopGoodsSizeService;
 
     @Override
     public int statusCount(OrderStatus orderStatus, Integer shopId) {
@@ -189,14 +193,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Override
     public BigDecimal orderPrice(List<ShopSubmitOrderDto> orderDto) throws Exception {
-        for(ShopSubmitOrderDto order:orderDto){
-           Integer goodsSizeId=order.getGoodsSizeId();
-            ShopGoodsSize shopGoodsSize = shopGoodsSizeService.selectOne(new EntityWrapper<ShopGoodsSize>()
-                                                                             .eq(ShopGoodsSize.ID, goodsSizeId));
-            shopGoodsSize.getSalesPrice();
 
-
-        }
 
         return new BigDecimal("0.0");
     }

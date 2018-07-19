@@ -1,6 +1,5 @@
 package com.jh.jsuk.entity;
 
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -15,37 +14,14 @@ import java.util.Date;
  * 订单
  * </p>
  *
- * @author lpf
- * @since 2018-06-20
+ * @author tj
+ * @since 2018-07-19
  */
 @TableName("js_user_order")
 public class UserOrder extends Model<UserOrder> {
 
-    public static final String ID = "id";
-    public static final String ORDER_NUM = "order_num";
-    public static final String ORDER_PRICE = "order_price";
-    public static final String DISTRIBUTION_FEE = "distribution_fee";
-    public static final String DISTRIBUTION_STATUS = "distribution_status";
-    public static final String CREAT_TIME = "creat_time";
-    public static final String PAY_TIME = "pay_time";
-    public static final String PAY_TYPE = "pay_type";
-    public static final String STATUS = "status";
-    public static final String IS_UNSUBSCRIBE = "is_unsubscribe";
-    public static final String IS_EVALUATE = "is_evaluate";
-    public static final String IS_DEL = "is_del";
-    public static final String SHOP_ID = "shop_id";
-    public static final String ADDRESS_ID = "address_id";
-    public static final String USER_ID = "user_id";
-    public static final String CANCEL_TIME = "cancel_time";
-    public static final String COMPLETE_TIME = "complete_time";
-    public static final String SEND_TIME = "send_time";
-    public static final String COUPON_ID = "coupon_id";
-    public static final String DISTRIBUTION_USER_ID = "distribution_user_id";
-    public static final String ORDER_TYPE = "order_type";
-    public static final String LOGISTICS_NO = "logistics_no";
-    public static final String REMARK = "remark";
-    public static final String PLATFORM_NUMBER = "platform_number";
     private static final long serialVersionUID = 1L;
+
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     /**
@@ -60,10 +36,14 @@ public class UserOrder extends Model<UserOrder> {
      * 配送费
      */
     private BigDecimal distributionFee;
-//    /**
-//     * 配送状态 1 待抢单 2 待取货 3待送达 仅仅对应订单状态为 已发货 4配送完成
-//     */
-//    private Integer distributionStatus;
+    /**
+     * 配送时间
+     */
+    private Date distributionTime;
+    /**
+     * 配送方式 0：快递 1： 同城配送 2：到店自提
+     */
+    private Integer distributionType;
     /**
      * 创建时间
      */
@@ -73,11 +53,11 @@ public class UserOrder extends Model<UserOrder> {
      */
     private Date payTime;
     /**
-     * 0在线支付,1=货到付款
+     *  0 余额   1 货到付款  2 支付宝  3 微信  4 银行卡
      */
     private Integer payType;
     /**
-     * 0待付款  1待发货  2=已发货 3=交易成功 4=申请退款 5=退款成功 6=交易关闭 7=售后 8=申请换货 9=同意换货
+     *   0 : 待付款  1  : 待发货  2  : 待收货  3  : 售后  4  : 退款  5 : 退货   6  : 拒绝  7  : 取消
      */
     private Integer status;
     /**
@@ -89,9 +69,17 @@ public class UserOrder extends Model<UserOrder> {
      */
     private Integer isEvaluate;
     /**
-     * 0全部未删除  1用户删除  2商家删除 3用户和商家删除  4骑手删除 5用户和骑手删除 6骑手和商家删除 7都删除
+     * 商家删除
      */
-    private Integer isDel;
+    private Integer isShopDel;
+    /**
+     * 用户删除
+     */
+    private Integer isUserDel;
+    /**
+     * 关闭   1：关闭 0：未关闭
+     */
+    private Integer isClosed;
     /**
      * 店铺id
      */
@@ -121,11 +109,7 @@ public class UserOrder extends Model<UserOrder> {
      */
     private Integer couponId;
     /**
-     * 配送员id
-     */
-    private Integer distributionUserId;
-    /**
-     * 0:普通订单 1:秒杀订单
+     * 订单类型 0:普通订单 1:秒杀订单 2:会员购买 3:充值 4:到店支付
      */
     private Integer orderType;
     /**
@@ -137,27 +121,22 @@ public class UserOrder extends Model<UserOrder> {
      */
     private String remark;
     /**
+     * 订单的折扣，如果是会员优惠
+     */
+    private BigDecimal discount;
+    /**
+     * 积分规则
+     */
+    private Integer integralRuleId;
+    /**
+     * 满减规则
+     */
+    private Integer fullReduceId;
+    /**
      * 平台流水号
      */
     private String platformNumber;
 
-
-
-    public String getPlatformNumber() {
-        return platformNumber;
-    }
-
-    public void setPlatformNumber(String platformNumber) {
-        this.platformNumber = platformNumber;
-    }
-
-//    public Integer getDistributionStatus() {
-//        return distributionStatus;
-//    }
-
-//    public void setDistributionStatus(Integer distributionStatus) {
-//        this.distributionStatus = distributionStatus;
-//    }
 
     public Integer getId() {
         return id;
@@ -189,6 +168,22 @@ public class UserOrder extends Model<UserOrder> {
 
     public void setDistributionFee(BigDecimal distributionFee) {
         this.distributionFee = distributionFee;
+    }
+
+    public Date getDistributionTime() {
+        return distributionTime;
+    }
+
+    public void setDistributionTime(Date distributionTime) {
+        this.distributionTime = distributionTime;
+    }
+
+    public Integer getDistributionType() {
+        return distributionType;
+    }
+
+    public void setDistributionType(Integer distributionType) {
+        this.distributionType = distributionType;
     }
 
     public Date getCreatTime() {
@@ -239,12 +234,28 @@ public class UserOrder extends Model<UserOrder> {
         this.isEvaluate = isEvaluate;
     }
 
-    public Integer getIsDel() {
-        return isDel;
+    public Integer getIsShopDel() {
+        return isShopDel;
     }
 
-    public void setIsDel(Integer isDel) {
-        this.isDel = isDel;
+    public void setIsShopDel(Integer isShopDel) {
+        this.isShopDel = isShopDel;
+    }
+
+    public Integer getIsUserDel() {
+        return isUserDel;
+    }
+
+    public void setIsUserDel(Integer isUserDel) {
+        this.isUserDel = isUserDel;
+    }
+
+    public Integer getIsClosed() {
+        return isClosed;
+    }
+
+    public void setIsClosed(Integer isClosed) {
+        this.isClosed = isClosed;
     }
 
     public Integer getShopId() {
@@ -303,14 +314,6 @@ public class UserOrder extends Model<UserOrder> {
         this.couponId = couponId;
     }
 
-    public Integer getDistributionUserId() {
-        return distributionUserId;
-    }
-
-    public void setDistributionUserId(Integer distributionUserId) {
-        this.distributionUserId = distributionUserId;
-    }
-
     public Integer getOrderType() {
         return orderType;
     }
@@ -335,6 +338,96 @@ public class UserOrder extends Model<UserOrder> {
         this.remark = remark;
     }
 
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
+    }
+
+    public Integer getIntegralRuleId() {
+        return integralRuleId;
+    }
+
+    public void setIntegralRuleId(Integer integralRuleId) {
+        this.integralRuleId = integralRuleId;
+    }
+
+    public Integer getFullReduceId() {
+        return fullReduceId;
+    }
+
+    public void setFullReduceId(Integer fullReduceId) {
+        this.fullReduceId = fullReduceId;
+    }
+
+    public String getPlatformNumber() {
+        return platformNumber;
+    }
+
+    public void setPlatformNumber(String platformNumber) {
+        this.platformNumber = platformNumber;
+    }
+
+    public static final String ID = "id";
+
+    public static final String ORDER_NUM = "order_num";
+
+    public static final String ORDER_PRICE = "order_price";
+
+    public static final String DISTRIBUTION_FEE = "distribution_fee";
+
+    public static final String DISTRIBUTION_TIME = "distribution_time";
+
+    public static final String DISTRIBUTION_TYPE = "distribution_type";
+
+    public static final String CREAT_TIME = "creat_time";
+
+    public static final String PAY_TIME = "pay_time";
+
+    public static final String PAY_TYPE = "pay_type";
+
+    public static final String STATUS = "status";
+
+    public static final String IS_UNSUBSCRIBE = "is_unsubscribe";
+
+    public static final String IS_EVALUATE = "is_evaluate";
+
+    public static final String IS_SHOP_DEL = "is_shop_del";
+
+    public static final String IS_USER_DEL = "is_user_del";
+
+    public static final String IS_CLOSED = "is_closed";
+
+    public static final String SHOP_ID = "shop_id";
+
+    public static final String ADDRESS_ID = "address_id";
+
+    public static final String USER_ID = "user_id";
+
+    public static final String CANCEL_TIME = "cancel_time";
+
+    public static final String COMPLETE_TIME = "complete_time";
+
+    public static final String SEND_TIME = "send_time";
+
+    public static final String COUPON_ID = "coupon_id";
+
+    public static final String ORDER_TYPE = "order_type";
+
+    public static final String LOGISTICS_NO = "logistics_no";
+
+    public static final String REMARK = "remark";
+
+    public static final String DISCOUNT = "discount";
+
+    public static final String INTEGRAL_RULE_ID = "integral_rule_id";
+
+    public static final String FULL_REDUCE_ID = "full_reduce_id";
+
+    public static final String PLATFORM_NUMBER = "platform_number";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -342,6 +435,36 @@ public class UserOrder extends Model<UserOrder> {
 
     @Override
     public String toString() {
-        return JSONUtil.toJsonStr(this);
+        return "UserOrder{" +
+                "id=" + id +
+                ", orderNum=" + orderNum +
+                ", orderPrice=" + orderPrice +
+                ", distributionFee=" + distributionFee +
+                ", distributionTime=" + distributionTime +
+                ", distributionType=" + distributionType +
+                ", creatTime=" + creatTime +
+                ", payTime=" + payTime +
+                ", payType=" + payType +
+                ", status=" + status +
+                ", isUnsubscribe=" + isUnsubscribe +
+                ", isEvaluate=" + isEvaluate +
+                ", isShopDel=" + isShopDel +
+                ", isUserDel=" + isUserDel +
+                ", isClosed=" + isClosed +
+                ", shopId=" + shopId +
+                ", addressId=" + addressId +
+                ", userId=" + userId +
+                ", cancelTime=" + cancelTime +
+                ", completeTime=" + completeTime +
+                ", sendTime=" + sendTime +
+                ", couponId=" + couponId +
+                ", orderType=" + orderType +
+                ", logisticsNo=" + logisticsNo +
+                ", remark=" + remark +
+                ", discount=" + discount +
+                ", integralRuleId=" + integralRuleId +
+                ", fullReduceId=" + fullReduceId +
+                ", platformNumber=" + platformNumber +
+                "}";
     }
 }

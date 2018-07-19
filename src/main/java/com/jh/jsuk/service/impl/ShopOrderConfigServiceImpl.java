@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.github.tj123.common.RedisUtils;
+import com.jh.jsuk.conf.RedisKeys;
 import com.jh.jsuk.dao.ShopOrderConfigDao;
 import com.jh.jsuk.entity.ShopOrderConfig;
 import com.jh.jsuk.service.ShopOrderConfigService;
@@ -24,11 +25,9 @@ public class ShopOrderConfigServiceImpl extends ServiceImpl<ShopOrderConfigDao, 
     @Autowired
     RedisUtils redisUtils;
 
-    public static final String SHOP_ORDER_CONFIG_KEY = "shop_order_config";
-
     @Override
     public ShopOrderConfig getConfig(Integer shopId) throws Exception {
-        String key = SHOP_ORDER_CONFIG_KEY + shopId;
+        String key = RedisKeys.subKey(RedisKeys.SHOP_ORDER_CONFIG, String.valueOf(shopId));
         ShopOrderConfig config = redisUtils.get(key, ShopOrderConfig.class);
         if (config != null)
             return config.defaultConfig();

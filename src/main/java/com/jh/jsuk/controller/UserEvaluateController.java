@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.*;
+import com.jh.jsuk.entity.Dictionary;
 import com.jh.jsuk.entity.vo.EvaluateVo;
 import com.jh.jsuk.entity.vo.EvaluateVoT;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.DictionaryService;
+import com.jh.jsuk.service.ShopService;
 import com.jh.jsuk.service.UserEvaluateService;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.Result;
@@ -18,10 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>
@@ -42,6 +41,9 @@ public class UserEvaluateController {
     @Autowired
     private DictionaryService dictionaryService;
 
+    @Autowired
+    private ShopService shopService;
+
     @ApiOperation("添加评价")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "orderId", required = true, value = "订单id", paramType = "query", dataType = "int"),
@@ -59,33 +61,32 @@ public class UserEvaluateController {
         Dictionary dictionary = dictionaryService.selectOne(new EntityWrapper<Dictionary>().eq("code", "sensitive_words"));
         String sensitiveWord = dictionary.getValue();
         String[] sensitiveWords = sensitiveWord.split("、");
-        Set<String> sensitiveWordSet = new HashSet<>();
-        for (String str : sensitiveWords) {
-            sensitiveWordSet.add(str);
-        }
+        Set<String> sensitiveWordSet = new HashSet<>(Arrays.asList(sensitiveWords));
         SensitiveWordUtil.init(sensitiveWordSet);
         String content = SensitiveWordUtil.replaceSensitiveWord(evaluate.getContent(), '*');
         evaluate.setContent(content);
         evaluate.setCreateTime(new Date());
         evaluate.insert();
         UserOrder order = orderService.selectById(evaluate.getOrderId());
-        if (order == null)
-            throw new MessageException("订单不存在！");
+        if (order == null) {
+            return new Result().erro("订单不存在！");
+        }
         order.setIsEvaluate(1);
         order.updateById();
 //        Integer shopId = order.getShopId();
         Integer managerId = order.getShopId();
-        Shop shop = new Shop();
-        shop.setId(managerId);
+//        Shop shop = new Shop();
+        Shop shop = shopService.selectOne(new EntityWrapper<Shop>().eq("id", managerId));
+//        shop.setId(managerId);
         shop.setStarNum(evaluateService.calulateStar(UserEvaluate.SHOP_STAR_NUM, new EntityWrapper()
                 .eq(UserOrder.SHOP_ID, managerId)));
         shop.updateById();
-        Integer distributionUserId = order.getDistributionUserId();
-        if (distributionUserId == null) {
-            return new Result().success();
-        }
+//        Integer distributionUserId = order.getDistributionUserId();
+//        if (distributionUserId == null) {
+//            return new Result().success();
+//        }
         DistributionUser distributionUser = new DistributionUser();
-        distributionUser.setId(distributionUserId);
+//        distributionUser.setId(distributionUserId);
 //        distributionUser.setStarNum(evaluateService.calulateStar(UserEvaluate.DISTRIBUTION_STAR_NUM, new EntityWrapper()
 //                .eq(UserEvaluate.DISTRIBUTION_USER_ID, distributionUserId)));
         distributionUser.updateById();

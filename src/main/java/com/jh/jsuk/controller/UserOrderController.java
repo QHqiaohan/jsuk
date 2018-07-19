@@ -1,20 +1,19 @@
 package com.jh.jsuk.controller;
 
 
-import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Session;
-import com.jh.jsuk.entity.*;
+import com.jh.jsuk.entity.ManagerUser;
+import com.jh.jsuk.entity.ShopGoodsSize;
+import com.jh.jsuk.entity.UserOrder;
+import com.jh.jsuk.entity.UserOrderGoods;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
 import com.jh.jsuk.entity.rules.AccountRule;
-import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderInfoVo;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
-import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.*;
 import com.jh.jsuk.utils.wx.WxPay;
 import io.swagger.annotations.*;
@@ -539,7 +538,7 @@ public class UserOrderController {
     @RequestMapping(value = "/delOrder", method = {RequestMethod.POST, RequestMethod.GET})
     public Result delOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
         UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
-        userOrder.setIsDel(1);
+        userOrder.setIsUserDel(1);
         userOrder.updateById();
         return new Result().success("删除成功!");
     }
