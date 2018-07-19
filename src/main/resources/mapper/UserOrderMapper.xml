@@ -14,7 +14,8 @@
         <result column="status" property="status"/>
         <result column="is_unsubscribe" property="isUnsubscribe"/>
         <result column="is_evaluate" property="isEvaluate"/>
-        <result column="is_del" property="isDel"/>
+        <result column="is_shop_del" property="isShopDel"/>
+        <result column="is_user_del" property="isUserDel"/>
         <result column="shop_id" property="shopId"/>
         <result column="address_id" property="addressId"/>
         <result column="user_id" property="userId"/>
@@ -30,16 +31,19 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, order_num, order_price, distribution_fee, creat_time, pay_time, pay_type, status, is_unsubscribe, is_evaluate, is_del,
+        id, order_num, order_price, distribution_fee, creat_time, pay_time, pay_type, status, is_unsubscribe, is_evaluate, is_shop_del, is_user_del,
         shop_id, address_id, user_id, cancel_time, complete_time, send_time, coupon_id, distribution_user_id, order_type, logistics_no,
         remark
     </sql>
 
     <resultMap id="UserOrderVo" type="com.jh.jsuk.entity.vo.UserOrderVo" extends="BaseResultMap">
-        <association property="shop" column="shop_id" select="com.jh.jsuk.dao.ShopDao.selectShopPhoneById"></association>
-        <association property="distributionUser" column="distribution_user_id" select="com.jh.jsuk.dao.DistributionUserDao.selectById"></association>
+        <association property="shop" column="shop_id"
+                     select="com.jh.jsuk.dao.ShopDao.selectShopPhoneById"></association>
+        <association property="distributionUser" column="distribution_user_id"
+                     select="com.jh.jsuk.dao.DistributionUserDao.selectById"></association>
         <association property="coupon" column="coupon_id" select="com.jh.jsuk.dao.CouponDao.selectById"></association>
-        <association property="address" column="address_id" select="com.jh.jsuk.dao.UserAddressDao.selectById"></association>
+        <association property="address" column="address_id"
+                     select="com.jh.jsuk.dao.UserAddressDao.selectById"></association>
         <collection property="goodsList" column="id" ofType="com.jh.jsuk.entity.vo.UserOrderGoodsVo"
                     select="com.jh.jsuk.dao.UserOrderGoodsDao.findByOrderId"></collection>
     </resultMap>
@@ -97,8 +101,8 @@
         sgs.size_name,
         sgs.original_price,
         sgs.sales_price,
---         sg.goods_name,
---         sg.main_image,
+        -- sg.goods_name,
+        -- sg.main_image,
         c.discount,
         s.shop_name
         FROM
@@ -140,8 +144,8 @@
         sgs.size_name,
         sgs.original_price,
         sgs.sales_price,
-        --         sg.goods_name,
-        --         sg.main_image,
+        -- sg.goods_name,
+        -- sg.main_image,
         c.discount,
         s.shop_name
         FROM
@@ -169,10 +173,13 @@
     </select>
 
     <resultMap id="UserOrderDetailVo" type="com.jh.jsuk.entity.vo.UserOrderDetailVo" extends="BaseResultMap">
-        <association property="shop" column="shop_id" select="com.jh.jsuk.dao.ShopDao.selectShopPhoneById"></association>
-        <association property="distributionUser" column="distribution_user_id" select="com.jh.jsuk.dao.DistributionUserDao.selectById"></association>
+        <association property="shop" column="shop_id"
+                     select="com.jh.jsuk.dao.ShopDao.selectShopPhoneById"></association>
+        <association property="distributionUser" column="distribution_user_id"
+                     select="com.jh.jsuk.dao.DistributionUserDao.selectById"></association>
         <association property="coupon" column="coupon_id" select="com.jh.jsuk.dao.CouponDao.selectById"></association>
-        <association property="address" column="address_id" select="com.jh.jsuk.dao.UserAddressDao.selectById"></association>
+        <association property="address" column="address_id"
+                     select="com.jh.jsuk.dao.UserAddressDao.selectById"></association>
         <collection property="goodsList" column="id" ofType="com.jh.jsuk.entity.vo.UserOrderDetailVo"
                     select="com.jh.jsuk.dao.UserOrderGoodsDao.orderGoodsDetail"></collection>
     </resultMap>
