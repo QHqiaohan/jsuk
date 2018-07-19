@@ -13,11 +13,11 @@ public enum OrderStatus {
 
     SUCCESS(3, "交易成功", "succ"),
 
-    APPLY_REFUND(4, "申请退款", "arfd"),
+    REFUND_MONEY(4, "退款", "arfd"),
 
-    REFUNDED(5, "退款成功", "rfud"),
+    REFUND_GOODS(5, "退货", "rfud"),
 
-    CLOSED(6, "交易关闭", "clsd"),
+    CLOSED(6, "拒绝", "clsd"),
 
     CANCEL(7, "取消", "casl");
 
