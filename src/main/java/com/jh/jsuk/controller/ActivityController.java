@@ -585,23 +585,23 @@ public class ActivityController {
     //乡村旅游-获取子模块
     //用户-乡村旅游-乡村旅游子模块(亲子，户外拓展...)
     @ApiOperation("用户-乡村旅游-乡村旅游子模块(亲子，户外拓展...)")
-    @RequestMapping("/getChildModularByParentId")
+    @RequestMapping(value="/getChildModularByParentId", method={RequestMethod.GET,RequestMethod.POST})
     public Result getChildModularByParentId(Integer id){
+
         Result result=new Result();
-/*        List<ModularPortal> childModularList=modularPortalService.selectList(new EntityWrapper<ModularPortal>()
-                                            .eq(ModularPortal.PARENT_ID,id)
-
-        );*/
-
-        List<ModularPortal> list=modularPortalService.findChildListByParentId(id);
-        return result.success(list);
+        List<ModularPortal> childModularList=modularPortalService.selectList(new EntityWrapper<ModularPortal>()
+                                                                            .eq(ModularPortal.PARENT_ID,id)
+        );
+        //List<ModularPortal> list=modularPortalService.findChildListByParentId(id);
+        return result.success(childModularList);
     }
 
 
     //用户-乡村旅游-热门推荐
     @ApiOperation("用户-乡村旅游-热门推荐")
     @RequestMapping("/getHotActivityList")
-    public Result getHotActivityList(Integer current,Integer size){
+    public Result getHotActivityList(@ApiParam(name="当前页current") Integer current,
+                                     @ApiParam(name="每页显示条数size") Integer size){
         current=current==null?1:current;
         size=size==null?10:size;
         Result result=new Result();
@@ -656,16 +656,15 @@ public class ActivityController {
      * 根据活动的modular_id连js_modular_portal表查询该活动对应的模块类型(亲子,户外拓展...)
      */
     @ApiOperation("用户-乡村旅游-我的活动列表-页面加载时调用(根据活动的modular_id查询该活动对应的模块类型)")
-    @RequestMapping("/getMudularName")
+    @RequestMapping(value="/getMudularName",method = {RequestMethod.POST, RequestMethod.GET})
     public Result getMudularName(Integer modularId){
        ModularPortal modular= modularPortalService.selectById(modularId);
        return new Result().success(modular.getName());
     }
 
-
     //用户-乡村旅游-我的活动列表-删除活动
     @ApiOperation("用户-乡村旅游-我的活动列表-删除活动")
-    @RequestMapping("/deleteActivityById")
+    @RequestMapping(value="/deleteActivityById",method = {RequestMethod.POST, RequestMethod.GET})
     public Result deleteActivityById(Integer activityId){
         Result result=new Result();
         try{
@@ -687,7 +686,7 @@ public class ActivityController {
      */
     @ApiOperation("用户-乡村旅游-查询亲子、户外拓展、采摘活动、酒店住宿、特产购买对应活动")
     @RequestMapping(value="/getActivityListByModularId",method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getActivityListByModularId(Integer modularId){
+    public Result getActivityListByModularId(@ApiParam(name="模块id",value="当前modularId") Integer modularId){
         Result result=new Result();
 
         try{
@@ -710,7 +709,7 @@ public class ActivityController {
      * 根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情
      */
     @ApiOperation("用户-乡村旅游-根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情")
-    @RequestMapping("getActivityInfoById")
+    @RequestMapping(value="getActivityInfoById",method = {RequestMethod.POST, RequestMethod.GET})
     public Result getActivityInfoById(Integer id){
         Result result=new Result();
 
@@ -730,8 +729,8 @@ public class ActivityController {
      * 支付定金完成后调用该方法
      */
     @ApiOperation("用户-乡村旅游-活动-活动详情-活动报名(支付定金完成后调用该方法)")
-    @RequestMapping("/join")
-    public Result join(Integer activityId,Integer userId, @RequestBody ActivityJoin activityJoin){
+    @RequestMapping(value="/join",method = {RequestMethod.POST, RequestMethod.GET})
+    public Result join(Integer activityId,Integer userId, @RequestBody @ApiParam(name="activityJoin对象") ActivityJoin activityJoin){
         Result result=new Result();
 
         try{
