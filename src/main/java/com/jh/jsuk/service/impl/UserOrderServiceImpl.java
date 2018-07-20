@@ -351,6 +351,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             //可以使用优惠券
             //获取优惠券折扣
             discount=coupon.getDiscount().doubleValue();
+            coupon.setIsDel(1);
+            coupon.updateById();      //"删除"使用过的优惠券
         }
         totalPriceWithOutDiscount=totalPriceWithOutDiscount-discount;   //减去优惠券的折扣
 
