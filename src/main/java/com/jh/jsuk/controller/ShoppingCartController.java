@@ -209,21 +209,21 @@ public class ShoppingCartController {
     }
 
 
-    /**
+/*    *//**
      * 用户-购物车-去结算
      * 金额计算（折扣、优惠券、积分来计算订单价格）
      * 计算订单金额
      * 更新用户积分总数
-     */
-    /**
+     *//*
+    *//**
      *
-     * @param userId            用户id
-     * @param cartPrice        购物车金额,没有使用满减、优惠券、积分的金额
-     * @param orderPrice       订单金额,前台计算的使用满减、优惠券、积分的金额,后台再算一遍
-     * @param coupons          可用优惠券数组
-     * @param goodsIds         商品id数组
+     * @param //userId            用户id
+     * @param //cartPrice        购物车金额,没有使用满减、优惠券、积分的金额
+     * @param //orderPrice       订单金额,前台计算的使用满减、优惠券、积分的金额,后台再算一遍
+     * @param //coupons          可用优惠券数组
+     * @param //goodsIds         商品id数组
      * @return
-     */
+     *//*
     @ApiOperation("用户-购物车-去结算-计算订单金额")
     @RequestMapping(value="/getOrderAmount",method ={RequestMethod.POST})
     public Result getOrderAmount(Integer userId,
@@ -247,28 +247,14 @@ public class ShoppingCartController {
                             .eq(ShopGoodsFullReduce.SHOP_ID, shopId)
                             .eq(ShopGoodsFullReduce.GOODS_ID,goodsId)
                     );
-
-
         }
-
 
         if(integralNum>0){
 
         }
 
         return null;
-    }
+    }*/
 
-    public Result getMoney(ShopSubmitOrderDto orderDto) {
-        BigDecimal money = null;
-        try {
-            money = userOrderService.orderPrice(orderDto);
-            return new Result().success(money);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Result().erro("出错啦");
-        }
-
-    }
 }
 

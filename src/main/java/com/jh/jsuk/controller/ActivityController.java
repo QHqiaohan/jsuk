@@ -491,7 +491,7 @@ public class ActivityController {
                     paramType = "query", dataType = "Integer"),
     })
     @RequestMapping(value = "/addComment", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addComment(@RequestBody MarketComment marketComment) {
+    public Result addComment(MarketComment marketComment) {
         //获取敏感词
         Dictionary dictionary = dictionaryService.selectOne(new EntityWrapper<Dictionary>().eq("code", "sensitive_words"));
         String sensitiveWord = dictionary.getValue();
@@ -601,14 +601,18 @@ public class ActivityController {
     @ApiOperation("用户-乡村旅游-热门推荐")
     @RequestMapping("/getHotActivityList")
     public Result getHotActivityList(@ApiParam(name="当前页current") Integer current,
-                                     @ApiParam(name="每页显示条数size") Integer size){
+                                     @ApiParam(name="每页显示条数size") Integer size,
+                                     @ApiParam(name="乡村旅游id") Integer ModularId){
         current=current==null?1:current;
         size=size==null?10:size;
         Result result=new Result();
         Page<Activity> activityPage = activityService.selectPage(new Page<Activity>(current,size),
                                                                  new EntityWrapper<Activity>()
                                                                          .eq(Activity.IS_DEL,0)
-                                                                         .orderBy(Activity.PUBLISH_TIME,false)
+                                                                         .eq(Activity.IS_RECOMMEND,1)
+                                                                         .eq(Activity.MODULAR_ID,ModularId)
+                                                                         .orderBy(Activity.PUBLISH_TIME,false
+                                                                         )
         );
         if(activityPage.getRecords()==null || activityPage.getRecords().size()==0){
             return result.erro("亲，暂时没有热门活动哦...");

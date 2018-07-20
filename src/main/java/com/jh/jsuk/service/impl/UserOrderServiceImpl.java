@@ -11,10 +11,7 @@ import com.github.tj123.common.RedisUtils;
 import com.jh.jsuk.conf.RedisKeys;
 import com.jh.jsuk.dao.UserOrderDao;
 import com.jh.jsuk.dao.UserOrderGoodsDao;
-import com.jh.jsuk.entity.ShopUser;
-import com.jh.jsuk.entity.User;
-import com.jh.jsuk.entity.UserOrder;
-import com.jh.jsuk.entity.UserOrderGoods;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderGoodsDto;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
@@ -25,6 +22,7 @@ import com.jh.jsuk.envm.OrderResponseStatus;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
 import com.jh.jsuk.service.*;
+import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.ShopJPushUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +63,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Autowired
     RedisUtils redisUtils;
+
+    @Autowired
+    private  CouponService couponService;
 
 
     @Override
@@ -301,6 +302,40 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Override
     public BigDecimal orderPrice(ShopSubmitOrderDto orderDto) throws Exception {
+/**
+ *      用户-购物车-去结算
+ *      * 金额计算（折扣、优惠券、积分来计算订单价格）
+ *      * 计算订单金额
+ *      * 更新用户积分总数
+ */
+       //先计算没有使用任何优惠的订单原价
+        double totalPriceWithOutDiscount=0;
+        ArrayList<ShopSubmitOrderGoodsDto> goodsList = orderDto.getGoods();
+        for(ShopSubmitOrderGoodsDto goodsDto:goodsList){
+            //订单项的价格
+            double orderItemPrice = goodsDto.getGoodsPrice().doubleValue() * goodsDto.getNum();
+            totalPriceWithOutDiscount+=orderItemPrice;
+        }
+
+        //店铺id
+        Integer shopId=orderDto.getShopId();
+        //优惠券id
+        Integer userCouponId = orderDto.getUserCouponId();
+       //根据优惠券id和shopId查询对应的优惠券
+        Coupon coupon = couponService.selectOne(new EntityWrapper<Coupon>()
+                                                    .eq(Coupon.ID, userCouponId)
+                                                    .eq(Coupon.SHOP_ID,shopId)
+        );
+        double discount=0;
+        //优惠券开始时间和结束时间判断
+        if(new Date().after(coupon.getStartTime()) && new Date().before(coupon.getEndTime()) && totalPriceWithOutDiscount>=coupon.getFullPrice().doubleValue()){
+            //可以使用优惠券
+            //获取优惠券折扣
+            discount=coupon.getDiscount().doubleValue();
+        }
+        totalPriceWithOutDiscount=totalPriceWithOutDiscount-discount;   //减去优惠券的折扣
+
+        //计算积分抵扣
 
 
         return new BigDecimal("0.0");
