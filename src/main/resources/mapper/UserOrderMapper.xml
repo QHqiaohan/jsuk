@@ -192,4 +192,13 @@
         id = #{id}
     </select>
 
+
+    <update id="updateStock">
+      update js_shop_goods_size s set s.stock = s.stock - #{num} where s.id = #{goodsSizeId} and s.stock >= #{num}
+    </update>
+
+    <update id="updateKillStock">
+      update js_shop_goods_size s set s.kill_stock = s.kill_stock - #{num} where s.id = #{goodsSizeId} and s.kill_stock >= #{num}
+    </update>
+
 </mapper>

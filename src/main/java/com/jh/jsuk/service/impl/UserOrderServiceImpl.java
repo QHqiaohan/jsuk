@@ -27,7 +27,6 @@ import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.ShopJPushUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -211,82 +210,107 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
      *
      * @return
      */
-    public String createOrderNum() throws Exception {
+    public synchronized String createOrderNum() throws Exception {
         String key = RedisKeys.SHOP_GOODS_ORDER_NUM;
-        Lock lock = new ReentrantLock();
-        try {
-            lock.lock();
-            Long count = null;
-            if (redisUtils.hasKey(key)) {
-                count = redisUtils.autoIncrement(key);
-            }
-            if (count == null)
-                count = (long) selectCount(null);
-            return RandomUtil.randomNumbers(6) + String.format("%06d", count);
-        } finally {
-            lock.unlock();
+        Long count = null;
+        if (redisUtils.hasKey(key)) {
+            count = redisUtils.autoIncrement(key);
         }
+        if (count == null) {
+            count = (long) selectCount(null);
+            redisUtils.setStr(key, String.valueOf(count));
+        }
+        return RandomUtil.randomNumbers(6) + String.format("%06d", count);
     }
 
-    private Integer createOrder(SubmitOrderDto orderDto, ShopSubmitOrderDto orderGoods,
-                                OrderType orderType,  Integer userId) throws Exception {
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public OrderResponse createOrder(SubmitOrderDto orderDto, ShopSubmitOrderDto orderGoods,
+                                     OrderType orderType, Integer userId) throws Exception {
+        OrderResponse response = new OrderResponse();
+        response.setStatus(OrderResponseStatus.PARTLY_SUCCESS);
         UserOrder o = new UserOrder();
+        Date createTime = new Date();
         List<ShopSubmitOrderGoodsDto> goods = orderGoods.getGoods();
-        for (ShopSubmitOrderGoodsDto good : goods) {
-            int stock = shopGoodsSizeService.getAccurateStock(good.getGoodsSizeId(), orderType);
-            if (stock < good.getNum()) {
-                throw new OrderException(OrderException.ExceptionType.UNDER_STOCK);
+        List<UserOrderGoods> gs = new ArrayList<>();
+        List<ShopSubmitOrderGoodsDto> failedGoods = new ArrayList<>();
+        Iterator<ShopSubmitOrderGoodsDto> iterator = goods.iterator();
+        while (iterator.hasNext()) {
+            int column;
+            ShopSubmitOrderGoodsDto good = iterator.next();
+            if (OrderType.NORMAL.equals(orderType)) {
+                column = baseMapper.updateStock(good.getGoodsSizeId(), good.getNum());
+            } else {
+                column = baseMapper.updateKillStock(good.getGoodsSizeId(), good.getNum());
+            }
+            //秒杀成功
+            if (column > 0) {
+                UserOrderGoods g = new UserOrderGoods();
+                g.setGoodsId(good.getGoodsId());
+                g.setGoodsSizeId(good.getGoodsSizeId());
+                g.setNum(good.getNum());
+                g.setGoodsPrice(good.getGoodsPrice());
+                g.setPublishTime(createTime);
+                gs.add(g);
+                // 秒杀不成功
+            } else {
+                failedGoods.add(good);
+                iterator.remove();
             }
         }
-        o.setOrderNum(createOrderNum());
-        o.setOrderPrice(orderPrice(orderGoods));
-        o.setDistributionTime(orderDto.getDistributionTime());
-        o.setDistributionType(orderDto.getDistributionType());
-        Date creatTime = new Date();
-        o.setCreatTime(creatTime);
-        o.setStatus(OrderStatus.DUE_PAY.getKey());
-        o.setIsUserDel(0);
-        o.setIsShopDel(0);
-        o.setIsClosed(0);
-        o.setShopId(orderGoods.getShopId());
-        o.setAddressId(orderDto.getAddressId());
-        o.setUserId(userId);
-        o.setCouponId(orderGoods.getUserCouponId());
-        o.setOrderType(orderDto.getOrderType());
-        o.setIntegralRuleId(orderGoods.getIntegralRuleId());
-        o.setFullReduceId(orderGoods.getFullReduceId());
-        o.insert();
-        Integer orderId = o.getId();
-        for (ShopSubmitOrderGoodsDto good : goods) {
-            UserOrderGoods g = new UserOrderGoods();
-            g.setOrderId(orderId);
-            g.setGoodsId(good.getGoodsId());
-            g.setNum(good.getNum());
-            g.setGoodsPrice(good.getGoodsPrice());
-            g.setPublishTime(creatTime);
+        if (gs.size() > 0) {
+            o.setOrderNum(createOrderNum());
+            o.setDistributionTime(orderDto.getDistributionTime());
+            o.setDistributionType(orderDto.getDistributionType());
+            o.setCreatTime(createTime);
+            o.setStatus(OrderStatus.DUE_PAY.getKey());
+            o.setIsUserDel(0);
+            o.setIsShopDel(0);
+            o.setIsClosed(0);
+            o.setShopId(orderGoods.getShopId());
+            o.setAddressId(orderDto.getAddressId());
+            o.setUserId(userId);
+            o.setCouponId(orderGoods.getUserCouponId());
+            o.setOrderType(orderDto.getOrderType());
+            o.setIntegralRuleId(orderGoods.getIntegralRuleId());
+            o.setFullReduceId(orderGoods.getFullReduceId());
+            o.setOrderPrice(orderPrice(orderGoods, orderType, userId));
+            o.insert();
+            Integer orderId = o.getId();
+            response.setOrderId(orderId);
+            response.setOrderNum(o.getOrderNum());
+            for (UserOrderGoods g : gs) {
+                g.setOrderId(orderId);
+                g.insert();
+            }
         }
-        return orderId;
+
+        if (goods.size() == gs.size() && gs.size() > 0) {
+            response.setStatus(OrderResponseStatus.SUCCESS);
+        } else if (gs.size() == 0) {
+            response.setStatus(OrderResponseStatus.FAILED);
+        } else {
+            response.setStatus(OrderResponseStatus.PARTLY_SUCCESS);
+        }
+
+        return response;
     }
 
     @Override
-    public Integer submit(SubmitOrderDto orderDto, Integer userId) throws Exception {
-        System.out.println(orderDto);
+    public List<OrderResponse> submit(SubmitOrderDto orderDto, Integer userId) throws Exception {
+        List<OrderResponse> list = new ArrayList<>();
         List<ShopSubmitOrderDto> shops = orderDto.getShops();
         OrderType orderType = EnumUitl.toEnum(OrderType.class, orderDto.getOrderType());
-        Map<Integer, List<ShopSubmitOrderDto>> map = new HashMap<>();
         for (ShopSubmitOrderDto shop : shops) {
-            Integer shopId = shop.getShopId();
-            List<ShopSubmitOrderDto> list = map.computeIfAbsent(shopId, sid -> new ArrayList<>());
-            list.add(shop);
-            createOrder(orderDto, shop, orderType, userId);
+            if (shop.getGoods().size() == 0) {
+                continue;
+            }
+            list.add(createOrder(orderDto, shop, orderType, userId));
         }
-
-        return null;
+        return list;
     }
 
     @Override
-    @Transactional
-    public BigDecimal orderPrice(ShopSubmitOrderDto orderDto) throws Exception {
+    public BigDecimal orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId) throws Exception {
 /**
  *      用户-购物车-去结算
  *      * 金额计算（折扣、优惠券、积分来计算订单价格）
@@ -311,80 +335,22 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                                                     .eq(Coupon.ID, userCouponId)
                                                     .eq(Coupon.SHOP_ID,shopId)
                                                     .eq(Coupon.IS_DEL,0)
+                .eq(Coupon.ID, userCouponId)
+                .eq(Coupon.SHOP_ID, shopId)
         );
         double discount=0;
-        if(coupon!=null) {
-            //优惠券开始时间和结束时间判断
-            if (new Date().after(coupon.getStartTime()) && new Date().before(coupon.getEndTime()) && totalPriceWithOutDiscount >= coupon.getFullPrice().doubleValue()) {
-                //可以使用优惠券
-                //获取优惠券折扣
-                discount = coupon.getDiscount().doubleValue();
-            }
+        //优惠券开始时间和结束时间判断
+        if(new Date().after(coupon.getStartTime()) && new Date().before(coupon.getEndTime()) && totalPriceWithOutDiscount>=coupon.getFullPrice().doubleValue()){
+            //可以使用优惠券
+            //获取优惠券折扣
+            discount=coupon.getDiscount().doubleValue();
         }
-        if(totalPriceWithOutDiscount>=discount){
-            totalPriceWithOutDiscount=totalPriceWithOutDiscount-discount;   //减去优惠券的折扣
-        }else{
-            totalPriceWithOutDiscount=0;
-        }
-        //优惠券使用之后应删除
-        coupon.setIsDel(1);
-        coupon.updateById();
+        totalPriceWithOutDiscount=totalPriceWithOutDiscount-discount;   //减去优惠券的折扣
 
         //计算积分抵扣
-      // 根据用户id查询用户总积分,userId参数暂时没有
-        Integer userId=null;
-        //总积分
-        UserIntegral userIntegral = userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
-                .eq(UserIntegral.USER_ID, userId)
-        );
-        Integer integralNum = userIntegral.getIntegralNumber();
 
-        //积分抵扣规则id
-        Integer integralRuleId=orderDto.getIntegralRuleId();
-        //满减规则id
-        Integer fullReduceId=orderDto.getFullReduceId();
 
-        for(ShopSubmitOrderGoodsDto goodsDto:orderDto.getGoods()){
-            /*
-            积分抵扣
-             */
-            Integer goodsSizeId=goodsDto.getGoodsSizeId();
-            Integer goodsId=goodsDto.getGoodsId();
-            IntegralRule integralRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>()
-                                                                         .eq(IntegralRule.ID, integralRuleId)
-                                                                         .eq(IntegralRule.SHOP_ID, shopId)
-                                                                         .eq(IntegralRule.GOODS_SIZE_ID,goodsSizeId)
-            );
-            if(integralNum>=integralRule.getIntegral()){
-                if(totalPriceWithOutDiscount>=integralRule.getDeduction().doubleValue()){
-                    totalPriceWithOutDiscount-=integralRule.getDeduction().doubleValue();
-                }else{
-                    totalPriceWithOutDiscount=0;
-                }
-                integralNum-=integralRule.getIntegral();
-            }
-
-            /*
-            满减
-             */
-            ShopGoodsFullReduce shopGoodsFullReduce = shopGoodsFullReduceService
-                                                     .selectOne(new EntityWrapper<ShopGoodsFullReduce>()
-                                                                .eq(ShopGoodsFullReduce.SHOP_ID,shopId)
-                                                                .eq(ShopGoodsFullReduce.GOODS_ID,goodsId)
-                                                                .eq(ShopGoodsFullReduce.SHOP_ID,goodsSizeId)
-                                                     );
-            //满多少减多少，按照数据库的设计是每个商品满多少都减
-            if(goodsDto.getGoodsPrice().doubleValue()>=Double.parseDouble(shopGoodsFullReduce.getFull())
-                    &&totalPriceWithOutDiscount>=goodsDto.getGoodsPrice().doubleValue()){
-                totalPriceWithOutDiscount-=Double.parseDouble(shopGoodsFullReduce.getReduce());
-            }
-        }
-
-        //数据库更新用户积分
-        userIntegral.setIntegralNumber(integralNum);
-        userIntegral.updateById();
-
-        return new BigDecimal(totalPriceWithOutDiscount);
+        return new BigDecimal("0.0");
     }
 
 }

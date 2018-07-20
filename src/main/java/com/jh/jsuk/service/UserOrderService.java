@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
+import com.jh.jsuk.entity.vo.OrderResponse;
 import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.OrderStatus;
+import com.jh.jsuk.envm.OrderType;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.List;
  */
 public interface UserOrderService extends IService<UserOrder> {
 
-    int statusCount(OrderStatus orderStatus,Integer shopId);
+    int statusCount(OrderStatus orderStatus, Integer shopId);
 
     List<UserOrderVo> findVoByPage(Page page, Wrapper wrapper);
 
@@ -55,6 +57,7 @@ public interface UserOrderService extends IService<UserOrder> {
 
     /**
      * 催一催
+     *
      * @param orderId 订单id
      * @return 操作结果
      */
@@ -62,18 +65,20 @@ public interface UserOrderService extends IService<UserOrder> {
 
     /**
      * 提交订单
+     *
      * @param orderDto
      * @param userId
      * @return 订单id
      * @throws Exception
      */
-    Integer submit(SubmitOrderDto orderDto, Integer userId) throws Exception;
+    List<OrderResponse> submit(SubmitOrderDto orderDto, Integer userId) throws Exception;
 
     /**
      * 计算订单价格
+     *
      * @param orderDto
      * @return
      * @throws Exception
      */
-    BigDecimal orderPrice(ShopSubmitOrderDto orderDto) throws Exception;
+    BigDecimal orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId) throws Exception;
 }

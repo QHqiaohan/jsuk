@@ -520,7 +520,7 @@ public class UserOrderController {
     @RequestMapping(value = "/cancelOrder", method = {RequestMethod.POST, RequestMethod.GET})
     public Result cancelOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
         UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
-        userOrder.setStatus(6);
+        userOrder.setStatus(OrderStatus.CANCEL.getKey());
         userOrder.updateById();
         return new Result().success("取消成功!");
     }
@@ -529,7 +529,7 @@ public class UserOrderController {
     @RequestMapping(value = "/sendOrder", method = {RequestMethod.POST, RequestMethod.GET})
     public Result sendOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
         UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
-        userOrder.setStatus(2);
+        userOrder.setStatus(OrderStatus.DELIVERED.getKey());
         userOrder.updateById();
         return new Result().success("发货成功!");
     }
@@ -550,7 +550,7 @@ public class UserOrderController {
         return new Result().success("操作成功!");
     }
 
-    @ApiOperation(value = "用户端-更换商品")
+    @ApiOperation(value = "用户端-更换商品-选择商品型号")
     @RequestMapping(value = "/changeGoods", method = {RequestMethod.POST, RequestMethod.GET})
     public Result changeGoods(@ApiParam(value = "规格ID", required = true) Integer goodsSizeId) {
         List<ShopGoodsSize> goodsSizeList = shopGoodsSizeService.selectList(new EntityWrapper<ShopGoodsSize>()
@@ -567,7 +567,7 @@ public class UserOrderController {
             return new Result().success("没有该订单", null);
         } else {
             //交易成功
-            userOrder.setStatus(3);
+            userOrder.setStatus(OrderStatus.SUCCESS.getKey());
             userOrder.updateById();
             return new Result().success("操作成功!");
         }
@@ -581,8 +581,8 @@ public class UserOrderController {
         if (userOrder == null) {
             return new Result().success("没有该订单", null);
         } else {
-            userOrder.setStatus(9);
-            userOrder.updateById();
+            /*userOrder.setStatus(OrderStatus.SUCCESS.getKey());
+            userOrder.updateById();*/
             return new Result().success("操作成功!");
         }
     }
