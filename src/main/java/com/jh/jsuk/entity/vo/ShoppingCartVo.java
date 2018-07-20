@@ -3,14 +3,12 @@ package com.jh.jsuk.entity.vo;
 import java.io.Serializable;
 import java.util.List;
 
-
 public class ShoppingCartVo implements Serializable {
 
     private String userId;
     private String shopName;
     private String shopId;
     private List<GoodsVo> goods;
-
 
 
     public String getUserId() {

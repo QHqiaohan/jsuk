@@ -73,6 +73,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     private IntegralRuleService integralRuleService;
     @Autowired
     private ShopGoodsFullReduceService shopGoodsFullReduceService;
+    @Autowired
+    private ShoppingCartService shoppingCartService;
 
 
     @Override
@@ -332,6 +334,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
         //店铺id
         Integer shopId=orderDto.getShopId();
+
         //优惠券id
         Integer userCouponId = orderDto.getUserCouponId();
        //根据优惠券id和shopId查询对应的优惠券
@@ -357,6 +360,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                                                                       .eq(UserIntegral.USER_ID, userId));
         Integer integralNum=userIntegral.getIntegralNumber();    //总积分
         ArrayList<ShopSubmitOrderGoodsDto> goodsDtoList = orderDto.getGoods();
+        Integer get_jf=0;//商品获赠积分
         for(ShopSubmitOrderGoodsDto goodsDto:goodsDtoList){
             Integer goodsId=goodsDto.getGoodsId();           //商品id
             Integer goodsSizeId=goodsDto.getGoodsSizeId();   //商品规格id
@@ -364,15 +368,53 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                                                                              .eq(ShopGoodsSize.ID, goodsSizeId)
                                                                              .eq(ShopGoodsSize.SHOP_GOODS_ID, goodsId)
             );
+            //该商品(sku)可以获赠多少积分
+            String sendJf = shopGoodsSize.getSendJf();
+            if(sendJf==null){
+                sendJf="0";
+            }
+            get_jf+=Integer.parseInt(sendJf);
             //该商品(sku)可以抵扣多少积分
+            int deductibleJf = Integer.parseInt(shopGoodsSize.getDeductibleJf());
 
+            //积分抵扣规则
+            Integer integralRuleId = orderDto.getIntegralRuleId();
+            IntegralRule integralRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>()
+                    .eq(IntegralRule.ID, integralRuleId)
+                    .eq(IntegralRule.SHOP_ID, shopId)
+                    .eq(IntegralRule.GOODS_SIZE_ID, goodsSizeId)
+            );
+            if(deductibleJf>=integralRule.getIntegral() && integralNum>=integralRule.getIntegral()){
+                integralNum-=integralRule.getIntegral();
+                totalPriceWithOutDiscount-=integralRule.getDeduction().doubleValue();
+            }
+
+             //购物车id
+            Integer cartId = goodsDto.getCartId();
+            //查询购物车
+            ShoppingCart shoppingCart = shoppingCartService.selectOne(new EntityWrapper<ShoppingCart>()
+                    .eq(ShoppingCart.USER_ID, userId)
+                    .eq(ShoppingCart.SHOP_ID, shopId)
+                    .eq(ShoppingCart.GOODS_ID, goodsId)
+            );
+
+            //满减
+            ShopGoodsFullReduce fullReduce = shopGoodsFullReduceService.selectOne(new EntityWrapper<ShopGoodsFullReduce>()
+                    .eq(ShopGoodsFullReduce.SHOP_ID, shopId)
+            );
+            //规格需要支持满减:type==1;秒杀订单没有满减
+            Integer price = Integer.parseInt(shopGoodsSize.getSalesPrice());   //商品价格
+            if(price>=Integer.parseInt(fullReduce.getFull()) && shopGoodsSize.getType()==1 && shoppingCart.getIsRushBuy()==0){
+                totalPriceWithOutDiscount-=Integer.parseInt(fullReduce.getReduce());
+            }
         }
 
+        //更新数据库积分
+        integralNum=integralNum+get_jf;
+        userIntegral.setIntegralNumber(integralNum);
+        userIntegral.updateById();
 
-
-
-
-        return new BigDecimal("0.0");
+        return new BigDecimal(totalPriceWithOutDiscount);
     }
 
 }

@@ -136,15 +136,7 @@ public class ShoppingCartController {
      */
     public Result list(Integer userId, String goodsName) {
         List<ShoppingCartVo> shoppingCarts = shoppingCartService.selectVoList(String.valueOf(userId), goodsName);
-       for (ShoppingCartVo vo:shoppingCarts) {
-            vo.getShopName();//店铺名
-            List<GoodsVo> list = vo.getGoods();
-            for (GoodsVo gvo:list) {
-                gvo.getGoodsName();
-                gvo.getSalesPrice();
-                gvo.getNum();
-            }
-        }
+
         if(shoppingCarts==null || shoppingCarts.size()==0){
                return new Result().erro("购物车空空如也");
         }
