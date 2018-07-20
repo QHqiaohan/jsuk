@@ -26,6 +26,7 @@ import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.ShopJPushUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -45,6 +46,7 @@ import java.util.List;
  * @author lpf
  * @since 2018-06-20
  */
+@Slf4j
 @Service
 public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> implements UserOrderService {
 
@@ -221,9 +223,40 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         return RandomUtil.randomNumbers(6) + String.format("%06d", count);
     }
 
+    /**
+     * 判断商品是不是秒杀过期
+     *
+     * @param goodsSizeId
+     * @param time
+     * @return
+     */
+    public boolean isRushBuyTimeOut(Integer goodsSizeId, Date time) {
+        if (goodsSizeId == null || time == null)
+            return true;
+        try {
+            ShopRushBuy tm = shopGoodsSizeService.getCachedRushByTime(goodsSizeId);
+            if (tm == null) {
+                return true;
+            }
+            Date startTime = tm.getStartTime();
+            Date endTime = tm.getEndTime();
+            if (startTime == null || endTime == null) {
+                return true;
+            }
+            DateTime date = DateTime.of(time);
+            if (date.isIn(startTime, endTime)) {
+                return false;
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return true;
+    }
+
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public OrderResponse createOrder(SubmitOrderDto orderDto, ShopSubmitOrderDto orderGoods,
                                      OrderType orderType, Integer userId) throws Exception {
+        boolean isTimeOut = false;
         OrderResponse response = new OrderResponse();
         response.setStatus(OrderResponseStatus.PARTLY_SUCCESS);
         UserOrder o = new UserOrder();
@@ -235,6 +268,12 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         while (iterator.hasNext()) {
             int column;
             ShopSubmitOrderGoodsDto good = iterator.next();
+            if (OrderType.RUSH_BUY.equals(orderType)) {
+                if (isRushBuyTimeOut(good.getGoodsSizeId(), createTime)) {
+                    isTimeOut = true;
+                    continue;
+                }
+            }
             if (OrderType.NORMAL.equals(orderType)) {
                 column = baseMapper.updateStock(good.getGoodsSizeId(), good.getNum());
             } else {
@@ -281,15 +320,16 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 g.insert();
             }
         }
-
         if (goods.size() == gs.size() && gs.size() > 0) {
             response.setStatus(OrderResponseStatus.SUCCESS);
         } else if (gs.size() == 0) {
-            response.setStatus(OrderResponseStatus.FAILED);
+            response.setStatus(OrderResponseStatus.UNDER_STOCK);
         } else {
             response.setStatus(OrderResponseStatus.PARTLY_SUCCESS);
         }
-
+        if (isTimeOut) {
+            response.setStatus(OrderResponseStatus.TIME_OUT);
+        }
         return response;
     }
 
