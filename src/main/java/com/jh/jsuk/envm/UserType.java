@@ -8,9 +8,9 @@ public enum UserType {
 
     USER(3, "用户", null, "usr"),
 
-    ADMIN(3, "管理员", ManageUserType.PLATFORM, "adm"),
+    ADMIN(3, "管理员", ManageUserType.PLATFORM, "adm");
 
-    ROOT(4, "运维", ManageUserType.PLATFORM, "rot");
+//    ROOT(4, "运维", ManageUserType.PLATFORM, "rot");
 
     private final Integer key;
 
