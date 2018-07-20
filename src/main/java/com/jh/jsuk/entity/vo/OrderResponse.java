@@ -1,5 +1,6 @@
 package com.jh.jsuk.entity.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jh.jsuk.envm.OrderResponseStatus;
 import lombok.Data;
 
@@ -15,6 +16,16 @@ public class OrderResponse {
     private String orderNum;
 
     private BigDecimal price;
+
+    /**
+     * 是不是这种状态
+     * @param status
+     * @return
+     */
+    @JsonIgnore
+    public boolean is(OrderResponseStatus status){
+        return status != null && status.equals(this.status);
+    }
 
 
 }
