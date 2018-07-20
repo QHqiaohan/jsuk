@@ -16,8 +16,10 @@ import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderGoodsDto;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
+import com.jh.jsuk.entity.vo.OrderResponse;
 import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
+import com.jh.jsuk.envm.OrderResponseStatus;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
 import com.jh.jsuk.exception.OrderException;
@@ -27,6 +29,8 @@ import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.ShopJPushUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -348,6 +352,24 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         totalPriceWithOutDiscount=totalPriceWithOutDiscount-discount;   //减去优惠券的折扣
 
         //计算积分抵扣
+        //查询用户总积分
+        UserIntegral userIntegral = userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
+                                                                      .eq(UserIntegral.USER_ID, userId));
+        Integer integralNum=userIntegral.getIntegralNumber();    //总积分
+        ArrayList<ShopSubmitOrderGoodsDto> goodsDtoList = orderDto.getGoods();
+        for(ShopSubmitOrderGoodsDto goodsDto:goodsDtoList){
+            Integer goodsId=goodsDto.getGoodsId();           //商品id
+            Integer goodsSizeId=goodsDto.getGoodsSizeId();   //商品规格id
+            ShopGoodsSize shopGoodsSize = shopGoodsSizeService.selectOne(new EntityWrapper<ShopGoodsSize>()
+                                                                             .eq(ShopGoodsSize.ID, goodsSizeId)
+                                                                             .eq(ShopGoodsSize.SHOP_GOODS_ID, goodsId)
+            );
+            //该商品(sku)可以抵扣多少积分
+
+        }
+
+
+
 
 
         return new BigDecimal("0.0");
