@@ -34,6 +34,14 @@
             <result column="goods_name" property="goodsName"/>
             <result column="main_image" property="mainImage"/>
             <result column="num" property="num"/>
+
+            <result column="id" property="goodsSizeId"/>
+            <result column="stock" property="stock"/>
+            <result column="size_name" property="goodsSizeName"/>
+            <result column="kill_stock" property="killStock"/>
+            <result column="brand" property="brand"/>
+            <result column="send_jf" property="sendJf"/>
+            <result column="deductible_jf" property="deductibleJf"/>
         </collection>
     </resultMap>
 
@@ -51,7 +59,16 @@
         jsg.goods_name,
         jsg.main_image,
         jsgs.sales_price,
-        jsgs.kill_price
+        jsgs.kill_price,
+
+        jsgs.id as goodsSizeId,
+        jsgs.stock as stock,
+        jsgs.size_name as goodsSizeName,
+        jsgs.kill_stock as killStock,
+        jsgs.brand as brand,
+        jsgs.send_jf as sendJf,
+        jsgs.deductible_jf as deductibleJf
+
         FROM
         js_shopping_cart jsc
         LEFT JOIN js_manager_user jmu ON jsc.shop_id = jmu.id

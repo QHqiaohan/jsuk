@@ -22,6 +22,7 @@ import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.OrderResponseStatus;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
+import com.jh.jsuk.exception.OrderException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.EnumUitl;
@@ -33,10 +34,9 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * <p>
@@ -68,7 +68,13 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     RedisUtils redisUtils;
 
     @Autowired
-    private CouponService couponService;
+    private  CouponService couponService;
+    @Autowired
+    private UserIntegralService userIntegralService;
+    @Autowired
+    private IntegralRuleService integralRuleService;
+    @Autowired
+    private ShopGoodsFullReduceService shopGoodsFullReduceService;
 
 
     @Override
@@ -355,34 +361,55 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
  *      * 计算订单金额
  *      * 更新用户积分总数
  */
-        //先计算没有使用任何优惠的订单原价
-        double totalPriceWithOutDiscount = 0;
+       //先计算没有使用任何优惠的订单原价
+        double totalPriceWithOutDiscount=0;
         ArrayList<ShopSubmitOrderGoodsDto> goodsList = orderDto.getGoods();
-        for (ShopSubmitOrderGoodsDto goodsDto : goodsList) {
+        for(ShopSubmitOrderGoodsDto goodsDto:goodsList){
             //订单项的价格
             double orderItemPrice = goodsDto.getGoodsPrice().doubleValue() * goodsDto.getNum();
-            totalPriceWithOutDiscount += orderItemPrice;
+            totalPriceWithOutDiscount+=orderItemPrice;
         }
 
         //店铺id
-        Integer shopId = orderDto.getShopId();
+        Integer shopId=orderDto.getShopId();
         //优惠券id
         Integer userCouponId = orderDto.getUserCouponId();
-        //根据优惠券id和shopId查询对应的优惠券
+       //根据优惠券id和shopId查询对应的优惠券
         Coupon coupon = couponService.selectOne(new EntityWrapper<Coupon>()
+                                                    .eq(Coupon.ID, userCouponId)
+                                                    .eq(Coupon.SHOP_ID,shopId)
+                                                    .eq(Coupon.IS_DEL,0)
                 .eq(Coupon.ID, userCouponId)
                 .eq(Coupon.SHOP_ID, shopId)
         );
-        double discount = 0;
+        double discount=0;
         //优惠券开始时间和结束时间判断
-        if (new Date().after(coupon.getStartTime()) && new Date().before(coupon.getEndTime()) && totalPriceWithOutDiscount >= coupon.getFullPrice().doubleValue()) {
+        if(new Date().after(coupon.getStartTime()) && new Date().before(coupon.getEndTime()) && totalPriceWithOutDiscount>=coupon.getFullPrice().doubleValue()){
             //可以使用优惠券
             //获取优惠券折扣
-            discount = coupon.getDiscount().doubleValue();
+            discount=coupon.getDiscount().doubleValue();
         }
-        totalPriceWithOutDiscount = totalPriceWithOutDiscount - discount;   //减去优惠券的折扣
+        totalPriceWithOutDiscount=totalPriceWithOutDiscount-discount;   //减去优惠券的折扣
 
         //计算积分抵扣
+        //查询用户总积分
+        UserIntegral userIntegral = userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
+                                                                      .eq(UserIntegral.USER_ID, userId));
+        Integer integralNum=userIntegral.getIntegralNumber();    //总积分
+        ArrayList<ShopSubmitOrderGoodsDto> goodsDtoList = orderDto.getGoods();
+        for(ShopSubmitOrderGoodsDto goodsDto:goodsDtoList){
+            Integer goodsId=goodsDto.getGoodsId();           //商品id
+            Integer goodsSizeId=goodsDto.getGoodsSizeId();   //商品规格id
+            ShopGoodsSize shopGoodsSize = shopGoodsSizeService.selectOne(new EntityWrapper<ShopGoodsSize>()
+                                                                             .eq(ShopGoodsSize.ID, goodsSizeId)
+                                                                             .eq(ShopGoodsSize.SHOP_GOODS_ID, goodsId)
+            );
+            //该商品(sku)可以抵扣多少积分
+
+        }
+
+
+
 
 
         return new BigDecimal("0.0");
