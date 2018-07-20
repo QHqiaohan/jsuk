@@ -78,9 +78,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     @Autowired
     private ShoppingCartService shoppingCartService;
 
-    @Autowired
-    ShoppingCartService shoppingCartService;
-
     @Override
     public int statusCount(OrderStatus orderStatus, Integer shopId) {
         EntityWrapper<UserOrder> wrapper = new EntityWrapper<>();
