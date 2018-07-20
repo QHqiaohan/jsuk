@@ -3,8 +3,6 @@ package com.jh.jsuk.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.jh.jsuk.entity.*;
-import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
-import com.jh.jsuk.entity.vo.GoodsVo;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
@@ -14,7 +12,6 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,18 +133,6 @@ public class ShoppingCartController {
      */
     public Result list(Integer userId, String goodsName) {
         List<ShoppingCartVo> shoppingCarts = shoppingCartService.selectVoList(String.valueOf(userId), goodsName);
-       for (ShoppingCartVo vo:shoppingCarts) {
-            vo.getShopName();//店铺名
-            List<GoodsVo> list = vo.getGoods();
-            for (GoodsVo gvo:list) {
-                gvo.getGoodsName();
-                gvo.getSalesPrice();
-                gvo.getNum();
-            }
-        }
-        if(shoppingCarts==null || shoppingCarts.size()==0){
-               return new Result().erro("购物车空空如也");
-        }
         return new Result().success(shoppingCarts);
     }
 

@@ -35,13 +35,13 @@
             <result column="main_image" property="mainImage"/>
             <result column="num" property="num"/>
 
-            <result column="id" property="goodsSizeId"/>
+            <result column="goodsSizeId" property="goodsSizeId"/>
             <result column="stock" property="stock"/>
-            <result column="size_name" property="goodsSizeName"/>
-            <result column="kill_stock" property="killStock"/>
+            <result column="goodsSizeName" property="goodsSizeName"/>
+            <result column="killStock" property="killStock"/>
             <result column="brand" property="brand"/>
-            <result column="send_jf" property="sendJf"/>
-            <result column="deductible_jf" property="deductibleJf"/>
+            <result column="sendJf" property="sendJf"/>
+            <result column="deductibleJf" property="deductibleJf"/>
         </collection>
     </resultMap>
 
@@ -73,7 +73,7 @@
         js_shopping_cart jsc
         LEFT JOIN js_manager_user jmu ON jsc.shop_id = jmu.id
         LEFT JOIN js_shop_goods jsg ON jsc.goods_id = jsg.id
-        LEFT JOIN js_shop_goods_size jsgs ON jsgs.shop_goods_id = jsg.id
+        LEFT JOIN js_shop_goods_size jsgs ON jsgs.id = jsc.size_id
         <where>
             jsc.user_id = #{userId}
             <if test="goodsName !=null and goodsName!=''">
