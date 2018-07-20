@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
+import com.jh.jsuk.entity.vo.OrderResponse;
 import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.OrderStatus;
@@ -67,7 +68,7 @@ public interface UserOrderService extends IService<UserOrder> {
      * @return 订单id
      * @throws Exception
      */
-    Integer submit(SubmitOrderDto orderDto, Integer userId) throws Exception;
+    List<OrderResponse> submit(SubmitOrderDto orderDto, Integer userId) throws Exception;
 
     /**
      * 计算订单价格

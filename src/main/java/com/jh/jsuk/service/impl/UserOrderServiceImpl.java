@@ -1,6 +1,7 @@
 package com.jh.jsuk.service.impl;
 
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.SqlHelper;
@@ -65,7 +66,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     RedisUtils redisUtils;
 
     @Autowired
-    private  CouponService couponService;
+    private CouponService couponService;
 
 
     @Override
@@ -209,18 +210,15 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
      */
     public synchronized String createOrderNum() throws Exception {
         String key = RedisKeys.SHOP_GOODS_ORDER_NUM;
-
-            Long count = null;
-            if (redisUtils.hasKey(key)) {
-                count = redisUtils.autoIncrement(key);
-            }
-            if (count == null) {
-                count = (long) selectCount(null);
-                redisUtils.setStr(key, String.valueOf(count));
-            }
-//            return RandomUtil.randomNumbers(6) + String.format("%06d", count);
-            return String.format("%06d", count);
-
+        Long count = null;
+        if (redisUtils.hasKey(key)) {
+            count = redisUtils.autoIncrement(key);
+        }
+        if (count == null) {
+            count = (long) selectCount(null);
+            redisUtils.setStr(key, String.valueOf(count));
+        }
+        return RandomUtil.randomNumbers(6) + String.format("%06d", count);
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
@@ -231,7 +229,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         Date createTime = new Date();
         List<ShopSubmitOrderGoodsDto> goods = orderGoods.getGoods();
         List<UserOrderGoods> gs = new ArrayList<>();
-        List<ShopSubmitOrderGoodsDto> faildGoods = new ArrayList<>();
+        List<ShopSubmitOrderGoodsDto> failedGoods = new ArrayList<>();
         Iterator<ShopSubmitOrderGoodsDto> iterator = goods.iterator();
         while (iterator.hasNext()) {
             int column;
@@ -242,7 +240,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 column = baseMapper.updateKillStock(good.getGoodsSizeId(), good.getNum());
             }
             //秒杀成功
-            if(column >0){
+            if (column > 0) {
                 UserOrderGoods g = new UserOrderGoods();
                 g.setGoodsId(good.getGoodsId());
                 g.setGoodsSizeId(good.getGoodsSizeId());
@@ -250,16 +248,13 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 g.setGoodsPrice(good.getGoodsPrice());
                 g.setPublishTime(createTime);
                 gs.add(g);
-            // 秒杀不成功
+                // 秒杀不成功
             } else {
-                faildGoods.add(good);
+                failedGoods.add(good);
                 iterator.remove();
             }
         }
-        if(faildGoods.size() > 0){
-            System.out.println("部分秒杀成功");
-        }
-        if(goods.size() > 0){
+        if (goods.size() > 0) {
             o.setOrderNum(createOrderNum());
             o.setOrderPrice(orderPrice(orderGoods));
             o.setDistributionTime(orderDto.getDistributionTime());
@@ -279,25 +274,34 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setOrderPrice(orderPrice(orderGoods));
             o.insert();
             Integer orderId = o.getId();
+            response.setOrderId(orderId);
+            response.setOrderNum(o.getOrderNum());
             for (UserOrderGoods g : gs) {
                 g.setOrderId(orderId);
                 g.insert();
             }
-        }else {
+            response.setStatus(OrderResponseStatus.SUCCESS);
+        } else {
             response.setStatus(OrderResponseStatus.FAILED);
+        }
+        if (failedGoods.size() > 0) {
+            response.setStatus(OrderResponseStatus.PARTLY_SUCCESS);
         }
         return response;
     }
 
     @Override
-    public Integer submit(SubmitOrderDto orderDto, Integer userId) throws Exception {
-        System.out.println(orderDto);
+    public List<OrderResponse> submit(SubmitOrderDto orderDto, Integer userId) throws Exception {
+        List<OrderResponse> list = new ArrayList<>();
         List<ShopSubmitOrderDto> shops = orderDto.getShops();
         OrderType orderType = EnumUitl.toEnum(OrderType.class, orderDto.getOrderType());
         for (ShopSubmitOrderDto shop : shops) {
-            createOrder(orderDto, shop, orderType, userId);
+            if (shop.getGoods().size() == 0) {
+                continue;
+            }
+            list.add(createOrder(orderDto, shop, orderType, userId));
         }
-        return null;
+        return list;
     }
 
     @Override
@@ -308,32 +312,32 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
  *      * 计算订单金额
  *      * 更新用户积分总数
  */
-       //先计算没有使用任何优惠的订单原价
-        double totalPriceWithOutDiscount=0;
+        //先计算没有使用任何优惠的订单原价
+        double totalPriceWithOutDiscount = 0;
         ArrayList<ShopSubmitOrderGoodsDto> goodsList = orderDto.getGoods();
-        for(ShopSubmitOrderGoodsDto goodsDto:goodsList){
+        for (ShopSubmitOrderGoodsDto goodsDto : goodsList) {
             //订单项的价格
             double orderItemPrice = goodsDto.getGoodsPrice().doubleValue() * goodsDto.getNum();
-            totalPriceWithOutDiscount+=orderItemPrice;
+            totalPriceWithOutDiscount += orderItemPrice;
         }
 
         //店铺id
-        Integer shopId=orderDto.getShopId();
+        Integer shopId = orderDto.getShopId();
         //优惠券id
         Integer userCouponId = orderDto.getUserCouponId();
-       //根据优惠券id和shopId查询对应的优惠券
+        //根据优惠券id和shopId查询对应的优惠券
         Coupon coupon = couponService.selectOne(new EntityWrapper<Coupon>()
-                                                    .eq(Coupon.ID, userCouponId)
-                                                    .eq(Coupon.SHOP_ID,shopId)
+                .eq(Coupon.ID, userCouponId)
+                .eq(Coupon.SHOP_ID, shopId)
         );
-        double discount=0;
+        double discount = 0;
         //优惠券开始时间和结束时间判断
-        if(new Date().after(coupon.getStartTime()) && new Date().before(coupon.getEndTime()) && totalPriceWithOutDiscount>=coupon.getFullPrice().doubleValue()){
+        if (new Date().after(coupon.getStartTime()) && new Date().before(coupon.getEndTime()) && totalPriceWithOutDiscount >= coupon.getFullPrice().doubleValue()) {
             //可以使用优惠券
             //获取优惠券折扣
-            discount=coupon.getDiscount().doubleValue();
+            discount = coupon.getDiscount().doubleValue();
         }
-        totalPriceWithOutDiscount=totalPriceWithOutDiscount-discount;   //减去优惠券的折扣
+        totalPriceWithOutDiscount = totalPriceWithOutDiscount - discount;   //减去优惠券的折扣
 
         //计算积分抵扣
 

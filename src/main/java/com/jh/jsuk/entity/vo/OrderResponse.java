@@ -10,7 +10,7 @@ public class OrderResponse {
 
     private OrderResponseStatus status;
 
-    private String orderId;
+    private Integer orderId;
 
     private String orderNum;
 
