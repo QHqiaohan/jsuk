@@ -116,7 +116,41 @@ public class JwtFilter implements Filter {
                 ////////////////////////////////////////////////
                 // 以下是方便测试,可能会出现效验bug
                 ////////////////////////////////////////////////
-
+                // 获取首页相关信息-上部分
+                || servletPath.indexOf("/getAll") != -1
+                // 获取首页相关信息-下部分
+                || servletPath.indexOf("/getAllBelow") != -1
+                || servletPath.indexOf("/getNiceChoose") != -1
+                || servletPath.indexOf("/getMoreInfo") != -1
+                || servletPath.indexOf("/getVipShop") != -1
+                || servletPath.indexOf("/getIsRecommend") != -1
+                // 限时秒杀相关
+                || servletPath.indexOf("/getKillTime") != -1
+                || servletPath.indexOf("/findKillShopGoods") != -1
+                // 商品相关API
+                || servletPath.indexOf("/getShopGoodsByAttributeId") != -1
+                || servletPath.indexOf("/getShopGoodsBy") != -1
+                || servletPath.indexOf("/getShopGoodsByCategoryId") != -1
+                || servletPath.indexOf("/getShopGoodsOnCategoryBy") != -1
+                || servletPath.indexOf("/getShopGoodsById") != -1
+                || servletPath.indexOf("/getShopListByLike") != -1
+                || servletPath.indexOf("/getShopGoodsByServiceOrPrice") != -1
+                || servletPath.indexOf("/getShopList") != -1
+                // 模块相关API
+                || servletPath.indexOf("/getShopAndGoodsByModular") != -1
+                || servletPath.indexOf("/shopListByModularId") != -1
+                || servletPath.indexOf("/shopGoodsListByModularId") != -1
+                || servletPath.indexOf("/getModularList") != -1
+                // 快递跑腿相关API
+                || servletPath.indexOf("/expressRunBanner") != -1
+                // 商品类型-品牌相关操作
+                || servletPath.indexOf("/getBrandByCategoryId") != -1
+                || servletPath.indexOf("/getShopGoodsByBrandId") != -1
+                // 地址定位选择API
+                || servletPath.indexOf("/getOpenCityList") != -1
+                // 商户端/平台用户相关
+                || servletPath.indexOf("/resultCode") != -1
+                || servletPath.indexOf("/editPassword") != -1
             ////////////////////////////////////////////////
             //方便ios上架开放接口 TODO 上架后最好注掉
             //|| servletPath.indexOf("/banner") != -1

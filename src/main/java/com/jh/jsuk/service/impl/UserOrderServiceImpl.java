@@ -225,6 +225,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     public OrderResponse createOrder(SubmitOrderDto orderDto, ShopSubmitOrderDto orderGoods,
                                      OrderType orderType, Integer userId) throws Exception {
         OrderResponse response = new OrderResponse();
+        response.setStatus(OrderResponseStatus.PARTLY_SUCCESS);
         UserOrder o = new UserOrder();
         Date createTime = new Date();
         List<ShopSubmitOrderGoodsDto> goods = orderGoods.getGoods();
@@ -254,7 +255,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 iterator.remove();
             }
         }
-        if (goods.size() > 0) {
+        if (gs.size() > 0) {
             o.setOrderNum(createOrderNum());
             o.setDistributionTime(orderDto.getDistributionTime());
             o.setDistributionType(orderDto.getDistributionType());
@@ -279,13 +280,16 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 g.setOrderId(orderId);
                 g.insert();
             }
-            response.setStatus(OrderResponseStatus.SUCCESS);
-        } else {
-            response.setStatus(OrderResponseStatus.FAILED);
         }
-        if (failedGoods.size() > 0) {
+
+        if (goods.size() == gs.size() && gs.size() > 0) {
+            response.setStatus(OrderResponseStatus.SUCCESS);
+        } else if (gs.size() == 0) {
+            response.setStatus(OrderResponseStatus.FAILED);
+        } else {
             response.setStatus(OrderResponseStatus.PARTLY_SUCCESS);
         }
+
         return response;
     }
 
