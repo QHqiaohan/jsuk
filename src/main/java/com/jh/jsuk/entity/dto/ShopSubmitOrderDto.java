@@ -30,7 +30,7 @@ public class ShopSubmitOrderDto implements Serializable {
 
     @NotNull
     @Valid
-    @ApiModelProperty(value = "具体商品", name = "goods")
+    @ApiModelProperty(value = "具体商品", name = "goods",required = true)
     private ArrayList<ShopSubmitOrderGoodsDto> goods;
 
 }

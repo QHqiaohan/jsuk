@@ -256,7 +256,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         }
         if (goods.size() > 0) {
             o.setOrderNum(createOrderNum());
-            o.setOrderPrice(orderPrice(orderGoods));
             o.setDistributionTime(orderDto.getDistributionTime());
             o.setDistributionType(orderDto.getDistributionType());
             o.setCreatTime(createTime);
@@ -271,7 +270,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setOrderType(orderDto.getOrderType());
             o.setIntegralRuleId(orderGoods.getIntegralRuleId());
             o.setFullReduceId(orderGoods.getFullReduceId());
-            o.setOrderPrice(orderPrice(orderGoods));
+            o.setOrderPrice(orderPrice(orderGoods, orderType, userId));
             o.insert();
             Integer orderId = o.getId();
             response.setOrderId(orderId);
@@ -305,7 +304,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public BigDecimal orderPrice(ShopSubmitOrderDto orderDto) throws Exception {
+    public BigDecimal orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId) throws Exception {
 /**
  *      用户-购物车-去结算
  *      * 金额计算（折扣、优惠券、积分来计算订单价格）
