@@ -15,7 +15,7 @@ import java.util.Date;
  * </p>
  *
  * @author tj
- * @since 2018-07-19
+ * @since 2018-07-20
  */
 @TableName("js_user_order")
 public class UserOrder extends Model<UserOrder> {
@@ -29,9 +29,25 @@ public class UserOrder extends Model<UserOrder> {
      */
     private String orderNum;
     /**
-     * 订单价格
+     * 订单原始价格
      */
     private BigDecimal orderPrice;
+    /**
+     * 满减了多少
+     */
+    private BigDecimal fullReduce;
+    /**
+     * 优惠券优惠了多少
+     */
+    private BigDecimal couponReduce;
+    /**
+     * 积分抵扣了多少
+     */
+    private BigDecimal integralReduce;
+    /**
+     * 订单实际价格
+     */
+    private BigDecimal orderRealPrice;
     /**
      * 配送费
      */
@@ -160,6 +176,38 @@ public class UserOrder extends Model<UserOrder> {
 
     public void setOrderPrice(BigDecimal orderPrice) {
         this.orderPrice = orderPrice;
+    }
+
+    public BigDecimal getFullReduce() {
+        return fullReduce;
+    }
+
+    public void setFullReduce(BigDecimal fullReduce) {
+        this.fullReduce = fullReduce;
+    }
+
+    public BigDecimal getCouponReduce() {
+        return couponReduce;
+    }
+
+    public void setCouponReduce(BigDecimal couponReduce) {
+        this.couponReduce = couponReduce;
+    }
+
+    public BigDecimal getIntegralReduce() {
+        return integralReduce;
+    }
+
+    public void setIntegralReduce(BigDecimal integralReduce) {
+        this.integralReduce = integralReduce;
+    }
+
+    public BigDecimal getOrderRealPrice() {
+        return orderRealPrice;
+    }
+
+    public void setOrderRealPrice(BigDecimal orderRealPrice) {
+        this.orderRealPrice = orderRealPrice;
     }
 
     public BigDecimal getDistributionFee() {
@@ -376,6 +424,14 @@ public class UserOrder extends Model<UserOrder> {
 
     public static final String ORDER_PRICE = "order_price";
 
+    public static final String FULL_REDUCE = "full_reduce";
+
+    public static final String COUPON_REDUCE = "coupon_reduce";
+
+    public static final String INTEGRAL_REDUCE = "integral_reduce";
+
+    public static final String ORDER_REAL_PRICE = "order_real_price";
+
     public static final String DISTRIBUTION_FEE = "distribution_fee";
 
     public static final String DISTRIBUTION_TIME = "distribution_time";
@@ -439,6 +495,10 @@ public class UserOrder extends Model<UserOrder> {
                 "id=" + id +
                 ", orderNum=" + orderNum +
                 ", orderPrice=" + orderPrice +
+                ", fullReduce=" + fullReduce +
+                ", couponReduce=" + couponReduce +
+                ", integralReduce=" + integralReduce +
+                ", orderRealPrice=" + orderRealPrice +
                 ", distributionFee=" + distributionFee +
                 ", distributionTime=" + distributionTime +
                 ", distributionType=" + distributionType +
