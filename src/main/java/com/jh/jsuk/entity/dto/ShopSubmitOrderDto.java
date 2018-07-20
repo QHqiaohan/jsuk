@@ -18,7 +18,7 @@ public class ShopSubmitOrderDto implements Serializable {
     @ApiModelProperty(value = "优惠券id", name = "userCouponId")
     private Integer userCouponId;
 
-    @ApiModelProperty(value = "优惠规则id", name = "integralRuleId")
+    @ApiModelProperty(value = "积分抵扣规则id", name = "integralRuleId")
     private Integer integralRuleId;
 
     @ApiModelProperty(value = "满减规则id", name = "fullReduceId")
