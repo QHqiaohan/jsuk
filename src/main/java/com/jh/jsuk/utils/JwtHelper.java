@@ -34,9 +34,12 @@ public class JwtHelper {
         return token.getAccess_token();
     }
 
+    private final static String test = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE1MzIwNzM5MTAsInN1YiI6IntcInVzZXJJZFwiOjM1LFwibG9naW5UaW1lXCI6MTUzMjA3MzkxMDEyNCxcImxvZ2luVHlwZVwiOjF9In0.kCd7sNrCx1FSUMvyDSUniy1YUfy7ER5VRZ8W_4plg7Q";
+
     public static void main(String[] args) throws Exception {
-        Claims claims = new JwtHelper().parseJWT
-                ("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE1MjU3NDQ4OTcsInN1YiI6IntcInVzZXJJZFwiOjI3LFwibG9naW5UaW1lXCI6MTUyNTc0NDg5NzI0OSxcImxvZ2luVHlwZVwiOjN9In0.wNrzO7wyVExJMRuP4V1T44imuuFWiW0g5xt0p6eFFIw");
+//        Claims claims = new JwtHelper().parseJWT
+//                ("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJqd3QiLCJpYXQiOjE1MjU3NDQ4OTcsInN1YiI6IntcInVzZXJJZFwiOjI3LFwibG9naW5UaW1lXCI6MTUyNTc0NDg5NzI0OSxcImxvZ2luVHlwZVwiOjN9In0.wNrzO7wyVExJMRuP4V1T44imuuFWiW0g5xt0p6eFFIw");
+        Claims claims = new JwtHelper().parseJWT(test);
         String subject = claims.getSubject();
         ObjectMapper objectMapper = new ObjectMapper();
         JwtParam jwtParam = null;

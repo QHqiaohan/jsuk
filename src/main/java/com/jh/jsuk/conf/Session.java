@@ -5,6 +5,7 @@ import com.jh.jsuk.entity.ParentUserEx;
 import com.jh.jsuk.entity.Shop;
 import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.exception.MessageException;
+import com.jh.jsuk.exception.NeedLoginException;
 import com.jh.jsuk.service.ShopService;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,6 +40,18 @@ public class Session {
     private Integer shopId;
 
     private String shopName;
+
+    /**
+     * 获取用户位移识别码
+     *
+     * @return
+     * @throws Exception
+     */
+    public String userUid() throws Exception {
+        if (userId == null || userType == null)
+            throw new NeedLoginException();
+        return String.valueOf(userType) + userId;
+    }
 
     public Integer confirmShopId() throws MessageException {
         if (!UserType.SHOP.equals(userType)) {

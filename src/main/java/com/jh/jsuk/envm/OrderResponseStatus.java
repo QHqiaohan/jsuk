@@ -10,7 +10,9 @@ public enum OrderResponseStatus {
 
     PARTLY_SUCCESS(201,"部分成功"),
 
-    FAILED(203,"失败");
+    TIME_OUT(203,"超时"),
+
+    UNDER_STOCK(204,"库存不足");
 
     private final int key;
     private  final  String value;

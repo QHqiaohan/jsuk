@@ -58,6 +58,23 @@ public class OrderTest {
 
     final static int COUNT = 4000;
 
+    /**
+     * 测试 sql 语句
+     *
+     * delete from js_user_order where id > 716;
+     *
+     * delete from js_user_order_goods where order_id > 716 ;
+     *
+     * update js_shop_goods_size s set s.stock = 500 where s.id = 2;
+     *
+     * update js_shop_goods_size s set s.stock = 1478 where s.id = 4;
+     *
+     * select sum(num) from js_user_order_goods where order_id > 716;
+     *
+     *
+     * @throws Exception
+     */
+
     @Test
     public void catchOrder() throws Exception {
         CountDownLatch latch = new CountDownLatch(COUNT);

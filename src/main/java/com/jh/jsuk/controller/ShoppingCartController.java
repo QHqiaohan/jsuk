@@ -136,10 +136,6 @@ public class ShoppingCartController {
      */
     public Result list(Integer userId, String goodsName) {
         List<ShoppingCartVo> shoppingCarts = shoppingCartService.selectVoList(String.valueOf(userId), goodsName);
-
-        if(shoppingCarts==null || shoppingCarts.size()==0){
-               return new Result().erro("购物车空空如也");
-        }
         return new Result().success(shoppingCarts);
     }
 

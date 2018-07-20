@@ -13,12 +13,6 @@
         <result column="checked" property="checked"/>
         <result column="is_past" property="isPast"/>
         <result column="size_id" property="sizeId"/>
-
-    </resultMap>
-
-
-    <resultMap id="" type="">
-
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -41,6 +35,13 @@
             <result column="main_image" property="mainImage"/>
             <result column="num" property="num"/>
 
+            <result column="goodsSizeId" property="goodsSizeId"/>
+            <result column="stock" property="stock"/>
+            <result column="goodsSizeName" property="goodsSizeName"/>
+            <result column="killStock" property="killStock"/>
+            <result column="brand" property="brand"/>
+            <result column="sendJf" property="sendJf"/>
+            <result column="deductibleJf" property="deductibleJf"/>
         </collection>
     </resultMap>
 
@@ -60,12 +61,19 @@
         jsgs.sales_price,
         jsgs.kill_price,
 
+        jsgs.id as goodsSizeId,
+        jsgs.stock as stock,
+        jsgs.size_name as goodsSizeName,
+        jsgs.kill_stock as killStock,
+        jsgs.brand as brand,
+        jsgs.send_jf as sendJf,
+        jsgs.deductible_jf as deductibleJf
 
         FROM
         js_shopping_cart jsc
         LEFT JOIN js_manager_user jmu ON jsc.shop_id = jmu.id
         LEFT JOIN js_shop_goods jsg ON jsc.goods_id = jsg.id
-        LEFT JOIN js_shop_goods_size jsgs ON jsgs.shop_goods_id = jsg.id
+        LEFT JOIN js_shop_goods_size jsgs ON jsgs.id = jsc.size_id
         <where>
             jsc.user_id = #{userId}
             <if test="goodsName !=null and goodsName!=''">
@@ -73,5 +81,4 @@
             </if>
         </where>
     </select>
-
 </mapper>

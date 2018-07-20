@@ -7,6 +7,7 @@ import com.github.tj123.common.RedisUtils;
 import com.jh.jsuk.conf.RedisKeys;
 import com.jh.jsuk.dao.ShopGoodsSizeDao;
 import com.jh.jsuk.entity.ShopGoodsSize;
+import com.jh.jsuk.entity.ShopRushBuy;
 import com.jh.jsuk.envm.OrderType;
 import com.jh.jsuk.service.ShopGoodsSizeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +96,26 @@ public class ShopGoodsSizeServiceImpl extends ServiceImpl<ShopGoodsSizeDao, Shop
         if (stock == 0)
             redisUtils.setStr(key, "0", 5 * 60);
         return stock;
+    }
+
+    @Override
+    public ShopRushBuy getCachedRushByTime(Integer goodsSizeId) throws Exception {
+        if (goodsSizeId == null)
+            return null;
+        String key = RedisKeys.subKey(RedisKeys.SHOP_GOODS_SIZE_RUSH_BUY, String.valueOf(goodsSizeId));
+        String nullKey = RedisKeys.subKey(RedisKeys.SHOP_GOODS_SIZE_RUSH_BUY_NULL, String.valueOf(goodsSizeId));
+        if (redisUtils.hasKey(key)) {
+            return redisUtils.get(key, ShopRushBuy.class);
+        }
+        if (redisUtils.hasKey(nullKey))
+            return null;
+        ShopRushBuy shopRushBuy = baseMapper.selectRushBuyByGoodsSizeId(goodsSizeId);
+        if (shopRushBuy == null) {
+            redisUtils.setStr(nullKey, "null", 10);
+        } else {
+            redisUtils.set(key, shopRushBuy, 10);
+        }
+        return shopRushBuy;
     }
 
 }

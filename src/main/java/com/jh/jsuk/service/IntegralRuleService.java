@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface IntegralRuleService extends IService<IntegralRule> {
 
+    boolean catGetCoupon(String shopId);
+
 }

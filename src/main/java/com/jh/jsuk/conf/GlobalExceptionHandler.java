@@ -1,6 +1,7 @@
 package com.jh.jsuk.conf;
 
 import com.jh.jsuk.exception.MessageException;
+import com.jh.jsuk.exception.NeedLoginException;
 import com.jh.jsuk.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,5 +34,12 @@ public class GlobalExceptionHandler {
     public Result messageErrorHandler(MessageException e) {
         log.error(e.getMessage(), e);
         return new Result().erro(e.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = NeedLoginException.class)
+    public Result needLoginErrorHandler(NeedLoginException e) {
+        log.error(e.getMessage(), e);
+        return new Result().noLogin();
     }
 }
