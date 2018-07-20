@@ -34,6 +34,8 @@ public class ShopGoodsSizeServiceImpl extends ServiceImpl<ShopGoodsSizeDao, Shop
 
     @Override
     public int getStock(Integer goodsSizeId, OrderType orderType) {
+        if (goodsSizeId == null)
+            return 0;
         Wrapper<ShopGoodsSize> wrapper = new EntityWrapper<>();
         wrapper.eq(ShopGoodsSize.ID, goodsSizeId);
         ShopGoodsSize size = selectOne(wrapper);
@@ -84,12 +86,14 @@ public class ShopGoodsSizeServiceImpl extends ServiceImpl<ShopGoodsSizeDao, Shop
 
     @Override
     public int getAccurateStock(Integer goodsSizeId, OrderType orderType) throws Exception {
+        if (goodsSizeId == null)
+            return 0;
         String key = RedisKeys.subKey(RedisKeys.SHOP_GOODS_SIZE_NONE, goodsSizeId + orderType.toString());
         if (redisUtils.hasKey(key))
             return 0;
         int stock = getStock(goodsSizeId, orderType);
         if (stock == 0)
-            redisUtils.set(key, "0", 5 * 60);
+            redisUtils.setStr(key, "0", 5 * 60);
         return stock;
     }
 

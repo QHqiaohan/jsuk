@@ -1,7 +1,9 @@
 package com.jh.jsuk.entity.dto;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -9,6 +11,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ShopSubmitOrderDto implements Serializable {
 
     @ApiModelProperty(value = "店铺id", name = "shopId",required = true)
@@ -26,6 +30,7 @@ public class ShopSubmitOrderDto implements Serializable {
 
     @NotNull
     @Valid
+    @ApiModelProperty(value = "具体商品", name = "goods")
     private ArrayList<ShopSubmitOrderGoodsDto> goods;
 
 }

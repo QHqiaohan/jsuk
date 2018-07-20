@@ -33,4 +33,7 @@ public interface UserOrderDao extends BaseMapper<UserOrder> {
 
     UserOrderDetailVo userOrderDetail(Integer orderId);
 
+    int updateStock(@Param("goodsSizeId") Integer goodsSizeId,@Param("num") Integer num);
+
+    int updateKillStock(@Param("goodsSizeId") Integer goodsSizeId,@Param("num") Integer num);
 }

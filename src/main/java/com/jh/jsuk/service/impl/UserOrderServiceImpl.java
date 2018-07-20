@@ -1,7 +1,6 @@
 package com.jh.jsuk.service.impl;
 
 import cn.hutool.core.date.DateTime;
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.SqlHelper;
@@ -19,21 +18,25 @@ import com.jh.jsuk.entity.UserOrderGoods;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderGoodsDto;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
+import com.jh.jsuk.entity.vo.OrderResponse;
 import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
+import com.jh.jsuk.envm.OrderResponseStatus;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
-import com.jh.jsuk.exception.OrderException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.ShopJPushUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * <p>
@@ -203,61 +206,86 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
      *
      * @return
      */
-    public String createOrderNum() throws Exception {
+    public synchronized String createOrderNum() throws Exception {
         String key = RedisKeys.SHOP_GOODS_ORDER_NUM;
-        Lock lock = new ReentrantLock();
-        try {
-            lock.lock();
+
             Long count = null;
             if (redisUtils.hasKey(key)) {
                 count = redisUtils.autoIncrement(key);
             }
-            if (count == null)
+            if (count == null) {
                 count = (long) selectCount(null);
-            return RandomUtil.randomNumbers(6) + String.format("%06d", count);
-        } finally {
-            lock.unlock();
-        }
+                redisUtils.setStr(key, String.valueOf(count));
+            }
+//            return RandomUtil.randomNumbers(6) + String.format("%06d", count);
+            return String.format("%06d", count);
+
     }
 
-    private Integer createOrder(SubmitOrderDto orderDto, ShopSubmitOrderDto orderGoods,
-                                OrderType orderType,  Integer userId) throws Exception {
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public OrderResponse createOrder(SubmitOrderDto orderDto, ShopSubmitOrderDto orderGoods,
+                                     OrderType orderType, Integer userId) throws Exception {
+        OrderResponse response = new OrderResponse();
         UserOrder o = new UserOrder();
+        Date createTime = new Date();
         List<ShopSubmitOrderGoodsDto> goods = orderGoods.getGoods();
-        for (ShopSubmitOrderGoodsDto good : goods) {
-            int stock = shopGoodsSizeService.getAccurateStock(good.getGoodsSizeId(), orderType);
-            if (stock < good.getNum()) {
-                throw new OrderException(OrderException.ExceptionType.UNDER_STOCK);
+        List<UserOrderGoods> gs = new ArrayList<>();
+        List<ShopSubmitOrderGoodsDto> faildGoods = new ArrayList<>();
+        Iterator<ShopSubmitOrderGoodsDto> iterator = goods.iterator();
+        while (iterator.hasNext()) {
+            int column;
+            ShopSubmitOrderGoodsDto good = iterator.next();
+            if (OrderType.NORMAL.equals(orderType)) {
+                column = baseMapper.updateStock(good.getGoodsSizeId(), good.getNum());
+            } else {
+                column = baseMapper.updateKillStock(good.getGoodsSizeId(), good.getNum());
+            }
+            //秒杀成功
+            if(column >0){
+                UserOrderGoods g = new UserOrderGoods();
+                g.setGoodsId(good.getGoodsId());
+                g.setGoodsSizeId(good.getGoodsSizeId());
+                g.setNum(good.getNum());
+                g.setGoodsPrice(good.getGoodsPrice());
+                g.setPublishTime(createTime);
+                gs.add(g);
+            // 秒杀不成功
+            } else {
+                faildGoods.add(good);
+                iterator.remove();
             }
         }
-        o.setOrderNum(createOrderNum());
-        o.setOrderPrice(orderPrice(orderGoods));
-        o.setDistributionTime(orderDto.getDistributionTime());
-        o.setDistributionType(orderDto.getDistributionType());
-        Date creatTime = new Date();
-        o.setCreatTime(creatTime);
-        o.setStatus(OrderStatus.DUE_PAY.getKey());
-        o.setIsUserDel(0);
-        o.setIsShopDel(0);
-        o.setIsClosed(0);
-        o.setShopId(orderGoods.getShopId());
-        o.setAddressId(orderDto.getAddressId());
-        o.setUserId(userId);
-        o.setCouponId(orderGoods.getUserCouponId());
-        o.setOrderType(orderDto.getOrderType());
-        o.setIntegralRuleId(orderGoods.getIntegralRuleId());
-        o.setFullReduceId(orderGoods.getFullReduceId());
-        o.insert();
-        Integer orderId = o.getId();
-        for (ShopSubmitOrderGoodsDto good : goods) {
-            UserOrderGoods g = new UserOrderGoods();
-            g.setOrderId(orderId);
-            g.setGoodsId(good.getGoodsId());
-            g.setNum(good.getNum());
-            g.setGoodsPrice(good.getGoodsPrice());
-            g.setPublishTime(creatTime);
+        if(faildGoods.size() > 0){
+            System.out.println("部分秒杀成功");
         }
-        return orderId;
+        if(goods.size() > 0){
+            o.setOrderNum(createOrderNum());
+            o.setOrderPrice(orderPrice(orderGoods));
+            o.setDistributionTime(orderDto.getDistributionTime());
+            o.setDistributionType(orderDto.getDistributionType());
+            o.setCreatTime(createTime);
+            o.setStatus(OrderStatus.DUE_PAY.getKey());
+            o.setIsUserDel(0);
+            o.setIsShopDel(0);
+            o.setIsClosed(0);
+            o.setShopId(orderGoods.getShopId());
+            o.setAddressId(orderDto.getAddressId());
+            o.setUserId(userId);
+            o.setCouponId(orderGoods.getUserCouponId());
+            o.setOrderType(orderDto.getOrderType());
+            o.setIntegralRuleId(orderGoods.getIntegralRuleId());
+            o.setFullReduceId(orderGoods.getFullReduceId());
+            o.setOrderPrice(orderPrice(orderGoods));
+            o.insert();
+            Integer orderId = o.getId();
+            for (UserOrderGoods g : gs) {
+                g.setOrderId(orderId);
+                g.insert();
+            }
+        }else {
+            response.setStatus(OrderResponseStatus.FAILED);
+        }
+        return response;
     }
 
     @Override
@@ -265,14 +293,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         System.out.println(orderDto);
         List<ShopSubmitOrderDto> shops = orderDto.getShops();
         OrderType orderType = EnumUitl.toEnum(OrderType.class, orderDto.getOrderType());
-        Map<Integer, List<ShopSubmitOrderDto>> map = new HashMap<>();
         for (ShopSubmitOrderDto shop : shops) {
-            Integer shopId = shop.getShopId();
-            List<ShopSubmitOrderDto> list = map.computeIfAbsent(shopId, sid -> new ArrayList<>());
-            list.add(shop);
             createOrder(orderDto, shop, orderType, userId);
         }
-
         return null;
     }
 
