@@ -4,6 +4,7 @@ package com.jh.jsuk.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
+import com.jh.jsuk.entity.vo.GoodsVo;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
@@ -135,7 +136,7 @@ public class ShoppingCartController {
      */
     public Result list(Integer userId, String goodsName) {
         List<ShoppingCartVo> shoppingCarts = shoppingCartService.selectVoList(String.valueOf(userId), goodsName);
-/*        for (ShoppingCartVo vo:shoppingCarts) {
+       for (ShoppingCartVo vo:shoppingCarts) {
             vo.getShopName();//店铺名
             List<GoodsVo> list = vo.getGoods();
             for (GoodsVo gvo:list) {
@@ -143,7 +144,7 @@ public class ShoppingCartController {
                 gvo.getSalesPrice();
                 gvo.getNum();
             }
-        }*/
+        }
         if(shoppingCarts==null || shoppingCarts.size()==0){
                return new Result().erro("购物车空空如也");
         }
@@ -208,53 +209,6 @@ public class ShoppingCartController {
         return new Result().success(map);
     }
 
-
-/*    *//**
-     * 用户-购物车-去结算
-     * 金额计算（折扣、优惠券、积分来计算订单价格）
-     * 计算订单金额
-     * 更新用户积分总数
-     *//*
-    *//**
-     *
-     * @param //userId            用户id
-     * @param //cartPrice        购物车金额,没有使用满减、优惠券、积分的金额
-     * @param //orderPrice       订单金额,前台计算的使用满减、优惠券、积分的金额,后台再算一遍
-     * @param //coupons          可用优惠券数组
-     * @param //goodsIds         商品id数组
-     * @return
-     *//*
-    @ApiOperation("用户-购物车-去结算-计算订单金额")
-    @RequestMapping(value="/getOrderAmount",method ={RequestMethod.POST})
-    public Result getOrderAmount(Integer userId,
-                                 double cartPrice,
-                                 double orderPrice,
-                                 @RequestBody Coupon [] coupons,
-                                 Integer goodsIds[]){
-
-        //查询用户总积分
-        UserIntegral userIntegral = userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
-                                                                 .eq(UserIntegral.USER_ID, userId)
-        );
-        Integer integralNum=userIntegral.getIntegralNumber();   //积分总数量
-
-        for(Integer goodsId:goodsIds){
-            //先根据goodsId查shopId
-            Integer shopId=shopGoodsService.selectOne(new EntityWrapper<ShopGoods>().eq(ShopGoods.ID,goodsId)).getShopId();
-            //查询满减券对象
-            ShopGoodsFullReduce shopGoodsFullReduce = shopGoodsFullReduceService
-                    .selectOne(new EntityWrapper<ShopGoodsFullReduce>()
-                            .eq(ShopGoodsFullReduce.SHOP_ID, shopId)
-                            .eq(ShopGoodsFullReduce.GOODS_ID,goodsId)
-                    );
-        }
-
-        if(integralNum>0){
-
-        }
-
-        return null;
-    }*/
 
 }
 

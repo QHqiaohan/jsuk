@@ -27,6 +27,7 @@ import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.ShopJPushUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -63,6 +64,12 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Autowired
     private  CouponService couponService;
+    @Autowired
+    private UserIntegralService userIntegralService;
+    @Autowired
+    private IntegralRuleService integralRuleService;
+    @Autowired
+    private ShopGoodsFullReduceService shopGoodsFullReduceService;
 
 
     @Override
@@ -278,6 +285,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
+    @Transactional
     public BigDecimal orderPrice(ShopSubmitOrderDto orderDto) throws Exception {
 /**
  *      用户-购物车-去结算
@@ -302,20 +310,81 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         Coupon coupon = couponService.selectOne(new EntityWrapper<Coupon>()
                                                     .eq(Coupon.ID, userCouponId)
                                                     .eq(Coupon.SHOP_ID,shopId)
+                                                    .eq(Coupon.IS_DEL,0)
         );
         double discount=0;
-        //优惠券开始时间和结束时间判断
-        if(new Date().after(coupon.getStartTime()) && new Date().before(coupon.getEndTime()) && totalPriceWithOutDiscount>=coupon.getFullPrice().doubleValue()){
-            //可以使用优惠券
-            //获取优惠券折扣
-            discount=coupon.getDiscount().doubleValue();
+        if(coupon!=null) {
+            //优惠券开始时间和结束时间判断
+            if (new Date().after(coupon.getStartTime()) && new Date().before(coupon.getEndTime()) && totalPriceWithOutDiscount >= coupon.getFullPrice().doubleValue()) {
+                //可以使用优惠券
+                //获取优惠券折扣
+                discount = coupon.getDiscount().doubleValue();
+            }
         }
-        totalPriceWithOutDiscount=totalPriceWithOutDiscount-discount;   //减去优惠券的折扣
+        if(totalPriceWithOutDiscount>=discount){
+            totalPriceWithOutDiscount=totalPriceWithOutDiscount-discount;   //减去优惠券的折扣
+        }else{
+            totalPriceWithOutDiscount=0;
+        }
+        //优惠券使用之后应删除
+        coupon.setIsDel(1);
+        coupon.updateById();
 
         //计算积分抵扣
+      // 根据用户id查询用户总积分,userId参数暂时没有
+        Integer userId=null;
+        //总积分
+        UserIntegral userIntegral = userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
+                .eq(UserIntegral.USER_ID, userId)
+        );
+        Integer integralNum = userIntegral.getIntegralNumber();
 
+        //积分抵扣规则id
+        Integer integralRuleId=orderDto.getIntegralRuleId();
+        //满减规则id
+        Integer fullReduceId=orderDto.getFullReduceId();
 
-        return new BigDecimal("0.0");
+        for(ShopSubmitOrderGoodsDto goodsDto:orderDto.getGoods()){
+            /*
+            积分抵扣
+             */
+            Integer goodsSizeId=goodsDto.getGoodsSizeId();
+            Integer goodsId=goodsDto.getGoodsId();
+            IntegralRule integralRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>()
+                                                                         .eq(IntegralRule.ID, integralRuleId)
+                                                                         .eq(IntegralRule.SHOP_ID, shopId)
+                                                                         .eq(IntegralRule.GOODS_SIZE_ID,goodsSizeId)
+            );
+            if(integralNum>=integralRule.getIntegral()){
+                if(totalPriceWithOutDiscount>=integralRule.getDeduction().doubleValue()){
+                    totalPriceWithOutDiscount-=integralRule.getDeduction().doubleValue();
+                }else{
+                    totalPriceWithOutDiscount=0;
+                }
+                integralNum-=integralRule.getIntegral();
+            }
+
+            /*
+            满减
+             */
+            ShopGoodsFullReduce shopGoodsFullReduce = shopGoodsFullReduceService
+                                                     .selectOne(new EntityWrapper<ShopGoodsFullReduce>()
+                                                                .eq(ShopGoodsFullReduce.SHOP_ID,shopId)
+                                                                .eq(ShopGoodsFullReduce.GOODS_ID,goodsId)
+                                                                .eq(ShopGoodsFullReduce.SHOP_ID,goodsSizeId)
+                                                     );
+            //满多少减多少，按照数据库的设计是每个商品满多少都减
+            if(goodsDto.getGoodsPrice().doubleValue()>=Double.parseDouble(shopGoodsFullReduce.getFull())
+                    &&totalPriceWithOutDiscount>=goodsDto.getGoodsPrice().doubleValue()){
+                totalPriceWithOutDiscount-=Double.parseDouble(shopGoodsFullReduce.getReduce());
+            }
+        }
+
+        //数据库更新用户积分
+        userIntegral.setIntegralNumber(integralNum);
+        userIntegral.updateById();
+
+        return new BigDecimal(totalPriceWithOutDiscount);
     }
 
 }

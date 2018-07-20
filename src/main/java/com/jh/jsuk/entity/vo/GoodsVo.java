@@ -15,6 +15,27 @@ public class GoodsVo implements Serializable {
     private String createTime;
     private String mainImage;
 
+    private String goodsSizeId;     //规格id
+    private Integer stock;       //  sku库存
+
+    public String getGoodsSizeId() {
+        return goodsSizeId;
+    }
+
+    public void setGoodsSizeId(String goodsSizeId) {
+        this.goodsSizeId = goodsSizeId;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
+
+
+
     public String getMainImage() {
         return mainImage;
     }
