@@ -313,7 +313,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setUserId(userId);
             o.setCouponId(orderGoods.getUserCouponId());
             o.setOrderType(orderDto.getOrderType());
-            o.setIntegralRuleId(orderGoods.getIntegralRuleId());
+//            o.setIntegralRuleId(orderGoods.getIntegralRuleId());
 //            o.setFullReduceId(orderGoods.getFullReduceId());
             OrderPrice orderPrice = orderPrice(orderGoods, orderType, userId);
             o.setOrderPrice(orderPrice.getOrderPrice());
