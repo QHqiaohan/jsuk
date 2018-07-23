@@ -41,6 +41,7 @@ public class CouponController {
 
 
     //用户-我的-优惠券-查询用户优惠卷列表
+    //接口只返回了status==1的优惠券集合
     @ApiOperation("用户-查询用户优惠卷列表")
     @PostMapping("/listByUserId")
     public Result listByUserId(Integer userId) {
@@ -67,8 +68,9 @@ public class CouponController {
         });
         List<CouponVo> normalCoupon = new ArrayList<>();
         for (CouponVo coupon : couponList) {
-            if (coupon.getUserCoupon().getStatus() == 1) {
-                coupon.setStatus(1);
+            //0已使用 1未使用  2未开始  3已结束
+            if (coupon.getUserCoupon().getStatus() == 1 || coupon.getUserCoupon().getStatus() == 2) {
+                coupon.setStatus(coupon.getUserCoupon().getStatus());
                 normalCoupon.add(coupon);
             }
         }
@@ -76,15 +78,22 @@ public class CouponController {
     }
 
     //用户-我的-优惠券-获取优惠券数量
-    @ApiOperation("用户-我的-优惠券-获取优惠券数量")
-    @RequestMapping("/getCouponNum")
+    @ApiOperation("用户-我的-优惠券-显示优惠券数量")
+    @RequestMapping(value="/getCouponNum",method={RequestMethod.GET,RequestMethod.POST})
     public Result getCouponNum(Integer userId) {
         // 用户优惠券信息
         List<CouponVo> couponList = couponService.findByUserId(userId);
-        if (couponList == null) {
+        if (couponList == null || couponList.size()==0) {
             return new Result().success(0);
         }
-        return new Result().success(couponList.size());
+        List<CouponVo> resList=new ArrayList<>();
+        for(CouponVo coupon:couponList){
+            //0已使用 1未使用  2未开始  3已结束
+            if(coupon.getUserCoupon().getStatus()==1 || coupon.getUserCoupon().getStatus()==2){
+                resList.add(coupon);
+            }
+        }
+        return new Result().success(resList.size());
     }
 
     /*@ApiOperation("获取用户优惠券列表")
@@ -123,6 +132,7 @@ public class CouponController {
         return new Result().success(map);
     }*/
 
+    //提交订单页面显示用户可用优惠券列表
     @ApiOperation("用户-显示店铺可用优惠券列表")
     @PostMapping("/listByShopId")
     public Result listByShop(CoupQueryParam param
@@ -140,6 +150,64 @@ public class CouponController {
                 .orderBy(Coupon.DISCOUNT,false)*/);
         return new Result().success(couponList);
     }
+
+
+    //用户-领券-显示优惠券领取页面(前端暂时没有领券页面)
+    @ApiOperation("用户-领券-展示店铺的优惠券列表")
+    @RequestMapping(value="showShopCouponList",method={RequestMethod.GET,RequestMethod.POST})
+    public Result showShopCouponList(@ApiParam(value="店铺id",required = true) Integer shopId){
+        List<Coupon> shopCouponList=couponService.selectList(new EntityWrapper<Coupon>()
+                                                                 .eq(Coupon.SHOP_ID,shopId)
+                                                                 .eq(Coupon.IS_DEL,0)
+                                                                 .gt(Coupon.NUM,0)
+                                                                 .orderBy(Coupon.PUBLISH_TIME,false)
+        );
+        if(shopCouponList==null || shopCouponList.size()==0){
+            return new Result().erro("没有优惠券");
+        }
+        return new Result().success(shopCouponList);
+    }
+
+
+    //用户-领券
+    @ApiOperation("领取优惠卷")
+    @RequestMapping(value="/getCoupon",method={RequestMethod.GET,RequestMethod.POST})
+    public synchronized Result getCoupon(@ApiParam(value="优惠券id",required = true) Integer couponId,
+                                         @ApiParam(value="店铺id",required = true)   Integer shopId,
+                                         @ApiParam(value="用户id",required = true)   Integer userId){
+        Coupon coupon=couponService.selectOne(new EntityWrapper<Coupon>()
+                                                  .eq(Coupon.ID,couponId)
+                                                  .eq(Coupon.SHOP_ID,shopId)
+        );
+
+        if(new Date().after(coupon.getEndTime()) || coupon.getIsDel()==1){
+            //优惠券已过期或删除
+            return new Result().erro("优惠券已过期");
+        }
+        if(coupon.getNum()<0){
+            return new Result().erro("优惠券数量不足");
+        }
+
+        UserCoupon userCoupon = userCouponService.selectOne(new EntityWrapper<UserCoupon>()
+                                                               .eq(UserCoupon.ID, coupon.getId())
+                                                               .eq(UserCoupon.USER_ID, userId)
+        );
+        if(userCoupon!=null){
+            return new Result().erro("您已领取过该优惠卷");
+        }
+        coupon.setNum(coupon.getNum()-1);
+        coupon.updateById();
+
+        UserCoupon newUserCoupon=new UserCoupon();
+        newUserCoupon.setUserId(userId);
+        newUserCoupon.setCouponId(couponId);
+        newUserCoupon.setStatus(1);
+        newUserCoupon.setPublishTime(new Date());
+        newUserCoupon.insert();
+
+        return new Result().success("领券成功");
+    }
+
 
     @ApiOperation("领取优惠卷")
     @PostMapping("/get")
@@ -183,6 +251,7 @@ public class CouponController {
         }
     }
 
+    //用户-领券-前端缺少领券页面
     @ApiOperation("用户-显示优惠券领取列表")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码",
@@ -198,6 +267,7 @@ public class CouponController {
                 .orderBy(Coupon.PUBLISH_TIME, false));
         return new Result().success(couponPage);
     }
+
 
     @RequestMapping("/ui/list")
     public Result uiList(Page page) {

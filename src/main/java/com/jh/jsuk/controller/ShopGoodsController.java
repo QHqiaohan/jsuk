@@ -252,7 +252,7 @@ public class ShopGoodsController {
 
     //用户端-首页-商品(王阳明全集...)详情-根据商品id查询该商品对应的优惠券列表
     @ApiOperation("用户端-首页-商品详情-优惠券列表")
-    @RequestMapping("/getCouponListByGoodsId")
+    @RequestMapping(value="/getCouponListByGoodsId",method={RequestMethod.GET,RequestMethod.POST})
     public Result getCouponListByGoodsId(Integer goodsId){
         /**
          * 根据商品id查询商品对应的店铺
@@ -260,6 +260,7 @@ public class ShopGoodsController {
         ShopGoods shopgoods = shopGoodsService.selectById(goodsId);
         Integer shopId = shopgoods.getShopId();
         List<Coupon> list=couponService.selectCouponList(goodsId,shopId);
+
         if(list==null || list.size()==0){
             return new Result().erro("没有优惠券");
         }
