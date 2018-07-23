@@ -452,7 +452,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             int deductibleJf = Integer.parseInt(shopGoodsSize.getDeductibleJf());
 
             //积分抵扣规则
-            Integer integralRuleId = orderDto.getIntegralRuleId();
+//            Integer integralRuleId = orderDto.getIntegralRuleId();
             /*IntegralRule integralRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>()
                     .eq(IntegralRule.ID, integralRuleId)
                     .eq(IntegralRule.SHOP_ID, shopId)
