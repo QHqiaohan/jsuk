@@ -2,9 +2,13 @@ package com.jh.jsuk.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.jh.jsuk.entity.UserCoupon;
+import com.jh.jsuk.entity.vo.UserCouponVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -23,4 +27,5 @@ public interface UserCouponDao extends BaseMapper<UserCoupon> {
     UserCoupon selectByCouponId(@Param("couponId") Integer couponId, @Param("userId") Integer userId);
 
 
+    List<UserCouponVo> findByUserId(@Param("userId") Integer userId,@Param("date") Date date);
 }

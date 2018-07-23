@@ -26,4 +26,5 @@ public interface CouponDao extends BaseMapper<Coupon> {
     List<CouponVo> selectVoList2(CoupQueryParam param);
 
     List<Coupon> selectCouponList(@Param("goodsId") Integer goodsId,@Param("shopId") Integer shopId);
+
 }
