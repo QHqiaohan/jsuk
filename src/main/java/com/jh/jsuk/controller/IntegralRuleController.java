@@ -29,7 +29,7 @@ public class IntegralRuleController {
 
     @ApiOperation("积分抵扣规则")
     @GetMapping
-    public R integralRule(){
+    public R integralRule(Integer shopId){
         return R.succ(integralRuleService.selectOne(new EntityWrapper<>()));
     }
 
