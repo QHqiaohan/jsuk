@@ -313,7 +313,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setUserId(userId);
             o.setCouponId(orderGoods.getUserCouponId());
             o.setOrderType(orderDto.getOrderType());
-            o.setIntegralRuleId(orderGoods.getIntegralRuleId());
+//            o.setIntegralRuleId(orderGoods.getIntegralRuleId());
 //            o.setFullReduceId(orderGoods.getFullReduceId());
             OrderPrice orderPrice = orderPrice(orderGoods, orderType, userId);
             o.setOrderPrice(orderPrice.getOrderPrice());
@@ -451,12 +451,12 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             int deductibleJf = Integer.parseInt(shopGoodsSize.getDeductibleJf());
 
             //积分抵扣规则
-            Integer integralRuleId = orderDto.getIntegralRuleId();
-            IntegralRule integralRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>()
-                            .eq(IntegralRule.ID, integralRuleId)
+//            Integer integralRuleId = orderDto.getIntegralRuleId();
+            IntegralRule integralRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>());
+//                            .eq(IntegralRule.ID, integralRuleId))
 //                                                                          .eq(IntegralRule.SHOP_ID, shopId)
 //                                                                          .eq(IntegralRule.GOODS_SIZE_ID, goodsSizeId)
-            );
+//            );
             if (integralRule == null) {
                 //如果店铺没有设置积分抵扣规则,默认1000积分抵扣1元
                 integralRule.setIntegral(1000);
@@ -506,7 +506,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
         userOrder.setIntegralReduce(integral_reduce);
         userOrder.setOrderRealPrice(totalPriceWithOutDiscount.setScale(2));  //订单实际价格
-        userOrder.setIntegralRuleId(orderDto.getIntegralRuleId());   //积分规则
+//        userOrder.setIntegralRuleId(orderDto.getIntegralRuleId());   //积分规则
 //        userOrder.setFullReduceId(orderDto.getFullReduceId());      //满减规则
         userOrder.setShopId(shopId);                            //店铺id
         userOrder.setUserId(userId);                   //用户id
