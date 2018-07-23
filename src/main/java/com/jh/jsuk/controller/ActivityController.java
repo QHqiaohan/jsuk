@@ -135,7 +135,7 @@ public class ActivityController {
                         .eq(Shop.IS_RECOMMEND, 1)
                         .eq(Shop.MODULAR_ID, 0)
                         .orderBy(Shop.TOTAL_VOLUME, false));
-        map.put("shop", shopPage.getRecords());
+        map.put("shop", shopPage);
         /**
          * 专题精选
          */
@@ -407,7 +407,6 @@ public class ActivityController {
 
     //首页-二手市场-点击右上角查询我发布的二手市场列表,如果查询我发布的二手市场列表,前台传type=3
     //首页-便捷生活-点击右上角查询我发布的便捷生活列表，前台传type=2
-
     @ApiOperation("用户-二手市场&便捷生活-查询我发布的")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),

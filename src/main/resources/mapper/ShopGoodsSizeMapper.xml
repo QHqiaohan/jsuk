@@ -25,12 +25,13 @@
         <result column="goods_no" property="goodsNo"/>
         <result column="kill_price" property="killPrice"/>
         <result column="kill_stock" property="killStock"/>
+        <result column="detail_info" property="detailInfo"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, shop_goods_id, size_name, stock, original_price, sales_price, weight, volume, freight, status, type, is_del, img, brand, send_jf,
-        deductible_jf, goods_type_id, goods_no, kill_price, kill_stock, full_freight
+        deductible_jf, goods_type_id, goods_no, kill_price, kill_stock, full_freight,detail_info
     </sql>
 
     <select id="getSalesPriceByGoodsId" resultType="String">
