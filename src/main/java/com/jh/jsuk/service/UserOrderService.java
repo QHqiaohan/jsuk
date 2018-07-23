@@ -6,13 +6,13 @@ import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
+import com.jh.jsuk.entity.vo.OrderPrice;
 import com.jh.jsuk.entity.vo.OrderResponse;
 import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -80,5 +80,5 @@ public interface UserOrderService extends IService<UserOrder> {
      * @return
      * @throws Exception
      */
-    BigDecimal orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId) throws Exception;
+    OrderPrice orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId) throws Exception;
 }

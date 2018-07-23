@@ -16,6 +16,7 @@ import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderGoodsDto;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
+import com.jh.jsuk.entity.vo.OrderPrice;
 import com.jh.jsuk.entity.vo.OrderResponse;
 import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
@@ -313,8 +314,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setCouponId(orderGoods.getUserCouponId());
             o.setOrderType(orderDto.getOrderType());
             o.setIntegralRuleId(orderGoods.getIntegralRuleId());
-            o.setFullReduceId(orderGoods.getFullReduceId());
-            o.setOrderPrice(orderPrice(orderGoods, orderType, userId));
+//            o.setFullReduceId(orderGoods.getFullReduceId());
+            OrderPrice orderPrice = orderPrice(orderGoods, orderType, userId);
+            o.setOrderPrice(orderPrice.getOrderPrice());
             o.insert();
             Integer orderId = o.getId();
             response.setOrderId(orderId);
@@ -370,7 +372,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public BigDecimal orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId) throws Exception {
+    public OrderPrice orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId) throws Exception {
 /**
  *      用户-购物车-去结算
  *      * 金额计算（折扣、优惠券、积分来计算订单价格）
@@ -502,11 +504,11 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         userOrder.setIntegralReduce(integral_reduce);
         userOrder.setOrderRealPrice(totalPriceWithOutDiscount.setScale(2));  //订单实际价格
         userOrder.setIntegralRuleId(orderDto.getIntegralRuleId());   //积分规则
-        userOrder.setFullReduceId(orderDto.getFullReduceId());      //满减规则
+//        userOrder.setFullReduceId(orderDto.getFullReduceId());      //满减规则
         userOrder.setShopId(shopId);                            //店铺id
         userOrder.setUserId(userId);                   //用户id
 
-        return  totalPriceWithOutDiscount.setScale(2);
+        return new OrderPrice();
     }
 
 }

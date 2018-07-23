@@ -14,6 +14,7 @@ import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -142,6 +143,7 @@ public class CouponController {
     //用户-领券
     @ApiOperation("领取优惠卷")
     @RequestMapping(value="/getCoupon",method={RequestMethod.GET,RequestMethod.POST})
+    @Transactional
     public synchronized Result getCoupon(@ApiParam(value="优惠券id",required = true) Integer couponId,
 //                                         @ApiParam(value="店铺id",required = true)   Integer shopId,
                                          @ApiParam(value="用户id",required = true)   Integer userId){
