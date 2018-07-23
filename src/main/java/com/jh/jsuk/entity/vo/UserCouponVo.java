@@ -9,9 +9,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class CouponVo extends Coupon {
+public class UserCouponVo extends UserCoupon {
 
-    private UserCoupon userCoupon;
+    private Coupon couponInfo;
 
     private Boolean isTimeOut;
 

@@ -2,6 +2,9 @@ package com.jh.jsuk.service;
 
 import com.jh.jsuk.entity.UserCoupon;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.vo.UserCouponVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface UserCouponService extends IService<UserCoupon> {
 
+    List<UserCouponVo> findByUserId(Integer userId);
 }

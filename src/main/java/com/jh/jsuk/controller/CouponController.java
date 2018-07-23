@@ -7,6 +7,7 @@ import com.jh.jsuk.entity.Coupon;
 import com.jh.jsuk.entity.UserCoupon;
 import com.jh.jsuk.entity.vo.CoupQueryParam;
 import com.jh.jsuk.entity.vo.CouponVo;
+import com.jh.jsuk.entity.vo.UserCouponVo;
 import com.jh.jsuk.service.CouponService;
 import com.jh.jsuk.service.UserCouponService;
 import com.jh.jsuk.utils.R;
@@ -15,7 +16,7 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * <p>
@@ -45,34 +46,8 @@ public class CouponController {
     @PostMapping("/listByUserId")
     public Result listByUserId(Integer userId) {
         // 用户优惠券信息
-        List<CouponVo> couponList = couponService.findByUserId(userId);
-        for (CouponVo coupon : couponList) {
-            //未开始
-            if (new Date().before(coupon.getStartTime())) {
-                coupon.getUserCoupon().setStatus(2);
-                //已结束
-            } else if (coupon.getEndTime().before(new Date())) {
-                coupon.getUserCoupon().setStatus(3);
-                //正常
-            } else {
-                coupon.getUserCoupon().setStatus(1);
-            }
-            coupon.getUserCoupon().updateById();
-        }
-        Collections.sort(couponList, new Comparator<CouponVo>() {
-            @Override
-            public int compare(CouponVo o1, CouponVo o2) {
-                return o1.getUserCoupon().getStatus() - o2.getUserCoupon().getStatus();
-            }
-        });
-        List<CouponVo> normalCoupon = new ArrayList<>();
-        for (CouponVo coupon : couponList) {
-            if (coupon.getUserCoupon().getStatus() == 1) {
-                coupon.setStatus(1);
-                normalCoupon.add(coupon);
-            }
-        }
-        return new Result().success(normalCoupon);
+        List<UserCouponVo> couponList = userCouponService.findByUserId(userId);
+        return new Result().success(couponList);
     }
 
     //用户-我的-优惠券-获取优惠券数量

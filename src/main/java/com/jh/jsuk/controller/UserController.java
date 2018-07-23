@@ -559,7 +559,7 @@ public class UserController {
          */
         int yhCount = userCouponService.selectCount(new EntityWrapper<UserCoupon>()
                 .eq(UserCoupon.USER_ID, userId)
-                .eq(UserCoupon.STATUS, 1));
+                .ne(UserCoupon.IS_USED, 1));
         map.put("sum_youHuiJuan", yhCount);
         /**
          * 获取收藏总数

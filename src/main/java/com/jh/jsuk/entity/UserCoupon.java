@@ -1,11 +1,15 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -15,6 +19,9 @@ import java.io.Serializable;
  * @author lpf
  * @since 2018-06-21
  */
+@Getter
+@Setter
+@ToString
 @TableName("js_user_coupon")
 public class UserCoupon extends Model<UserCoupon> {
 
@@ -31,54 +38,13 @@ public class UserCoupon extends Model<UserCoupon> {
      */
     private Integer couponId;
     /**
-     * 0已使用 1未使用  2未开始  3已结束
+     * 已使用
      */
-    private Integer status;
+    private Integer isUsed;
     /**
      * 添加时间
      */
     private Date publishTime;
-
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getCouponId() {
-        return couponId;
-    }
-
-    public void setCouponId(Integer couponId) {
-        this.couponId = couponId;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Date getPublishTime() {
-        return publishTime;
-    }
-
-    public void setPublishTime(Date publishTime) {
-        this.publishTime = publishTime;
-    }
 
     public static final String ID = "id";
 
@@ -86,7 +52,7 @@ public class UserCoupon extends Model<UserCoupon> {
 
     public static final String COUPON_ID = "coupon_id";
 
-    public static final String STATUS = "status";
+    public static final String IS_USED = "is_used";
 
     public static final String PUBLISH_TIME = "publish_time";
 
@@ -95,14 +61,4 @@ public class UserCoupon extends Model<UserCoupon> {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "UserCoupon{" +
-        "id=" + id +
-        ", userId=" + userId +
-        ", couponId=" + couponId +
-        ", status=" + status +
-        ", publishTime=" + publishTime +
-        "}";
-    }
 }

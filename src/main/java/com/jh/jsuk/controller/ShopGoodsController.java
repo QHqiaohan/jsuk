@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -279,13 +278,13 @@ public class ShopGoodsController {
             uc.setUserId(userId);
             uc.setCouponId(coupon.getId());
 
-            if(new Date().before(coupon.getStartTime())){  //未开始
-                uc.setStatus(2);
-            }else if(new Date().after(coupon.getEndTime())){     //时间已经结束
-                uc.setStatus(3);
-            }else{
-                uc.setStatus(1);    //未使用
-            }
+//            if(new Date().before(coupon.getStartTime())){  //未开始
+//                uc.setStatus(2);
+//            }else if(new Date().after(coupon.getEndTime())){     //时间已经结束
+//                uc.setStatus(3);
+//            }else{
+//                uc.setStatus(1);    //未使用
+//            }
             uc.insert();
             return new Result().success("领取优惠券成功");
 
