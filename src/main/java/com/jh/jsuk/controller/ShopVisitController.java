@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * <p>
  * 商家端-店铺访问记录明细 前端控制器
@@ -45,6 +48,10 @@ public class ShopVisitController {
     })
     @RequestMapping(value = "/getTodayVisit", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getTodayVisit(Page page, Integer userId, String today) {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        Date date=new Date();
+        today = sdf.format(date);
+
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
         Integer shopId = managerUser.getShopId();
