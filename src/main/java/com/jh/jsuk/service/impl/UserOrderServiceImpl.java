@@ -113,7 +113,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 shopGoodsService.returnStock(goods.getGoodsId(), goods.getNum());
             }
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            e.printStackTrace();
         }
     }
 
@@ -317,9 +317,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 //            o.setFullReduceId(orderGoods.getFullReduceId());
             OrderPrice orderPrice = orderPrice(orderGoods, orderType, userId);
             o.setOrderPrice(orderPrice.getOrderPrice());
-            o.setCouponReduce(orderPrice.getCouponReduce());
-            o.setIntegralReduce(orderPrice.getIntegralReduce());
-            o.setOrderRealPrice(orderPrice.getOrderRealPrice());
             o.insert();
             Integer orderId = o.getId();
             response.setOrderId(orderId);
@@ -375,36 +372,32 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         return list;
     }
 
+    /**
+     * 用户-购物车-去结算
+     * * 金额计算（折扣、优惠券、积分来计算订单价格）
+     * * 计算订单金额
+     * * 更新用户积分总数
+     */
     @Override
-    public OrderPrice orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId) throws Exception {
-/**
- *      用户-购物车-去结算
- *      * 金额计算（折扣、优惠券、积分来计算订单价格）
- *      * 计算订单金额
- *      * 更新用户积分总数
- */
-        UserOrder userOrder = new UserOrder();
+    public OrderPrice orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId) {
+        OrderPrice orderPrice = new OrderPrice();
         //先计算没有使用任何优惠的订单原价
         BigDecimal totalPriceWithOutDiscount = new BigDecimal("0.00");
-
+        //获取商品列表
         ArrayList<ShopSubmitOrderGoodsDto> goodsList = orderDto.getGoods();
         for (ShopSubmitOrderGoodsDto goodsDto : goodsList) {
-            Integer goodsId = goodsDto.getGoodsId();           //商品id
             Integer goodsSizeId = goodsDto.getGoodsSizeId();   //商品规格id
             ShopGoodsSize shopGoodsSize = shopGoodsSizeService.selectOne(new EntityWrapper<ShopGoodsSize>()
                     .eq(ShopGoodsSize.ID, goodsSizeId)
-                    .eq(ShopGoodsSize.SHOP_GOODS_ID, goodsId)
             );
             //订单项的价格
             if (shopGoodsSize != null) {
                 BigDecimal orderItemPrice = goodsDto.getGoodsPrice().multiply(new BigDecimal(goodsDto.getNum()));
-                totalPriceWithOutDiscount.add(orderItemPrice);
+                totalPriceWithOutDiscount=totalPriceWithOutDiscount.add(orderItemPrice);
             }
         }
-
-        //设置订单原始价格
-        userOrder.setOrderPrice(totalPriceWithOutDiscount.setScale(2));
-        BigDecimal orginPrice = new BigDecimal(totalPriceWithOutDiscount.doubleValue());
+        //设置原始价格
+        orderPrice.setOrderPrice(totalPriceWithOutDiscount.setScale(2));
 
         //店铺id
         Integer shopId = orderDto.getShopId();
@@ -426,9 +419,15 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 //可以使用优惠券
                 //获取优惠券折扣
                 discount = coupon.getDiscount();
+                //设置用戶优惠卷状态(已使用)
+                UserCoupon userCoupon = new UserCoupon();
+                userCoupon.setId(userCouponId);
+                userCoupon.selectById();
+                userCoupon.setIsUsed(1);
+                userCoupon.updateById();
             }
             totalPriceWithOutDiscount = totalPriceWithOutDiscount.subtract(discount);   //减去优惠券的折扣
-            userOrder.setCouponReduce(discount);            //优惠券优惠了多少
+            orderPrice.setCouponReduce(discount);         //优惠券优惠了多少
         }
 
         //计算积分抵扣
@@ -437,7 +436,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 .eq(UserIntegral.USER_ID, userId));
         Integer integralNum = userIntegral.getIntegralNumber();    //总积分
         BigDecimal integral_reduce = new BigDecimal(0);     //积分抵扣了多少
-        BigDecimal full_reduce = new BigDecimal(0);     //满减了多少
 
         for (ShopSubmitOrderGoodsDto goodsDto : goodsList) {
             Integer goodsId = goodsDto.getGoodsId();           //商品id
@@ -452,11 +450,12 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
             //积分抵扣规则
             Integer integralRuleId = orderDto.getIntegralRuleId();
-            IntegralRule integralRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>()
-                            .eq(IntegralRule.ID, integralRuleId)
-//                                                                          .eq(IntegralRule.SHOP_ID, shopId)
-//                                                                          .eq(IntegralRule.GOODS_SIZE_ID, goodsSizeId)
-            );
+            /*IntegralRule integralRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>()
+                    .eq(IntegralRule.ID, integralRuleId)
+                    .eq(IntegralRule.SHOP_ID, shopId)
+                    .eq(IntegralRule.GOODS_SIZE_ID, goodsSizeId)
+            );*/
+            IntegralRule integralRule=new IntegralRule();
             if (integralRule == null) {
                 //如果店铺没有设置积分抵扣规则,默认1000积分抵扣1元
                 integralRule.setIntegral(1000);
@@ -468,50 +467,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             }
         }
 
-        //满减,满多少减多少，查询出来的是集合,以最大满减为准
-        List<ShopGoodsFullReduce> fullReduceList = shopGoodsFullReduceService
-                .selectList(new EntityWrapper<ShopGoodsFullReduce>()
-                        .eq(ShopGoodsFullReduce.SHOP_ID, shopId)
-                );
-
-        //获取该订单满足的最大满减对象
-        ShopGoodsFullReduce bigFullReduce = null;
-        Set<Double> set = new TreeSet<>();
-
-        if (fullReduceList != null && fullReduceList.size() > 0) {
-            for (ShopGoodsFullReduce fullReduce : fullReduceList) {
-                if (orginPrice.compareTo(new BigDecimal(Double.parseDouble(fullReduce.getFull()))) == 1
-                        || orginPrice.compareTo(new BigDecimal(Double.parseDouble(fullReduce.getFull()))) == 0
-                        ) {
-                    //订单原始价格满足满减门槛价格
-                    set.add(Double.parseDouble(fullReduce.getFull()));
-                }
-            }
-
-            if (!set.isEmpty()) {
-                String maxFull = ((TreeSet<Double>) set).last() + "";
-                List<ShopGoodsFullReduce> list = shopGoodsFullReduceService.selectList(new EntityWrapper<ShopGoodsFullReduce>()
-                        .eq(ShopGoodsFullReduce.FULL, maxFull));
-                if (list != null && list.size() > 0) {
-                    bigFullReduce = list.get(0);
-                    totalPriceWithOutDiscount.subtract(new BigDecimal(Double.parseDouble(bigFullReduce.getFull())));
-                    //满减了多少
-                    userOrder.setFullReduce(new BigDecimal(Double.parseDouble(bigFullReduce.getFull())));
-                } else {
-                    //没有满减
-                    userOrder.setFullReduce(new BigDecimal("0.00"));
-                }
-            }
-        }
-
-        userOrder.setIntegralReduce(integral_reduce);
-        userOrder.setOrderRealPrice(totalPriceWithOutDiscount.setScale(2));  //订单实际价格
-        userOrder.setIntegralRuleId(orderDto.getIntegralRuleId());   //积分规则
-//        userOrder.setFullReduceId(orderDto.getFullReduceId());      //满减规则
-        userOrder.setShopId(shopId);                            //店铺id
-        userOrder.setUserId(userId);                   //用户id
-
-        return new OrderPrice();
+        orderPrice.setOrderRealPrice(totalPriceWithOutDiscount);//订单实际价格
+        return orderPrice;
     }
 
 }
