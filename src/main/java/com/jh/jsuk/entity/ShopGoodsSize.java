@@ -124,6 +124,16 @@ public class ShopGoodsSize extends Model<ShopGoodsSize> {
     @ApiModelProperty(value = "秒杀库存", name = "killStock")
     private Integer killStock;
 
+    @ApiModelProperty(value = "商品详情", name = "detailInfo")
+    private String detailInfo;
+
+    public String getDetailInfo() {
+        return detailInfo;
+    }
+
+    public void setDetailInfo(String detailInfo) {
+        this.detailInfo = detailInfo;
+    }
 
     public Integer getId() {
         return id;

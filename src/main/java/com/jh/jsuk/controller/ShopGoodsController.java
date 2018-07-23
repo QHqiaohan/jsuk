@@ -378,11 +378,15 @@ public class ShopGoodsController {
             @ApiImplicitParam(name = "userId", value = "商家id", paramType = "query", dataType = "integer")
     })
     @RequestMapping(value = "/addShopGoodsList", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addShopGoodsList(Integer userId, Page page) {
+    public Result addShopGoodsList(Integer userId, Integer current,Integer size) {
+        current=current==null?1:current;
+        size=size==null?10:size;
+
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
         Integer shopId = managerUser.getShopId();
         MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
+        Page page=new Page(current,size);
         Page shopGoods = shopGoodsService.findShopGoodsAndGoodsSizeByShopId(page, ew, shopId);
         return new Result().success(shopGoods);
     }
@@ -395,7 +399,7 @@ public class ShopGoodsController {
         Integer shopId = managerUser.getShopId();
         ShopGoods shopGoods = new ShopGoods();
         shopGoods.setId(shopId);
-        shopGoods.setIsDel(0);
+        shopGoods.setIsDel(1);
         shopGoods.updateById();
         return new Result().success();
     }
@@ -429,4 +433,3 @@ public class ShopGoodsController {
     }
 
 }
-

@@ -51,19 +51,20 @@ public class UserTiXianController {
         Integer shopId = managerUser.getShopId();
         if (type == 2) {
             return new Result().success();
-        } else if (type == 0) {
+        } else if (type == 0) {        //商家提现
             List<ShopMoney> shopMoneyList = shopMoneyService.selectList(new EntityWrapper<ShopMoney>()
                     .eq(ShopMoney.SHOP_ID, shopId));
             if (CollectionUtils.isEmpty(shopMoneyList)) {
                 return new Result().erro("账户余额不足");
             } else {
                 // 初始化余额
-                int sum = 0;
-                for (ShopMoney shopMoney : shopMoneyList) {
+                double sum = 0;
+                for (ShopMoney shopMoney : shopMoneyList) {  //计算商家余额
                     // 金额
                     String money = shopMoney.getMoney();
-                    Integer m = Integer.parseInt(money);
-                    // 消费类型,计算
+                    //Integer m = Integer.parseInt(money);
+                    double m=Double.parseDouble(money);
+                    // 消费类型,计算  类型,0=消费,1=收入
                     Integer xfType = shopMoney.getType();
                     if (xfType == 0) {
                         // 消费
@@ -73,7 +74,7 @@ public class UserTiXianController {
                         sum += m;
                     }
                 }
-                if (sum >= Integer.parseInt(userTiXian.getPrice())) {
+                if (sum >= Double.parseDouble(userTiXian.getPrice())) {
                     userTiXian.insert();
                     return new Result().success("提现成功");
                 } else {
