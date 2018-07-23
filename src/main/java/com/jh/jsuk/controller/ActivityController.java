@@ -250,8 +250,7 @@ public class ActivityController {
 
     @ApiOperation("用户-特色家乡&直销平台-banner/分类/店铺列表/商品列表")
     @RequestMapping(value = "/getMoreInfo", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getMoreInfo(@ApiParam(value = "模块ID", required = true) Integer modularId,
-                              @ApiParam(value = "当前用户ID", required = true) Integer userId) {
+    public Result getMoreInfo(@ApiParam(value = "模块ID", required = true) Integer modularId) {
         // 封装结果map
         Map<String, Object> map = new HashMap<>();
         if (modularId == 3) {
@@ -277,7 +276,7 @@ public class ActivityController {
             /**
              * 店铺列表
              */
-            List<Shop> shopList = shopService.findShopsByUserArea(userService.selectInfoById(userId));
+            List<Shop> shopList = shopService.findShopsByUserArea(null);
             map.put("shops", shopList);
         } else if (modularId == 8) {
             /**
