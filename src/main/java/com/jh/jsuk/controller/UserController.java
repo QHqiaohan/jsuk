@@ -47,6 +47,9 @@ public class UserController {
     UserCouponService userCouponService;
     @Autowired
     CollectService collectService;
+
+    @Autowired
+    CollectGoodsService collectGoodsService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -564,8 +567,8 @@ public class UserController {
         /**
          * 获取收藏总数
          */
-        int scCount = collectService.selectCount(new EntityWrapper<Collect>()
-                .eq(Collect.USER_ID, userId));
+        int scCount = collectGoodsService.selectCount(new EntityWrapper<CollectGoods>()
+                .eq(CollectGoods.USER_ID, userId));
         map.put("sum_shouCang", scCount);
         /**
          * 获取用户信息

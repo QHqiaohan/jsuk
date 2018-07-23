@@ -10,4 +10,8 @@
         <result column="publish_time" property="publishTime" />
     </resultMap>
 
+  <select id="selectCollectList" resultType="com.jh.jsuk.entity.ShopGoods">
+    select g.* from js_collect_goods cg join js_shop_goods g on cg.goods_id = g.id where cg.user_id = #{userId}
+  </select>
+
 </mapper>

@@ -1,10 +1,14 @@
 package com.jh.jsuk.service.impl;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.CollectGoodsMapper;
 import com.jh.jsuk.entity.CollectGoods;
+import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.service.CollectGoodsService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +21,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class CollectGoodsServiceImpl extends ServiceImpl<CollectGoodsMapper, CollectGoods> implements CollectGoodsService {
 
+    @Override
+    public Page selectCollectList(Integer userId, Page page) {
+        List<ShopGoods> list = baseMapper.selectCollectList(page,userId);
+        return page.setRecords(list);
+    }
 }
