@@ -393,7 +393,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             //订单项的价格
             if (shopGoodsSize != null) {
                 BigDecimal orderItemPrice = goodsDto.getGoodsPrice().multiply(new BigDecimal(goodsDto.getNum()));
-                totalPriceWithOutDiscount=totalPriceWithOutDiscount.add(orderItemPrice);
+                totalPriceWithOutDiscount = totalPriceWithOutDiscount.add(orderItemPrice);
             }
         }
         //设置原始价格
@@ -409,7 +409,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 .eq(Coupon.SHOP_ID, shopId)
                 .eq(Coupon.IS_DEL, 0)
         );
-
         if (coupon != null) {
             BigDecimal discount = new BigDecimal("0.00");     //优惠券折扣
             //优惠券开始时间和结束时间判断
@@ -427,7 +426,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 userCoupon.updateById();
             }
             totalPriceWithOutDiscount = totalPriceWithOutDiscount.subtract(discount);   //减去优惠券的折扣
-            orderPrice.setCouponReduce(discount);         //优惠券优惠了多少
+            orderPrice.setCouponReduce(discount.setScale(2));         //优惠券优惠了多少
         }
 
         //计算积分抵扣
@@ -435,39 +434,47 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         UserIntegral userIntegral = userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
                 .eq(UserIntegral.USER_ID, userId));
         Integer integralNum = userIntegral.getIntegralNumber();    //总积分
-        BigDecimal integral_reduce = new BigDecimal(0);     //积分抵扣了多少
+        //积分抵扣与规则
+        IntegralRule integralRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>()
+                .eq(IntegralRule.ID, 1)
+        );
+        //积分可以抵扣多少钱
+        BigDecimal integralReduce = new BigDecimal(integralNum / integralRule.getIntegral()).multiply(integralRule.getDeduction());
+        int remainIntegral;//用户剩余积分
+        if (integralReduce.compareTo(totalPriceWithOutDiscount) > 0) {
+            totalPriceWithOutDiscount = new BigDecimal("0.00");
+            orderPrice.setIntegralReduce(totalPriceWithOutDiscount);
+            remainIntegral = integralNum - totalPriceWithOutDiscount.setScale(0, BigDecimal.ROUND_UP).intValue();
+        } else {
+            remainIntegral = integralNum % integralRule.getIntegral();
+            //积分抵扣价格
+            orderPrice.setIntegralReduce(integralReduce.setScale(2));
+            //减去积分抵扣价格
+            totalPriceWithOutDiscount = totalPriceWithOutDiscount.subtract(integralReduce);
+        }
+        userIntegral.setIntegralNumber(remainIntegral);
+        userIntegral.updateById();
 
+        //设置运费
+        BigDecimal freight = new BigDecimal("0.00");
         for (ShopSubmitOrderGoodsDto goodsDto : goodsList) {
-            Integer goodsId = goodsDto.getGoodsId();           //商品id
             Integer goodsSizeId = goodsDto.getGoodsSizeId();   //商品规格id
             ShopGoodsSize shopGoodsSize = shopGoodsSizeService.selectOne(new EntityWrapper<ShopGoodsSize>()
                     .eq(ShopGoodsSize.ID, goodsSizeId)
-                    .eq(ShopGoodsSize.SHOP_GOODS_ID, goodsId)
             );
-
-            //该商品(sku)可以抵扣多少积分
-            int deductibleJf = Integer.parseInt(shopGoodsSize.getDeductibleJf());
-
-            //积分抵扣规则
-            Integer integralRuleId = orderDto.getIntegralRuleId();
-            /*IntegralRule integralRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>()
-                    .eq(IntegralRule.ID, integralRuleId)
-                    .eq(IntegralRule.SHOP_ID, shopId)
-                    .eq(IntegralRule.GOODS_SIZE_ID, goodsSizeId)
-            );*/
-            IntegralRule integralRule=new IntegralRule();
-            if (integralRule == null) {
-                //如果店铺没有设置积分抵扣规则,默认1000积分抵扣1元
-                integralRule.setIntegral(1000);
-                integralRule.setDeduction(new BigDecimal("1.00"));
-            }
-            if (deductibleJf >= integralRule.getIntegral() && integralNum >= integralRule.getIntegral()) {
-                totalPriceWithOutDiscount.subtract(integralRule.getDeduction());
-                integral_reduce.add(integralRule.getDeduction());    //积分抵扣了多少
+            //订单项的价格
+            if (shopGoodsSize != null) {
+                //不符合包邮
+                if (new BigDecimal(shopGoodsSize.getFullFreight()).compareTo(orderPrice.getOrderPrice()) < 0) {
+                    freight = freight.add(new BigDecimal(shopGoodsSize.getFreight()));
+                }
             }
         }
+        //添加运费
+        totalPriceWithOutDiscount = totalPriceWithOutDiscount.add(freight);
+        orderPrice.setFreight(freight.setScale(2));
 
-        orderPrice.setOrderRealPrice(totalPriceWithOutDiscount);//订单实际价格
+        orderPrice.setOrderRealPrice(totalPriceWithOutDiscount.setScale(2));//订单实际价格
         return orderPrice;
     }
 
