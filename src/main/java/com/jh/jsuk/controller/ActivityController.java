@@ -587,7 +587,7 @@ public class ActivityController {
     @ApiOperation("用户-乡村旅游-乡村旅游子模块(亲子，户外拓展...)")
     @RequestMapping(value="/getChildModularByParentId", method={RequestMethod.GET,RequestMethod.POST})
     public Result getChildModularByParentId(Integer id){
-
+        id=id==null?9:id;
         Result result=new Result();
         List<ModularPortal> childModularList=modularPortalService.selectList(new EntityWrapper<ModularPortal>()
                                                                             .eq(ModularPortal.PARENT_ID,id)

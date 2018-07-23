@@ -198,11 +198,11 @@ public class ShopGoodsController {
 //        }
         // 获取标签ID
         Integer labelId = goodsSizeVo.getGoodsLabelId();
-        GoodsLabel goodsLabel = goodsLabelService.selectOne(new EntityWrapper<GoodsLabel>()
+        List<GoodsLabel> goodsLabelList = goodsLabelService.selectList(new EntityWrapper<GoodsLabel>()
                 .eq(GoodsLabel.ID, labelId)
-                .ne(GoodsLabel.IS_DEL, 0)
+                .eq(GoodsLabel.IS_DEL, 0)
                 .orderBy(GoodsLabel.RANK, false));
-        map.put("goodsLabel", goodsLabel);
+        map.put("goodsLabelList", goodsLabelList);
         return result.success(map);
     }
 
