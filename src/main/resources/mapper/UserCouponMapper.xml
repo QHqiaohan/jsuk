@@ -7,13 +7,25 @@
         <id column="id" property="id" />
         <result column="user_id" property="userId" />
         <result column="coupon_id" property="couponId" />
-        <result column="status" property="status" />
+        <result column="is_used" property="isUsed" />
         <result column="publish_time" property="publishTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_id, coupon_id, status, publish_time
+        id, user_id, coupon_id, is_used, publish_time
     </sql>
+
+    <resultMap id="userCouponVo" type="com.jh.jsuk.entity.vo.UserCouponVo" extends="BaseResultMap">
+        <association property="couponInfo" column="coupon_id"
+            select="com.jh.jsuk.dao.CouponDao.selectById"></association>
+    </resultMap>
+
+  <select id="findByUserId" resultMap="userCouponVo">
+      select uc.id, uc.user_id, uc.coupon_id, uc.is_used, uc.publish_time from js_user_coupon uc
+      left join js_coupon c on c.id = uc.coupon_id  where user_id = #{userId}
+      and not is_used
+      and c.end_time > #{date}
+  </select>
 
 </mapper>

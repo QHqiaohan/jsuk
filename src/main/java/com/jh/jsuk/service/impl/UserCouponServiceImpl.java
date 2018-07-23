@@ -1,10 +1,15 @@
 package com.jh.jsuk.service.impl;
 
-import com.jh.jsuk.entity.UserCoupon;
-import com.jh.jsuk.dao.UserCouponDao;
-import com.jh.jsuk.service.UserCouponService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.jh.jsuk.dao.UserCouponDao;
+import com.jh.jsuk.entity.Coupon;
+import com.jh.jsuk.entity.UserCoupon;
+import com.jh.jsuk.entity.vo.UserCouponVo;
+import com.jh.jsuk.service.UserCouponService;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +22,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserCouponServiceImpl extends ServiceImpl<UserCouponDao, UserCoupon> implements UserCouponService {
 
+    @Override
+    public List<UserCouponVo> findByUserId(Integer userId) {
+        Date date = new Date();
+        List<UserCouponVo> list = baseMapper.findByUserId(userId, date);
+        for (UserCouponVo vo : list) {
+            vo.setIsTimeOut(false);
+            Coupon info = vo.getCouponInfo();
+            if (info != null) {
+                Date endTime = info.getEndTime();
+                if (endTime != null)
+                    if (date.getTime() > endTime.getTime()) {
+                        vo.setIsTimeOut(true);
+                    }
+            }
+        }
+        return list;
+    }
 }
