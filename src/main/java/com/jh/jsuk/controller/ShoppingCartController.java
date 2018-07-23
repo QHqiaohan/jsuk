@@ -3,8 +3,6 @@ package com.jh.jsuk.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.jh.jsuk.entity.*;
-import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
-import com.jh.jsuk.entity.vo.GoodsVo;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
@@ -14,7 +12,6 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -185,8 +182,8 @@ public class ShoppingCartController {
             );
             //查询该商品对应的积分抵扣规则
             IntegralRule interRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>()
-                                                                   .eq(IntegralRule.SHOP_ID,shopId)
-                                                                   .eq(IntegralRule.GOODS_SIZE_ID,shopGoodsSize.getId())
+//                                                                   .eq(IntegralRule.SHOP_ID,shopId)
+//                                                                   .eq(IntegralRule.GOODS_SIZE_ID,shopGoodsSize.getId())
             );
             integralMap.put(goodsId,interRule);
         }

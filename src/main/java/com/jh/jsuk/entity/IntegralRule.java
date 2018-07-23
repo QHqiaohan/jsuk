@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,6 +19,9 @@ import java.math.BigDecimal;
  * @author tj
  * @since 2018-07-19
  */
+@Setter
+@Getter
+@ToString
 @TableName("js_integral_rule")
 public class IntegralRule extends Model<IntegralRule> {
 
@@ -24,14 +30,6 @@ public class IntegralRule extends Model<IntegralRule> {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     /**
-     * 店铺id
-     */
-    private Integer shopId;
-    /**
-     * 商品规格id
-     */
-    private Integer goodsSizeId;
-    /**
      * 多少积分
      */
     private Integer integral;
@@ -39,71 +37,29 @@ public class IntegralRule extends Model<IntegralRule> {
      * 抵扣多少钱
      */
     private BigDecimal deduction;
-
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(Integer shopId) {
-        this.shopId = shopId;
-    }
-
-    public Integer getGoodsSizeId() {
-        return goodsSizeId;
-    }
-
-    public void setGoodsSizeId(Integer goodsSizeId) {
-        this.goodsSizeId = goodsSizeId;
-    }
-
-    public Integer getIntegral() {
-        return integral;
-    }
-
-    public void setIntegral(Integer integral) {
-        this.integral = integral;
-    }
-
-    public BigDecimal getDeduction() {
-        return deduction;
-    }
-
-    public void setDeduction(BigDecimal deduction) {
-        this.deduction = deduction;
-    }
+    /**
+     * 消费多少钱
+     */
+    private Integer consumption;
+    /**
+     * 抵扣多少积分
+     */
+    private Integer gainIntegral;
 
     public static final String ID = "id";
-
-    public static final String SHOP_ID = "shop_id";
-
-    public static final String GOODS_SIZE_ID = "goods_size_id";
 
     public static final String INTEGRAL = "integral";
 
     public static final String DEDUCTION = "deduction";
+
+    public static final String CONSUMPTION = "consumption";
+
+    public static final String GAIN_INTEGRAL = "gain_integral";
 
     @Override
     protected Serializable pkVal() {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "IntegralRule{" +
-        "id=" + id +
-        ", shopId=" + shopId +
-        ", goodsSizeId=" + goodsSizeId +
-        ", integral=" + integral +
-        ", deduction=" + deduction +
-        "}";
-    }
+
 }

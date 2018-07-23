@@ -21,6 +21,10 @@ public class R extends Result {
         return r;
     }
 
+    public static R err(String msg) {
+        return R.err(-11,msg);
+    }
+
     public static R notFound(){
         R r = new R();
         r.nofound();
