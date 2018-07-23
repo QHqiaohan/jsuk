@@ -23,7 +23,7 @@ public class IntegralRuleServiceImpl extends ServiceImpl<IntegralRuleDao, Integr
         if (shopId == null)
             return false;
         EntityWrapper<IntegralRule> wrapper = new EntityWrapper<>();
-        wrapper.eq(IntegralRule.SHOP_ID, shopId);
+//        wrapper.eq(IntegralRule.SHOP_ID, shopId);
         return selectCount(wrapper) > 0;
     }
 }
