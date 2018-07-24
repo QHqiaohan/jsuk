@@ -28,7 +28,9 @@ import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.EnumUitl;
+import com.jh.jsuk.utils.PingPPUtil;
 import com.jh.jsuk.utils.ShopJPushUtils;
+import com.pingplusplus.model.Charge;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,7 +63,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     private UserRemainderService userRemainderService;
     @Autowired
     private ShopGoodsSizeService shopGoodsSizeService;
-
+    @Autowired
+    private UserOrderGoodsService userOrderGoodsService;
     @Autowired
     private ShopUserService shopUserService;
 
@@ -508,6 +511,15 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         userOrder.setPayType(PayType.BALANCE_PAY.getKey());
         userOrder.setPayTime(new Date());
         userOrder.updateById();
+    }
+
+    @Override
+    public String thirdPay(UserOrder userOrder) {
+        User user = userService.selectById(userOrder.getUserId());
+        UserOrderGoods userOrderGoods = userOrderGoodsService.selectList(new EntityWrapper<UserOrderGoods>().eq(UserOrderGoods.ORDER_ID, userOrder.getId())).get(0);
+        ShopGoods shopGoods = shopGoodsService.selectById(userOrderGoods.getGoodsId());
+        Charge charge = PingPPUtil.createCharge(userOrder, user, shopGoods);
+        return charge.toString();
     }
 
 }
