@@ -12,6 +12,7 @@ import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
+import com.jh.jsuk.exception.MessageException;
 
 import java.util.List;
 
@@ -81,4 +82,9 @@ public interface UserOrderService extends IService<UserOrder> {
      * @throws Exception
      */
     OrderPrice orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId) throws Exception;
+
+    /**
+     * 订单余额支付
+     */
+    void balancePay(UserOrder userOrder) throws MessageException;
 }

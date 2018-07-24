@@ -19,16 +19,14 @@ import com.google.common.collect.Maps;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.GoodsVo;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
+import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import com.jh.jsuk.utils.ServerResponse;
 import com.jh.jsuk.utils.UuidUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +34,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -75,6 +74,8 @@ public class PayController {
     ShopGoodsService shopGoodsService;
     @Autowired
     UserOrderGoodsService userOrderGoodsService;
+    @Autowired
+    ShopMoneyService shopMoneyService;
     //支付宝服务
     private PayService aliservice = null;
     //微信服务
@@ -189,7 +190,7 @@ public class PayController {
         } else if (StrUtil.equals(orderType, "0") || StrUtil.equals(orderType, "1")) {
             //购物车订单
             if (StrUtil.isNotBlank(carId)) {
-                List<ShoppingCartVo> shoppingCartVos = shoppingCartService.selectVoList(String.valueOf(userId),"");
+                List<ShoppingCartVo> shoppingCartVos = shoppingCartService.selectVoList(String.valueOf(userId), "");
                 logger.info("购物车商品数量:{}", shoppingCartVos.size());
                 Map<String, GoodsVo> goodMaps = Maps.newHashMap();
                 for (ShoppingCartVo shoppingCartVo : shoppingCartVos) {
@@ -230,7 +231,7 @@ public class PayController {
                     userOrderGoods.setNum(v.getNum());
                     list.add(userOrderGoods);
                 });
-                logger.error("订单商品信息数量:{}",list.size());
+                logger.error("订单商品信息数量:{}", list.size());
                 boolean batch = userOrderGoodsService.insertBatch(list);
                 logger.error("批量添加商品订单信息: {}", batch ? "成功" : "失败");
                 resultMap.put("orderType", orderType);
@@ -550,27 +551,34 @@ public class PayController {
     /**
      * 乡村旅游定金支付
      */
-   // @RequestMapping(value="/payDingJin",method=RequestMethod.POST)
-    public Result payDingJin(String totalAmount,String userId,Integer activity_id){
-        if(Double.parseDouble(totalAmount)<=0){
+    // @RequestMapping(value="/payDingJin",method=RequestMethod.POST)
+    public Result payDingJin(String totalAmount, String userId, Integer activity_id) {
+        if (Double.parseDouble(totalAmount) <= 0) {
             return new Result().erro("支付金额错误");
         }
         /*
         封装参数,创建微信交易对象
          */
-        Map<String,Object> paramMap=new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>();
 
-        paramMap.put("appid",env.getProperty("APP_ID"));       //公众号id
-        paramMap.put("mch_id",env.getProperty("MCH_ID"));     // 商户号
-        paramMap.put("nonce_str",WXPayUtil.generateNonceStr());    //生成随机字符串
-        paramMap.put("total_fee","1");        //测试金额，单位为分,非测试为totalAmount*100
-        paramMap.put("trade_type","APP");    //支付类型
-        paramMap.put("notify_url",env.getProperty("NOTIFYURL"));  //通知地址
+        paramMap.put("appid", env.getProperty("APP_ID"));       //公众号id
+        paramMap.put("mch_id", env.getProperty("MCH_ID"));     // 商户号
+        paramMap.put("nonce_str", WXPayUtil.generateNonceStr());    //生成随机字符串
+        paramMap.put("total_fee", "1");        //测试金额，单位为分,非测试为totalAmount*100
+        paramMap.put("trade_type", "APP");    //支付类型
+        paramMap.put("notify_url", env.getProperty("NOTIFYURL"));  //通知地址
         paramMap.put("out_trade_no", UuidUtil.getUUID());       //商户订单号
-        paramMap.put("body","乡村旅游定金支付");
+        paramMap.put("body", "乡村旅游定金支付");
         paramMap.put("spbill_create_ip", "127.0.0.1");
 
         return null;
     }
 
+    @ApiOperation(value = "用户端-余额支付")
+    @RequestMapping(value = "/balancePay", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result balancePay(@ApiParam(name ="orderId",value = "订单Id") Integer orderId) throws MessageException {
+        UserOrder userOrder = userOrderService.selectById(orderId);
+        userOrderService.balancePay(userOrder);
+        return new Result().success("支付成功");
+    }
 }
