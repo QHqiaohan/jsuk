@@ -7,6 +7,7 @@ import com.jh.jsuk.entity.vo.CoupQueryParam;
 import com.jh.jsuk.entity.vo.CouponVo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,4 +28,5 @@ public interface CouponDao extends BaseMapper<Coupon> {
 
     List<Coupon> selectCouponList(@Param("goodsId") Integer goodsId,@Param("shopId") Integer shopId);
 
+    List<Coupon> listUser(@Param("shopId") Integer shopId, @Param("userId") Integer userId,@Param("date") Date date);
 }
