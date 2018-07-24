@@ -26,7 +26,7 @@
         id, user_id, sender_address, get_address, goods_type, weight, real_weight, is_del, status, type, price, notes, requirement_time, publish_time, end_time
     </sql>
 
-    <resultMap id="ExpressVo" type="com.jh.jsuk.entity.vo.ExpressVo" extends="BaseResultMap">
+  <resultMap id="ExpressVo" type="com.jh.jsuk.entity.vo.ExpressVo" extends="BaseResultMap">
         <association property="senderAddressInfo" column="sender_address" select="com.jh.jsuk.dao.UserAddressDao.getUserAddressbyId"></association>
         <association property="getAddressInfo" column="get_address" select="com.jh.jsuk.dao.UserAddressDao.getUserAddressbyId"></association>
     </resultMap>
@@ -92,5 +92,10 @@
             ${ew.sqlSegment}
         </where>
     </select>
+
+  <update id="deliverRobbingOrder">
+    update js_express set distribution_user_id = #{userId},`status`= #{waitDeliver}
+    where not is_del and `status` = #{payed}
+  </update>
 
 </mapper>

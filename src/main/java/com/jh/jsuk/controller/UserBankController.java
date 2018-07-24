@@ -4,6 +4,7 @@ package com.jh.jsuk.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.UserBank;
+import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.service.UserBankService;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
@@ -46,6 +47,7 @@ public class UserBankController {
     @PostMapping("/add")
     public Result add(UserBank bank) {
         bank.setCreateTime(new Date());
+        bank.setUserType(UserType.USER.getKey());
         bank.insert();
         return new Result().success();
     }
@@ -85,7 +87,7 @@ public class UserBankController {
                     required = false, paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "size", value = "每页条数",
                     required = false, paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "type", value = "0商家端  1骑手端 2用户端",
+            @ApiImplicitParam(name = "type", value = "用户类型",
                     required = false, paramType = "query", dataType = "integer")
     })
     @PostMapping("/list")

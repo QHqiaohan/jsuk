@@ -78,7 +78,7 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
         if (status != null) {
             wrapper.eq(UserOrder.STATUS, status.getKey());
         }
-        wrapper.ne(Express.IS_DEL,1);
+        wrapper.ne(Express.IS_DEL, 1);
         List<ExpressVo2> list = baseMapper.listPage(page, wrapper);
         return page.setRecords(list);
     }
@@ -86,16 +86,21 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
     @Override
     public int statusCount(ExpressStatus status, Integer shopId, UserType userType, Integer userId) {
         Wrapper<Express> wrapper = new EntityWrapper<>();
-        wrapper.eq(Express.STATUS,status.getKey())
-                .ne(Express.IS_DEL,1);
+        wrapper.eq(Express.STATUS, status.getKey())
+                .ne(Express.IS_DEL, 1);
         return selectCount(wrapper);
     }
 
     @Override
     public ExpressVo2 detail(Integer expressId) {
         EntityWrapper wrapper = new EntityWrapper();
-        wrapper.eq(Express.ID,expressId);
+        wrapper.eq(Express.ID, expressId);
         wrapper.last("limit 1");
         return baseMapper.detail(wrapper);
+    }
+
+    @Override
+    public boolean deliverRobbingOrder(Integer userId, Integer expressId) {
+        return baseMapper.deliverRobbingOrder(userId, expressId, ExpressStatus.PAYED.getKey(), ExpressStatus.WAIT_DELIVER.getKey()) > 0;
     }
 }

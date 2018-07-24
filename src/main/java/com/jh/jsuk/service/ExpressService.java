@@ -30,4 +30,11 @@ public interface ExpressService extends IService<Express> {
 
     ExpressVo2 detail(Integer expressId);
 
+    /**
+     * 骑手抢单
+     * @param userId
+     * @param expressId
+     * @return
+     */
+    boolean deliverRobbingOrder(Integer userId, Integer expressId);
 }
