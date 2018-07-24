@@ -1,7 +1,5 @@
 package com.jh.jsuk.entity.vo;
 
-import com.jh.jsuk.entity.ShopGoodsSize;
-
 import java.io.Serializable;
 
 /**
@@ -16,6 +14,75 @@ public class GoodsVo implements Serializable {
     private Integer num;
     private String createTime;
     private String mainImage;
+
+    private String goodsSizeId;     //规格id
+    private Integer stock;       //  sku库存
+    private String goodsSizeName;    //规格名称
+    private Integer killStock;     //秒杀库存
+
+    public String getSendJf() {
+        return sendJf;
+    }
+
+    public void setSendJf(String sendJf) {
+        this.sendJf = sendJf;
+    }
+
+    public String getDeductibleJf() {
+        return deductibleJf;
+    }
+
+    public void setDeductibleJf(String deductibleJf) {
+        this.deductibleJf = deductibleJf;
+    }
+
+    private String sendJf;      //赠送积分
+    private String deductibleJf;//抵扣积分
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    private String brand;    //品牌
+
+    public Integer getKillStock() {
+        return killStock;
+    }
+
+    public void setKillStock(Integer killStock) {
+        this.killStock = killStock;
+    }
+
+
+
+    public String getGoodsSizeName() {
+        return goodsSizeName;
+    }
+
+    public void setGoodsSizeName(String goodsSizeName) {
+        this.goodsSizeName = goodsSizeName;
+    }
+
+    public String getGoodsSizeId() {
+        return goodsSizeId;
+    }
+
+    public void setGoodsSizeId(String goodsSizeId) {
+        this.goodsSizeId = goodsSizeId;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
+
 
 
     public String getMainImage() {

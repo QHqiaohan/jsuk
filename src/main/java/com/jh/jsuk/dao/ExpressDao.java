@@ -31,4 +31,6 @@ public interface ExpressDao extends BaseMapper<Express> {
 
     ExpressVo2 detail(@Param("ew") EntityWrapper wrapper);
 
+    int deliverRobbingOrder(@Param("userId") Integer userId,@Param("expressId") Integer expressId,@Param("payed") Integer payed
+            ,@Param("waitDeliver") Integer waitDeliver);
 }

@@ -6,34 +6,22 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Session;
-import com.jh.jsuk.entity.Banner;
-import com.jh.jsuk.envm.ExpressStatus;
-import com.jh.jsuk.service.ExpressService;
-import com.jh.jsuk.utils.EnumUitl;
-import com.jh.jsuk.utils.R;
 import com.jh.jsuk.entity.*;
-import com.jh.jsuk.entity.dto.RobbingExpressDTO;
 import com.jh.jsuk.envm.DistributionExpressStatus;
+import com.jh.jsuk.envm.ExpressStatus;
 import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
+import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.MyEntityWrapper;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -258,8 +246,7 @@ public class ExpressController {
                     paramType = "query", dataType = "integer")
     })
     public Result deliverRobbingOrder(Integer userId, Integer expressId) {
-        producer.send(new RobbingExpressDTO(userId, expressId));
-        return new Result().success();
+        return new Result().success(expressService.deliverRobbingOrder(userId,expressId));
     }
 
     @ApiOperation("骑手端-取货")
