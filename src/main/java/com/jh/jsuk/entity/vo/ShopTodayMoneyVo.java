@@ -1,20 +1,11 @@
 package com.jh.jsuk.entity.vo;
 
-
 import com.jh.jsuk.entity.ShopTodayMoney;
-import com.jh.jsuk.entity.ShopVisit;
 import com.jh.jsuk.entity.User;
 
-/**
- * Created with IntelliJ IDEA.
- *
- * @author: XuChuRuo
- * @date: 2018/6/19 13:28
- */
-public class ShopVisitorVo extends ShopVisit {
+public class ShopTodayMoneyVo extends ShopTodayMoney {
 
     private User user;
-
 
     public User getUser() {
         return user;
@@ -23,4 +14,5 @@ public class ShopVisitorVo extends ShopVisit {
     public void setUser(User user) {
         this.user = user;
     }
+
 }

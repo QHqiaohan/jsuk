@@ -2,7 +2,6 @@ package com.jh.jsuk.controller;
 
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.Coupon;
 import com.jh.jsuk.entity.UserCoupon;
@@ -50,6 +49,14 @@ public class CouponController {
     public Result listByUserId(Integer userId) {
         // 用户优惠券信息
         List<UserCouponVo> couponList = userCouponService.findByUserId(userId);
+        return new Result().success(couponList);
+    }
+
+    @ApiOperation("用户-查询用户店铺优惠卷列表")
+    @PostMapping("/listByShopUserId")
+    public Result listByUserShopId(@RequestParam Integer shopId,Integer userId) {
+        // 用户优惠券信息
+        List<UserCouponVo> couponList = userCouponService.listByUserShopId(shopId,userId);
         return new Result().success(couponList);
     }
 
@@ -110,16 +117,8 @@ public class CouponController {
 
     @ApiOperation("用户-显示店铺可用优惠券列表")
     @PostMapping("/listByShopId")
-    public R listByShop(@RequestParam Integer shopId) {
-        Date date = new Date();
-        Wrapper<Coupon> wrapper = new EntityWrapper<>();
-        wrapper.ne(Coupon.IS_DEL,1)
-//                .lt(Coupon.START_TIME,date)
-                .gt(Coupon.END_TIME,date)
-                .gt(Coupon.NUM,0)
-                .eq(Coupon.SHOP_ID,shopId)
-                .orderBy(Coupon.PUBLISH_TIME,false);
-        return R.succ(couponService.selectList(wrapper));
+    public R listByShop(@RequestParam Integer shopId,Integer userId) {
+        return R.succ(couponService.listUser(shopId,userId));
     }
 
 

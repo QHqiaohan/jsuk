@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -117,7 +118,6 @@ public class ShopGoods extends Model<ShopGoods> {
      */
     @ApiModelProperty(value = "地址", name = "address")
     private String address;
-
 
     public Integer getId() {
         return id;

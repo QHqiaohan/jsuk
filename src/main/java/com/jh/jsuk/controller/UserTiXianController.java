@@ -48,6 +48,9 @@ public class UserTiXianController {
                             Integer userId) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
+        if(managerUser==null){
+            return new Result().erro("该商家不存在");
+        }
         Integer shopId = managerUser.getShopId();
         if (type == 2) {
             return new Result().success();

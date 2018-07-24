@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,8 @@ public class ShopGoodsController {
     private ManagerUserService managerUserService;
     @Autowired
     private CouponService couponService;
+    @Autowired
+    private ShopGoodsSizeService shopGoodsSizeService;
 
 //    @Autowired
 //    ShopRushBuySizeService shopRushBuySizeService;
@@ -382,35 +385,51 @@ public class ShopGoodsController {
     public Result addShopGoodsList(Integer userId, Integer current,Integer size) {
         current=current==null?1:current;
         size=size==null?10:size;
-
+        Page page=new Page(current,size);
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
         Integer shopId = managerUser.getShopId();
+
         MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
-        Page page=new Page(current,size);
+        ew.eq(ShopGoodsSize.IS_DEL,0);
         Page shopGoods = shopGoodsService.findShopGoodsAndGoodsSizeByShopId(page, ew, shopId);
+
         return new Result().success(shopGoods);
     }
 
     @ApiOperation("商家端-删除自己店铺的商品")
     @RequestMapping(value = "/delGoodsByShopId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result delGoodsByShopId(@ApiParam(value = "商家id") Integer userId,
-                                   @ApiParam(value = "商品id") Integer goodsId) {
+                                   @ApiParam(value = "商品规格id") Integer goodsSizeId) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
         Integer shopId = managerUser.getShopId();
 
-        ShopGoods goods = shopGoodsService.selectOne(new EntityWrapper<ShopGoods>()
-                .eq(ShopGoods.ID, goodsId)
+        //查询该店铺的所有商品
+        List<ShopGoods> goodsList = shopGoodsService.selectList(new EntityWrapper<ShopGoods>()
                 .eq(ShopGoods.SHOP_ID, shopId)
         );
-        if(goods==null){
+        if(goodsList==null || goodsList.size()==0){
             return new Result().erro("商品不存在");
         }
 
-        goods.setIsDel(1);
-        goods.updateById();
-        return new Result().success();
+        try {
+            for (ShopGoods shopGoods : goodsList) {
+                ShopGoodsSize shopGoodsSize = shopGoodsSizeService.selectOne(new EntityWrapper<ShopGoodsSize>()
+                        .eq(ShopGoodsSize.ID, goodsSizeId)
+                        .eq(ShopGoodsSize.SHOP_GOODS_ID, shopGoods.getId())
+                        .eq(ShopGoodsSize.IS_DEL, 0)
+                );
+                if (shopGoodsSize != null) {
+                    shopGoodsSize.setIsDel(1);
+                    shopGoodsSize.updateById();
+                }
+            }
+            return new Result().success("删除成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Result().erro("删除失败");
+        }
     }
 
     @ApiOperation("商家端-添加商品")

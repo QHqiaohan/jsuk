@@ -7,6 +7,7 @@ import com.jh.jsuk.entity.vo.ShoppingCartVo;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.MyEntityWrapper;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,14 +113,14 @@ public class ShoppingCartController {
         return new Result().success("获取购物车数量成功", count);
     }
 
-    @ApiOperation("根据购shopId goodsId userId删除")
+    @ApiOperation("根据购 goodsSizeIds[] userId删除")
     @PostMapping("/del2")
-    public Result del2(@ApiParam(value = "店铺id", required = true) @RequestParam Integer shopId,
-                       @ApiParam(value = "商品id", required = true) @RequestParam Integer goodsId,
+    public Result del2(@ApiParam(value = "商品id", required = true) @RequestParam("goodsSizeIds[]") Integer[] goodsSizeIds,
                        Integer userId) {
+        if(userId == null || goodsSizeIds == null || goodsSizeIds.length == 0)
+            return R.err("参数错误");
         shoppingCartService.delete(new EntityWrapper<ShoppingCart>()
-                .eq(ShoppingCart.SHOP_ID, shopId)
-                .eq(ShoppingCart.GOODS_ID, goodsId)
+                .in(ShoppingCart.SIZE_ID, goodsSizeIds)
                 .eq(ShoppingCart.USER_ID, userId));
         return new Result().success();
     }

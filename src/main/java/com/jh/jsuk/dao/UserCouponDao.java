@@ -28,4 +28,6 @@ public interface UserCouponDao extends BaseMapper<UserCoupon> {
 
 
     List<UserCouponVo> findByUserId(@Param("userId") Integer userId,@Param("date") Date date);
+
+    List<UserCouponVo> listByUserShopId(@Param("shopId") Integer shopId,@Param("shopId") Integer userId,@Param("date") Date date);
 }
