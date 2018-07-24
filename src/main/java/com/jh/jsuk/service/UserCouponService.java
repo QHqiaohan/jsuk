@@ -17,4 +17,6 @@ import java.util.List;
 public interface UserCouponService extends IService<UserCoupon> {
 
     List<UserCouponVo> findByUserId(Integer userId);
+
+    List<UserCouponVo> listByUserShopId(Integer shopId, Integer userId);
 }

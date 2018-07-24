@@ -28,4 +28,11 @@
       and c.end_time > #{date}
   </select>
 
+  <select id="listByUserShopId" resultMap="userCouponVo">
+      select uc.id, uc.user_id, uc.coupon_id, uc.is_used, uc.publish_time from js_user_coupon uc
+      left join js_coupon c on c.id = uc.coupon_id  where user_id = #{userId} and c.shop_id = #{shopId}
+      and not is_used
+      and c.end_time > #{date}
+  </select>
+
 </mapper>

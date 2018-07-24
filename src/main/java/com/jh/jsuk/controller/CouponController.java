@@ -52,6 +52,14 @@ public class CouponController {
         return new Result().success(couponList);
     }
 
+    @ApiOperation("用户-查询用户店铺优惠卷列表")
+    @PostMapping("/listByShopUserId")
+    public Result listByUserShopId(@RequestParam Integer shopId,Integer userId) {
+        // 用户优惠券信息
+        List<UserCouponVo> couponList = userCouponService.listByUserShopId(shopId,userId);
+        return new Result().success(couponList);
+    }
+
     //用户-我的-优惠券-获取优惠券数量
     @ApiOperation("用户-我的-优惠券-获取优惠券数量")
     @RequestMapping("/getCouponNum")
