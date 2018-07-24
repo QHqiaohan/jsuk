@@ -393,10 +393,14 @@ public class ShopGoodsController {
 
     @ApiOperation("商家端-删除自己店铺的商品")
     @RequestMapping(value = "/delGoodsByShopId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result delGoodsByShopId(@ApiParam(value = "商家id") Integer userId) {
+    public Result delGoodsByShopId(@ApiParam(value = "商家id") Integer userId,
+                                   @ApiParam(value = "商品id") Integer goodsId) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
         Integer shopId = managerUser.getShopId();
+
+        shopGoodsService.selectOne(new EntityWrapper<ShopGoods>());
+
         ShopGoods shopGoods = new ShopGoods();
         shopGoods.setId(shopId);
         shopGoods.setIsDel(1);
