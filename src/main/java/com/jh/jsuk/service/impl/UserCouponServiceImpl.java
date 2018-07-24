@@ -39,4 +39,22 @@ public class UserCouponServiceImpl extends ServiceImpl<UserCouponDao, UserCoupon
         }
         return list;
     }
+
+    @Override
+    public List<UserCouponVo> listByUserShopId(Integer shopId, Integer userId) {
+        Date date = new Date();
+        List<UserCouponVo> list = baseMapper.listByUserShopId(shopId,userId, date);
+        for (UserCouponVo vo : list) {
+            vo.setIsTimeOut(false);
+            Coupon info = vo.getCouponInfo();
+            if (info != null) {
+                Date endTime = info.getEndTime();
+                if (endTime != null)
+                    if (date.getTime() > endTime.getTime()) {
+                        vo.setIsTimeOut(true);
+                    }
+            }
+        }
+        return list;
+    }
 }

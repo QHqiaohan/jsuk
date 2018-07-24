@@ -27,4 +27,6 @@ public interface CouponService extends IService<Coupon> {
     List<Coupon> selectCouponList(Integer goodsId, Integer shopId);
 
     List<Coupon> listUser(Integer shopId, Integer userId);
+
+    boolean canGetCoupon(String shopId);
 }
