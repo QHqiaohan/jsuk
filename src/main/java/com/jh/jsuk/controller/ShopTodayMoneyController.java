@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * <p>
  * 商家端-今日交易额明细 前端控制器
@@ -44,7 +48,11 @@ public class ShopTodayMoneyController {
             @ApiImplicitParam(name = "today", value = "年月日", required = true, paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "/getTodayMoney", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getTodayMoney(Page page, Integer userId, String today) {
+    public Result getTodayMoney(Integer current,Integer size , Integer userId, String today) {
+        Page page=new Page(current,size);
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        today=sdf.format(new Date());
+
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
         Integer shopId = managerUser.getShopId();
