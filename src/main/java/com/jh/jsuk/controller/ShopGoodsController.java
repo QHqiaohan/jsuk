@@ -411,7 +411,6 @@ public class ShopGoodsController {
         if(goods==null){
             return new Result().erro("商品不存在");
         }
-
         goods.setIsDel(1);
         goods.updateById();
         return new Result().success("删除成功");
