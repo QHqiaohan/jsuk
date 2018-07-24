@@ -9,6 +9,7 @@ import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -393,14 +394,22 @@ public class ShopGoodsController {
 
     @ApiOperation("商家端-删除自己店铺的商品")
     @RequestMapping(value = "/delGoodsByShopId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result delGoodsByShopId(@ApiParam(value = "商家id") Integer userId) {
+    public Result delGoodsByShopId(@ApiParam(value = "商家id") Integer userId,
+                                   @ApiParam(value = "商品id") Integer goodsId) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
         Integer shopId = managerUser.getShopId();
-        ShopGoods shopGoods = new ShopGoods();
-        shopGoods.setId(shopId);
-        shopGoods.setIsDel(1);
-        shopGoods.updateById();
+
+        ShopGoods goods = shopGoodsService.selectOne(new EntityWrapper<ShopGoods>()
+                .eq(ShopGoods.ID, goodsId)
+                .eq(ShopGoods.SHOP_ID, shopId)
+        );
+        if(goods==null){
+            return new Result().erro("商品不存在");
+        }
+
+        goods.setIsDel(1);
+        goods.updateById();
         return new Result().success();
     }
 
