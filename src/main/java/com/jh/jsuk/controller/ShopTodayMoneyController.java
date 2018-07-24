@@ -55,6 +55,10 @@ public class ShopTodayMoneyController {
 
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
+        if(managerUser==null){
+            return new Result().erro("该商家不存在");
+        }
+
         Integer shopId = managerUser.getShopId();
         MyEntityWrapper<ShopVisitorVo> ew = new MyEntityWrapper<>();
         Page moneyList = shopTodayMoneyService.getTodayMoneyList(page, ew, shopId, today);
