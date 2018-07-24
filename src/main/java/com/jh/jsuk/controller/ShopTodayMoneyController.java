@@ -49,16 +49,19 @@ public class ShopTodayMoneyController {
     })
     @RequestMapping(value = "/getTodayMoney", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getTodayMoney(Integer current,Integer size , Integer userId, String today) {
+        current=current==null?1:current;
+        size=size==null?10:size;
         Page page=new Page(current,size);
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-        today=sdf.format(new Date());
+        if(today==null || today.equals("") || !today.contains("-")){
+            today=sdf.format(new Date());
+        }
 
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
         if(managerUser==null){
             return new Result().erro("该商家不存在");
         }
-
         Integer shopId = managerUser.getShopId();
         MyEntityWrapper<ShopVisitorVo> ew = new MyEntityWrapper<>();
         Page moneyList = shopTodayMoneyService.getTodayMoneyList(page, ew, shopId, today);

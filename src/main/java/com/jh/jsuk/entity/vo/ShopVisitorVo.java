@@ -1,6 +1,7 @@
 package com.jh.jsuk.entity.vo;
 
 
+import com.jh.jsuk.entity.ShopTodayMoney;
 import com.jh.jsuk.entity.ShopVisit;
 import com.jh.jsuk.entity.User;
 
@@ -13,6 +14,7 @@ import com.jh.jsuk.entity.User;
 public class ShopVisitorVo extends ShopVisit {
 
     private User user;
+
 
     public User getUser() {
         return user;

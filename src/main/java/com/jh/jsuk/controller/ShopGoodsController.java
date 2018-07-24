@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,8 @@ public class ShopGoodsController {
     private ManagerUserService managerUserService;
     @Autowired
     private CouponService couponService;
+    @Autowired
+    private ShopGoodsSizeService ShopGoodsSizeService;
 
 //    @Autowired
 //    ShopRushBuySizeService shopRushBuySizeService;
@@ -382,13 +385,14 @@ public class ShopGoodsController {
     public Result addShopGoodsList(Integer userId, Integer current,Integer size) {
         current=current==null?1:current;
         size=size==null?10:size;
-
+        Page page=new Page(current,size);
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
         Integer shopId = managerUser.getShopId();
+
         MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
-        Page page=new Page(current,size);
         Page shopGoods = shopGoodsService.findShopGoodsAndGoodsSizeByShopId(page, ew, shopId);
+
         return new Result().success(shopGoods);
     }
 
@@ -407,10 +411,9 @@ public class ShopGoodsController {
         if(goods==null){
             return new Result().erro("商品不存在");
         }
-
         goods.setIsDel(1);
         goods.updateById();
-        return new Result().success();
+        return new Result().success("删除成功");
     }
 
     @ApiOperation("商家端-添加商品")
