@@ -2,18 +2,14 @@ package com.jh.jsuk.controller;
 
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.CollectGoods;
 import com.jh.jsuk.service.CollectGoodsService;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -66,6 +62,19 @@ public class CollectGoodsController {
             goods.insert();
             return new Result().success("收藏成功", 1);
         }
+    }
+
+
+    @ApiOperation(value = "用户-用户商品收藏列表", notes = "展示收藏商品列表，进入页面提取20个数据，下拉加载更多，每次加载20个")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(name = "current", value = "当前页码",
+                    required = true, paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "size", value = "每页条数",
+                    required = true, paramType = "query", dataType = "integer"),
+    })
+    @PostMapping("/getList")
+    public R getList(@RequestParam @ApiParam(hidden = true) Integer userId, Page page) {
+        return R.succ(collectGoodsService.selectCollectList(userId, page));
     }
 
 

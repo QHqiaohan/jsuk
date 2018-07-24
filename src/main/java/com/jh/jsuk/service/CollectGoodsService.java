@@ -1,5 +1,6 @@
 package com.jh.jsuk.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.CollectGoods;
 
@@ -12,5 +13,7 @@ import com.jh.jsuk.entity.CollectGoods;
  * @since 2018-06-25
  */
 public interface CollectGoodsService extends IService<CollectGoods> {
+
+    Page selectCollectList(Integer userId,Page page);
 
 }

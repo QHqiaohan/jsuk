@@ -30,5 +30,8 @@ public class OrderPrice {
      * 积分优惠了多少
      */
     private BigDecimal integralReduce;
-
+    /**
+     * 运费
+     */
+    private BigDecimal freight;
 }
