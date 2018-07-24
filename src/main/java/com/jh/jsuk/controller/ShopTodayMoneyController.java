@@ -45,7 +45,7 @@ public class ShopTodayMoneyController {
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "userId", value = "商家id", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "today", value = "年月日", required = true, paramType = "query", dataType = "string")
+            @ApiImplicitParam(name = "today", value = "年-月-日(格式:2018-07-24)", required = true, paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "/getTodayMoney", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getTodayMoney(Integer current,Integer size , Integer userId, String today) {
