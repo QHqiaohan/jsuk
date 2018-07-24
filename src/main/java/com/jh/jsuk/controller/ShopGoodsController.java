@@ -9,6 +9,7 @@ import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -399,12 +400,16 @@ public class ShopGoodsController {
                 .eq(ManagerUser.ID, userId));
         Integer shopId = managerUser.getShopId();
 
-        shopGoodsService.selectOne(new EntityWrapper<ShopGoods>());
+        ShopGoods goods = shopGoodsService.selectOne(new EntityWrapper<ShopGoods>()
+                .eq(ShopGoods.ID, goodsId)
+                .eq(ShopGoods.SHOP_ID, shopId)
+        );
+        if(goods==null){
+            return new Result().erro("商品不存在");
+        }
 
-        ShopGoods shopGoods = new ShopGoods();
-        shopGoods.setId(shopId);
-        shopGoods.setIsDel(1);
-        shopGoods.updateById();
+        goods.setIsDel(1);
+        goods.updateById();
         return new Result().success();
     }
 
