@@ -23,6 +23,7 @@ import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.OrderResponseStatus;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
+import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.EnumUitl;
@@ -55,9 +56,10 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     private UserService userService;
     @Autowired
     private ShopGoodsService shopGoodsService;
-
     @Autowired
-    ShopGoodsSizeService shopGoodsSizeService;
+    private UserRemainderService userRemainderService;
+    @Autowired
+    private ShopGoodsSizeService shopGoodsSizeService;
 
     @Autowired
     private ShopUserService shopUserService;
@@ -476,6 +478,33 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
         orderPrice.setOrderRealPrice(totalPriceWithOutDiscount.setScale(2));//订单实际价格
         return orderPrice;
+    }
+
+    @Override
+    public void balancePay(UserOrder userOrder) throws MessageException {
+        //用户余额不足
+        if (userRemainderService.getRemainder(userOrder.getUserId()).compareTo(userOrder.getOrderRealPrice()) < 0) {
+            throw new MessageException("余额不足");
+        }
+        UserRemainder userRemainder = new UserRemainder();
+        userRemainder.setCreateTime(new Date());
+        userRemainder.setRemainder(userOrder.getOrderRealPrice());
+        userRemainder.setType(-1);
+        userRemainder.setUserId(userOrder.getUserId());
+        userRemainder.setOrderNum(userOrder.getOrderNum());
+        userRemainder.setIsOk(2);
+        userRemainder.setPlatformNumber(userOrder.getPlatformNumber());
+        userRemainder.insert();
+        //商家余额
+        ShopMoney shopMoney = new ShopMoney();
+        shopMoney.setMoney(userOrder.getOrderRealPrice().toString());
+        shopMoney.setPublishTime(new Date());
+        shopMoney.setType(1);
+        shopMoney.setShopId(userOrder.getShopId());
+        shopMoney.insert();
+        //修改订单状态
+        userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
+        userOrder.updateById();
     }
 
 }
