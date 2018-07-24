@@ -24,6 +24,10 @@
         <result column="goods_type" property="goodsType"/>
         <result column="category_id" property="categoryId"/>
         <result column="address" property="address"/>
+
+        <collection property="shopGoodsSizeList" column="id" javaType="com.jh.jsuk.entity.ShopGoodsSize"
+                    select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeListByGoodsId">
+        </collection>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -263,8 +267,7 @@
     </select>
 
     <resultMap id="GoodsSizeVo" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
-        <association property="shopGoodsSize" column="id"
-                     select="com.jh.jsuk.dao.ShopGoodsSizeDao.getGoodsSizeByGoodsId"></association>
+        <association property="shopGoodsSize" column="id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.getGoodsSizeByGoodsId"></association>
     </resultMap>
 
 
@@ -322,10 +325,11 @@
     </select>
 
     <resultMap id="ShopGoodsVoT" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
-        <association property="shopGoodsSize" column="id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></association>
+       <association property="shopGoodsSize" column="id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></association>
     </resultMap>
 
-    <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="ShopGoodsVoT">
+    <!--修改-->
+    <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM js_shop_goods

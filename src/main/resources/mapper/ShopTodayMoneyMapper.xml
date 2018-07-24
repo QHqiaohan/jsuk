@@ -20,7 +20,12 @@
         <association property="user" column="user_id" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"></association>
     </resultMap>
 
-    <select id="getTodayMoneyList" resultMap="ShopVisitorVo">
+
+    <resultMap id="ShopTodayMoneyVo" type="com.jh.jsuk.entity.vo.ShopTodayMoneyVo" extends="BaseResultMap">
+        <association property="user" column="user_id" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"></association>
+    </resultMap>
+
+    <select id="getTodayMoneyList" resultMap="ShopTodayMoneyVo">
         SELECT
         <include refid="Base_Column_List"/>
         FROM js_shop_today_money
