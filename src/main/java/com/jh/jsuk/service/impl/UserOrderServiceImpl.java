@@ -23,6 +23,7 @@ import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.OrderResponseStatus;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
+import com.jh.jsuk.envm.PayType;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
@@ -502,8 +503,10 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         shopMoney.setType(1);
         shopMoney.setShopId(userOrder.getShopId());
         shopMoney.insert();
-        //修改订单状态
+        //修改订单信息
         userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
+        userOrder.setPayType(PayType.BALANCE_PAY.getKey());
+        userOrder.setPayTime(new Date());
         userOrder.updateById();
     }
 

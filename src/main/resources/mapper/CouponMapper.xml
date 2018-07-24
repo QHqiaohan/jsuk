@@ -93,4 +93,15 @@
 
     </select>
 
+  <select id="listUser" resultType="com.jh.jsuk.entity.Coupon">
+    select c.* from (
+      select <include refid="Base_Column_List"/> from js_coupon c
+      where c.shop_id = #{shopId} and not is_del
+      and end_time > #{date} and num > 0
+    ) c left join (
+      select DISTINCT coupon_id ,user_id from js_user_coupon where user_id = #{userId}
+    ) uc on c.id = uc.coupon_id
+    where uc.user_id is null
+  </select>
+
 </mapper>

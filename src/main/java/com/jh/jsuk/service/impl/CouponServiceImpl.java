@@ -9,6 +9,7 @@ import com.jh.jsuk.entity.vo.CouponVo;
 import com.jh.jsuk.service.CouponService;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,6 +48,11 @@ public class CouponServiceImpl extends ServiceImpl<CouponDao, Coupon> implements
     @Override
     public List<Coupon> selectCouponList(Integer goodsId, Integer shopId) {
         return baseMapper.selectCouponList(goodsId,shopId);
+    }
+
+    @Override
+    public List<Coupon> listUser(Integer shopId, Integer userId) {
+        return baseMapper.listUser(shopId,userId,new Date());
     }
 
 }
