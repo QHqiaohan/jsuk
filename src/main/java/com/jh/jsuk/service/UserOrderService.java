@@ -73,7 +73,7 @@ public interface UserOrderService extends IService<UserOrder> {
      * @return 订单id
      * @throws Exception
      */
-    List<OrderResponse> submit(SubmitOrderDto orderDto, Integer userId,Integer isUseIntegral) throws Exception;
+    List<OrderResponse> submit(SubmitOrderDto orderDto, Integer userId) throws Exception;
 
     /**
      * 计算订单价格

@@ -33,6 +33,10 @@ public class SubmitOrderDto implements Serializable {
     @NotNull
     private Integer distributionType;
 
+    @ApiModelProperty(value = "是否使用积分 0不使用 1使用", name = "isUseIntegral", required = true)
+    @NotNull
+    private Integer isUseIntegral;
+
     @ApiModelProperty(value = "配送时间", name = "distributionTime")
     private Date distributionTime;
 

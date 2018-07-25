@@ -266,7 +266,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public OrderResponse createOrder(SubmitOrderDto orderDto, ShopSubmitOrderDto orderGoods,
-                                     OrderType orderType, Integer userId,Integer isUseIntegral) throws Exception {
+                                     OrderType orderType, Integer userId) throws Exception {
         boolean isTimeOut = false;
         OrderResponse response = new OrderResponse();
         response.setStatus(OrderResponseStatus.PARTLY_SUCCESS);
@@ -321,7 +321,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setOrderType(orderDto.getOrderType());
 //            o.setIntegralRuleId(orderGoods.getIntegralRuleId());
 //            o.setFullReduceId(orderGoods.getFullReduceId());
-            OrderPrice orderPrice = orderPrice(orderGoods, orderType, userId,isUseIntegral);
+            OrderPrice orderPrice = orderPrice(orderGoods, orderType, userId,orderDto.getIsUseIntegral());
             o.setOrderPrice(orderPrice.getOrderPrice());
             o.setOrderRealPrice(orderPrice.getOrderRealPrice());
             o.setCouponReduce(orderPrice.getCouponReduce());
@@ -363,7 +363,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public List<OrderResponse> submit(SubmitOrderDto orderDto, Integer userId,Integer isUseIntegral) throws Exception {
+    public List<OrderResponse> submit(SubmitOrderDto orderDto, Integer userId) throws Exception {
         List<OrderResponse> list = new ArrayList<>();
         List<ShopSubmitOrderDto> shops = orderDto.getShops();
         OrderType orderType = EnumUitl.toEnum(OrderType.class, orderDto.getOrderType());
@@ -371,7 +371,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             if (shop.getGoods().size() == 0) {
                 continue;
             }
-            OrderResponse response = createOrder(orderDto, shop, orderType, userId,isUseIntegral);
+            OrderResponse response = createOrder(orderDto, shop, orderType, userId);
             if (OrderType.NORMAL.equals(orderType) &&
                     (response.is(OrderResponseStatus.SUCCESS) || response.is(OrderResponseStatus.PARTLY_SUCCESS))) {
                 delShopCart(shop);
