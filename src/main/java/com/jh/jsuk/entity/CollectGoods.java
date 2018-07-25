@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -17,7 +19,9 @@ import java.util.Date;
  * @author tj123
  * @since 2018-06-25
  */
-@Data
+@Setter
+@Getter
+@ToString
 //@Accessors(chain = true)
 @TableName("js_collect_goods")
 public class CollectGoods extends Model<CollectGoods> {
