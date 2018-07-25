@@ -454,7 +454,7 @@ public class UserOrderController {
     //--------------------骑手端----------------------------------------------//
     @ApiOperation(value = "用户端-提交订单")
     @PostMapping(value = "/submit")
-    public Result submit(@RequestBody @Valid SubmitOrderDto orderDto, BindingResult result, Integer userId) throws Exception {
+    public Result submit(@RequestBody @Valid SubmitOrderDto orderDto, BindingResult result, Integer userId,Integer isUseIntegral) throws Exception {
         Result res = new Result();
         if (result.hasErrors()) {
             throw new BindException(result);
@@ -464,7 +464,7 @@ public class UserOrderController {
             return res.erro("请勿重复提交");
         }
         redisUtils.setStr(key, "submit", 10);
-        return res.success(userOrderService.submit(orderDto, userId));
+        return res.success(userOrderService.submit(orderDto, userId,isUseIntegral));
     }
 
     @ApiOperation(value = "用户端-订单列表&订单关键字模糊搜索", notes = "不传=该用户全部订单")
