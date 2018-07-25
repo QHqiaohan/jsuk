@@ -330,6 +330,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             Integer orderId = o.getId();
             response.setOrderId(orderId);
             response.setOrderNum(o.getOrderNum());
+            response.setOrderPrice(orderPrice);
             for (UserOrderGoods g : gs) {
                 g.setOrderId(orderId);
                 g.insert();
