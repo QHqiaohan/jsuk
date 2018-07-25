@@ -13,6 +13,7 @@ import com.jh.jsuk.entity.vo.UserOrderVo;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
 import com.jh.jsuk.exception.MessageException;
+import org.omg.PortableInterceptor.INACTIVE;
 
 import java.util.List;
 
@@ -72,7 +73,7 @@ public interface UserOrderService extends IService<UserOrder> {
      * @return 订单id
      * @throws Exception
      */
-    List<OrderResponse> submit(SubmitOrderDto orderDto, Integer userId) throws Exception;
+    List<OrderResponse> submit(SubmitOrderDto orderDto, Integer userId,Integer isUseIntegral) throws Exception;
 
     /**
      * 计算订单价格
@@ -81,7 +82,7 @@ public interface UserOrderService extends IService<UserOrder> {
      * @return
      * @throws Exception
      */
-    OrderPrice orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId) throws Exception;
+    OrderPrice orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId,Integer isUseIntegral) throws Exception;
 
     /**
      * 订单余额支付
@@ -91,5 +92,5 @@ public interface UserOrderService extends IService<UserOrder> {
     /**
      * 第三方支付
      */
-    String thirdPay(UserOrder userOrder);
+    String thirdPay(UserOrder userOrder,String subject);
 }

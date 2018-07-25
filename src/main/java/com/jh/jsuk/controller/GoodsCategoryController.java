@@ -19,6 +19,7 @@ import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -175,9 +176,8 @@ public class GoodsCategoryController {
 
     /**
      * 查询二级分类下面的子级分类
-     *
-     * @param session    ?
-     * @param categoryId 前端传当前(二级)分类id
+     * @param session   ?
+     * @param categoryId    前端传当前(二级)分类id
      * @return
      */
     @ApiIgnore
@@ -186,6 +186,7 @@ public class GoodsCategoryController {
         //查询子节点的category信息,并且不递归,保持平级
         return goodsCategoryService.getChildrenParallelCategory(categoryId);
     }
+
 
 
     //客户(用户)端不应该有添加商品分类的功能
@@ -303,5 +304,16 @@ public class GoodsCategoryController {
         }
         return childList;
     }
-}
 
+    @ApiOperation("商家端-添加商品-选择商品分类")
+    @RequestMapping(value="/getCategoryListByParentId",method={RequestMethod.POST,RequestMethod.GET})
+    public Result getCategoryListByParentId(@ApiParam(value="父级id,一级分类parentId等于0") @RequestParam Integer parentId){
+        parentId=parentId==null?0:parentId;
+        List<GoodsCategory> categoryList=goodsCategoryService.selectList(new EntityWrapper<GoodsCategory>()
+                                                                         .eq(GoodsCategory.PARENT_ID,parentId)
+                                                                         .eq(GoodsCategory.STATUS,1)
+                                                                         .orderBy(GoodsCategory.SORT_ORDER,false)
+        );
+        return new Result().success(categoryList);
+    }
+}

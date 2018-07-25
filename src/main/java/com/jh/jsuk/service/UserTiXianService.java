@@ -2,6 +2,7 @@ package com.jh.jsuk.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.UserTiXian;
+import com.jh.jsuk.utils.Result;
 
 /**
  * <p>
@@ -13,4 +14,5 @@ import com.jh.jsuk.entity.UserTiXian;
  */
 public interface UserTiXianService extends IService<UserTiXian> {
 
+    Result tixian(UserTiXian userTiXian, Integer type, Integer userId);
 }

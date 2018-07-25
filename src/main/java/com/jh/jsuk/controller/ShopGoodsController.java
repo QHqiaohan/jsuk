@@ -5,6 +5,7 @@ import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.*;
+import com.jh.jsuk.entity.vo.AddGoodsVo;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
 import com.jh.jsuk.service.*;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -434,16 +436,43 @@ public class ShopGoodsController {
 
     @ApiOperation("商家端-添加商品")
     @RequestMapping(value = "/addShopGoods", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addShopGoods(@ModelAttribute ShopGoods shopGoods, @ModelAttribute ShopGoodsSize shopGoodsSize, Integer userId) {
+    public Result addShopGoods(@ModelAttribute AddGoodsVo addGoodsVo, Integer userId) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
+        if(managerUser==null){
+            return new Result().erro("该商家不存在");
+        }
         Integer shopId = managerUser.getShopId();
+
+        ShopGoods shopGoods=new ShopGoods();
         shopGoods.setShopId(shopId);
+        shopGoods.setAttributeId(addGoodsVo.getAttributeId());
+        shopGoods.setBrandId(addGoodsVo.getBrandId());
+        shopGoods.setShopModularId(addGoodsVo.getShopModularId());
+        shopGoods.setIsRecommend(addGoodsVo.getIsRecommend());
+        shopGoods.setGoodsLabelId(addGoodsVo.getGoodsLabelId());
+        shopGoods.setGoodsName(addGoodsVo.getGoodsName());
+        shopGoods.setGoodsImg(addGoodsVo.getGoodsImg());
+        shopGoods.setGoodsDesc(addGoodsVo.getGoodsDesc());
+        shopGoods.setStatus(0);
+        shopGoods.setIsDel(0);
+        shopGoods.setCreateTime(new Date());
+        shopGoods.setUpdateTime(new Date());
+        shopGoods.setMainImage(addGoodsVo.getMainImage());
+        shopGoods.setGoodsBreak(addGoodsVo.getGoodsBreak());
+        shopGoods.setSaleAmont(addGoodsVo.getSaleAmont());
+        shopGoods.setGoodsType(addGoodsVo.getGoodsType());
+        shopGoods.setCategoryId(addGoodsVo.getCategoryId());
+        shopGoods.setAddress(addGoodsVo.getAddress());
+
         shopGoods.insert();
+
         // 商品ID
         Integer id = shopGoods.getId();
-        shopGoodsSize.setShopGoodsId(id);
-        shopGoodsSize.insert();
+        for(ShopGoodsSize shopGoodsSize:addGoodsVo.getShopGoodsSizeList()){
+            shopGoodsSize.setShopGoodsId(id);
+            shopGoodsSize.insert();
+        }
         return new Result().success();
     }
 

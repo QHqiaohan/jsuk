@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -66,13 +67,14 @@ public class LifeClassController {
         return new Result().success(map);
     }
 
-    @ApiOperation("用户-便捷生活-获取分类列表")
+/*    @ApiOperation("用户-便捷生活-获取分类列表")
     @RequestMapping(value = "/findLifeClass", method = {RequestMethod.POST, RequestMethod.GET})
     public Result findLifeClass() {
         List<LifeClass> lifeClassList = lifeClassService.selectList(new EntityWrapper<>());
         return new Result().success(lifeClassList);
-    }
+    }*/
 
+//暂时不知道这个接口是干嘛用的
     @ApiOperation("用户-便捷生活-车辆列表")
     @RequestMapping(value = "/getCarList", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getCarList() {
@@ -86,7 +88,7 @@ public class LifeClassController {
 
     @ApiOperation("用户-便捷生活-根据分类选择车辆")
     @RequestMapping(value = "/getCarByClassId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getCarByClassId(@ApiParam(value = "分类ID", required = true) Integer classId) {
+    public Result getCarByClassId(@ApiParam(value = "分类ID", required = true) @RequestParam Integer classId) {
         List<Car> carList = carService.selectList(new EntityWrapper<Car>()
                 .eq(Car.CLASS_ID, classId)
                 .orderBy(Car.RANK, false));
@@ -98,7 +100,7 @@ public class LifeClassController {
 
     @ApiOperation("便捷生活-首页婚车列表")
     @RequestMapping(value = "/getActivityByClassId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getActivityByClassId(@ApiParam(value = "共享婚车ID", required = true) Integer classId) {
+    public Result getActivityByClassId(@RequestParam Integer classId) {
         // 封装数据map
         Map<String, Object> map = new HashMap<>();
         // 商家方
@@ -106,7 +108,7 @@ public class LifeClassController {
                 new Page<>(1, 3), new EntityWrapper<Activity>()
                         .eq(Activity.CLASS_ID, classId)
                         .eq(Activity.IS_DEL, 0)
-                        .eq(Activity.STATUS, 1)
+                        .eq(Activity.STATUS, 1)      //1=商家,2=需求
                         .eq(Activity.IS_RECOMMEND, 1)
                         .orderBy(Activity.RANK, false));
         map.put("provide", providePage.getRecords());

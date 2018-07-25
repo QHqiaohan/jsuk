@@ -4,6 +4,7 @@ package com.jh.jsuk.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.ManagerUser;
+import com.jh.jsuk.entity.vo.ShopTodayMoneyVo;
 import com.jh.jsuk.entity.vo.ShopVisitorVo;
 import com.jh.jsuk.service.ManagerUserService;
 import com.jh.jsuk.service.ShopTodayMoneyService;
@@ -63,7 +64,7 @@ public class ShopTodayMoneyController {
             return new Result().erro("该商家不存在");
         }
         Integer shopId = managerUser.getShopId();
-        MyEntityWrapper<ShopVisitorVo> ew = new MyEntityWrapper<>();
+        MyEntityWrapper<ShopTodayMoneyVo> ew = new MyEntityWrapper<>();
         Page moneyList = shopTodayMoneyService.getTodayMoneyList(page, ew, shopId, today);
         return new Result().success(moneyList);
     }

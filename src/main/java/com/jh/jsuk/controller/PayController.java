@@ -43,6 +43,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -578,7 +579,7 @@ public class PayController {
     @ApiOperation(value = "用户端-支付")
     @RequestMapping(value = "/balancePay", method = {RequestMethod.POST, RequestMethod.GET})
     public Result balancePay(@ApiParam(name = "orderId", value = "订单Id") Integer orderId,
-                             @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信-4银行卡") Integer payType) throws MessageException {
+                             @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信-4银行卡") Integer payType, String subject) throws MessageException {
         UserOrder userOrder = userOrderService.selectById(orderId);
         switch (payType) {
             //余额支付
@@ -591,15 +592,15 @@ public class PayController {
             //支付宝
             case 2:
                 userOrder.setPayType(PayType.ALI_PAY.getKey());
-                return new Result().success(userOrderService.thirdPay(userOrder));
+                return new Result().success(userOrderService.thirdPay(userOrder,subject));
             //微信
             case 3:
                 userOrder.setPayType(PayType.WECHAT_PAY.getKey());
-                return new Result().success(userOrderService.thirdPay(userOrder));
+                return new Result().success(userOrderService.thirdPay(userOrder,subject));
             //银行卡
             case 4:
                 userOrder.setPayType(PayType.BANK_PAY.getKey());
-                return new Result().success(userOrderService.thirdPay(userOrder));
+                return new Result().success(userOrderService.thirdPay(userOrder,subject));
             default:
                 return new Result().erro("支付方式不存在");
         }

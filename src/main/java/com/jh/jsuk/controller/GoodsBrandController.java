@@ -81,6 +81,14 @@ public class GoodsBrandController {
         Page goodsPage = shopGoodsService.getShopGoodsByBrandId(page, ew, brandId);
         return new Result().success(goodsPage);
     }*/
+    @ApiOperation("商家端-根据类型ID获取品牌列表")
+    @RequestMapping(value = "/getBrandList", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getBrandList() {
+        List<GoodsBrand> goodsBrandList = goodsBrandService.selectList(new EntityWrapper<GoodsBrand>()
+                .eq(GoodsBrand.STATUS, 1)
+                .orderBy(GoodsBrand.SORT_ORDER, false));
+        return new Result().success(goodsBrandList);
+    }
 
 }
 
