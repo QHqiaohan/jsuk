@@ -9,6 +9,7 @@ import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.R;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -260,5 +261,16 @@ public class GoodsCategoryController {
         }
         return childList;
     }
-}
 
+    @ApiOperation("商家端-添加商品-选择商品分类")
+    @RequestMapping(value="/getCategoryListByParentId",method={RequestMethod.POST,RequestMethod.GET})
+    public Result getCategoryListByParentId(@ApiParam(value="父级id,一级分类parentId等于0") @RequestParam Integer parentId){
+        parentId=parentId==null?0:parentId;
+        List<GoodsCategory> categoryList=goodsCategoryService.selectList(new EntityWrapper<GoodsCategory>()
+                                                                         .eq(GoodsCategory.PARENT_ID,parentId)
+                                                                         .eq(GoodsCategory.STATUS,1)
+                                                                         .orderBy(GoodsCategory.SORT_ORDER,false)
+        );
+        return new Result().success(categoryList);
+    }
+}
