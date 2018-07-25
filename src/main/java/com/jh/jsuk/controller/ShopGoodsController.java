@@ -434,16 +434,22 @@ public class ShopGoodsController {
 
     @ApiOperation("商家端-添加商品")
     @RequestMapping(value = "/addShopGoods", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addShopGoods(@ModelAttribute ShopGoods shopGoods, @ModelAttribute ShopGoodsSize shopGoodsSize, Integer userId) {
+    public Result addShopGoods(@ModelAttribute ShopGoods shopGoods, @ModelAttribute List<ShopGoodsSize> shopGoodsSizeList, Integer userId) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
+        if(managerUser==null){
+            return new Result().erro("该商家不存在");
+        }
         Integer shopId = managerUser.getShopId();
         shopGoods.setShopId(shopId);
         shopGoods.insert();
         // 商品ID
         Integer id = shopGoods.getId();
-        shopGoodsSize.setShopGoodsId(id);
-        shopGoodsSize.insert();
+
+        for(ShopGoodsSize shopGoodsSize:shopGoodsSizeList){
+            shopGoodsSize.setShopGoodsId(id);
+            shopGoodsSize.insert();
+        }
         return new Result().success();
     }
 
