@@ -49,7 +49,7 @@ public class GoodsBrandController {
         wrapper.eq(GoodsBrand.STATUS, 1);
         return R.succ(goodsBrandService.selectMPage(page, kw, wrapper));
     }
-    @ApiOperation("用户端&商家端-根据类型ID获取品牌列表")
+    @ApiOperation("用户端-根据类型ID获取品牌列表")
     @RequestMapping(value = "/getBrandByCategoryId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getBrandByCategoryId(@ApiParam(value = "分类ID", required = true) Integer categoryId) {
         List<GoodsBrand> goodsBrandList = goodsBrandService.selectList(new EntityWrapper<GoodsBrand>()
@@ -81,7 +81,14 @@ public class GoodsBrandController {
         Page goodsPage = shopGoodsService.getShopGoodsByBrandId(page, ew, brandId);
         return new Result().success(goodsPage);
     }*/
-
+    @ApiOperation("商家端-根据类型ID获取品牌列表")
+    @RequestMapping(value = "/getBrandList", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getBrandList() {
+        List<GoodsBrand> goodsBrandList = goodsBrandService.selectList(new EntityWrapper<GoodsBrand>()
+                .eq(GoodsBrand.STATUS, 1)
+                .orderBy(GoodsBrand.SORT_ORDER, false));
+        return new Result().success(goodsBrandList);
+    }
 
 }
 
