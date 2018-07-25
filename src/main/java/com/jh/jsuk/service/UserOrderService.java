@@ -91,5 +91,5 @@ public interface UserOrderService extends IService<UserOrder> {
     /**
      * 第三方支付
      */
-    String thirdPay(UserOrder userOrder);
+    String thirdPay(UserOrder userOrder,String subject);
 }

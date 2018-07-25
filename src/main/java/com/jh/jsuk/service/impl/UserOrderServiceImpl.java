@@ -514,11 +514,11 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public String thirdPay(UserOrder userOrder) {
+    public String thirdPay(UserOrder userOrder,String subject) {
         User user = userService.selectById(userOrder.getUserId());
         UserOrderGoods userOrderGoods = userOrderGoodsService.selectList(new EntityWrapper<UserOrderGoods>().eq(UserOrderGoods.ORDER_ID, userOrder.getId())).get(0);
         ShopGoods shopGoods = shopGoodsService.selectById(userOrderGoods.getGoodsId());
-        Charge charge = PingPPUtil.createCharge(userOrder, user, shopGoods);
+        Charge charge = PingPPUtil.createCharge(userOrder, user, shopGoods,subject);
         return charge.toString();
     }
 

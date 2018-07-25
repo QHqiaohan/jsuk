@@ -51,7 +51,7 @@ public class PingPPUtil {
      *
      * @return Charge
      */
-    public static Charge createCharge(UserOrder userOrder, User user, ShopGoods shopGoods) {
+    public static Charge createCharge(UserOrder userOrder, User user, ShopGoods shopGoods,String subject) {
         init();
         Charge charge = null;
         String channel = getChannel(userOrder);
@@ -59,7 +59,7 @@ public class PingPPUtil {
         Map<String, Object> chargeMap = new HashMap<>();
         chargeMap.put("amount", userOrder.getOrderRealPrice().multiply(new BigDecimal("100")));//订单总金额, 人民币单位：分（如订单总金额为 1 元，此处请填 100）
         chargeMap.put("currency", "cny");//人民币
-        chargeMap.put("subject", userOrder.getPlatformNumber());
+        chargeMap.put("subject", subject);
         chargeMap.put("body", shopGoods.getGoodsDesc());
         chargeMap.put("order_no", userOrder.getOrderNum());// 推荐使用 8-20 位，要求数字或字母，不允许其他字符
         chargeMap.put("channel", channel);// 支付使用的第三方支付渠道取值，请参考：https://www.pingxx.com/api#api-c-new
