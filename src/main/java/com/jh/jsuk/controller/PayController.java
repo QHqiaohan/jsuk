@@ -19,6 +19,7 @@ import com.google.common.collect.Maps;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.GoodsVo;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
+import com.jh.jsuk.envm.PayType;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
@@ -574,11 +575,34 @@ public class PayController {
         return null;
     }
 
-    @ApiOperation(value = "用户端-余额支付")
+    @ApiOperation(value = "用户端-支付")
     @RequestMapping(value = "/balancePay", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result balancePay(@ApiParam(name ="orderId",value = "订单Id") Integer orderId) throws MessageException {
+    public Result balancePay(@ApiParam(name = "orderId", value = "订单Id") Integer orderId,
+                             @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信-4银行卡") Integer payType) throws MessageException {
         UserOrder userOrder = userOrderService.selectById(orderId);
-        userOrderService.balancePay(userOrder);
+        switch (payType) {
+            //余额支付
+            case 0:
+                userOrderService.balancePay(userOrder);
+                break;
+            //货到付款
+            case 1:
+                break;
+            //支付宝
+            case 2:
+                userOrder.setPayType(PayType.ALI_PAY.getKey());
+                return new Result().success(userOrderService.thirdPay(userOrder));
+            //微信
+            case 3:
+                userOrder.setPayType(PayType.WECHAT_PAY.getKey());
+                return new Result().success(userOrderService.thirdPay(userOrder));
+            //银行卡
+            case 4:
+                userOrder.setPayType(PayType.BANK_PAY.getKey());
+                return new Result().success(userOrderService.thirdPay(userOrder));
+            default:
+                return new Result().erro("支付方式不存在");
+        }
         return new Result().success("支付成功");
     }
 }
