@@ -15,10 +15,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -47,8 +44,38 @@ public class ShopRushBuyController {
     @GetMapping("/page")
     public R listPage(Page page){
         Wrapper<ShopRushBuy> wrapper = new EntityWrapper<>();
-        wrapper.eq(ShopRushBuy.IS_USE,1);
+        wrapper.ne(ShopRushBuy.IS_DEL,1);
         return R.succ(shopRushBuyService.selectPage(page, wrapper));
+    }
+
+    @PostMapping("/update")
+    public R update(ShopRushBuy rushBuy){
+        rushBuy.updateById();
+        return R.succ();
+    }
+
+    @PutMapping
+    public R add(ShopRushBuy rushBuy){
+        rushBuy.insert();
+        return R.succ();
+    }
+
+    @PatchMapping
+    public R edit(ShopRushBuy rushBuy){
+        rushBuy.updateById();
+        return R.succ();
+    }
+
+    @DeleteMapping
+    public R delete(ShopRushBuy shopRushBuy){
+        shopRushBuy.setIsDel(1);
+        shopRushBuy.updateById();
+        return R.succ();
+    }
+
+    @GetMapping("/get")
+    public R get(Integer id){
+        return R.succ(shopRushBuyService.selectById(id));
     }
 
     @ApiOperation("秒杀时间列表")
