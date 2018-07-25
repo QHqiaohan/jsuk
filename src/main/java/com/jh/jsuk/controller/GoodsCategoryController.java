@@ -4,31 +4,22 @@ package com.jh.jsuk.controller;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.jh.jsuk.entity.GoodsCategory;
-import com.jh.jsuk.entity.ShopGoods;
-import com.jh.jsuk.service.*;
-import com.jh.jsuk.utils.R;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jh.jsuk.conf.Menu;
 import com.jh.jsuk.entity.Banner;
 import com.jh.jsuk.entity.GoodsCategory;
+import com.jh.jsuk.entity.recu.Category;
 import com.jh.jsuk.service.BannerService;
 import com.jh.jsuk.service.GoodsCategoryService;
+import com.jh.jsuk.service.ShopGoodsService;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -67,6 +58,58 @@ public class GoodsCategoryController {
         return R.succ(goodsCategoryService.selectList(wrapper));
     }
 
+    @ApiOperation("商家-递归显示")
+    @GetMapping("/recu")
+    public R recu() {
+        Wrapper<GoodsCategory> wrapper = new EntityWrapper<>();
+        wrapper.eq(GoodsCategory.STATUS, 1);
+        List<GoodsCategory> obj = goodsCategoryService.selectList(wrapper);
+        List<Category> ca = selectByParentId(0, obj);
+        resscu(ca, obj);
+        return R.succ(ca);
+    }
+
+
+    private GoodsCategory selectById(Integer id, List<GoodsCategory> list) {
+        if (id == null)
+            return null;
+        for (GoodsCategory category : list) {
+            if (category == null)
+                continue;
+            if (id.equals(category.getId())) {
+                return category;
+            }
+        }
+        return null;
+    }
+
+    private List<Category> selectByParentId(Integer id, List<GoodsCategory> list) {
+        if (id == null)
+            return null;
+        List<Category> l = new ArrayList<>();
+        for (GoodsCategory category : list) {
+            if (category == null)
+                continue;
+            if (id.equals(category.getParentId())) {
+                Category c = new Category();
+                c.setId(category.getId());
+                c.setName(category.getName());
+                l.add(c);
+            }
+        }
+        return l;
+    }
+
+    private void resscu(List<Category> list, List<GoodsCategory> obj) {
+        for (Category category : list) {
+            Integer ida = category.getId();
+            List<Category> categoryList = selectByParentId(ida, obj);
+            if (categoryList != null && !categoryList.isEmpty()) {
+                category.setChildren(categoryList);
+                resscu(categoryList,obj);
+            }
+        }
+    }
 
     @ApiOperation("用户端-获取商品所有类型")
     @RequestMapping(value = "/getAllCategory")

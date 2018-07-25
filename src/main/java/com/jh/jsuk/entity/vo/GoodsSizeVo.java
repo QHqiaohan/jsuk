@@ -3,7 +3,9 @@ package com.jh.jsuk.entity.vo;
 
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.ShopGoodsSize;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,9 @@ import java.util.List;
  * @author: XuChuRuo
  * @date: 2018/6/13 12:45
  */
-@Data
+@Setter
+@Getter
+@ToString
 public class GoodsSizeVo extends ShopGoods {
 
     private List<ShopGoodsSize> shopGoodsSize;
