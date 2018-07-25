@@ -53,7 +53,7 @@ public class OrderTest {
     @Test
     public void testOrder() throws Exception {
 
-        orderService.submit(create(),12);
+//        orderService.submit(create(),12);
     }
 
     final static int COUNT = 4000;
@@ -84,7 +84,7 @@ public class OrderTest {
                 try {
                     latch.countDown();
                     latch.await();
-                    orderService.submit(create(),RandomUtil.randomInt(900));
+//                    orderService.submit(create(),RandomUtil.randomInt(900));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
