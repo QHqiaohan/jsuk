@@ -17,13 +17,16 @@ public class OrderResponse {
 
     private OrderPrice orderPrice;
 
+    private Integer payType;
+
     /**
      * 是不是这种状态
+     *
      * @param status
      * @return
      */
     @JsonIgnore
-    public boolean is(OrderResponseStatus status){
+    public boolean is(OrderResponseStatus status) {
         return status != null && status.equals(this.status);
     }
 

@@ -21,7 +21,7 @@ public class SubmitOrderDto implements Serializable {
     @NotNull
     private Integer addressId;
 
-    @ApiModelProperty(value = "支付方式", name = "payType", required = true)
+    @ApiModelProperty(value = "支付方式-0余额-1货到付款-2支付宝-3微信-4银行卡", name = "payType", required = true)
     @NotNull
     private Integer payType;
 
