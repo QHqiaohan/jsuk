@@ -15,7 +15,7 @@ public class OrderResponse {
 
     private String orderNum;
 
-    private BigDecimal price;
+    private OrderPrice orderPrice;
 
     /**
      * 是不是这种状态
