@@ -266,10 +266,11 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public OrderResponse createOrder(SubmitOrderDto orderDto, ShopSubmitOrderDto orderGoods,
-                                     OrderType orderType, Integer userId,Integer isUseIntegral) throws Exception {
+                                     OrderType orderType, Integer userId) throws Exception {
         boolean isTimeOut = false;
         OrderResponse response = new OrderResponse();
         response.setStatus(OrderResponseStatus.PARTLY_SUCCESS);
+        response.setPayType(orderDto.getPayType());
         UserOrder o = new UserOrder();
         Date createTime = new Date();
         List<ShopSubmitOrderGoodsDto> goods = orderGoods.getGoods();
@@ -321,7 +322,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setOrderType(orderDto.getOrderType());
 //            o.setIntegralRuleId(orderGoods.getIntegralRuleId());
 //            o.setFullReduceId(orderGoods.getFullReduceId());
-            OrderPrice orderPrice = orderPrice(orderGoods, orderType, userId,isUseIntegral);
+            OrderPrice orderPrice = orderPrice(orderGoods, orderType, userId, orderDto.getIsUseIntegral());
             o.setOrderPrice(orderPrice.getOrderPrice());
             o.setOrderRealPrice(orderPrice.getOrderRealPrice());
             o.setCouponReduce(orderPrice.getCouponReduce());
@@ -330,6 +331,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             Integer orderId = o.getId();
             response.setOrderId(orderId);
             response.setOrderNum(o.getOrderNum());
+            response.setOrderPrice(orderPrice);
             for (UserOrderGoods g : gs) {
                 g.setOrderId(orderId);
                 g.insert();
@@ -363,7 +365,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public List<OrderResponse> submit(SubmitOrderDto orderDto, Integer userId,Integer isUseIntegral) throws Exception {
+    public List<OrderResponse> submit(SubmitOrderDto orderDto, Integer userId) throws Exception {
         List<OrderResponse> list = new ArrayList<>();
         List<ShopSubmitOrderDto> shops = orderDto.getShops();
         OrderType orderType = EnumUitl.toEnum(OrderType.class, orderDto.getOrderType());
@@ -371,7 +373,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             if (shop.getGoods().size() == 0) {
                 continue;
             }
-            OrderResponse response = createOrder(orderDto, shop, orderType, userId,isUseIntegral);
+            OrderResponse response = createOrder(orderDto, shop, orderType, userId);
             if (OrderType.NORMAL.equals(orderType) &&
                     (response.is(OrderResponseStatus.SUCCESS) || response.is(OrderResponseStatus.PARTLY_SUCCESS))) {
                 delShopCart(shop);
@@ -388,7 +390,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
      * * 更新用户积分总数
      */
     @Override
-    public OrderPrice orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId,Integer isUseIntegral) {
+    public OrderPrice orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId, Integer isUseIntegral) throws MessageException {
         OrderPrice orderPrice = new OrderPrice();
         //先计算没有使用任何优惠的订单原价
         BigDecimal totalPriceWithOutDiscount = new BigDecimal("0.00");
@@ -401,6 +403,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             );
             //订单项的价格
             if (shopGoodsSize != null) {
+                if (shopGoodsSize.getStock() < goodsDto.getNum()) {
+                    throw new MessageException(shopGoodsService.selectById(goodsDto.getGoodsId()).getGoodsName() + "库存不足!");
+                }
                 BigDecimal orderItemPrice = goodsDto.getGoodsPrice().multiply(new BigDecimal(goodsDto.getNum()));
                 totalPriceWithOutDiscount = totalPriceWithOutDiscount.add(orderItemPrice);
             }
@@ -437,7 +442,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             totalPriceWithOutDiscount = totalPriceWithOutDiscount.subtract(discount);   //减去优惠券的折扣
             orderPrice.setCouponReduce(discount.setScale(2));         //优惠券优惠了多少
         }
-        if(isUseIntegral==1){
+        if (isUseIntegral == 1) {
             //计算积分抵扣
             //查询用户总积分
             UserIntegral userIntegral = userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
@@ -474,7 +479,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     .eq(ShopGoodsSize.ID, goodsSizeId)
             );
             //订单项的价格
-            if (shopGoodsSize != null) {
+            if (shopGoodsSize != null && shopGoodsSize.getFullFreight() != null) {
                 //不符合包邮
                 if (new BigDecimal(shopGoodsSize.getFullFreight()).compareTo(orderPrice.getOrderPrice()) < 0) {
                     freight = freight.add(new BigDecimal(shopGoodsSize.getFreight()));
@@ -519,11 +524,11 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public String thirdPay(UserOrder userOrder,String subject) {
+    public String thirdPay(UserOrder userOrder, String subject) {
         User user = userService.selectById(userOrder.getUserId());
         UserOrderGoods userOrderGoods = userOrderGoodsService.selectList(new EntityWrapper<UserOrderGoods>().eq(UserOrderGoods.ORDER_ID, userOrder.getId())).get(0);
         ShopGoods shopGoods = shopGoodsService.selectById(userOrderGoods.getGoodsId());
-        Charge charge = PingPPUtil.createCharge(userOrder, user, shopGoods,subject);
+        Charge charge = PingPPUtil.createCharge(userOrder, user, shopGoods, subject);
         return charge.toString();
     }
 

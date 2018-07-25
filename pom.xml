@@ -50,6 +50,7 @@
     </dependencyManagement>
 
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -282,6 +283,7 @@
             <version>2.3.8</version>
             <type>jar</type>
         </dependency>
+
     </dependencies>
 
     <build>
