@@ -323,6 +323,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 //            o.setFullReduceId(orderGoods.getFullReduceId());
             OrderPrice orderPrice = orderPrice(orderGoods, orderType, userId);
             o.setOrderPrice(orderPrice.getOrderPrice());
+            o.setOrderRealPrice(orderPrice.getOrderRealPrice());
+            o.setCouponReduce(orderPrice.getCouponReduce());
+            o.setIntegralReduce(orderPrice.getIntegralReduce());
             o.insert();
             Integer orderId = o.getId();
             response.setOrderId(orderId);
