@@ -47,10 +47,7 @@ import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 /**
@@ -317,17 +314,15 @@ public class PayController {
     @RequestMapping(value = "pre_order", method = RequestMethod.POST)
     @Transactional(propagation = Propagation.REQUIRED)
     public ServerResponse appPay(String orderId, String payWay, Integer userId, String orderType, String isDeduction) {
-        String[] orderIds = orderId.split(",");
         Callable<ServerResponse> callable = () -> {
             if (StrUtil.isBlank(orderType) || StrUtil.isBlank(isDeduction) || StrUtil.isBlank(payWay)) {
                 return ServerResponse.createByErrorMessage("参数错误!");
             }
-            UserOrder orderRecord = null;
             UserRemainder userRemainder = null;
             PayOrder payOrder = null;
             //当为普通/秒杀订单时OrderId必须
             if (StrUtil.equals(orderType, "1") || StrUtil.equals(orderType, "0")) {
-                if (StrUtil.isBlank(orderId)) {
+                /*if (StrUtil.isBlank(orderId)) {
                     return ServerResponse.createByErrorMessage("参数错误!");
                 }
                 orderRecord = userOrderService.selectOne(new MyEntityWrapper<UserOrder>().eq(UserOrder.ORDER_NUM, orderId).eq(UserOrder.USER_ID, userId)
@@ -338,8 +333,14 @@ public class PayController {
                 }
                 if (orderRecord.getStatus() > 2) {
                     return ServerResponse.createByErrorMessage("订单已支付,请勿重复支付");
+                }*/
+                String[] orderIds = orderId.split(",");
+                List<UserOrder> userOrders = userOrderService.selectBatchIds(new ArrayList<>(Arrays.asList(orderIds)));
+                BigDecimal price = new BigDecimal("0.00");
+                for (UserOrder userOrder : userOrders) {
+                    price = price.add(userOrder.getOrderRealPrice());
                 }
-                payOrder = new PayOrder("巨商U客订单" + orderRecord.getOrderNum(), "巨商U客订单", orderRecord.getOrderPrice(), orderId);
+                payOrder = new PayOrder("巨商U客订单" + orderId, "巨商U客订单", price, orderId);
             }
 
             //当为购买订单时memberConfigId必须
@@ -418,9 +419,11 @@ public class PayController {
         String outTradeNo = params.get("out_trade_no") == null ? null : params.get("out_trade_no").toString();
         //这里处理业务逻辑
         logger.info("订单号 " + outTradeNo);
-        UserOrder userOrder = userOrderService.selectOne(new MyEntityWrapper<UserOrder>().eq(UserOrder.ORDER_NUM, outTradeNo).eq(UserOrder.STATUS, "0"));
-        UserRemainder userRemainder = userRemainderService.selectOne(new MyEntityWrapper<UserRemainder>().eq(UserRemainder.ORDER_NUM, outTradeNo).eq(UserRemainder.IS_OK, "0"));
-        if (userOrder == null && userRemainder == null) {
+        String[] orderIds = outTradeNo.split(",");
+        List<UserOrder> userOrders = userOrderService.selectBatchIds(new ArrayList<>(Arrays.asList(orderIds)));
+//        UserOrder userOrder = userOrderService.selectOne(new MyEntityWrapper<UserOrder>().eq(UserOrder.ORDER_NUM, outTradeNo).eq(UserOrder.STATUS, "0"));
+//        UserRemainder userRemainder = userRemainderService.selectOne(new MyEntityWrapper<UserRemainder>().eq(UserRemainder.ORDER_NUM, outTradeNo).eq(UserRemainder.IS_OK, "0"));
+        if (userOrders.size()==0) {
             logger.error("订单不存在");
             return false;
         } else {
@@ -433,52 +436,55 @@ public class PayController {
                     platform_number = String.valueOf(params.get("transaction_id"));
                 }
             }
-
-            if (userOrder != null) {
-                //TODO 普通订单
-                //0待付款  1待发货  2=已发货 3=交易成功 4=申请退款 5=退款成功 6=交易关闭 7=售后
-                if (userOrder.getStatus() > 0) {
-                    return true;
-                }
-                try {
-                    userOrder.setStatus(1);
-                    userOrder.setPayTime(new Date());
-                    userOrder.setPlatformNumber(platform_number);
-                    return userOrder.updateById();
-                } catch (Exception e) {
-                    logger.error("更改订单状态失败----{}", e.getMessage());
-                    return false;
-                }
-            } else if (userRemainder != null) {
-                //0待付款  1已付款
-                if (userRemainder.getIsOk() > 0) {
-                    return true;
-                }
-                //类型 1=充值,-1=消费,0=其他,2=购买会员
-                Integer type = userRemainder.getType();
-                logger.info("充值类型--->{}", type);
-                //TODO 充值订单
-                try {
-                    switch (type) {
-                        case 2:
-                            MemberConfig memberConfig = memberConfigService.selectOne(new MyEntityWrapper<MemberConfig>().eq(MemberConfig.ID, userRemainder.getMemberId()));
-                            //更新会员状态
-                            User user = userService.selectById(userRemainder.getUserId());
-                            user.setLevel(memberConfig.getId());
-                            user.updateById();
-                        case 1:
-                            userRemainder.setIsOk(1);
-                            userRemainder.setPlatformNumber(platform_number);
-                            //更新充值订单状态
-                            userRemainder.updateById();
-                            break;
+            for (UserOrder userOrder:userOrders){
+                UserRemainder userRemainder = userRemainderService.selectOne(new MyEntityWrapper<UserRemainder>().eq(UserRemainder.ORDER_NUM, outTradeNo).eq(UserRemainder.IS_OK, "0"));
+                if (userOrder != null) {
+                    //TODO 普通订单
+                    //0待付款  1待发货  2=已发货 3=交易成功 4=申请退款 5=退款成功 6=交易关闭 7=售后
+                    if (userOrder.getStatus() > 0) {
+                        return true;
                     }
-                    return true;
-                } catch (Exception e) {
-                    logger.error("更改充值订单失败----{}", e.getMessage());
-                    return false;
+                    try {
+                        userOrder.setStatus(1);
+                        userOrder.setPayTime(new Date());
+                        userOrder.setPlatformNumber(platform_number);
+                        return userOrder.updateById();
+                    } catch (Exception e) {
+                        logger.error("更改订单状态失败----{}", e.getMessage());
+                        return false;
+                    }
+                } else if (userRemainder != null) {
+                    //0待付款  1已付款
+                    if (userRemainder.getIsOk() > 0) {
+                        return true;
+                    }
+                    //类型 1=充值,-1=消费,0=其他,2=购买会员
+                    Integer type = userRemainder.getType();
+                    logger.info("充值类型--->{}", type);
+                    //TODO 充值订单
+                    try {
+                        switch (type) {
+                            case 2:
+                                MemberConfig memberConfig = memberConfigService.selectOne(new MyEntityWrapper<MemberConfig>().eq(MemberConfig.ID, userRemainder.getMemberId()));
+                                //更新会员状态
+                                User user = userService.selectById(userRemainder.getUserId());
+                                user.setLevel(memberConfig.getId());
+                                user.updateById();
+                            case 1:
+                                userRemainder.setIsOk(1);
+                                userRemainder.setPlatformNumber(platform_number);
+                                //更新充值订单状态
+                                userRemainder.updateById();
+                                break;
+                        }
+                        return true;
+                    } catch (Exception e) {
+                        logger.error("更改充值订单失败----{}", e.getMessage());
+                        return false;
+                    }
                 }
             }
+
         }
         return false;
     }
@@ -592,15 +598,15 @@ public class PayController {
             //支付宝
             case 2:
                 userOrder.setPayType(PayType.ALI_PAY.getKey());
-                return new Result().success(userOrderService.thirdPay(userOrder,subject));
+                return new Result().success(userOrderService.thirdPay(userOrder, subject));
             //微信
             case 3:
                 userOrder.setPayType(PayType.WECHAT_PAY.getKey());
-                return new Result().success(userOrderService.thirdPay(userOrder,subject));
+                return new Result().success(userOrderService.thirdPay(userOrder, subject));
             //银行卡
             case 4:
                 userOrder.setPayType(PayType.BANK_PAY.getKey());
-                return new Result().success(userOrderService.thirdPay(userOrder,subject));
+                return new Result().success(userOrderService.thirdPay(userOrder, subject));
             default:
                 return new Result().erro("支付方式不存在");
         }
