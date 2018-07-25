@@ -35,4 +35,8 @@ public class OrderPrice implements Serializable {
      * 运费
      */
     private BigDecimal freight;
+    /**
+     * 配送费
+     */
+    private BigDecimal distribution_fee;
 }

@@ -87,4 +87,9 @@ public interface UserOrderService extends IService<UserOrder> {
      * 订单余额支付
      */
     void balancePay(UserOrder userOrder) throws MessageException;
+
+    /**
+     * 第三方支付
+     */
+    String thirdPay(UserOrder userOrder,String subject);
 }
