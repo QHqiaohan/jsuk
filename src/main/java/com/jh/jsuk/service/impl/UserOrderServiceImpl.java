@@ -388,7 +388,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
      * * 更新用户积分总数
      */
     @Override
-    public OrderPrice orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId,Integer isUseIntegral) {
+    public OrderPrice orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId,Integer isUseIntegral) throws MessageException {
         OrderPrice orderPrice = new OrderPrice();
         //先计算没有使用任何优惠的订单原价
         BigDecimal totalPriceWithOutDiscount = new BigDecimal("0.00");
@@ -401,6 +401,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             );
             //订单项的价格
             if (shopGoodsSize != null) {
+                if(shopGoodsSize.getStock()<goodsDto.getNum()){
+                    throw new MessageException(shopGoodsService.selectById(goodsDto.getGoodsId()).getGoodsName() +"库存不足!");
+                }
                 BigDecimal orderItemPrice = goodsDto.getGoodsPrice().multiply(new BigDecimal(goodsDto.getNum()));
                 totalPriceWithOutDiscount = totalPriceWithOutDiscount.add(orderItemPrice);
             }
@@ -474,7 +477,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     .eq(ShopGoodsSize.ID, goodsSizeId)
             );
             //订单项的价格
-            if (shopGoodsSize != null) {
+            if (shopGoodsSize != null&&shopGoodsSize.getFullFreight()!=null) {
                 //不符合包邮
                 if (new BigDecimal(shopGoodsSize.getFullFreight()).compareTo(orderPrice.getOrderPrice()) < 0) {
                     freight = freight.add(new BigDecimal(shopGoodsSize.getFreight()));
