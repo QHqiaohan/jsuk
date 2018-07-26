@@ -3,13 +3,16 @@ package com.jh.jsuk.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.AddGoodsVo;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
+import com.jh.jsuk.envm.ShopGoodsStatus;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +58,17 @@ public class ShopGoodsController {
 
     @Autowired
     ShopRushBuyService shopRushBuyService;
+
+    @GetMapping("/list")
+    public R list(Integer shopId) {
+        Wrapper<ShopGoods> wrapper = new EntityWrapper<>();
+        if (shopId != null) {
+            wrapper.eq(ShopGoods.SHOP_ID, shopId);
+        }
+        wrapper.ne(ShopGoods.IS_DEL, 1)
+                .eq(ShopGoods.STATUS, ShopGoodsStatus.UPPER.getKey());
+        return R.succ(shopGoodsService.selectList(wrapper));
+    }
 
     @ApiOperation("用户端-根据店铺内部的分类-属性查询商品")
     @ApiImplicitParams({
@@ -426,7 +440,7 @@ public class ShopGoodsController {
                 }
             }
             return new Result().success("删除成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new Result().erro("删除失败");
         }

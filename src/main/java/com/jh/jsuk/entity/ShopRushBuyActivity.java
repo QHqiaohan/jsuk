@@ -31,10 +31,7 @@ public class ShopRushBuyActivity extends Model<ShopRushBuyActivity> {
     private Integer id;
 
     private Integer shopId;
-    /**
-     * 活动名称
-     */
-    private String activityName;
+
     /**
      * 配置id
      */
@@ -43,6 +40,9 @@ public class ShopRushBuyActivity extends Model<ShopRushBuyActivity> {
      * 规格id
      */
     private Integer goodsSizeId;
+
+    private Integer goodsId;
+
     /**
      * 1=删除,0=未删除
      */
