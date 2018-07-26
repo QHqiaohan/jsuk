@@ -699,7 +699,10 @@ public class UserController {
     }
 
     @ApiOperation("后台管理系统-成员管理-添加成员")
+    @RequestMapping(value="/addManagerUser",method={RequestMethod.POST})
     public Result addManagerUser(@ModelAttribute ManagerUser managerUser){
+        String password=managerUser.getPassword();
+        managerUser.setPassword(MD5Util.getMD5(password));
         managerUser.setUserType(1);    //用户类型 1:平台 2:商家
         managerUser.setCanUse(1);      //是否可用 0:否  1:是
         managerUser.setCreateTime(new Date());
@@ -707,9 +710,30 @@ public class UserController {
         //获取默认头像
         Dictionary dictionaryImg = dictionaryService.selectOne(new EntityWrapper<Dictionary>().
                 eq("code", "user_default_img"));
+        managerUser.setHeadImg(dictionaryImg.getValue());
+        try{
+            managerUser.insert();
+            return new Result().success("添加成员成功");
+        }catch(Exception e){
+            e.printStackTrace();
+            return new Result().erro("添加成员失败");
+        }
+    }
 
+    @ApiOperation("后台管理系统-成员管理-是否启用成员")
+    @RequestMapping(value="/setCanUse",method={RequestMethod.GET,RequestMethod.POST})
+    public Result setCanUse(Integer userId,
+                            @ApiParam(value = "是否起用 0:否  1:是") Integer can_user){
+        ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+                .eq(ManagerUser.ID,userId)
 
-        return new Result().success("添加成员成功");
+        );
+        if(managerUser==null){
+            return new Result().erro("系统错误,请稍后再试");
+        }
+        managerUser.setCanUse(can_user);
+        managerUser.insert();
+        return new Result().success("更改成功");
     }
 
 }
