@@ -120,10 +120,13 @@ public class ShopController {
     public Result addShopInfo(@ApiParam(value = "商家id") Integer userId, @ModelAttribute Shop shop) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
+        if(managerUser==null){
+            return new Result().erro("系统错误,请稍后再试");
+        }
         Integer shopId = managerUser.getShopId();
         shop.setId(shopId);
         shop.updateById();
-        return new Result().success();
+        return new Result().success("店铺信息修改成功");
     }
 
 

@@ -20,6 +20,7 @@ import com.jh.jsuk.utils.*;
 import com.jh.jsuk.utils.wx.MD5Util;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -651,6 +652,88 @@ public class UserController {
         return new Result().success();
     }
 
+    @ApiOperation("后台管理系统-账户设置")
+    @RequestMapping(value="/accountInfoSetting",method={RequestMethod.POST,RequestMethod.GET})
+    public Result accountInfoSetting(String userId,String account,String headImg,String oldPassword,String newPassword){
+
+        ManagerUser manager_user = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+                .eq(ManagerUser.ID,userId)
+                .eq(ManagerUser.USER_NAME, account)
+                .eq(ManagerUser.PASSWORD, MD5Util.getMD5(oldPassword))
+        );
+        if(manager_user==null){
+            return new Result().erro("旧密码不正确");
+        }else{
+            if(headImg!=null && !headImg.equals("")){
+                manager_user.setHeadImg(headImg);
+            }
+            manager_user.setPassword(MD5Util.getMD5(newPassword));
+            manager_user.updateById();
+        }
+
+        return new Result().success("账户资料编辑成功");
+    }
+
+    @ApiOperation("后台管理系统-根据用户名搜索成员")
+    @RequestMapping(value="/getUserListByUsername",method={RequestMethod.GET,RequestMethod.POST})
+    public Result getUserListByUsername(String username){
+        if(username==null || "".equals(username)){
+            return new Result().erro("参数错误");
+        }
+        List<ManagerUser> manegerUserList=managerUserService.getUserListByUsername(username);
+        if(manegerUserList==null || manegerUserList.size()==0){
+            return new Result().success("没有数据");
+        }
+        return new Result().success(manegerUserList);
+    }
+
+
+    @ApiOperation("后台管理系统-成员管理-成员列表")
+    @RequestMapping(value="/getManagerUserList",method={RequestMethod.GET,RequestMethod.POST})
+    public Result getManagerUserList(Integer current,Integer size){
+        Page managerUserPage=managerUserService.selectPage(new Page(current,size),
+                                                           new EntityWrapper<ManagerUser>()
+                                                               .eq(ManagerUser.CAN_USE,1)
+                );
+        return new Result().success(managerUserPage);
+    }
+
+    @ApiOperation("后台管理系统-成员管理-添加成员")
+    @RequestMapping(value="/addManagerUser",method={RequestMethod.POST})
+    public Result addManagerUser(@ModelAttribute ManagerUser managerUser){
+        String password=managerUser.getPassword();
+        managerUser.setPassword(MD5Util.getMD5(password));
+        managerUser.setUserType(1);    //用户类型 1:平台 2:商家
+        managerUser.setCanUse(1);      //是否可用 0:否  1:是
+        managerUser.setCreateTime(new Date());
+        managerUser.setUpdateTime(new Date());
+        //获取默认头像
+        Dictionary dictionaryImg = dictionaryService.selectOne(new EntityWrapper<Dictionary>().
+                eq("code", "user_default_img"));
+        managerUser.setHeadImg(dictionaryImg.getValue());
+        try{
+            managerUser.insert();
+            return new Result().success("添加成员成功");
+        }catch(Exception e){
+            e.printStackTrace();
+            return new Result().erro("添加成员失败");
+        }
+    }
+
+    @ApiOperation("后台管理系统-成员管理-是否启用成员")
+    @RequestMapping(value="/setCanUse",method={RequestMethod.GET,RequestMethod.POST})
+    public Result setCanUse(Integer userId,
+                            @ApiParam(value = "是否起用 0:否  1:是") Integer can_user){
+        ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+                .eq(ManagerUser.ID,userId)
+
+        );
+        if(managerUser==null){
+            return new Result().erro("系统错误,请稍后再试");
+        }
+        managerUser.setCanUse(can_user);
+        managerUser.insert();
+        return new Result().success("更改成功");
+    }
+
 }
-
-

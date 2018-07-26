@@ -17,7 +17,7 @@ public class UserOrderInfoVo {
     private Integer num;
     private BigDecimal buyPrice;
     private String sizeName;
-    //private String goodsName;
+    private String goodsName;
     //private String goodsHeadImg;
     private String shopName;
     private String salesPrice;
@@ -30,41 +30,54 @@ public class UserOrderInfoVo {
     private Integer id;
     private Integer status;
     private Date creatTime;
+    private Integer isClosed;
     private Date sendTime;
     private List<ShopGoods> shopGoodsList;
+
     public Integer getId() {
         return id;
     }
+
     public void setId(Integer id) {
         this.id = id;
     }
+
     public Integer getStatus() {
         return status;
     }
+
     public void setStatus(Integer status) {
         this.status = status;
     }
+
     public Date getCreatTime() {
         return creatTime;
     }
+
     public void setCreatTime(Date creatTime) {
         this.creatTime = creatTime;
     }
+
     public Date getSendTime() {
         return sendTime;
     }
+
     public void setSendTime(Date sendTime) {
         this.sendTime = sendTime;
     }
+
     public BigDecimal getDiscount() {
         return discount;
     }
+
     public void setDiscount(BigDecimal discount) {
         this.discount = discount;
     }
+
     public List<ShopGoods> getShopGoodsList() {
         return shopGoodsList;
     }
+
     public void setShopGoodsList(List<ShopGoods> shopGoodsList) {
         this.shopGoodsList = shopGoodsList;
     }
@@ -126,9 +139,6 @@ public class UserOrderInfoVo {
     }
 
 
-
-
-
     public String getShopName() {
         return shopName;
     }
@@ -151,5 +161,21 @@ public class UserOrderInfoVo {
 
     public void setOriginalPrice(String originalPrice) {
         this.originalPrice = originalPrice;
+    }
+
+    public String getGoodsName() {
+        return goodsName;
+    }
+
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
+    }
+
+    public Integer getIsClosed() {
+        return isClosed;
+    }
+
+    public void setIsClosed(Integer isClosed) {
+        this.isClosed = isClosed;
     }
 }

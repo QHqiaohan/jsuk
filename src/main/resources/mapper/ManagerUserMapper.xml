@@ -31,4 +31,14 @@
          update_time, login_ip, last_login_time
     </sql>
 
+    <select id="getUserListByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"></include>
+        from js_manager_user
+        where
+        user_name like concat('%',#{username},'%')
+        or
+        name like concat('%',#{username},'%')
+    </select>
+
 </mapper>

@@ -11,6 +11,9 @@
 ### 正式环境
 [正式环境swagger](http://47.99.45.67/api/v1/swagger-ui.html#/)
 
+### 后台
+#   http://47.99.45.67/jsuk-demo2/#g=1&p=系统首页
+
 ### 时间安排
 [时间安排](https://docs.qq.com/sheet/BIvRjE1Otl8A4YzDgC14WVct0H08qE1Bvz6g0)
 

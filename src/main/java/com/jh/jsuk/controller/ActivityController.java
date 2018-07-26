@@ -598,9 +598,7 @@ public class ActivityController {
     //用户-乡村旅游-热门推荐
     @ApiOperation("用户-乡村旅游-热门推荐")
     @RequestMapping(value="/getHotActivityList",method={RequestMethod.POST,RequestMethod.GET})
-    public Result getHotActivityList(@RequestParam Integer current,
-                                     @RequestParam Integer size,
-                                     @RequestParam Integer ModularId){
+    public Result getHotActivityList( Integer current, Integer size, @RequestParam Integer ModularId){
         current=current==null?1:current;
         size=size==null?10:size;
         Result result=new Result();
@@ -641,7 +639,7 @@ public class ActivityController {
         }
 
         if(activityJoinList==null || activityJoinList.size()==0){
-            return new Result().setMsg("暂时还没有参与的活动信息").setCode(-10L);
+            return new Result().success();
         }
 
         // 获取活动ID
@@ -694,23 +692,15 @@ public class ActivityController {
      */
     @ApiOperation("用户-乡村旅游-查询亲子、户外拓展、采摘活动、酒店住宿、特产购买对应活动")
     @RequestMapping(value="/getActivityListByModularId",method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getActivityListByModularId(@RequestParam Integer modularId){
-        Result result=new Result();
+    public Result getActivityListByModularId(@RequestParam Integer modularId, Integer current, Integer size){
+        current=current==null?1:current;
+        size=size==null?10:size;
 
-        try{
-            List<Activity> activityList= activityService.getActivityListByModularId(modularId);
-            if(activityList!=null && activityList.size()>0){
-                result.success(activityList);
-            }else{
-                result.setMsg("没有相关活动");
-                result.setCode(-10L);
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-            return result.erro("出错啦，稍后重试");
-        }
-
-        return result;
+        Page activityPage=activityService.selectPage(new Page(current,size),
+                                                     new EntityWrapper<Activity>()
+                                                         .eq(Activity.MODULAR_ID,modularId)
+                );
+        return new Result().success(activityPage);
     }
 
     /**

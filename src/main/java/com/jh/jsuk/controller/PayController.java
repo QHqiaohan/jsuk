@@ -415,6 +415,7 @@ public class PayController {
     }
 
     private boolean businessProcess(Map<String, Object> params, Integer payWay) {
+        boolean flag = false;
         //商户订单号
         String outTradeNo = params.get("out_trade_no") == null ? null : params.get("out_trade_no").toString();
         //这里处理业务逻辑
@@ -423,9 +424,9 @@ public class PayController {
         List<UserOrder> userOrders = userOrderService.selectBatchIds(new ArrayList<>(Arrays.asList(orderIds)));
 //        UserOrder userOrder = userOrderService.selectOne(new MyEntityWrapper<UserOrder>().eq(UserOrder.ORDER_NUM, outTradeNo).eq(UserOrder.STATUS, "0"));
 //        UserRemainder userRemainder = userRemainderService.selectOne(new MyEntityWrapper<UserRemainder>().eq(UserRemainder.ORDER_NUM, outTradeNo).eq(UserRemainder.IS_OK, "0"));
-        if (userOrders.size()==0) {
+        if (userOrders.size() == 0) {
             logger.error("订单不存在");
-            return false;
+            return flag;
         } else {
             //平台流水
             String platform_number = null;
@@ -436,19 +437,23 @@ public class PayController {
                     platform_number = String.valueOf(params.get("transaction_id"));
                 }
             }
-            for (UserOrder userOrder:userOrders){
-                UserRemainder userRemainder = userRemainderService.selectOne(new MyEntityWrapper<UserRemainder>().eq(UserRemainder.ORDER_NUM, outTradeNo).eq(UserRemainder.IS_OK, "0"));
+            for (UserOrder userOrder : userOrders) {
+                UserRemainder userRemainder = userRemainderService.selectOne(new MyEntityWrapper<UserRemainder>().eq(UserRemainder.ORDER_NUM, userOrder.getOrderNum()).eq(UserRemainder.IS_OK, "0"));
                 if (userOrder != null) {
                     //TODO 普通订单
                     //0待付款  1待发货  2=已发货 3=交易成功 4=申请退款 5=退款成功 6=交易关闭 7=售后
                     if (userOrder.getStatus() > 0) {
-                        return true;
+                        flag = true;
                     }
                     try {
                         userOrder.setStatus(1);
                         userOrder.setPayTime(new Date());
                         userOrder.setPlatformNumber(platform_number);
-                        return userOrder.updateById();
+                        if (userOrder.updateById()) {
+                            flag = true;
+                        } else {
+                            return false;
+                        }
                     } catch (Exception e) {
                         logger.error("更改订单状态失败----{}", e.getMessage());
                         return false;
@@ -457,36 +462,36 @@ public class PayController {
                     //0待付款  1已付款
                     if (userRemainder.getIsOk() > 0) {
                         return true;
-                    }
-                    //类型 1=充值,-1=消费,0=其他,2=购买会员
-                    Integer type = userRemainder.getType();
-                    logger.info("充值类型--->{}", type);
-                    //TODO 充值订单
-                    try {
-                        switch (type) {
-                            case 2:
-                                MemberConfig memberConfig = memberConfigService.selectOne(new MyEntityWrapper<MemberConfig>().eq(MemberConfig.ID, userRemainder.getMemberId()));
-                                //更新会员状态
-                                User user = userService.selectById(userRemainder.getUserId());
-                                user.setLevel(memberConfig.getId());
-                                user.updateById();
-                            case 1:
-                                userRemainder.setIsOk(1);
-                                userRemainder.setPlatformNumber(platform_number);
-                                //更新充值订单状态
-                                userRemainder.updateById();
-                                break;
+                    } else {
+                        //类型 1=充值,-1=消费,0=其他,2=购买会员
+                        Integer type = userRemainder.getType();
+                        logger.info("充值类型--->{}", type);
+                        //TODO 充值订单
+                        try {
+                            switch (type) {
+                                case 2:
+                                    MemberConfig memberConfig = memberConfigService.selectOne(new MyEntityWrapper<MemberConfig>().eq(MemberConfig.ID, userRemainder.getMemberId()));
+                                    //更新会员状态
+                                    User user = userService.selectById(userRemainder.getUserId());
+                                    user.setLevel(memberConfig.getId());
+                                    user.updateById();
+                                case 1:
+                                    userRemainder.setIsOk(1);
+                                    userRemainder.setPlatformNumber(platform_number);
+                                    //更新充值订单状态
+                                    userRemainder.updateById();
+                                    break;
+                            }
+                            return true;
+                        } catch (Exception e) {
+                            logger.error("更改充值订单失败----{}", e.getMessage());
+                            return false;
                         }
-                        return true;
-                    } catch (Exception e) {
-                        logger.error("更改充值订单失败----{}", e.getMessage());
-                        return false;
                     }
                 }
             }
-
         }
-        return false;
+        return flag;
     }
 
     /**
@@ -582,7 +587,7 @@ public class PayController {
         return null;
     }
 
-    @ApiOperation(value = "用户端-支付")
+    /*@ApiOperation(value = "用户端-支付")
     @RequestMapping(value = "/balancePay", method = {RequestMethod.POST, RequestMethod.GET})
     public Result balancePay(@ApiParam(name = "orderId", value = "订单Id") Integer orderId,
                              @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信-4银行卡") Integer payType, String subject) throws MessageException {
@@ -611,5 +616,5 @@ public class PayController {
                 return new Result().erro("支付方式不存在");
         }
         return new Result().success("支付成功");
-    }
+    }*/
 }
