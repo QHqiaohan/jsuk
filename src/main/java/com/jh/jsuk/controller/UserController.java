@@ -20,6 +20,7 @@ import com.jh.jsuk.utils.*;
 import com.jh.jsuk.utils.wx.MD5Util;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -649,6 +650,41 @@ public class UserController {
         }
         user.updateById();
         return new Result().success();
+    }
+
+    @ApiOperation("后台管理系统-账户设置")
+    @RequestMapping(value="/accountInfoSetting",method={RequestMethod.POST,RequestMethod.GET})
+    public Result accountInfoSetting(String userId,String account,String headImg,String oldPassword,String newPassword){
+
+        ManagerUser manager_user = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+                .eq(ManagerUser.ID,userId)
+                .eq(ManagerUser.USER_NAME, account)
+                .eq(ManagerUser.PASSWORD, MD5Util.getMD5(oldPassword))
+        );
+        if(manager_user==null){
+            return new Result().erro("旧密码不正确");
+        }else{
+            if(headImg!=null && !headImg.equals("")){
+                manager_user.setHeadImg(headImg);
+            }
+            manager_user.setPassword(MD5Util.getMD5(newPassword));
+            manager_user.updateById();
+        }
+
+        return new Result().success("账户资料编辑成功");
+    }
+
+    @ApiOperation("后台管理系统-根据用户名搜索成员")
+    @RequestMapping(value="/getUserListByUsername",method={RequestMethod.GET,RequestMethod.POST})
+    public Result getUserListByUsername(String username){
+        if(username==null || "".equals(username)){
+            return new Result().erro("参数错误");
+        }
+        List<ManagerUser> manegerUserList=managerUserService.getUserListByUsername(username);
+        if(manegerUserList==null || manegerUserList.size()==0){
+            return new Result().success("没有数据");
+        }
+        return new Result().success(manegerUserList);
     }
 
 }

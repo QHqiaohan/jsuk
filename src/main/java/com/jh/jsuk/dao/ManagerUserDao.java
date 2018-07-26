@@ -19,4 +19,6 @@ import java.util.Map;
 public interface ManagerUserDao extends BaseMapper<ManagerUser> {
 
     List<Map> selectVoList(@Param("ew") Wrapper wrapper);
+
+    List<ManagerUser> getUserListByUsername(@Param("username") String username);
 }

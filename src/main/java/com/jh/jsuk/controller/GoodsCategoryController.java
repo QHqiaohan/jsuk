@@ -305,7 +305,7 @@ public class GoodsCategoryController {
         return childList;
     }
 
-    @ApiOperation("商家端-添加商品-选择商品分类")
+/*    @ApiOperation("商家端-添加商品-选择商品分类")
     @RequestMapping(value="/getCategoryListByParentId",method={RequestMethod.POST,RequestMethod.GET})
     public Result getCategoryListByParentId(@ApiParam(value="父级id,一级分类parentId等于0") @RequestParam Integer parentId){
         parentId=parentId==null?0:parentId;
@@ -315,5 +315,5 @@ public class GoodsCategoryController {
                                                                          .orderBy(GoodsCategory.SORT_ORDER,false)
         );
         return new Result().success(categoryList);
-    }
+    }*/
 }

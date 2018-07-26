@@ -465,15 +465,21 @@ public class ShopGoodsController {
         shopGoods.setCategoryId(addGoodsVo.getCategoryId());
         shopGoods.setAddress(addGoodsVo.getAddress());
 
-        shopGoods.insert();
-
-        // 商品ID
-        Integer id = shopGoods.getId();
-        for(ShopGoodsSize shopGoodsSize:addGoodsVo.getShopGoodsSizeList()){
-            shopGoodsSize.setShopGoodsId(id);
-            shopGoodsSize.insert();
+        try {
+            shopGoods.insert();
+            // 商品ID
+            Integer id = shopGoods.getId();
+            if(addGoodsVo.getShopGoodsSizeList()!=null && addGoodsVo.getShopGoodsSizeList().size()>0) {
+                for (ShopGoodsSize shopGoodsSize : addGoodsVo.getShopGoodsSizeList()) {
+                    shopGoodsSize.setShopGoodsId(id);
+                    shopGoodsSize.insert();
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            return new Result().erro("添加商品失败");
         }
-        return new Result().success();
+        return new Result().success("添加成功");
     }
 
     @ApiOperation("商家端-修改商品")

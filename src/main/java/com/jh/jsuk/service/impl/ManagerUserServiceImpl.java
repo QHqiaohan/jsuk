@@ -25,4 +25,9 @@ public class ManagerUserServiceImpl extends ServiceImpl<ManagerUserDao, ManagerU
     public List<Map> selectVoList(Wrapper wrapper) {
         return baseMapper.selectVoList(wrapper);
     }
+
+    @Override
+    public List<ManagerUser> getUserListByUsername(String username) {
+        return baseMapper.getUserListByUsername(username);
+    }
 }
