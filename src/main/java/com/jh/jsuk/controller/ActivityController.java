@@ -694,23 +694,17 @@ public class ActivityController {
      */
     @ApiOperation("用户-乡村旅游-查询亲子、户外拓展、采摘活动、酒店住宿、特产购买对应活动")
     @RequestMapping(value="/getActivityListByModularId",method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getActivityListByModularId(@RequestParam Integer modularId){
-        Result result=new Result();
+    public Result getActivityListByModularId(@RequestParam Integer modularId,
+                                             @RequestParam Integer current,
+                                             @RequestParam Integer size){
+        current=current==null?1:current;
+        size=size==null?10:size;
 
-        try{
-            List<Activity> activityList= activityService.getActivityListByModularId(modularId);
-            if(activityList!=null && activityList.size()>0){
-                result.success(activityList);
-            }else{
-                result.setMsg("没有相关活动");
-                result.setCode(-10L);
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-            return result.erro("出错啦，稍后重试");
-        }
-
-        return result;
+        Page activityPage=activityService.selectPage(new Page(current,size),
+                                                     new EntityWrapper<Activity>()
+                                                         .eq(Activity.MODULAR_ID,modularId)
+                );
+        return new Result().success(activityPage);
     }
 
     /**

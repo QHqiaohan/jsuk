@@ -687,6 +687,29 @@ public class UserController {
         return new Result().success(manegerUserList);
     }
 
+
+    @ApiOperation("后台管理系统-成员管理-成员列表")
+    @RequestMapping(value="/getManagerUserList",method={RequestMethod.GET,RequestMethod.POST})
+    public Result getManagerUserList(Integer current,Integer size){
+        Page managerUserPage=managerUserService.selectPage(new Page(current,size),
+                                                           new EntityWrapper<ManagerUser>()
+                                                               .eq(ManagerUser.CAN_USE,1)
+                );
+        return new Result().success(managerUserPage);
+    }
+
+    @ApiOperation("后台管理系统-成员管理-添加成员")
+    public Result addManagerUser(@ModelAttribute ManagerUser managerUser){
+        managerUser.setUserType(1);    //用户类型 1:平台 2:商家
+        managerUser.setCanUse(1);      //是否可用 0:否  1:是
+        managerUser.setCreateTime(new Date());
+        managerUser.setUpdateTime(new Date());
+        //获取默认头像
+        Dictionary dictionaryImg = dictionaryService.selectOne(new EntityWrapper<Dictionary>().
+                eq("code", "user_default_img"));
+
+
+        return new Result().success("添加成员成功");
+    }
+
 }
-
-
