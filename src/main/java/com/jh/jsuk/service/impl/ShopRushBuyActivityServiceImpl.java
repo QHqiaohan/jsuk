@@ -1,10 +1,14 @@
 package com.jh.jsuk.service.impl;
 
-import com.jh.jsuk.entity.ShopRushBuyActivity;
-import com.jh.jsuk.dao.ShopRushBuyActivityDao;
-import com.jh.jsuk.service.ShopRushBuyActivityService;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.jh.jsuk.dao.ShopRushBuyActivityDao;
+import com.jh.jsuk.entity.ShopRushBuyActivity;
+import com.jh.jsuk.entity.vo.rushbuy.ShopRushBuyActivityVO;
+import com.jh.jsuk.service.ShopRushBuyActivityService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +21,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShopRushBuyActivityServiceImpl extends ServiceImpl<ShopRushBuyActivityDao, ShopRushBuyActivity> implements ShopRushBuyActivityService {
 
+    @Override
+    public Page page(Page page) {
+        List<ShopRushBuyActivityVO> list = baseMapper.page(page);
+        return page.setRecords(list);
+    }
 }

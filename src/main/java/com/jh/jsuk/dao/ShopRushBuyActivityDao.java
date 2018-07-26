@@ -1,8 +1,12 @@
 package com.jh.jsuk.dao;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.ShopRushBuyActivity;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.jh.jsuk.entity.vo.RushBuyVo;
+import com.jh.jsuk.entity.vo.rushbuy.ShopRushBuyActivityVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,4 +20,5 @@ public interface ShopRushBuyActivityDao extends BaseMapper<ShopRushBuyActivity> 
 
     RushBuyVo findVoByGoodsSizeId(Integer goodsSizeId);
 
+    List<ShopRushBuyActivityVO> page(Page page);
 }

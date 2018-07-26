@@ -1,9 +1,12 @@
 package com.jh.jsuk.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.jh.jsuk.entity.ShopRushBuyActivity;
+import com.jh.jsuk.service.ShopRushBuyActivityService;
+import com.jh.jsuk.utils.R;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -16,6 +19,38 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/shopRushBuyActivity")
 public class ShopRushBuyActivityController {
+
+    @Autowired
+    ShopRushBuyActivityService shopRushBuyActivityService;
+
+    @GetMapping
+    public R page(Page page){
+        return R.succ(shopRushBuyActivityService.page(page));
+    }
+
+    @PutMapping
+    public R add(ShopRushBuyActivity ent){
+        ent.insert();
+        return R.succ();
+    }
+
+    @PatchMapping
+    public R edit(ShopRushBuyActivity ent){
+        ent.updateById();
+        return R.succ();
+    }
+
+    @DeleteMapping
+    public R delete(ShopRushBuyActivity ent){
+        ent.setIsDel(1);
+        ent.updateById();
+        return R.succ();
+    }
+
+    @GetMapping("/get")
+    public R get(Integer id){
+        return R.succ(shopRushBuyActivityService.selectById(id));
+    }
 
 }
 
