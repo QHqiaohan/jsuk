@@ -598,9 +598,7 @@ public class ActivityController {
     //用户-乡村旅游-热门推荐
     @ApiOperation("用户-乡村旅游-热门推荐")
     @RequestMapping(value="/getHotActivityList",method={RequestMethod.POST,RequestMethod.GET})
-    public Result getHotActivityList(@RequestParam Integer current,
-                                     @RequestParam Integer size,
-                                     @RequestParam Integer ModularId){
+    public Result getHotActivityList( Integer current, Integer size, @RequestParam Integer ModularId){
         current=current==null?1:current;
         size=size==null?10:size;
         Result result=new Result();
@@ -641,7 +639,7 @@ public class ActivityController {
         }
 
         if(activityJoinList==null || activityJoinList.size()==0){
-            return new Result().setMsg("暂时还没有参与的活动信息").setCode(-10L);
+            return new Result().success();
         }
 
         // 获取活动ID
@@ -694,9 +692,7 @@ public class ActivityController {
      */
     @ApiOperation("用户-乡村旅游-查询亲子、户外拓展、采摘活动、酒店住宿、特产购买对应活动")
     @RequestMapping(value="/getActivityListByModularId",method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getActivityListByModularId(@RequestParam Integer modularId,
-                                             @RequestParam Integer current,
-                                             @RequestParam Integer size){
+    public Result getActivityListByModularId(@RequestParam Integer modularId, Integer current, Integer size){
         current=current==null?1:current;
         size=size==null?10:size;
 
