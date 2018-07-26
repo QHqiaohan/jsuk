@@ -16,10 +16,7 @@ import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderGoodsDto;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
-import com.jh.jsuk.entity.vo.OrderPrice;
-import com.jh.jsuk.entity.vo.OrderResponse;
-import com.jh.jsuk.entity.vo.UserOrderDetailVo;
-import com.jh.jsuk.entity.vo.UserOrderVo;
+import com.jh.jsuk.entity.vo.*;
 import com.jh.jsuk.envm.OrderResponseStatus;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
@@ -137,14 +134,21 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
 
     @Override
     public Page getOrderByUserId(Page page, Wrapper wrapper, Integer userId, Integer status, String goodsName) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
-        page.setRecords(baseMapper.getOrderByUserId(page, wrapper, userId, status, goodsName));
+        List<UserOrderInfoVo> orderByUserId = baseMapper.getOrderByUserId(page, wrapper, userId, status, goodsName);
+        List<UserOrderInfoVo> orders=new ArrayList<>();
+        Set<Integer> idSet=new HashSet<>();
+        for (UserOrderInfoVo vo:orderByUserId){
+            if(idSet.add(vo.getId())){
+                orders.add(vo);
+            }
+        }
+        page.setRecords(orders);
         return page;
     }
 
