@@ -736,4 +736,15 @@ public class UserController {
         return new Result().success("更改成功");
     }
 
+    @ApiOperation("后台管理系统-成员管理-是否启用成员")
+    @RequestMapping(value="/editManagerUser",method={RequestMethod.POST})
+    public Result editManagerUser(@ModelAttribute ManagerUser managerUser){
+        if(managerUser!=null) {
+            managerUser.updateById();
+            return new Result().success("编辑成功");
+        }else{
+            return new Result().erro("参数错误");
+        }
+    }
+
 }
