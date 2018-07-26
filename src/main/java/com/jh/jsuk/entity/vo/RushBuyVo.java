@@ -1,10 +1,14 @@
 package com.jh.jsuk.entity.vo;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Date;
 
-@Data
+@Setter
+@Getter
+@ToString
 public class RushBuyVo {
 
     private Date startTime;

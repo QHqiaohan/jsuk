@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.ShopRushBuy;
 import com.jh.jsuk.entity.vo.ShopGoodsSizeVo;
+import com.jh.jsuk.entity.vo.rushbuy.SGoodsVo;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -26,5 +28,12 @@ public interface ShopGoodsSizeDao extends BaseMapper<ShopGoodsSize> {
     ShopGoodsSizeVo findVoById(Integer shopGoodsSizeId);
 
     ShopRushBuy selectRushBuyByGoodsSizeId(Integer goodsSizeId);
+
+    @Select("select size_name sizeName,goods_name name from (\n" +
+            "select size_name,shop_goods_id goods_id from js_shop_goods_size where id = #{id}\n" +
+            ") sz\n" +
+            "left JOIN js_shop_goods g on sz.goods_id = g.id")
+    SGoodsVo shortVo(Integer id);
+
 
 }

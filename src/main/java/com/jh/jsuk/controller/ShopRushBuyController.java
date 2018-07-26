@@ -48,6 +48,14 @@ public class ShopRushBuyController {
         return R.succ(shopRushBuyService.selectPage(page, wrapper));
     }
 
+    @GetMapping("/list")
+    public R list(){
+        Wrapper<ShopRushBuy> wrapper = new EntityWrapper<>();
+        wrapper.ne(ShopRushBuy.IS_DEL,1)
+                .eq(ShopRushBuy.IS_USE,1);
+        return R.succ(shopRushBuyService.selectList(wrapper));
+    }
+
     @PostMapping("/update")
     public R update(ShopRushBuy rushBuy){
         rushBuy.updateById();

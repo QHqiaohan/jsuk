@@ -2,10 +2,12 @@ package com.jh.jsuk.controller;
 
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.ShopAttributeVo;
 import com.jh.jsuk.entity.vo.ShopTelPhoneVo;
 import com.jh.jsuk.service.*;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -45,6 +47,13 @@ public class ShopController {
     private UserRemainderService userRemainderService;
     @Autowired
     private ManagerUserService managerUserService;
+
+    @GetMapping("/list")
+    public R list(){
+        Wrapper<Shop> wrapper = new EntityWrapper<>();
+        wrapper.eq(Shop.CAN_USE,1);
+        return R.succ(shopService.selectList(wrapper));
+    }
 
     @ApiOperation("用户端-根据店铺id查看店铺信息")
     @RequestMapping(value = "/getShopById", method = {RequestMethod.POST, RequestMethod.GET})

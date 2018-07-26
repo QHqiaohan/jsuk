@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * <p>
@@ -18,6 +20,9 @@ import java.util.List;
  * @author lpf
  * @since 2018-06-20
  */
+@Setter
+@Getter
+@ToString
 @TableName("js_shop_goods")
 public class ShopGoods extends Model<ShopGoods> {
 
@@ -76,9 +81,9 @@ public class ShopGoods extends Model<ShopGoods> {
     @ApiModelProperty(value = "商品状态.0-待审核 1-在售 2-下架", name = "status")
     private Integer status;
     /**
-     * 0删除  1未删除
+     * 1删除  0未删除
      */
-    @ApiModelProperty(value = "0删除  1未删除", name = "isDel")
+    @ApiModelProperty(value = "1删除  0未删除", name = "isDel")
     private Integer isDel;
     /**
      * 添加时间
@@ -118,166 +123,6 @@ public class ShopGoods extends Model<ShopGoods> {
      */
     @ApiModelProperty(value = "地址", name = "address")
     private String address;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public Integer getBrandId() {
-        return brandId;
-    }
-
-    public void setBrandId(Integer brandId) {
-        this.brandId = brandId;
-    }
-
-    public Integer getAttributeId() {
-        return attributeId;
-    }
-
-    public void setAttributeId(Integer attributeId) {
-        this.attributeId = attributeId;
-    }
-
-    public Integer getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(Integer shopId) {
-        this.shopId = shopId;
-    }
-
-    public Integer getShopModularId() {
-        return shopModularId;
-    }
-
-    public void setShopModularId(Integer shopModularId) {
-        this.shopModularId = shopModularId;
-    }
-
-    public Integer getIsRecommend() {
-        return isRecommend;
-    }
-
-    public void setIsRecommend(Integer isRecommend) {
-        this.isRecommend = isRecommend;
-    }
-
-    public Integer getGoodsLabelId() {
-        return goodsLabelId;
-    }
-
-    public void setGoodsLabelId(Integer goodsLabelId) {
-        this.goodsLabelId = goodsLabelId;
-    }
-
-    public String getGoodsName() {
-        return goodsName;
-    }
-
-    public void setGoodsName(String goodsName) {
-        this.goodsName = goodsName;
-    }
-
-    public String getGoodsImg() {
-        return goodsImg;
-    }
-
-    public void setGoodsImg(String goodsImg) {
-        this.goodsImg = goodsImg;
-    }
-
-    public String getGoodsDesc() {
-        return goodsDesc;
-    }
-
-    public void setGoodsDesc(String goodsDesc) {
-        this.goodsDesc = goodsDesc;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Integer getIsDel() {
-        return isDel;
-    }
-
-    public void setIsDel(Integer isDel) {
-        this.isDel = isDel;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getMainImage() {
-        return mainImage;
-    }
-
-    public void setMainImage(String mainImage) {
-        this.mainImage = mainImage;
-    }
-
-    public String getGoodsBreak() {
-        return goodsBreak;
-    }
-
-    public void setGoodsBreak(String goodsBreak) {
-        this.goodsBreak = goodsBreak;
-    }
-
-    public Integer getSaleAmont() {
-        return saleAmont;
-    }
-
-    public void setSaleAmont(Integer saleAmont) {
-        this.saleAmont = saleAmont;
-    }
-
-    public Integer getGoodsType() {
-        return goodsType;
-    }
-
-    public void setGoodsType(Integer goodsType) {
-        this.goodsType = goodsType;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
 
     public static final String ID = "id";
 

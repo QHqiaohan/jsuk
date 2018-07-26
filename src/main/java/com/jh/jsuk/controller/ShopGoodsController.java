@@ -3,11 +3,13 @@ package com.jh.jsuk.controller;
 
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.AddGoodsVo;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
+import com.jh.jsuk.envm.ShopGoodsStatus;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.R;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +58,17 @@ public class ShopGoodsController {
 
     @Autowired
     ShopRushBuyService shopRushBuyService;
+
+    @GetMapping("/list")
+    public R list(Integer shopId) {
+        Wrapper<ShopGoods> wrapper = new EntityWrapper<>();
+        if (shopId != null) {
+            wrapper.eq(ShopGoods.SHOP_ID, shopId);
+        }
+        wrapper.ne(ShopGoods.IS_DEL, 1)
+                .eq(ShopGoods.STATUS, ShopGoodsStatus.UPPER.getKey());
+        return R.succ(shopGoodsService.selectList(wrapper));
+    }
 
     @ApiOperation("用户端-根据店铺内部的分类-属性查询商品")
     @ApiImplicitParams({
@@ -167,8 +179,8 @@ public class ShopGoodsController {
     }*/
 
 
-   //用户端-首页-王阳明全集
-   //首页-分类-点击三级分类-查看商品详情
+    //用户端-首页-王阳明全集
+    //首页-分类-点击三级分类-查看商品详情
     @ApiOperation("用户端-根据商品ID查看商品信息")
     @RequestMapping(value = "/getShopGoodsById", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopGoodsById(@ApiParam(value = "商品ID", required = true) @RequestParam Integer id) {
@@ -176,7 +188,7 @@ public class ShopGoodsController {
         // 封装结果map
         Map<String, Object> map = MapUtil.newHashMap();
         GoodsSizeVo goodsSizeVo = shopGoodsService.getShopGoodsById(id);
-        if(goodsSizeVo == null){
+        if (goodsSizeVo == null) {
             return result.erro("商品不存在");
         }
         map.put("shopGoods", goodsSizeVo);
@@ -257,16 +269,16 @@ public class ShopGoodsController {
 
     //用户端-首页-商品(王阳明全集...)详情-根据商品id查询该商品对应的优惠券列表
     @ApiOperation("用户端-首页-商品详情-优惠券列表")
-    @RequestMapping(value="/getCouponListByGoodsId",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getCouponListByGoodsId(Integer goodsId){
+    @RequestMapping(value = "/getCouponListByGoodsId", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result getCouponListByGoodsId(Integer goodsId) {
         /**
          * 根据商品id查询商品对应的店铺
          */
         ShopGoods shopgoods = shopGoodsService.selectById(goodsId);
         Integer shopId = shopgoods.getShopId();
-        List<Coupon> list=couponService.selectCouponList(goodsId,shopId);
+        List<Coupon> list = couponService.selectCouponList(goodsId, shopId);
 
-        if(list==null || list.size()==0){
+        if (list == null || list.size() == 0) {
             return new Result().erro("没有优惠券");
         }
         return new Result().success(list);
@@ -275,13 +287,13 @@ public class ShopGoodsController {
     //用户端-首页-商品(王阳明全集...)详情-根据商品id查询该商品对应的优惠券列表-领取优惠券
     @ApiOperation("用户端-首页-商品详情-优惠券列表-领取")
     @RequestMapping("/getCoupon")
-    public  Result getCoupon(String price,Integer userId,@RequestBody Coupon coupon){
-        double goods_price=Double.parseDouble(price);
+    public Result getCoupon(String price, Integer userId, @RequestBody Coupon coupon) {
+        double goods_price = Double.parseDouble(price);
         /**
          * 判断商品价格是否满足优惠券门槛价格
          */
-        if(new BigDecimal(goods_price).doubleValue()>=coupon.getFullPrice().doubleValue()){   //满足门槛价格
-            UserCoupon uc=new UserCoupon();
+        if (new BigDecimal(goods_price).doubleValue() >= coupon.getFullPrice().doubleValue()) {   //满足门槛价格
+            UserCoupon uc = new UserCoupon();
             uc.setUserId(userId);
             uc.setCouponId(coupon.getId());
 
@@ -295,22 +307,22 @@ public class ShopGoodsController {
             uc.insert();
             return new Result().success("领取优惠券成功");
 
-        }else{
+        } else {
             return new Result().erro("商品价格不满足优惠券领取价格");
         }
 
     }
 
 
-   //首页-分类-点击三级分类-商品搜索
+    //首页-分类-点击三级分类-商品搜索
     @ApiOperation("首页-分类-点击三级分类-商品搜索")
-    @RequestMapping(value="/searchGoods",method = {RequestMethod.POST, RequestMethod.GET})
-    public Result searchGoods(String keywords){
-       List <GoodsSizeVo> goodsSizeVoList = shopGoodsService.getShopGoodsByKeywords(keywords);
-       if(goodsSizeVoList==null || goodsSizeVoList.size()==0){
-           return new Result().erro("没有搜索到相关商品");
-       }
-       return new Result().success(goodsSizeVoList);
+    @RequestMapping(value = "/searchGoods", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result searchGoods(String keywords) {
+        List<GoodsSizeVo> goodsSizeVoList = shopGoodsService.getShopGoodsByKeywords(keywords);
+        if (goodsSizeVoList == null || goodsSizeVoList.size() == 0) {
+            return new Result().erro("没有搜索到相关商品");
+        }
+        return new Result().success(goodsSizeVoList);
     }
 
 
@@ -384,16 +396,16 @@ public class ShopGoodsController {
             @ApiImplicitParam(name = "userId", value = "商家id", paramType = "query", dataType = "integer")
     })
     @RequestMapping(value = "/addShopGoodsList", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addShopGoodsList(Integer userId, Integer current,Integer size) {
-        current=current==null?1:current;
-        size=size==null?10:size;
-        Page page=new Page(current,size);
+    public Result addShopGoodsList(Integer userId, Integer current, Integer size) {
+        current = current == null ? 1 : current;
+        size = size == null ? 10 : size;
+        Page page = new Page(current, size);
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
         Integer shopId = managerUser.getShopId();
 
         MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
-        ew.eq(ShopGoodsSize.IS_DEL,0);
+        ew.eq(ShopGoodsSize.IS_DEL, 0);
         Page shopGoods = shopGoodsService.findShopGoodsAndGoodsSizeByShopId(page, ew, shopId);
 
         return new Result().success(shopGoods);
@@ -411,7 +423,7 @@ public class ShopGoodsController {
         List<ShopGoods> goodsList = shopGoodsService.selectList(new EntityWrapper<ShopGoods>()
                 .eq(ShopGoods.SHOP_ID, shopId)
         );
-        if(goodsList==null || goodsList.size()==0){
+        if (goodsList == null || goodsList.size() == 0) {
             return new Result().erro("商品不存在");
         }
 
@@ -428,7 +440,7 @@ public class ShopGoodsController {
                 }
             }
             return new Result().success("删除成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new Result().erro("删除失败");
         }
@@ -439,12 +451,12 @@ public class ShopGoodsController {
     public Result addShopGoods(@ModelAttribute AddGoodsVo addGoodsVo, Integer userId) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
-        if(managerUser==null){
+        if (managerUser == null) {
             return new Result().erro("该商家不存在");
         }
         Integer shopId = managerUser.getShopId();
 
-        ShopGoods shopGoods=new ShopGoods();
+        ShopGoods shopGoods = new ShopGoods();
         shopGoods.setShopId(shopId);
         shopGoods.setAttributeId(addGoodsVo.getAttributeId());
         shopGoods.setBrandId(addGoodsVo.getBrandId());
@@ -469,7 +481,7 @@ public class ShopGoodsController {
 
         // 商品ID
         Integer id = shopGoods.getId();
-        for(ShopGoodsSize shopGoodsSize:addGoodsVo.getShopGoodsSizeList()){
+        for (ShopGoodsSize shopGoodsSize : addGoodsVo.getShopGoodsSizeList()) {
             shopGoodsSize.setShopGoodsId(id);
             shopGoodsSize.insert();
         }
