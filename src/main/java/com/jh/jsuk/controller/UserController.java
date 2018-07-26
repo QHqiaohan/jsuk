@@ -747,4 +747,18 @@ public class UserController {
         }
     }
 
+    @ApiOperation("后台管理系统-成员管理-删除成员")
+    @RequestMapping(value="/deleteManagerUserById",method={RequestMethod.GET,RequestMethod.POST})
+    public Result deleteManagerUserById(@RequestParam Integer managerUserId){
+        ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+                                                            .eq(ManagerUser.ID,managerUserId)
+        );
+        if(managerUser==null){
+            return new Result().erro("系统错误，请稍后再试");
+        }
+        managerUser.setCanUse(0);
+        managerUser.updateById();
+        return new Result().success("删除成功");
+    }
+
 }
