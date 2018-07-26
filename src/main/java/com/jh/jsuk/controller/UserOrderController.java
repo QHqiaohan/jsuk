@@ -471,7 +471,7 @@ public class UserOrderController {
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "status", value = "0待付款,1待发货,2=已发货 3=交易成功,4=申请退款,5=退款成功,6=交易关闭,7=售后",
+            @ApiImplicitParam(name = "status", value = "0待付款,1待发货,2=待收货 3=售后,4=退款,5=退货,6=拒绝,7=取消",
                     paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "goodsName", value = "商品名称", paramType = "query", dataType = "string")
     })

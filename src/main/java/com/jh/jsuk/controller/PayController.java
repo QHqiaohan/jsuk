@@ -587,7 +587,7 @@ public class PayController {
         return null;
     }
 
-    @ApiOperation(value = "用户端-支付")
+    /*@ApiOperation(value = "用户端-支付")
     @RequestMapping(value = "/balancePay", method = {RequestMethod.POST, RequestMethod.GET})
     public Result balancePay(@ApiParam(name = "orderId", value = "订单Id") Integer orderId,
                              @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信-4银行卡") Integer payType, String subject) throws MessageException {
@@ -616,5 +616,5 @@ public class PayController {
                 return new Result().erro("支付方式不存在");
         }
         return new Result().success("支付成功");
-    }
+    }*/
 }
