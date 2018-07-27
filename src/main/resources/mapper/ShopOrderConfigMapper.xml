@@ -2,20 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jh.jsuk.dao.ShopOrderConfigDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopOrderConfig">
-        <id column="id" property="id" />
-        <result column="shop_id" property="shopId" />
-        <result column="rush_by_timeout" property="rushByTimeout" />
-        <result column="pay_timeout" property="payTimeout" />
-        <result column="confirm_received" property="confirmReceived" />
-        <result column="auto_complete" property="autoComplete" />
-        <result column="auto_comment" property="autoComment" />
-    </resultMap>
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopOrderConfig">
+    <id column="id" property="id"/>
+    <result column="shop_id" property="shopId"/>
+    <result column="rush_by_timeout" property="rushBuyTimeout"/>
+    <result column="pay_timeout" property="payTimeout"/>
+    <result column="confirm_received" property="confirmReceived"/>
+    <result column="auto_complete" property="autoComplete"/>
+    <result column="auto_comment" property="autoComment"/>
+  </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, shop_id, rush_by_timeout, pay_timeout, confirm_received, auto_complete, auto_comment
-    </sql>
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+        id, shop_id, rush_buy_timeout, pay_timeout, confirm_received, auto_complete, auto_comment
+  </sql>
 
 </mapper>
