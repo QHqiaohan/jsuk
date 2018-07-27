@@ -549,16 +549,21 @@ public class UserOrderController {
 
     @ApiOperation(value = "用户端-申请售后")
     @RequestMapping(value = "/addOrderService", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addOrderService(@ModelAttribute com.jh.jsuk.entity.UserOrderService userOrderService) {
-        userOrderService.insert();
+    public Result addOrderService(@ModelAttribute com.jh.jsuk.entity.UserOrderService userOrderService1) {
+        UserOrder userOrder = userOrderService.selectById(userOrderService1.getOrderId());
+        if (userOrderService1.getType()!=3){
+            userOrder.setStatus(OrderStatus.REFUND_MONEY.getKey());
+        }
+        userOrder.updateById();
+        userOrderService1.insert();
         return new Result().success("操作成功!");
     }
 
     @ApiOperation(value = "用户端-更换商品-选择商品型号")
     @RequestMapping(value = "/changeGoods", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result changeGoods(@ApiParam(value = "规格ID", required = true) Integer goodsSizeId) {
+    public Result changeGoods(@ApiParam(value = "商品ID", required = true) Integer shopGoodsId) {
         List<ShopGoodsSize> goodsSizeList = shopGoodsSizeService.selectList(new EntityWrapper<ShopGoodsSize>()
-                .eq(ShopGoodsSize.ID, goodsSizeId)
+                .eq(ShopGoodsSize.SHOP_GOODS_ID, shopGoodsId)
                 .eq(ShopGoodsSize.IS_DEL, 0));
         return new Result().success(goodsSizeList);
     }
