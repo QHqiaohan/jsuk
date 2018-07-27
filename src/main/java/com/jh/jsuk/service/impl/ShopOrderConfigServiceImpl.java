@@ -1,14 +1,9 @@
 package com.jh.jsuk.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.github.tj123.common.RedisUtils;
-import com.jh.jsuk.conf.RedisKeys;
 import com.jh.jsuk.dao.ShopOrderConfigDao;
 import com.jh.jsuk.entity.ShopOrderConfig;
 import com.jh.jsuk.service.ShopOrderConfigService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,26 +17,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShopOrderConfigServiceImpl extends ServiceImpl<ShopOrderConfigDao, ShopOrderConfig> implements ShopOrderConfigService {
 
-    @Autowired
-    RedisUtils redisUtils;
 
     @Override
-    public ShopOrderConfig getConfig(Integer shopId) throws Exception {
-        String key = RedisKeys.subKey(RedisKeys.SHOP_ORDER_CONFIG, String.valueOf(shopId));
-        ShopOrderConfig config = redisUtils.get(key, ShopOrderConfig.class);
-        if (config != null)
-            return config.defaultConfig();
-        ShopOrderConfig dbConfig = _getConfig(shopId);
-        if (dbConfig != null) {
-            redisUtils.set(key, dbConfig.defaultConfig(), 10 * 60);
-            return dbConfig;
+    public ShopOrderConfig getConfig() {
+        ShopOrderConfig notCachedConfig = selectById(1);
+        if(notCachedConfig == null){
+            notCachedConfig = new ShopOrderConfig();
         }
-        return new ShopOrderConfig().defaultConfig();
+        return notCachedConfig.defaultConfig();
     }
 
-    private ShopOrderConfig _getConfig(Integer shopId) {
-        Wrapper<ShopOrderConfig> wrapper = new EntityWrapper<>();
-        wrapper.eq(ShopOrderConfig.SHOP_ID, shopId);
-        return selectOne(wrapper);
+    @Override
+    public void setConfig(ShopOrderConfig config) {
+        config.setId(1);
+        if (!config.updateById()) {
+            config.insert();
+        }
     }
 }

@@ -46,7 +46,7 @@
         WHERE
         is_recommend = '1'
         AND `status` = '1'
-        AND is_del = '1'
+        AND not is_del
         AND shop_modular_id = #{modularId}
         ORDER BY
         sale_amont DESC
@@ -61,7 +61,7 @@
         js_shop_goods
         WHERE
         `status` = '1'
-        AND is_del = '1'
+        AND not is_del
         and shop_id = #{shopId}
         <if test="attributeId != null ">
             AND attribute_id = #{attributeId}
@@ -80,7 +80,7 @@
         js_shop_goods
         WHERE
         `status` = '1'
-        AND is_del = '1'
+        AND not is_del
         AND goods_name LIKE CONCAT('%', #{name}, '%')
         ORDER BY
         sale_amont DESC
@@ -153,7 +153,7 @@
         LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
         WHERE sg.category_id = #{categoryId}
         and sg.status = 1
-        and sg.is_del = 1
+        and not sg.is_del
         <if test="type == 1">
             ORDER BY
             sgs.sales_price + 0 DESC
@@ -179,7 +179,7 @@
         LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
         WHERE sg.category_id = #{categoryId}
         and sg.status = 1
-        and sg.is_del = 0
+        and not sg.is_del
         ORDER BY sg.sale_amont DESC
         <where>
             ${ew.sqlSegment}
@@ -216,7 +216,7 @@
         LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
         where
         sg.status = 1
-        AND sg.is_del = 1
+        AND not sg.is_del
         and sgs.stock > 0
         <if test="shopId != null">
             AND sg.shop_id = #{shopId}
@@ -328,6 +328,11 @@
                      select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></association>
     </resultMap>
 
+  <resultMap id="ShopGoodsVoT2" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
+    <collection property="shopGoodsSize" column="id"
+                 select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></collection>
+  </resultMap>
+
     <!--修改-->
     <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="ShopGoodsVoT">
         SELECT
@@ -368,7 +373,7 @@
     </select>
     <select id="shopGoodsRecycleList" resultMap="shopGoodsVo2">
         select * from js_shop_goods
-        where is_del = 1 and shop_id = #{shopId}
+        where not is_del and shop_id = #{shopId}
         <if test="keyWord != null">
             and goods_name like #{keyWord}
         </if>

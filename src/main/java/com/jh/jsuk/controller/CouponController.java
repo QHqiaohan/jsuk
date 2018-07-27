@@ -238,26 +238,26 @@ public class CouponController {
     }
 
 
-    @RequestMapping("/ui/list")
-    public Result uiList(Page page) {
-        Page couponPage = couponService.selectPage(page, new EntityWrapper<Coupon>()
-                .eq(Coupon.IS_DEL, 1)
-                .orderBy(Coupon.PUBLISH_TIME, false));
-        return new Result().success(couponPage);
-    }
+//    @RequestMapping("/ui/list")
+//    public Result uiList(Page page) {
+//        Page couponPage = couponService.selectPage(page, new EntityWrapper<Coupon>()
+//                .eq(Coupon.IS_DEL, 1)
+//                .orderBy(Coupon.PUBLISH_TIME, false));
+//        return new Result().success(couponPage);
+//    }
 
-    @PostMapping("/ui/add")
-    public Result add(Coupon coupon) {
-        coupon.insert();
-        return new Result().success();
-    }
+//    @PostMapping("/ui/add")
+//    public Result add(Coupon coupon) {
+//        coupon.insert();
+//        return new Result().success();
+//    }
 
-    @RequestMapping("/ui/del")
-    public Result del(Coupon coupon) {
-        coupon.setIsDel(0);
-        coupon.updateById();
-        return new Result().success();
-    }
+//    @RequestMapping("/ui/del")
+//    public Result del(Coupon coupon) {
+//        coupon.setIsDel(0);
+//        coupon.updateById();
+//        return new Result().success();
+//    }
 
 
 }

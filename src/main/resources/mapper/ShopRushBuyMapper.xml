@@ -25,7 +25,6 @@
 
     <select id="getShopRushBuyList" resultMap="ShopGoodsKillVo">
         SELECT
-        srb.`status`,
         sgs.sales_price,
         sgs.original_price,
         sgs.kill_price,
