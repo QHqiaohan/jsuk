@@ -334,7 +334,7 @@
   </resultMap>
 
     <!--修改-->
-    <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="ShopGoodsVoT2">
+    <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="ShopGoodsVoT">
         SELECT
         <include refid="Base_Column_List"/>
         FROM js_shop_goods
