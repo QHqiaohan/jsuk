@@ -123,6 +123,7 @@ public class ShopController {
         if(managerUser==null){
             return new Result().erro("系统错误,请稍后再试");
         }
+
         Integer shopId = managerUser.getShopId();
         shop.setId(shopId);
         shop.updateById();
