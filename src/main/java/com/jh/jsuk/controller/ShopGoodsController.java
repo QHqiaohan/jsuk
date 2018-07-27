@@ -2,8 +2,6 @@ package com.jh.jsuk.controller;
 
 
 import cn.hutool.core.map.MapUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -219,7 +217,7 @@ public class ShopGoodsController {
         Integer labelId = goodsSizeVo.getGoodsLabelId();
         List<GoodsLabel> goodsLabelList = goodsLabelService.selectList(new EntityWrapper<GoodsLabel>()
                 .eq(GoodsLabel.ID, labelId)
-                .eq(GoodsLabel.IS_DEL, 0)
+                .ne(GoodsLabel.IS_DEL, 1)
                 .orderBy(GoodsLabel.RANK, false));
         map.put("goodsLabelList", goodsLabelList);
         return result.success(map);
