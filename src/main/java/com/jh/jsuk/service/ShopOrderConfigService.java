@@ -16,9 +16,10 @@ public interface ShopOrderConfigService extends IService<ShopOrderConfig> {
     /**
      * 获取商家的订单配置 如果没有数据填充默认数据
      *
-     * @param shopId
      * @return
      */
-    ShopOrderConfig getConfig(Integer shopId) throws Exception;
+    ShopOrderConfig getConfig();
+
+    void setConfig(ShopOrderConfig config);
 
 }

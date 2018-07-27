@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -15,6 +18,9 @@ import java.io.Serializable;
  * @author tj
  * @since 2018-07-18
  */
+@Setter
+@Getter
+@ToString
 @TableName("js_shop_order_config")
 public class ShopOrderConfig extends Model<ShopOrderConfig> {
 
@@ -29,7 +35,7 @@ public class ShopOrderConfig extends Model<ShopOrderConfig> {
     /**
      * 秒杀订单超时自动关闭(分钟)
      */
-    private Integer rushByTimeout;
+    private Integer rushBuyTimeout;
     /**
      * 超过时间分钟后未付款，订单自动关闭
      */
@@ -48,7 +54,7 @@ public class ShopOrderConfig extends Model<ShopOrderConfig> {
     private Integer autoComment;
 
 
-    private static final Integer DEFAULT_RUSH_BY_TIMEOUT = 40;
+    private static final Integer DEFAULT_RUSH_BUY_TIMEOUT = 40;
 
     private static final Integer DEFAULT_PAY_TIMEOUT = 60;
 
@@ -64,7 +70,7 @@ public class ShopOrderConfig extends Model<ShopOrderConfig> {
      */
     public ShopOrderConfig defaultConfig() {
         ShopOrderConfig config = new ShopOrderConfig();
-        config.setRushByTimeout(rushByTimeout != null ? rushByTimeout : DEFAULT_RUSH_BY_TIMEOUT);
+        config.setRushBuyTimeout(rushBuyTimeout != null ? rushBuyTimeout : DEFAULT_RUSH_BUY_TIMEOUT);
         config.setPayTimeout(payTimeout != null ? payTimeout : DEFAULT_PAY_TIMEOUT);
         config.setConfirmReceived(confirmReceived != null ? confirmReceived : DEFAULT_CONFIRM_RECEIVED);
         config.setAutoComment(autoComment != null ? autoComment : DEFAULT_AUTO_COMMENT);
@@ -72,67 +78,12 @@ public class ShopOrderConfig extends Model<ShopOrderConfig> {
         return config;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(Integer shopId) {
-        this.shopId = shopId;
-    }
-
-    public Integer getRushByTimeout() {
-        return rushByTimeout;
-    }
-
-    public void setRushByTimeout(Integer rushByTimeout) {
-        this.rushByTimeout = rushByTimeout;
-    }
-
-    public Integer getPayTimeout() {
-        return payTimeout;
-    }
-
-    public void setPayTimeout(Integer payTimeout) {
-        this.payTimeout = payTimeout;
-    }
-
-    public Integer getConfirmReceived() {
-        return confirmReceived;
-    }
-
-    public void setConfirmReceived(Integer confirmReceived) {
-        this.confirmReceived = confirmReceived;
-    }
-
-    public Integer getAutoComplete() {
-        return autoComplete;
-    }
-
-    public void setAutoComplete(Integer autoComplete) {
-        this.autoComplete = autoComplete;
-    }
-
-    public Integer getAutoComment() {
-        return autoComment;
-    }
-
-    public void setAutoComment(Integer autoComment) {
-        this.autoComment = autoComment;
-    }
 
     public static final String ID = "id";
 
     public static final String SHOP_ID = "shop_id";
 
-    public static final String RUSH_BY_TIMEOUT = "rush_by_timeout";
+    public static final String RUSH_BY_TIMEOUT = "rush_buy_timeout";
 
     public static final String PAY_TIMEOUT = "pay_timeout";
 
@@ -147,16 +98,4 @@ public class ShopOrderConfig extends Model<ShopOrderConfig> {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "ShopOrderConfig{" +
-                "id=" + id +
-                ", shopId=" + shopId +
-                ", rushByTimeout=" + rushByTimeout +
-                ", payTimeout=" + payTimeout +
-                ", confirmReceived=" + confirmReceived +
-                ", autoComplete=" + autoComplete +
-                ", autoComment=" + autoComment +
-                "}";
-    }
 }
