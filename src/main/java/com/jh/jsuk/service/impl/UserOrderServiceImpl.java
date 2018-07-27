@@ -150,7 +150,20 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             }
         }
         page.setRecords(orders);*/
-        page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId));
+        if (null == status) {
+            if (goodsName != null) {
+                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId).like(UserOrder.GOODS_NAME, goodsName));
+            } else {
+                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId));
+            }
+        } else {
+            if (goodsName != null) {
+                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId).eq(UserOrder.STATUS, status).like(UserOrder.GOODS_NAME, goodsName));
+            } else {
+                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId).eq(UserOrder.STATUS, status));
+            }
+
+        }
         List<UserOrder> records = page.getRecords();
         List<UserOrderListVo> userOrderListVos = new ArrayList<>();
         for (UserOrder userOrder : records) {
@@ -358,6 +371,13 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setOrderRealPrice(orderPrice.getOrderRealPrice());
             o.setCouponReduce(orderPrice.getCouponReduce());
             o.setIntegralReduce(orderPrice.getIntegralReduce());
+            StringBuilder goodsName= new StringBuilder();
+            for (UserOrderGoods userOrderGoods:gs){
+                ShopGoods shopGoods = shopGoodsService.selectById(userOrderGoods.getGoodsId());
+                goodsName.append(shopGoods.getGoodsName());
+                goodsName.append(",");
+            }
+            o.setGoodsName(goodsName.toString());
             o.insert();
             Integer orderId = o.getId();
             response.setOrderId(orderId);

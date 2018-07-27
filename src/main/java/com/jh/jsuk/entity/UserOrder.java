@@ -69,11 +69,11 @@ public class UserOrder extends Model<UserOrder> {
      */
     private Date payTime;
     /**
-     *  0 余额   1 货到付款  2 支付宝  3 微信  4 银行卡
+     * 0 余额   1 货到付款  2 支付宝  3 微信  4 银行卡
      */
     private Integer payType;
     /**
-     *   0 : 待付款  1  : 待发货  2  : 待收货  3  : 售后  4  : 退款  5 : 退货   6  : 拒绝  7  : 取消
+     * 0 : 待付款  1  : 待发货  2  : 待收货  3  : 售后  4  : 退款  5 : 退货   6  : 拒绝  7  : 取消
      */
     private Integer status;
     /**
@@ -152,7 +152,10 @@ public class UserOrder extends Model<UserOrder> {
      * 平台流水号
      */
     private String platformNumber;
-
+    /**
+     * 商品名称
+     */
+    private String goodsName;
 
     public Integer getId() {
         return id;
@@ -484,6 +487,8 @@ public class UserOrder extends Model<UserOrder> {
 
     public static final String PLATFORM_NUMBER = "platform_number";
 
+    public static final String GOODS_NAME = "goods_name";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -492,39 +497,47 @@ public class UserOrder extends Model<UserOrder> {
     @Override
     public String toString() {
         return "UserOrder{" +
-                "id=" + id +
-                ", orderNum=" + orderNum +
-                ", orderPrice=" + orderPrice +
-                ", fullReduce=" + fullReduce +
-                ", couponReduce=" + couponReduce +
-                ", integralReduce=" + integralReduce +
-                ", orderRealPrice=" + orderRealPrice +
-                ", distributionFee=" + distributionFee +
-                ", distributionTime=" + distributionTime +
-                ", distributionType=" + distributionType +
-                ", creatTime=" + creatTime +
-                ", payTime=" + payTime +
-                ", payType=" + payType +
-                ", status=" + status +
-                ", isUnsubscribe=" + isUnsubscribe +
-                ", isEvaluate=" + isEvaluate +
-                ", isShopDel=" + isShopDel +
-                ", isUserDel=" + isUserDel +
-                ", isClosed=" + isClosed +
-                ", shopId=" + shopId +
-                ", addressId=" + addressId +
-                ", userId=" + userId +
-                ", cancelTime=" + cancelTime +
-                ", completeTime=" + completeTime +
-                ", sendTime=" + sendTime +
-                ", couponId=" + couponId +
-                ", orderType=" + orderType +
-                ", logisticsNo=" + logisticsNo +
-                ", remark=" + remark +
-                ", discount=" + discount +
-                ", integralRuleId=" + integralRuleId +
-                ", fullReduceId=" + fullReduceId +
-                ", platformNumber=" + platformNumber +
-                "}";
+            "id=" + id +
+            ", orderNum=" + orderNum +
+            ", orderPrice=" + orderPrice +
+            ", fullReduce=" + fullReduce +
+            ", couponReduce=" + couponReduce +
+            ", integralReduce=" + integralReduce +
+            ", orderRealPrice=" + orderRealPrice +
+            ", distributionFee=" + distributionFee +
+            ", distributionTime=" + distributionTime +
+            ", distributionType=" + distributionType +
+            ", creatTime=" + creatTime +
+            ", payTime=" + payTime +
+            ", payType=" + payType +
+            ", status=" + status +
+            ", isUnsubscribe=" + isUnsubscribe +
+            ", isEvaluate=" + isEvaluate +
+            ", isShopDel=" + isShopDel +
+            ", isUserDel=" + isUserDel +
+            ", isClosed=" + isClosed +
+            ", shopId=" + shopId +
+            ", addressId=" + addressId +
+            ", userId=" + userId +
+            ", cancelTime=" + cancelTime +
+            ", completeTime=" + completeTime +
+            ", sendTime=" + sendTime +
+            ", couponId=" + couponId +
+            ", orderType=" + orderType +
+            ", logisticsNo=" + logisticsNo +
+            ", remark=" + remark +
+            ", discount=" + discount +
+            ", integralRuleId=" + integralRuleId +
+            ", fullReduceId=" + fullReduceId +
+            ", platformNumber=" + platformNumber +
+            "}";
+    }
+
+    public String getGoodsName() {
+        return goodsName;
+    }
+
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
     }
 }
