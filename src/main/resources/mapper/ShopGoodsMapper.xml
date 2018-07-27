@@ -342,23 +342,28 @@
     </select>
 
     <resultMap id="shopGoodsVo2" type="com.jh.jsuk.entity.vo.ShopGoodsVo2" extends="BaseResultMap">
-        <association property="brandInfo" column="id" select="com.jh.jsuk.dao.GoodsBrandDao.selectById"/>
-        <association property="categoryInfo" column="id" select="com.jh.jsuk.dao.GoodsCategoryDao.selectById"/>
+        <result column="price" property="price"/>
+        <association property="brandInfo" column="brand_id" select="com.jh.jsuk.dao.GoodsBrandDao.selectById"/>
+        <association property="categoryInfo" column="category_id" select="com.jh.jsuk.dao.GoodsCategoryDao.selectById"/>
     </resultMap>
     <select id="shopGoodsList" resultMap="shopGoodsVo2">
-        select * from js_shop_goods
-        where is_del != 1 and shop_id = #{shopId}
+        select sg.*,
+        sgs.sales_price as price
+        from js_shop_goods sg
+        left join js_shop_goods_size sgs
+        on sg.id=sgs.shop_goods_id
+        where sg.is_del != 1 and sg.shop_id = #{shopId}
         <if test="keyWord != null">
-            and goods_name like #{keyWord}
+            and sg.goods_name like #{keyWord}
         </if>
         <if test="categoryId != null">
-            and category_id = #{categoryId}
+            and sg.category_id = #{categoryId}
         </if>
         <if test="brandId">
-            and brand_id = #{brandId}
+            and sg.brand_id = #{brandId}
         </if>
         <if test="status != null">
-            and status = #{status}
+            and sg.status = #{status}
         </if>
     </select>
     <select id="shopGoodsRecycleList" resultMap="shopGoodsVo2">

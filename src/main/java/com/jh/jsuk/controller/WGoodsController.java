@@ -114,6 +114,7 @@ public class WGoodsController {
         ShopGoods shopGoods = new ShopGoods();
         shopGoods.setId(goodsId);
         shopGoods.setStatus(ShopGoodsStatus.UPPER.getKey());
+        shopGoods.setUpdateTime(new Date());
         shopGoods.updateById();
         return R.succ();
     }
@@ -123,6 +124,7 @@ public class WGoodsController {
         ShopGoods shopGoods = new ShopGoods();
         shopGoods.setId(goodsId);
         shopGoods.setStatus(ShopGoodsStatus.LOWER.getKey());
+        shopGoods.setUpdateTime(new Date());
         shopGoods.updateById();
         return R.succ();
     }
@@ -132,6 +134,7 @@ public class WGoodsController {
         ShopGoods shopGoods = new ShopGoods();
         shopGoods.setId(goodsId);
         shopGoods.setIsDel(1);
+        shopGoods.setUpdateTime(new Date());
         shopGoods.updateById();
         return R.succ();
     }
@@ -141,6 +144,7 @@ public class WGoodsController {
         ShopGoods shopGoods = new ShopGoods();
         shopGoods.setId(goodsId);
         shopGoods.setIsDel(0);
+        shopGoods.setUpdateTime(new Date());
         shopGoods.updateById();
         return R.succ();
     }

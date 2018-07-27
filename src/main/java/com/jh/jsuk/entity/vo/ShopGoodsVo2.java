@@ -12,6 +12,8 @@ import lombok.ToString;
 @ToString
 public class ShopGoodsVo2 extends ShopGoods {
 
+    private String price;
+
     private GoodsBrand brandInfo;
 
     private GoodsCategory categoryInfo;
