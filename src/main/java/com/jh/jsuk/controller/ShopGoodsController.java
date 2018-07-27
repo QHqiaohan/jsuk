@@ -409,10 +409,8 @@ public class ShopGoodsController {
         }
         Integer shopId = managerUser.getShopId();
 
-        MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
-        ew.eq(ShopGoodsSize.IS_DEL, 0);
+        MyEntityWrapper<ShopGoods> ew = new MyEntityWrapper<>();
         Page shopGoodsPage = shopGoodsService.findShopGoodsAndGoodsSizeByShopId(page, ew, shopId);
-
         return new Result().success(shopGoodsPage);
     }
 

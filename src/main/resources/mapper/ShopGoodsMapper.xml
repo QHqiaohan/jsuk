@@ -328,8 +328,13 @@
                      select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></association>
     </resultMap>
 
+  <resultMap id="ShopGoodsVoT2" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
+    <collection property="shopGoodsSize" column="id"
+                 select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></collection>
+  </resultMap>
+
     <!--修改-->
-    <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="ShopGoodsVoT">
+    <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="ShopGoodsVoT2">
         SELECT
         <include refid="Base_Column_List"/>
         FROM js_shop_goods
