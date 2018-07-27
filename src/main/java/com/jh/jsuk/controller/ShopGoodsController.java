@@ -2,6 +2,8 @@ package com.jh.jsuk.controller;
 
 
 import cn.hutool.core.map.MapUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -396,19 +398,22 @@ public class ShopGoodsController {
             @ApiImplicitParam(name = "userId", value = "商家id", paramType = "query", dataType = "integer")
     })
     @RequestMapping(value = "/addShopGoodsList", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addShopGoodsList(Integer userId, Integer current, Integer size) {
+    public Result addShopGoodsList(@RequestParam Integer userId, Integer current, Integer size) {
         current = current == null ? 1 : current;
         size = size == null ? 10 : size;
         Page page = new Page(current, size);
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
+        if(managerUser==null){
+            return new Result().erro("系统错误,请稍后再试");
+        }
         Integer shopId = managerUser.getShopId();
 
         MyEntityWrapper<ShopGoodsSize> ew = new MyEntityWrapper<>();
         ew.eq(ShopGoodsSize.IS_DEL, 0);
-        Page shopGoods = shopGoodsService.findShopGoodsAndGoodsSizeByShopId(page, ew, shopId);
+        Page shopGoodsPage = shopGoodsService.findShopGoodsAndGoodsSizeByShopId(page, ew, shopId);
 
-        return new Result().success(shopGoods);
+        return new Result().success(shopGoodsPage);
     }
 
     @ApiOperation("商家端-删除自己店铺的商品")
@@ -481,9 +486,18 @@ public class ShopGoodsController {
             shopGoods.insert();
             // 商品ID
             Integer id = shopGoods.getId();
+/*            System.out.println("goodsId:"+id);
+
+            String goodsSizeListJSON=addGoodsVo.getShopGoodsSizeList().toString();
+            List<ShopGoodsSize> sizeList = JSON.parseArray(goodsSizeListJSON, ShopGoodsSize.class);
+            for (ShopGoodsSize shopGoodsSize : sizeList) {
+                System.out.println(shopGoodsSize.toString());
+            }*/
+
             if(addGoodsVo.getShopGoodsSizeList()!=null && addGoodsVo.getShopGoodsSizeList().size()>0) {
                 for (ShopGoodsSize shopGoodsSize : addGoodsVo.getShopGoodsSizeList()) {
                     shopGoodsSize.setShopGoodsId(id);
+                    shopGoodsSize.setIsDel(0);
                     shopGoodsSize.insert();
                 }
             }
@@ -504,7 +518,5 @@ public class ShopGoodsController {
         shopGoodsSize.setId(sizeId);
         shopGoodsSize.updateById();
         return new Result().success();
-
     }
-
 }

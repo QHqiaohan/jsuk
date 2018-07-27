@@ -10,6 +10,7 @@ public class AddGoodsVo extends ShopGoods implements Serializable {
 
     private List<ShopGoodsSize> shopGoodsSizeList;
 
+
     public List<ShopGoodsSize> getShopGoodsSizeList() {
         return shopGoodsSizeList;
     }
