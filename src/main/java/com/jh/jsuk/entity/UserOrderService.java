@@ -41,17 +41,17 @@ public class UserOrderService extends Model<UserOrderService> {
     /**
      * 具体原因
      */
-    @ApiModelProperty(name = "订单ID", value = "content")
+    @ApiModelProperty(name = "具体原因", value = "content")
     private String content;
     /**
      * 图片
      */
-    @ApiModelProperty(name = "订单ID", value = "image")
+    @ApiModelProperty(name = "图片", value = "image")
     private String image;
     /**
      * 退款金额
      */
-    @ApiModelProperty(name = "订单ID", required = true, value = "price")
+    @ApiModelProperty(name = "退款金额", required = true, value = "price")
     private String price;
     /**
      * 规格ID
