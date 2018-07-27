@@ -743,7 +743,6 @@ public class ActivityController {
             e.printStackTrace();
             return result.erro("参加活动失败");
         }
-
     }
 
 }
