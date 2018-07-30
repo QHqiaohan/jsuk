@@ -45,83 +45,83 @@
         id, order_num, order_price, full_reduce, coupon_reduce, integral_reduce, order_real_price, distribution_fee, distribution_time, distribution_type, creat_time, pay_time, pay_type, status, is_unsubscribe, is_evaluate, is_shop_del, is_user_del, is_closed, shop_id, address_id, user_id, cancel_time, complete_time, send_time, coupon_id, order_type, logistics_no, remark, discount, integral_rule_id, full_reduce_id, platform_number, goods_name
   </sql>
 
-  <resultMap id="UserOrderVo" type="com.jh.jsuk.entity.vo.UserOrderVo" extends="BaseResultMap">
-    <association property="shop" column="shop_id"
-                 select="com.jh.jsuk.dao.ShopDao.selectShopPhoneById"></association>
-    <association property="distributionUser" column="distribution_user_id"
-                 select="com.jh.jsuk.dao.DistributionUserDao.selectById"></association>
-    <association property="coupon" column="coupon_id" select="com.jh.jsuk.dao.CouponDao.selectById"></association>
-    <association property="address" column="address_id"
-                 select="com.jh.jsuk.dao.UserAddressDao.selectById"></association>
-    <collection property="goodsList" column="id" ofType="com.jh.jsuk.entity.vo.UserOrderGoodsVo"
-                select="com.jh.jsuk.dao.UserOrderGoodsDao.findByOrderId"></collection>
-  </resultMap>
+    <resultMap id="UserOrderVo" type="com.jh.jsuk.entity.vo.UserOrderVo" extends="BaseResultMap">
+        <association property="shop" column="shop_id"
+                     select="com.jh.jsuk.dao.ShopDao.selectShopPhoneById"></association>
+        <association property="distributionUser" column="distribution_user_id"
+                     select="com.jh.jsuk.dao.DistributionUserDao.selectById"></association>
+        <association property="coupon" column="coupon_id" select="com.jh.jsuk.dao.CouponDao.selectById"></association>
+        <association property="address" column="address_id"
+                     select="com.jh.jsuk.dao.UserAddressDao.selectById"></association>
+        <collection property="goodsList" column="id" ofType="com.jh.jsuk.entity.vo.UserOrderGoodsVo"
+                    select="com.jh.jsuk.dao.UserOrderGoodsDao.findByOrderId"></collection>
+    </resultMap>
 
-  <select id="findVoByPage" resultMap="UserOrderVo">
-    SELECT
-    <include refid="Base_Column_List"></include>
-    FROM js_user_order
-    <where>
-      ${ew.sqlSegment}
-    </where>
-  </select>
+    <select id="findVoByPage" resultMap="UserOrderVo">
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM js_user_order
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
 
-  <select id="findVoById" resultMap="UserOrderVo">
-    SELECT
-    <include refid="Base_Column_List"></include>
-    FROM js_user_order
-    WHERE
-    id = #{id}
-  </select>
+    <select id="findVoById" resultMap="UserOrderVo">
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM js_user_order
+        WHERE
+        id = #{id}
+    </select>
 
   <resultMap id="UserOrderInfoVo" type="com.jh.jsuk.entity.vo.UserOrderInfoVo" extends="BaseResultMap">
     <collection property="shopGoodsList" column="id" select="com.jh.jsuk.dao.UserOrderGoodsDao.orderGoodsDetail"/>
   </resultMap>
 
-  <select id="getOrderByUserId" resultMap="UserOrderInfoVo">
-    SELECT
-    uo.id,
-    uo.creat_time,
-    uo.status,
-    uo.is_closed,
-    uo.send_time,
-    uog.num,
-    uog.goods_price,
-    uog.order_type as orderType,
-    uog.goods_size_id,
-    uog.goods_id,
-    uos.refund_reason,
-    sgs.size_name,
-    sgs.original_price,
-    sgs.sales_price,
-    sg.goods_name,
-    sg.main_image,
-    c.discount,
-    s.shop_name
-    FROM
-    js_user_order_goods uog
-    LEFT JOIN js_user_order uo ON uo.id = uog.order_id
-    LEFT JOIN js_user_order_service uos ON uo.id = uos.order_id
-    LEFT JOIN js_shop_goods_size sgs ON uog.goods_size_id = sgs.id
-    LEFT JOIN js_shop_goods sg ON sgs.shop_goods_id = sg.id
-    LEFT JOIN js_shop s ON sg.shop_id = s.id
-    LEFT JOIN js_coupon c ON uo.coupon_id = c.id
-    WHERE
-    uo.user_id = #{userId}
-    AND uo.is_user_del = 0
-    AND uo.is_shop_del=0
-    <if test="status != null">
-      AND uo.status = #{status}
-    </if>
-    <if test="goodsName != null">
-      AND sg.goods_name LIKE CONCAT('%', #{goodsName}, '%')
-    </if>
-    ORDER BY
-    uo.creat_time DESC
-    <where>
-      ${ew.sqlSegment}
-    </where>
-  </select>
+    <select id="getOrderByUserId" resultMap="UserOrderInfoVo">
+        SELECT
+        uo.id,
+        uo.creat_time,
+        uo.status,
+        uo.is_closed,
+        uo.send_time,
+        uog.num,
+        uog.goods_price,
+        uog.order_type as orderType,
+        uog.goods_size_id,
+        uog.goods_id,
+        uos.refund_reason,
+        sgs.size_name,
+        sgs.original_price,
+        sgs.sales_price,
+        sg.goods_name,
+        sg.main_image,
+        c.discount,
+        s.shop_name
+        FROM
+        js_user_order_goods uog
+        LEFT JOIN js_user_order uo ON uo.id = uog.order_id
+        LEFT JOIN js_user_order_service uos ON uo.id = uos.order_id
+        LEFT JOIN js_shop_goods_size sgs ON uog.goods_size_id = sgs.id
+        LEFT JOIN js_shop_goods sg ON sgs.shop_goods_id = sg.id
+        LEFT JOIN js_shop s ON sg.shop_id = s.id
+        LEFT JOIN js_coupon c ON uo.coupon_id = c.id
+        WHERE
+        uo.user_id = #{userId}
+        AND uo.is_user_del = 0
+        AND uo.is_shop_del=0
+        <if test="status != null">
+            AND uo.status = #{status}
+        </if>
+        <if test="goodsName != null">
+            AND sg.goods_name LIKE CONCAT('%', #{goodsName}, '%')
+        </if>
+        ORDER BY
+        uo.creat_time DESC
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
 
   <select id="getShopOrderByUserId" resultMap="UserOrderInfoVo">
     SELECT
@@ -139,34 +139,34 @@
     </where>
   </select>
 
-  <resultMap id="UserOrderDetailVo" type="com.jh.jsuk.entity.vo.UserOrderDetailVo" extends="BaseResultMap">
-    <association property="shop" column="shop_id"
-                 select="com.jh.jsuk.dao.ShopDao.selectShopPhoneById"></association>
-    <association property="distributionUser" column="distribution_user_id"
-                 select="com.jh.jsuk.dao.DistributionUserDao.selectById"></association>
-    <association property="coupon" column="coupon_id" select="com.jh.jsuk.dao.CouponDao.selectById"></association>
-    <association property="address" column="address_id"
-                 select="com.jh.jsuk.dao.UserAddressDao.selectById"></association>
-    <collection property="goodsList" column="id" ofType="com.jh.jsuk.entity.vo.UserOrderDetailVo"
-                select="com.jh.jsuk.dao.UserOrderGoodsDao.orderGoodsDetail"></collection>
-  </resultMap>
+    <resultMap id="UserOrderDetailVo" type="com.jh.jsuk.entity.vo.UserOrderDetailVo" extends="BaseResultMap">
+        <association property="shop" column="shop_id"
+                     select="com.jh.jsuk.dao.ShopDao.selectShopPhoneById"></association>
+        <association property="distributionUser" column="distribution_user_id"
+                     select="com.jh.jsuk.dao.DistributionUserDao.selectById"></association>
+        <association property="coupon" column="coupon_id" select="com.jh.jsuk.dao.CouponDao.selectById"></association>
+        <association property="address" column="address_id"
+                     select="com.jh.jsuk.dao.UserAddressDao.selectById"></association>
+        <collection property="goodsList" column="id" ofType="com.jh.jsuk.entity.vo.UserOrderDetailVo"
+                    select="com.jh.jsuk.dao.UserOrderGoodsDao.orderGoodsDetail"></collection>
+    </resultMap>
 
-  <select id="userOrderDetail" resultMap="UserOrderDetailVo">
-    SELECT
-    <include refid="Base_Column_List"></include>
-    FROM js_user_order
-    WHERE
-    id = #{id}
-  </select>
+    <select id="userOrderDetail" resultMap="UserOrderDetailVo">
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM js_user_order
+        WHERE
+        id = #{id}
+    </select>
 
 
-  <update id="updateStock">
+    <update id="updateStock">
         update js_shop_goods_size s
         set s.stock = s.stock - #{num}
         where s.id = #{goodsSizeId} and s.stock >= #{num}
     </update>
 
-  <update id="updateKillStock">
+    <update id="updateKillStock">
         update js_shop_goods_size s
         set s.kill_stock = s.kill_stock - #{num}
         where s.id = #{goodsSizeId} and s.kill_stock >= #{num}

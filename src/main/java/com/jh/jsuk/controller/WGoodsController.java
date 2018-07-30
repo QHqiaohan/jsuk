@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.GoodsCategory;
+import com.jh.jsuk.entity.GoodsEvaluate;
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.dto.ShopGoodsDTO;
@@ -72,9 +73,19 @@ public class WGoodsController {
      * 删除评价
      */
     @RequestMapping("/evaluate/del")
-    public R delEvaluate(Integer evaluateId){
-        return R.succ();
+    public R delEvaluate(Integer evaluateId) {
+        GoodsEvaluate goodsEvaluate = new GoodsEvaluate();
+        goodsEvaluate.setId(evaluateId);
+        goodsEvaluate.setIsDel(1);
+        goodsEvaluate.updateById();
+        return R.succ("删除成功");
     }
+
+    @RequestMapping("/evaluate/getById")
+    public R getById(Integer evaluateId) {
+        return R.succ(goodsEvaluateService.selectById(evaluateId));
+    }
+
     @GetMapping("/allCount")
     public R allCount() {
         Map<String, Object> map = new HashMap<>();
@@ -145,7 +156,7 @@ public class WGoodsController {
         shopGoods.setIsDel(1);
         shopGoods.setUpdateTime(new Date());
         shopGoods.updateById();
-        return R.succ();
+        return R.succ("删除成功");
     }
 
     @PostMapping("/recover")
@@ -199,18 +210,19 @@ public class WGoodsController {
 
     /**
      * 商品审核
+     *
      * @param goodsId
-     * @param flag 0 审核不通过 1 审核通过
+     * @param flag    0 审核不通过 1 审核通过
      * @return
      */
     @RequestMapping("/review")
-    public R review(Integer goodsId,Integer flag){
+    public R review(Integer goodsId, Integer flag) {
         //只有平台才能修改
-        if(session.getUserType().getKey()==4){
+        if (session.getUserType().getKey() == 4) {
             ShopGoods shopGoods = shopGoodsService.selectById(goodsId);
             //只能修改待审核状态的商品
-            if (shopGoods.getStatus()==0){
-                shopGoods.setStatus(flag==1?ShopGoodsStatus.UPPER.getKey():ShopGoodsStatus.CLOSED.getKey());
+            if (shopGoods.getStatus() == 0) {
+                shopGoods.setStatus(flag == 1 ? ShopGoodsStatus.UPPER.getKey() : ShopGoodsStatus.CLOSED.getKey());
                 shopGoods.setUpdateTime(new Date());
                 shopGoodsService.updateById(shopGoods);
                 return R.succ("操作成功");

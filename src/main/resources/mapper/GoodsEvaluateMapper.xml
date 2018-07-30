@@ -43,7 +43,7 @@
     LEFT JOIN js_user u ON u.id = e.user_id
     LEFT JOIN js_shop s ON s.id=g.shop_id
     WHERE
-    1=1
+    e.is_del != 1
     <if test="shopId != null">
       and s.id=#{shopId}
     </if>
@@ -57,7 +57,7 @@
       and g.brand_id = #{brandId}
     </if>
     <if test="nickName != null">
-      and u.nickName like #{nickName}
+      and u.nick_name like #{nickName}
     </if>
   </select>
 
