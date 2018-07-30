@@ -4,12 +4,10 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * <p>
@@ -17,7 +15,7 @@ import java.util.List;
  * </p>
  *
  * @author tj
- * @since 2018-07-20
+ * @since 2018-07-30
  */
 @TableName("js_user_order")
 public class UserOrder extends Model<UserOrder> {
@@ -71,11 +69,11 @@ public class UserOrder extends Model<UserOrder> {
      */
     private Date payTime;
     /**
-     * 0 余额   1 货到付款  2 支付宝  3 微信  4 银行卡
+     *  0 余额   1 货到付款  2 支付宝  3 微信  4 银行卡
      */
     private Integer payType;
     /**
-     * 0 : 待付款  1  : 待发货  2  : 待收货  3  : 售后  4  : 退款  5 : 退货   6  : 拒绝  7  : 取消
+     *   0 : 待付款  1  : 待发货  2  : 待收货  3  : 售后  4  : 退款  5 : 退货   6  : 拒绝  7  : 取消 
      */
     private Integer status;
     /**
@@ -154,11 +152,8 @@ public class UserOrder extends Model<UserOrder> {
      * 平台流水号
      */
     private String platformNumber;
-
-    /**
-     * 商品名称
-     */
     private String goodsName;
+
 
     public Integer getId() {
         return id;
@@ -424,6 +419,14 @@ public class UserOrder extends Model<UserOrder> {
         this.platformNumber = platformNumber;
     }
 
+    public String getGoodsName() {
+        return goodsName;
+    }
+
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
+    }
+
     public static final String ID = "id";
 
     public static final String ORDER_NUM = "order_num";
@@ -500,47 +503,40 @@ public class UserOrder extends Model<UserOrder> {
     @Override
     public String toString() {
         return "UserOrder{" +
-            "id=" + id +
-            ", orderNum=" + orderNum +
-            ", orderPrice=" + orderPrice +
-            ", fullReduce=" + fullReduce +
-            ", couponReduce=" + couponReduce +
-            ", integralReduce=" + integralReduce +
-            ", orderRealPrice=" + orderRealPrice +
-            ", distributionFee=" + distributionFee +
-            ", distributionTime=" + distributionTime +
-            ", distributionType=" + distributionType +
-            ", creatTime=" + creatTime +
-            ", payTime=" + payTime +
-            ", payType=" + payType +
-            ", status=" + status +
-            ", isUnsubscribe=" + isUnsubscribe +
-            ", isEvaluate=" + isEvaluate +
-            ", isShopDel=" + isShopDel +
-            ", isUserDel=" + isUserDel +
-            ", isClosed=" + isClosed +
-            ", shopId=" + shopId +
-            ", addressId=" + addressId +
-            ", userId=" + userId +
-            ", cancelTime=" + cancelTime +
-            ", completeTime=" + completeTime +
-            ", sendTime=" + sendTime +
-            ", couponId=" + couponId +
-            ", orderType=" + orderType +
-            ", logisticsNo=" + logisticsNo +
-            ", remark=" + remark +
-            ", discount=" + discount +
-            ", integralRuleId=" + integralRuleId +
-            ", fullReduceId=" + fullReduceId +
-            ", platformNumber=" + platformNumber +
-            "}";
-    }
-
-    public String getGoodsName() {
-        return goodsName;
-    }
-
-    public void setGoodsName(String goodsName) {
-        this.goodsName = goodsName;
+        "id=" + id +
+        ", orderNum=" + orderNum +
+        ", orderPrice=" + orderPrice +
+        ", fullReduce=" + fullReduce +
+        ", couponReduce=" + couponReduce +
+        ", integralReduce=" + integralReduce +
+        ", orderRealPrice=" + orderRealPrice +
+        ", distributionFee=" + distributionFee +
+        ", distributionTime=" + distributionTime +
+        ", distributionType=" + distributionType +
+        ", creatTime=" + creatTime +
+        ", payTime=" + payTime +
+        ", payType=" + payType +
+        ", status=" + status +
+        ", isUnsubscribe=" + isUnsubscribe +
+        ", isEvaluate=" + isEvaluate +
+        ", isShopDel=" + isShopDel +
+        ", isUserDel=" + isUserDel +
+        ", isClosed=" + isClosed +
+        ", shopId=" + shopId +
+        ", addressId=" + addressId +
+        ", userId=" + userId +
+        ", cancelTime=" + cancelTime +
+        ", completeTime=" + completeTime +
+        ", sendTime=" + sendTime +
+        ", couponId=" + couponId +
+        ", orderType=" + orderType +
+        ", logisticsNo=" + logisticsNo +
+        ", remark=" + remark +
+        ", discount=" + discount +
+        ", integralRuleId=" + integralRuleId +
+        ", fullReduceId=" + fullReduceId +
+        ", platformNumber=" + platformNumber +
+        ", goodsName=" + goodsName +
+        "}";
     }
 }

@@ -6,15 +6,16 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.github.tj123.common.RedisUtils;
 import com.jh.jsuk.conf.RedisKeys;
 import com.jh.jsuk.conf.Session;
-import com.jh.jsuk.entity.*;
+import com.jh.jsuk.entity.ManagerUser;
+import com.jh.jsuk.entity.ShopGoodsSize;
+import com.jh.jsuk.entity.UserOrder;
+import com.jh.jsuk.entity.UserOrderGoods;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
 import com.jh.jsuk.entity.rules.AccountRule;
-import com.jh.jsuk.entity.vo.ShopOrderGoods;
 import com.jh.jsuk.entity.vo.UserOrderInfoVo;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
-import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.*;
 import com.jh.jsuk.utils.wx.WxPay;
 import io.swagger.annotations.*;
@@ -516,6 +517,8 @@ public class UserOrderController {
     public Result getShopOrderByUserId(Page page, Integer userId, Integer status, String goodsName) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
+        if(managerUser == null)
+            return R.err("用户不存在");
         Integer shopId = managerUser.getShopId();
         MyEntityWrapper<UserOrderInfoVo> ew = new MyEntityWrapper<>();
 
