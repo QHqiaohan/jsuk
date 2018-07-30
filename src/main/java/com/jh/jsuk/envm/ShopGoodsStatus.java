@@ -6,7 +6,9 @@ public enum ShopGoodsStatus {
 
     UPPER(1, "上架", "upr"),
 
-    LOWER(2, "下架", "lwr");
+    LOWER(2, "下架", "lwr"),
+
+    CLOSED(3,"审核不通过","cld");
 
     private final Integer key;
 

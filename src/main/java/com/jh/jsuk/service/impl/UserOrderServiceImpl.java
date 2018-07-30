@@ -371,6 +371,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setOrderRealPrice(orderPrice.getOrderRealPrice());
             o.setCouponReduce(orderPrice.getCouponReduce());
             o.setIntegralReduce(orderPrice.getIntegralReduce());
+            o.setPayType(orderDto.getPayType());
             StringBuilder goodsName= new StringBuilder();
             for (UserOrderGoods userOrderGoods:gs){
                 ShopGoods shopGoods = shopGoodsService.selectById(userOrderGoods.getGoodsId());

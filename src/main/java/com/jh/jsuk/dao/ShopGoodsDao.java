@@ -60,7 +60,7 @@ public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
 
     List<GoodsSizeVo> findShopGoodsAndGoodsSizeByShopId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("shopId") Integer shopId);
 
-    List<ShopGoodsVo2> shopGoodsList(Page page, @Param("status") Integer status, @Param("categoryId") String categoryId,
+    List<GoodsSizeVo> shopGoodsList(Page page, @Param("status") Integer status, @Param("categoryId") String categoryId,
                                      @Param("keyWord") String keyWord, @Param("brandId") String brandId, @Param("shopId") Integer shopId);
 
     List<ShopGoodsVo2> shopGoodsRecycleList(Page page, @Param("categoryId") String categoryId,

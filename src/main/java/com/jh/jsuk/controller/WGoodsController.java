@@ -9,6 +9,7 @@ import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.dto.ShopGoodsDTO;
 import com.jh.jsuk.envm.ShopGoodsStatus;
+import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.service.GoodsCategoryService;
 import com.jh.jsuk.service.GoodsEvaluateService;
 import com.jh.jsuk.service.ShopGoodsService;
@@ -44,7 +45,7 @@ public class WGoodsController {
     @GetMapping("/list")
     public R list(Page page, String status, @RequestParam(required = false) String categoryId,
                   @RequestParam(required = false) String kw, @RequestParam(required = false)
-                          String brandId) throws Exception {
+                      String brandId) throws Exception {
         ShopGoodsStatus goodsStatus = null;
         if (status != null && !"all".equals(status)) {
             goodsStatus = EnumUitl.toEnum(ShopGoodsStatus.class, status, "getShortKey");
@@ -55,14 +56,14 @@ public class WGoodsController {
     @GetMapping("/listRecycle")
     public R listRecycle(Page page, @RequestParam(required = false) String categoryId,
                          @RequestParam(required = false) String kw, @RequestParam(required = false)
-                                 String brandId) throws Exception {
+                             String brandId) throws Exception {
         return R.succ(shopGoodsService.listRecycle(page, categoryId, kw, brandId, session.getShopId()));
     }
 
     @GetMapping("/listEvaluate")
     public R listEvaluate(Page page, @RequestParam(required = false) String categoryId,
                           @RequestParam(required = false) String kw, @RequestParam(required = false)
-                                  String brandId, String nickName) throws Exception {
+                              String brandId, String nickName) throws Exception {
         return R.succ(goodsEvaluateService.listEvaluate(page, categoryId, kw, brandId, session.getShopId(), nickName));
     }
 
@@ -71,20 +72,20 @@ public class WGoodsController {
         Map<String, Object> map = new HashMap<>();
         EntityWrapper<ShopGoods> wrapper = new EntityWrapper<>();
         wrapper.ne(ShopGoods.IS_DEL, 1)
-                .eq(ShopGoods.STATUS, ShopGoodsStatus.WAIT_CONFIRM.getKey())
-                .eq(ShopGoods.SHOP_ID, session.getShopId());
+            .eq(ShopGoods.STATUS, ShopGoodsStatus.WAIT_CONFIRM.getKey())
+            .eq(ShopGoods.SHOP_ID, session.getShopId());
         int waitConfirm = shopGoodsService.selectCount(wrapper);
 
         EntityWrapper<ShopGoods> wrapper1 = new EntityWrapper<>();
         wrapper1.ne(ShopGoods.IS_DEL, 1)
-                .eq(ShopGoods.STATUS, ShopGoodsStatus.UPPER.getKey())
-                .eq(ShopGoods.SHOP_ID, session.getShopId());
+            .eq(ShopGoods.STATUS, ShopGoodsStatus.UPPER.getKey())
+            .eq(ShopGoods.SHOP_ID, session.getShopId());
         int upper = shopGoodsService.selectCount(wrapper1);
 
         EntityWrapper<ShopGoods> wrapper2 = new EntityWrapper<>();
         wrapper2.ne(ShopGoods.IS_DEL, 1)
-                .eq(ShopGoods.STATUS, ShopGoodsStatus.LOWER.getKey())
-                .eq(ShopGoods.SHOP_ID, session.getShopId());
+            .eq(ShopGoods.STATUS, ShopGoodsStatus.LOWER.getKey())
+            .eq(ShopGoods.SHOP_ID, session.getShopId());
         int lower = shopGoodsService.selectCount(wrapper2);
 
         map.put(ShopGoodsStatus.WAIT_CONFIRM.getShortKey(), waitConfirm);
@@ -113,7 +114,7 @@ public class WGoodsController {
     public R upper(Integer goodsId) {
         ShopGoods shopGoods = new ShopGoods();
         shopGoods.setId(goodsId);
-        shopGoods.setStatus(ShopGoodsStatus.UPPER.getKey());
+        shopGoods.setStatus(ShopGoodsStatus.WAIT_CONFIRM.getKey());
         shopGoods.setUpdateTime(new Date());
         shopGoods.updateById();
         return R.succ();
@@ -164,7 +165,7 @@ public class WGoodsController {
 
     @GetMapping("/category")
     public R category(Page page, Integer parentId) {
-        if(parentId == null)
+        if (parentId == null)
             parentId = 0;
         EntityWrapper<GoodsCategory> wrapper = new EntityWrapper<>();
         wrapper.eq(GoodsCategory.PARENT_ID, parentId);
@@ -172,15 +173,43 @@ public class WGoodsController {
     }
 
     @PostMapping("/category/add")
-    public R categoryAdd(GoodsCategory category){
+    public R categoryAdd(GoodsCategory category) {
         category.insert();
         return R.succ();
     }
 
     @PostMapping("/category/edit")
-    public R categoryEdit(GoodsCategory category){
+    public R categoryEdit(GoodsCategory category) {
         category.updateById();
         return R.succ();
     }
 
+    @GetMapping("/get")
+    public R get(Integer id) {
+        return R.succ(shopGoodsService.getShopGoodsById(id));
+    }
+
+    /**
+     * 商品审核
+     * @param goodsId
+     * @param flag 0 审核不通过 1 审核通过
+     * @return
+     */
+    @RequestMapping("/review")
+    public R review(Integer goodsId,Integer flag){
+        //只有平台才能修改
+        if(session.getUserType().getKey()==4){
+            ShopGoods shopGoods = shopGoodsService.selectById(goodsId);
+            //只能修改待审核状态的商品
+            if (shopGoods.getStatus()==0){
+                shopGoods.setStatus(flag==1?ShopGoodsStatus.UPPER.getKey():ShopGoodsStatus.CLOSED.getKey());
+                shopGoods.setUpdateTime(new Date());
+                shopGoodsService.updateById(shopGoods);
+                return R.succ("操作成功");
+            }
+            return R.err("该商品已经审核过了");
+        }
+        return R.err("权限不足");
+
+    }
 }
