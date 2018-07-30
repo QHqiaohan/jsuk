@@ -647,7 +647,7 @@ public class UserOrderController {
 
 
 
-    @ApiOperation("商家端-订单列表")
+/*    @ApiOperation("商家端-订单列表")
     @ApiImplicitParams(value = {
         @ApiImplicitParam(name = "userId", value = "商家用户id", paramType = "query", dataType = "integer"),
         @ApiImplicitParam(name = "status", value = "0待付款,1待发货,3=完成,7=售后",
@@ -711,5 +711,5 @@ public class UserOrderController {
         map.put("userOrderList",userOrderList);
 
         return new Result().success(map);
-    }
+    }*/
 }
