@@ -70,7 +70,7 @@ public class UserOrderController {
     UserService userService;
 
     @Autowired
-    ShopGoodsService shopGoodsService;
+    private ShopGoodsService shopGoodsService;
 
     @Autowired
     NewsService newsService;
