@@ -16,6 +16,7 @@
         <result column="is_evaluate" property="isEvaluate"/>
         <result column="is_shop_del" property="isShopDel"/>
         <result column="is_user_del" property="isUserDel"/>
+        <result column="is_closed" property="isClosed"/>
         <result column="shop_id" property="shopId"/>
         <result column="address_id" property="addressId"/>
         <result column="user_id" property="userId"/>
