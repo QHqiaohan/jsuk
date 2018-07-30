@@ -7,6 +7,7 @@ import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
 import com.jh.jsuk.entity.vo.ShopGoodsVo2;
+import com.jh.jsuk.entity.vo.ShopOrderGoods;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 
@@ -67,4 +68,5 @@ public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
                                             @Param("keyWord") String keyWord, @Param("brandId") String brandId, @Param("shopId") Integer shopId);
 
     List<GoodsSizeVo> getShopGoodsByKeywords(String keywords);
+
 }

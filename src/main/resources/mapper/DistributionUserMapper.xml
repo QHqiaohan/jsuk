@@ -37,5 +37,41 @@
       update js_distribution_user u set account = ifnull(account,0) + #{amount} where u.id = #{userId}
     </update>
 
+  <resultMap id="PlatformDistributionUserVo" type="com.jh.jsuk.entity.vo.PlatformDistributionUserVo" extends="BaseResultMap">
+    <collection property="distributionDetailList" column="id"
+                select="com.jh.jsuk.dao.DistributionDetailDao.selectDistributionDetailListByDistributionUserId">
+    </collection>
+  </resultMap>
+
+  <select id="getDistributionUserList" resultMap="PlatformDistributionUserVo">
+    select
+    <include refid="Base_Column_List"></include>
+    from
+    js_distribution_user
+    where
+    can_use=1
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
+
+  <select id="searchDistributionUserBy" resultMap="PlatformDistributionUserVo">
+    select
+    <include refid="Base_Column_List"></include>
+    from
+    js_distribution_user
+    where
+    can_use=1
+    <if test="account!=null">
+      and id=#{account} or phone=#{account}
+    </if>
+    <if test="name!=null">
+      and name like concat('%',#{name},'%')
+    </if>
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
+
 
 </mapper>

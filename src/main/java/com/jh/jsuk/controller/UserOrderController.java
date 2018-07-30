@@ -6,16 +6,15 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.github.tj123.common.RedisUtils;
 import com.jh.jsuk.conf.RedisKeys;
 import com.jh.jsuk.conf.Session;
-import com.jh.jsuk.entity.ManagerUser;
-import com.jh.jsuk.entity.ShopGoodsSize;
-import com.jh.jsuk.entity.UserOrder;
-import com.jh.jsuk.entity.UserOrderGoods;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
 import com.jh.jsuk.entity.rules.AccountRule;
+import com.jh.jsuk.entity.vo.ShopOrderGoods;
 import com.jh.jsuk.entity.vo.UserOrderInfoVo;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
+import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.*;
 import com.jh.jsuk.utils.wx.WxPay;
 import io.swagger.annotations.*;
@@ -84,6 +83,9 @@ public class UserOrderController {
 
     @Autowired
     private ManagerUserService managerUserService;
+
+    @Autowired
+    private CouponService couponService;
 
     @GetMapping("/page")
     public R userOrderPage(Page page, String[] date, String kw, String status) throws Exception {
@@ -516,7 +518,9 @@ public class UserOrderController {
                 .eq(ManagerUser.ID, userId));
         Integer shopId = managerUser.getShopId();
         MyEntityWrapper<UserOrderInfoVo> ew = new MyEntityWrapper<>();
+
         Page orderPage = userOrderService.getShopOrderByUserId(page, ew, shopId, status, goodsName);
+
         return new Result().success(orderPage);
     }
 
@@ -640,5 +644,72 @@ public class UserOrderController {
     public Result pushAPush(@ApiParam(value = "订单ID", required = true) Integer id) {
         return new Result().setMsg(userOrderService.pushAPush(id));
     }
-}
 
+
+
+    @ApiOperation("商家端-订单列表")
+    @ApiImplicitParams(value = {
+        @ApiImplicitParam(name = "userId", value = "商家用户id", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "status", value = "0待付款,1待发货,3=完成,7=售后",
+            paramType = "query", dataType = "integer"),
+
+    })
+    @RequestMapping(value="/getAllOrdersByShopId",method={RequestMethod.GET,RequestMethod.POST})
+    public Result getAllOrdersByShopId(Integer userId, Integer status){
+        //封装数据的map
+        Map<String,Object> map=new HashMap<>();
+
+        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+            .eq(ManagerUser.ID, userId));
+        if(managerUser==null){
+            return new Result().erro("系统错误,请稍后再试");
+        }
+        Integer shopId = managerUser.getShopId();
+        //查询店铺
+        Shop shop=shopService.selectOne(new EntityWrapper<Shop>().eq(Shop.ID,shopId));
+        map.put("shop",shop);
+
+        //先根据店铺Id查询所有订单
+        //status   0待付款,1待发货,3=完成,7=售后
+        List<UserOrder> userOrderList=userOrderService.selectList(new EntityWrapper<UserOrder>()
+                                                                       .eq(UserOrder.SHOP_ID,shopId)
+                                                                       .eq(status!=null,UserOrder.STATUS,status)
+                                                                       .eq(UserOrder.IS_USER_DEL,0)
+                                                                       .eq(UserOrder.IS_SHOP_DEL,0)
+                                                                       .eq(UserOrder.IS_CLOSED,0)
+        );
+        if(userOrderList==null || userOrderList.size()==0){
+            return new Result().success("没有相关订单");
+        }
+
+        for(UserOrder userOrder:userOrderList){
+            //遍历集合,每一个订单userOrder对应一张优惠券coupon
+            Integer couponId=userOrder.getCouponId();
+            Coupon coupon=couponService.selectOne(new EntityWrapper<Coupon>().eq(Coupon.ID,couponId));
+            userOrder.setCoupon(coupon);
+
+            //遍历集合,每一个订单userOrder对应多个userOrderGoods,一个订单里面有多个商品
+            Integer orderId=userOrder.getId();    //订单id
+            List<UserOrderGoods> orderGoodsList=userOrderGoodsService.selectList(new EntityWrapper<UserOrderGoods>()
+                                                                                 .eq(UserOrderGoods.ORDER_ID,orderId)
+            );
+            for(UserOrderGoods userOrderGoods:orderGoodsList){
+                //遍历集合,每一个userOrderGoods对应一个shopGoodsSize
+                Integer goodsId = userOrderGoods.getGoodsId();   //商品
+                Integer goodsSizeId = userOrderGoods.getGoodsSizeId();
+                ShopGoods shopGoods=shopGoodsService.selectOne(new EntityWrapper<ShopGoods>().eq(ShopGoods.ID,goodsId));
+                ShopGoodsSize shopGoodsSize=shopGoodsSizeService.selectOne(new EntityWrapper<ShopGoodsSize>()
+                                                                               .eq(ShopGoodsSize.ID,goodsSizeId));
+                ShopOrderGoods shopOrderGoods = new ShopOrderGoods();
+                shopOrderGoods.setShopGoods(shopGoods);
+                shopOrderGoods.setShopGoodsSize(shopGoodsSize);
+
+                userOrderGoods.setShopOrderGoods(shopOrderGoods);
+            }
+            userOrder.setUserOrderGoodsList(orderGoodsList);
+        }
+        map.put("userOrderList",userOrderList);
+
+        return new Result().success(map);
+    }
+}

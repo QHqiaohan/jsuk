@@ -17,12 +17,12 @@
 ### 时间安排
 [时间安排](https://docs.qq.com/sheet/BIvRjE1Otl8A4YzDgC14WVct0H08qE1Bvz6g0)
 
-### 快速打包
+### 快速打包deploy
 
 ```bash
 npm install -g yarn
 yarn
-
+pro
 #打包
 yarn pkg
 #上传服务器

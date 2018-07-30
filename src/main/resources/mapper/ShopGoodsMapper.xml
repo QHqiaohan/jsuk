@@ -333,7 +333,7 @@
                  select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></collection>
   </resultMap>
 
-    <!--修改-->
+
     <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="ShopGoodsVoT">
         SELECT
         <include refid="Base_Column_List"/>
@@ -384,5 +384,7 @@
             and brand_id = #{brandId}
         </if>
     </select>
+
+
 
 </mapper>

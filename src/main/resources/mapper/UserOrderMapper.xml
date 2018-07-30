@@ -104,7 +104,7 @@
         sgs.original_price,
         sgs.sales_price,
         sg.goods_name,
-        -- sg.main_image,
+        sg.main_image,
         c.discount,
         s.shop_name
         FROM
@@ -161,7 +161,8 @@
         LEFT JOIN js_coupon c ON uo.coupon_id = c.id
         WHERE
         uo.shop_id = #{shopId}
-        AND uo.is_del = 0
+        AND uo.is_user_del = 0
+        AND uo.is_shop_del = 0
         <if test="status != null">
             AND uo.status = #{status}
         </if>

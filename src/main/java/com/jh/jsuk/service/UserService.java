@@ -31,4 +31,6 @@ public interface UserService extends IService<User> {
     void updateLoginStatus(Integer userId, UserType userType, String ipAddr, Date login);
 
     Page listPage(Page page, String kw, String nickName, List<String> dates);
+
+    List<User> selectUserListBy(String keywords);
 }

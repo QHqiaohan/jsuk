@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
+import com.jh.jsuk.entity.vo.ShopOrderGoods;
 import com.jh.jsuk.envm.ShopGoodsStatus;
 
 import java.util.List;
@@ -56,4 +57,5 @@ public interface ShopGoodsService extends IService<ShopGoods> {
     Page listRecycle(Page page, String categoryId, String kw, String brandId, Integer shopId);
 
     List<GoodsSizeVo> getShopGoodsByKeywords(String keywords);
+
 }

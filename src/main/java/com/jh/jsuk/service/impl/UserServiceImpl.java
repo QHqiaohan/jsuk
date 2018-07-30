@@ -108,4 +108,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         return page.setRecords(list);
     }
 
+    @Override
+    public List<User> selectUserListBy(String keywords) {
+        return baseMapper.selectUserListBy(keywords);
+    }
+
 }
