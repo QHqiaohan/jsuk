@@ -158,7 +158,7 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     public Page list(Page page, ShopGoodsStatus status, String categoryId, String keyWord, String brandId, Integer shopId) {
         if (keyWord != null)
             keyWord = "%" + keyWord.trim() + "%";
-        List<ShopGoodsVo2> list = baseMapper.shopGoodsList(page, status != null ? status.getKey() : null, categoryId, keyWord, brandId, shopId);
+        List<GoodsSizeVo> list = baseMapper.shopGoodsList(page, status != null ? status.getKey() : null, categoryId, keyWord, brandId, shopId);
         return page.setRecords(list);
     }
 

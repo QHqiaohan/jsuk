@@ -27,9 +27,10 @@ public class GoodsSizeVo extends ShopGoods {
     private List<ShopGoodsSize> shopGoodsSize;
 
     private List<RushBuyVo> rushBuyInfo;
+    private GoodsCategory categoryInfo;
 
-    public void addRushBuyInfo(RushBuyVo vo){
-        if(rushBuyInfo == null)
+    public void addRushBuyInfo(RushBuyVo vo) {
+        if (rushBuyInfo == null)
             rushBuyInfo = new ArrayList<>();
         rushBuyInfo.add(vo);
     }
