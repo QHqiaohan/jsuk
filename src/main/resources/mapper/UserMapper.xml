@@ -75,13 +75,5 @@
     phone like concat('%',#{keywords},'%')
   </select>
 
-  <!--根据userId查询用户名-->
-  <select id="selectUsernameById" resultMap="java.lang.String">
-    select
-    nick_name
-    FROM js_user
-    where
-    id=#{user_id}
-  </select>
 
 </mapper>

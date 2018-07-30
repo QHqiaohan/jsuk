@@ -22,15 +22,19 @@
     </sql>
 
   <resultMap id="UserTiXianVo" type="com.jh.jsuk.entity.vo.UserTiXianVo" extends="BaseResultMap">
-    <association property="username" column="user_id" select="com.jh.jsuk.dao.UserDao.selectUsernameById">
-    </association>
+    <result column="username" property="username" />
   </resultMap>
 
   <select id="selectByAdvance" resultMap="UserTiXianVo">
     select
-    <include refid="Base_Column_List"></include>
+    tixian.*,
+    u.nick_name as username
     from
-    js_user_ti_xian
+    js_user_ti_xian tixian
+    join
+    js_user u
+    on tixian.user_id=u.id
+
     where is_del=0
     <where>
       <if test="tixianId!=null">
