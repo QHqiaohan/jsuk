@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.Dictionary;
 import com.jh.jsuk.entity.vo.ActivityVo;
+import com.jh.jsuk.entity.vo.ActivityVoT;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
@@ -711,15 +712,8 @@ public class ActivityController {
     public Result getActivityInfoById(@RequestParam Integer id){
         Result result=new Result();
 
-        try{
-            Activity activity=activityService.getActivityInfoById(id);
-            result.success(activity);
-            return result;
-        }catch(Exception e){
-            e.printStackTrace();
-            result.erro("出错啦，稍后重试");
-            return result;
-        }
+        ActivityVoT activityVoT=activityService.selectActivityVoT(id);
+        return result.success(activityVoT);
     }
 
     /**

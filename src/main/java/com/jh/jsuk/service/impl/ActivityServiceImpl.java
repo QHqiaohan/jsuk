@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ActivityDao;
 import com.jh.jsuk.entity.Activity;
 import com.jh.jsuk.entity.vo.ActivityVo;
+import com.jh.jsuk.entity.vo.ActivityVoT;
 import com.jh.jsuk.service.ActivityService;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +63,11 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityDao, Activity> impl
     public Activity getActivityInfoById(Integer id) {
 
         return baseMapper.getActivityInfoById(id);
+    }
+
+    @Override
+    public ActivityVoT selectActivityVoT(Integer id) {
+        return baseMapper.selectActivityVoT(id);
     }
 
 }

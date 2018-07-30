@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -157,10 +158,12 @@ public class UserOrder extends Model<UserOrder> {
     /**
      * 展示商家端订单列表是使用的临时字段,每个订单里面的多个商品集合
      */
+    @Transient
     private List<UserOrderGoods> userOrderGoodsList;
     /**
      * 展示商家端订单列表是使用的临时字段,每个订单对应的一张优惠券
      */
+    @Transient
     private Coupon coupon;
 
     public Coupon getCoupon() {

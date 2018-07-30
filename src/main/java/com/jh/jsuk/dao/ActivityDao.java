@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.jh.jsuk.entity.Activity;
 import com.jh.jsuk.entity.vo.ActivityVo;
+import com.jh.jsuk.entity.vo.ActivityVoT;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.session.RowBounds;
@@ -30,4 +31,6 @@ public interface ActivityDao extends BaseMapper<Activity> {
      * 根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情
      */
     Activity getActivityInfoById(Integer id);
+
+    ActivityVoT selectActivityVoT(@Param("id") Integer id);
 }

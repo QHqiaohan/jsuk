@@ -50,6 +50,17 @@
         publish_time DESC
     </select>
 
+  <select id="selectActivityVoT" parameterType="java.lang.Integer" resultMap="ActivityVoT">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    js_activity
+    WHERE
+    id=#{id}
+    and
+    is_del = 0
+  </select>
+
     <resultMap id="ActivityVo" type="com.jh.jsuk.entity.vo.ActivityVo" extends="BaseResultMap">
         <result column="car_name" property="carName"/>
         <association column="user_id" property="user" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"/>

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.Activity;
 import com.jh.jsuk.entity.vo.ActivityVo;
+import com.jh.jsuk.entity.vo.ActivityVoT;
 
 import java.util.List;
 
@@ -34,4 +35,6 @@ public interface ActivityService extends IService<Activity> {
      * 根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情
      */
     Activity getActivityInfoById(Integer id);
+
+    ActivityVoT selectActivityVoT(Integer id);
 }
