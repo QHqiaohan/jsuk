@@ -686,7 +686,7 @@ public class UserOrderController {
             //遍历集合,每一个订单userOrder对应一张优惠券coupon
             Integer couponId=userOrder.getCouponId();
             Coupon coupon=couponService.selectOne(new EntityWrapper<Coupon>().eq(Coupon.ID,couponId));
-            userOrder.setCoupon(coupon);
+           // userOrder.setCoupon(coupon);
 
             //遍历集合,每一个订单userOrder对应多个userOrderGoods,一个订单里面有多个商品
             Integer orderId=userOrder.getId();    //订单id
@@ -706,7 +706,7 @@ public class UserOrderController {
 
                 userOrderGoods.setShopOrderGoods(shopOrderGoods);
             }
-            userOrder.setUserOrderGoodsList(orderGoodsList);
+            //userOrder.setUserOrderGoodsList(orderGoodsList);
         }
         map.put("userOrderList",userOrderList);
 
