@@ -1,6 +1,7 @@
 package com.jh.jsuk.entity.vo;
 
 
+import com.jh.jsuk.entity.GoodsCategory;
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.ShopGoodsSize;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class GoodsSizeVo extends ShopGoods {
     private List<ShopGoodsSize> shopGoodsSize;
 
     private List<RushBuyVo> rushBuyInfo;
+
     private GoodsCategory categoryInfo;
 
     public void addRushBuyInfo(RushBuyVo vo) {
