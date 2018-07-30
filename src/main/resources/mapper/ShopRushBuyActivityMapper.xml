@@ -22,7 +22,8 @@
   <select id="findVoByGoodsSizeId" resultType="com.jh.jsuk.entity.vo.RushBuyVo">
         select start_time,end_time,#{goodsSizeId} goods_size_id from js_shop_rush_buy b where
         b.id =  (SELECT rush_buy_id FROM `js_shop_rush_buy_activity` a
-        where a.is_use and not a.is_del and a.goods_size_id = #{goodsSizeId})
+        where a.is_use and not a.is_del and a.goods_size_id = #{goodsSizeId}
+        order by publish_time desc limit 1)
         limit 1
   </select>
 

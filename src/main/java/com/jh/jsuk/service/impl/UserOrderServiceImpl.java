@@ -64,7 +64,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     private UserOrderGoodsService userOrderGoodsService;
     @Autowired
     private ShopUserService shopUserService;
-
+    @Autowired
+    private UserOrderService userOrderService;
     @Autowired
     RedisUtils redisUtils;
 
@@ -110,8 +111,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     public void returnStock(Integer orderId) {
         try {
             List<UserOrderGoods> goodsList = orderGoodsDao
-                    .selectList(new EntityWrapper<UserOrderGoods>()
-                            .eq("order_id", orderId));
+                .selectList(new EntityWrapper<UserOrderGoods>()
+                    .eq("order_id", orderId));
             for (UserOrderGoods goods : goodsList) {
                 shopGoodsService.returnStock(goods.getGoodsId(), goods.getNum());
             }
@@ -124,8 +125,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     @Override
     public void remindingOrderTaking() {
         List<UserOrder> orders = this.selectList(new EntityWrapper<UserOrder>()
-                .eq("status", 1)
-                .eq("is_unsubscribe", 0));
+            .eq("status", 1)
+            .eq("is_unsubscribe", 0));
         for (UserOrder order : orders) {
             try {
                 Integer shopId = order.getShopId();
@@ -139,16 +140,55 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Override
     public Page getOrderByUserId(Page page, Wrapper wrapper, Integer userId, Integer status, String goodsName) {
-        wrapper = SqlHelper.fillWrapper(page, wrapper);
+       /* wrapper = SqlHelper.fillWrapper(page, wrapper);
         List<UserOrderInfoVo> orderByUserId = baseMapper.getOrderByUserId(page, wrapper, userId, status, goodsName);
-        List<UserOrderInfoVo> orders=new ArrayList<>();
-        Set<Integer> idSet=new HashSet<>();
-        for (UserOrderInfoVo vo:orderByUserId){
-            if(idSet.add(vo.getId())){
+        List<UserOrderInfoVo> orders = new ArrayList<>();
+        Set<Integer> idSet = new HashSet<>();
+        for (UserOrderInfoVo vo : orderByUserId) {
+            if (idSet.add(vo.getId())) {
                 orders.add(vo);
             }
         }
-        page.setRecords(orders);
+        page.setRecords(orders);*/
+        if (null == status) {
+            if (goodsName != null) {
+                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId).like(UserOrder.GOODS_NAME, goodsName));
+            } else {
+                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId));
+            }
+        } else {
+            if (goodsName != null) {
+                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId).eq(UserOrder.STATUS, status).like(UserOrder.GOODS_NAME, goodsName));
+            } else {
+                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId).eq(UserOrder.STATUS, status));
+            }
+
+        }
+        List<UserOrder> records = page.getRecords();
+        List<UserOrderListVo> userOrderListVos = new ArrayList<>();
+        for (UserOrder userOrder : records) {
+            UserOrderListVo vo = new UserOrderListVo();
+            vo.setUserOrder(userOrder);
+            Map<String, Object> map = new HashMap<>();
+            map.put(UserOrderGoods.ORDER_ID, userOrder.getId());
+            List<ShopGoodsVo> shopGoodsVos = new ArrayList<>();
+            List<UserOrderGoods> userOrderGoods = userOrderGoodsService.selectByMap(map);
+            for (UserOrderGoods orderGoods : userOrderGoods) {
+                ShopGoodsVo shopGoodsVo = new ShopGoodsVo();
+                ShopGoods shopGoods = shopGoodsService.selectById(orderGoods.getGoodsId());
+                shopGoodsVo.setGoodsId(shopGoods.getId());
+                shopGoodsVo.setGoodsName(shopGoods.getGoodsName());
+                ShopGoodsSize shopGoodsSize = shopGoodsSizeService.selectById(orderGoods.getGoodsSizeId());
+                shopGoodsVo.setSizeName(shopGoodsSize.getSizeName());
+                shopGoodsVo.setPrice(shopGoodsSize.getSalesPrice());
+                shopGoodsVo.setMainImage(shopGoods.getMainImage());
+                shopGoodsVo.setNum(orderGoods.getNum());
+                shopGoodsVos.add(shopGoodsVo);
+            }
+            vo.setShopGoodsVos(shopGoodsVos);
+            userOrderListVos.add(vo);
+        }
+        page.setRecords(userOrderListVos);
         return page;
     }
 
@@ -194,7 +234,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     public Integer orderCount(Integer userId) {
         EntityWrapper<UserOrder> wrapper = new EntityWrapper<>();
         wrapper.ne(UserOrder.IS_USER_DEL, 1)
-                .eq(UserOrder.USER_ID, userId);
+            .eq(UserOrder.USER_ID, userId);
         return selectCount(wrapper);
     }
 
@@ -216,8 +256,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         //获取买家信息
         User user = userService.selectOne(new EntityWrapper<User>().eq("id", orderDetail.getUserId()));
         return ShopJPushUtils.pushMsg(shopUser.getId() + "",
-                "订单(" + orderId + ")请尽快发货！催单人：" + user.getNickName() + "",
-                "用户催单", null) ? "催单成功" : "催单失败";
+            "订单(" + orderId + ")请尽快发货！催单人：" + user.getNickName() + "",
+            "用户催单", null) ? "催单成功" : "催单失败";
     }
 
     /**
@@ -331,6 +371,13 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setOrderRealPrice(orderPrice.getOrderRealPrice());
             o.setCouponReduce(orderPrice.getCouponReduce());
             o.setIntegralReduce(orderPrice.getIntegralReduce());
+            StringBuilder goodsName= new StringBuilder();
+            for (UserOrderGoods userOrderGoods:gs){
+                ShopGoods shopGoods = shopGoodsService.selectById(userOrderGoods.getGoodsId());
+                goodsName.append(shopGoods.getGoodsName());
+                goodsName.append(",");
+            }
+            o.setGoodsName(goodsName.toString());
             o.insert();
             Integer orderId = o.getId();
             response.setOrderId(orderId);
@@ -379,7 +426,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             }
             OrderResponse response = createOrder(orderDto, shop, orderType, userId);
             if (OrderType.NORMAL.equals(orderType) &&
-                    (response.is(OrderResponseStatus.SUCCESS) || response.is(OrderResponseStatus.PARTLY_SUCCESS))) {
+                (response.is(OrderResponseStatus.SUCCESS) || response.is(OrderResponseStatus.PARTLY_SUCCESS))) {
                 delShopCart(shop);
             }
             list.add(response);
@@ -403,7 +450,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         for (ShopSubmitOrderGoodsDto goodsDto : goodsList) {
             Integer goodsSizeId = goodsDto.getGoodsSizeId();   //商品规格id
             ShopGoodsSize shopGoodsSize = shopGoodsSizeService.selectOne(new EntityWrapper<ShopGoodsSize>()
-                    .eq(ShopGoodsSize.ID, goodsSizeId)
+                .eq(ShopGoodsSize.ID, goodsSizeId)
             );
             //订单项的价格
             if (shopGoodsSize != null) {
@@ -423,16 +470,16 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         Integer userCouponId = orderDto.getUserCouponId();
         //根据优惠券id和shopId查询对应的优惠券
         Coupon coupon = couponService.selectOne(new EntityWrapper<Coupon>()
-                .eq(Coupon.ID, userCouponId)
-                .eq(Coupon.SHOP_ID, shopId)
-                .eq(Coupon.IS_DEL, 0)
+            .eq(Coupon.ID, userCouponId)
+            .eq(Coupon.SHOP_ID, shopId)
+            .eq(Coupon.IS_DEL, 0)
         );
         if (coupon != null) {
             BigDecimal discount = new BigDecimal("0.00");     //优惠券折扣
             //优惠券开始时间和结束时间判断
             if (new Date().after(coupon.getStartTime())
-                    && new Date().before(coupon.getEndTime())
-                    && totalPriceWithOutDiscount.doubleValue() >= coupon.getFullPrice().doubleValue()) {
+                && new Date().before(coupon.getEndTime())
+                && totalPriceWithOutDiscount.doubleValue() >= coupon.getFullPrice().doubleValue()) {
                 //可以使用优惠券
                 //获取优惠券折扣
                 discount = coupon.getDiscount();
@@ -450,11 +497,11 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             //计算积分抵扣
             //查询用户总积分
             UserIntegral userIntegral = userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
-                    .eq(UserIntegral.USER_ID, userId));
+                .eq(UserIntegral.USER_ID, userId));
             Integer integralNum = userIntegral.getIntegralNumber();    //总积分
             //积分抵扣与规则
             IntegralRule integralRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>()
-                    .eq(IntegralRule.ID, 1)
+                .eq(IntegralRule.ID, 1)
             );
             //积分可以抵扣多少钱
             BigDecimal integralReduce = new BigDecimal(integralNum / integralRule.getIntegral()).multiply(integralRule.getDeduction());
@@ -480,7 +527,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         for (ShopSubmitOrderGoodsDto goodsDto : goodsList) {
             Integer goodsSizeId = goodsDto.getGoodsSizeId();   //商品规格id
             ShopGoodsSize shopGoodsSize = shopGoodsSizeService.selectOne(new EntityWrapper<ShopGoodsSize>()
-                    .eq(ShopGoodsSize.ID, goodsSizeId)
+                .eq(ShopGoodsSize.ID, goodsSizeId)
             );
             //订单项的价格
             if (shopGoodsSize != null && shopGoodsSize.getFullFreight() != null) {
