@@ -1,10 +1,10 @@
 package com.jh.jsuk.entity;
 
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import com.jh.jsuk.entity.vo.GoodsSizeVo;
 import com.jh.jsuk.entity.vo.ShopOrderGoods;
 
 import java.io.Serializable;
@@ -55,6 +55,7 @@ public class UserOrderGoods extends Model<UserOrderGoods> {
      */
     private BigDecimal goodsPrice;
 
+    @TableField(exist = false)
     private ShopOrderGoods shopOrderGoods;
 
     public ShopOrderGoods getShopOrderGoods() {
