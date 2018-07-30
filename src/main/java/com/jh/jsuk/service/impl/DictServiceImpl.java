@@ -29,28 +29,26 @@ public class DictServiceImpl extends ServiceImpl<DictDao, Dict> implements DictS
 
     @Override
     public List<Map<String, Object>> getDict(String type, String code) throws Exception {
-        List<Map<String,Object>> list = new ArrayList<>();
+        List<Map<String, Object>> list = new ArrayList<>();
         if (StrUtil.isBlank(type)) {
             type = "enum";
         }
         if ("enum".equals(type)) {
-
             Class<?> clazz = Class.forName(ENUM_PACKAGE + "." + code);
             Object[] values = clazz.getEnumConstants();
             for (Object value : values) {
-                Map<String,Object> map = new HashMap<>();
+                Map<String, Object> map = new HashMap<>();
                 Method[] methods = clazz.getDeclaredMethods();
                 for (Method method : methods) {
                     String name = method.getName();
-                    if(Pattern.compile("^get").matcher(name).find()){
+                    if (Pattern.compile("^get").matcher(name).find()) {
                         String key = name.replaceAll("^get", "");
                         key = key.substring(0, 1).toLowerCase() + key.substring(1);
-                        map.put(key,method.invoke(value));
+                        map.put(key, method.invoke(value));
                     }
-
                 }
+                list.add(map);
             }
-
         } else {
 
         }
