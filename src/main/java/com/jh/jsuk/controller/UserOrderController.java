@@ -121,7 +121,7 @@ public class UserOrderController {
     @GetMapping("/count")
     public R count() {
         Map<String, Object> map = new HashMap<>();
-        OrderStatus[] statuses = {OrderStatus.DUE_PAY, OrderStatus.WAIT_DELIVER, OrderStatus.DELIVERED, OrderStatus.SUCCESS, OrderStatus.CLOSED};
+        OrderStatus[] statuses = OrderStatus.values();
         int all = 0;
         for (OrderStatus status : statuses) {
             int cnt = userOrderService.statusCount(status, session.getShopId());
