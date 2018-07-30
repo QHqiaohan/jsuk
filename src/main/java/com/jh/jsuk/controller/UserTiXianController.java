@@ -14,10 +14,7 @@ import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -55,17 +52,13 @@ public class UserTiXianController {
 
     @ApiOperation("后台管理系统-财务管理-提现记录")
     @RequestMapping(value="/getTiXianPage",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getTiXianPage(Integer current,Integer size){
-        current=current==null?1:current;
-        size=size==null?10:size;
+    public Result getTiXianPage(Page page){
 
-        Page page=new Page(current,size);
-
-        List<UserTiXianVo> userTiXianList=userTiXianService.selectByAdvance(null,null,null,null);
-        return new Result().success(page.setRecords(userTiXianList));
+        Page<UserTiXianVo> userTiXianPage=userTiXianService.selectByAdvance(page,null,null,null,null);
+        return new Result().success(userTiXianPage);
     }
 
-    @ApiOperation("后台管理系统-财务管理-提现记录-高级检索")
+/*    @ApiOperation("后台管理系统-财务管理-提现记录-高级检索")
     @RequestMapping(value="/advanceSearchTiXianPage",method={RequestMethod.GET,RequestMethod.POST})
     @ApiImplicitParams(value={
         @ApiImplicitParam(name="提现id,流水号",value="tixianId",dataType = "Integer"),
@@ -73,28 +66,30 @@ public class UserTiXianController {
         @ApiImplicitParam(name="状态,0=处理中，1=已提现，2=提现失败，3=取消",value="status",dataType = "Integer"),
         @ApiImplicitParam(name="当前页",value="current",dataType = "Integer"),
         @ApiImplicitParam(name="每页显示条数",value="size",dataType = "Integer")
-    })
-    public Result advanceSearchTiXianPage(Integer tixianId,String amountScope,Integer status,Integer current,Integer size){
-        current=current==null?1:current;
-        size=size==null?10:size;
+    })*/
+
+    @GetMapping("advanceSearchTiXianPage")
+    public Result advanceSearchTiXianPage(Page page,
+                                          @RequestParam(required = false) Integer tixianId,
+                                          @RequestParam(required = false) String amountScope,
+                                          @RequestParam(required = false) Integer status){
         String[] scopes=null;
         Integer begin=null;
         Integer end=null;
 
-        if(amountScope!=null){
+        if(amountScope!=null && amountScope.contains("-")){
             try {
                 scopes = amountScope.split("-");    //以-劈开,格式:1000-2000
             }catch(Exception e){
                 return new Result().erro("金额范围参数错误");
             }
+            begin=Integer.parseInt(scopes[0]);
+            end=Integer.parseInt(scopes[1]);
         }
-        begin=Integer.parseInt(scopes[0]);
-        end=Integer.parseInt(scopes[1]);
 
-        List<UserTiXianVo> userTiXianList=userTiXianService.selectByAdvance(tixianId,begin,end,status);
-        Page page=new Page(current,size);
+        Page<UserTiXianVo> userTiXianPage=userTiXianService.selectByAdvance(page,tixianId,begin,end,status);
 
-        return new Result().success(page.setRecords(userTiXianList));
+        return new Result().success();
     }
 }
 

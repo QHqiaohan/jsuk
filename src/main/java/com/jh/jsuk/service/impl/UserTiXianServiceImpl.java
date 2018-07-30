@@ -1,6 +1,7 @@
 package com.jh.jsuk.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.UserTiXianDao;
 import com.jh.jsuk.entity.ManagerUser;
@@ -91,7 +92,13 @@ public class UserTiXianServiceImpl extends ServiceImpl<UserTiXianDao, UserTiXian
     }
 
     @Override
+    public Page<UserTiXianVo> selectByAdvance(Page page, Integer tixianId, Integer begin, Integer end, Integer status) {
+
+        return null;
+    }
+
+/*    @Override
     public List<UserTiXianVo> selectByAdvance(Integer tixianId, Integer begin, Integer end, Integer status) {
         return baseMapper.selectByAdvance(tixianId,begin,end,status);
-    }
+    }*/
 }
