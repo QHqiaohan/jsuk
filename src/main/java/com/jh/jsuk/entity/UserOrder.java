@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.enums.IdType;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -152,6 +153,31 @@ public class UserOrder extends Model<UserOrder> {
      * 平台流水号
      */
     private String platformNumber;
+
+    /**
+     * 展示商家端订单列表是使用的临时字段,每个订单里面的多个商品集合
+     */
+    private List<UserOrderGoods> userOrderGoodsList;
+    /**
+     * 展示商家端订单列表是使用的临时字段,每个订单对应的一张优惠券
+     */
+    private Coupon coupon;
+
+    public Coupon getCoupon() {
+        return coupon;
+    }
+
+    public void setCoupon(Coupon coupon) {
+        this.coupon = coupon;
+    }
+
+    public List<UserOrderGoods> getUserOrderGoodsList() {
+        return userOrderGoodsList;
+    }
+
+    public void setUserOrderGoodsList(List<UserOrderGoods> userOrderGoodsList) {
+        this.userOrderGoodsList = userOrderGoodsList;
+    }
     /**
      * 商品名称
      */

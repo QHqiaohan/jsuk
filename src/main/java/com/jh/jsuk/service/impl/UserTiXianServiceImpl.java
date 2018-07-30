@@ -1,11 +1,13 @@
 package com.jh.jsuk.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.UserTiXianDao;
 import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.ShopMoney;
 import com.jh.jsuk.entity.UserTiXian;
+import com.jh.jsuk.entity.vo.UserTiXianVo;
 import com.jh.jsuk.service.ManagerUserService;
 import com.jh.jsuk.service.ShopMoneyService;
 import com.jh.jsuk.service.UserTiXianService;
@@ -88,4 +90,15 @@ public class UserTiXianServiceImpl extends ServiceImpl<UserTiXianDao, UserTiXian
         }
         return new Result().erro("参数错误");
     }
+
+    @Override
+    public Page<UserTiXianVo> selectByAdvance(Page page, Integer tixianId, Integer begin, Integer end, Integer status) {
+        List<UserTiXianVo> list=baseMapper.selectByAdvance(page,tixianId,begin,end,status);
+        return page.setRecords(list);
+    }
+
+/*    @Override
+    public List<UserTiXianVo> selectByAdvance(Integer tixianId, Integer begin, Integer end, Integer status) {
+        return baseMapper.selectByAdvance(tixianId,begin,end,status);
+    }*/
 }

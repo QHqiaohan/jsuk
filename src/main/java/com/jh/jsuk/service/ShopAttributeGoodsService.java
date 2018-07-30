@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.ShopAttributeGoods;
 import com.jh.jsuk.entity.vo.ShopAttributeVo;
 
+import java.util.List;
+
 /**
  * <p>
  * 店铺分类属性关联商品表 服务类
@@ -14,5 +16,5 @@ import com.jh.jsuk.entity.vo.ShopAttributeVo;
  */
 public interface ShopAttributeGoodsService extends IService<ShopAttributeGoods> {
 
-    ShopAttributeVo getShopAttributeByShopId(Integer shopId);
+    List<ShopAttributeVo> getShopAttributeByShopId(Integer shopId);
 }

@@ -14,12 +14,7 @@
         id, attribute_id, shop_id
     </sql>
 
-    <resultMap id="ShopAttributeVo" type="com.jh.jsuk.entity.vo.ShopAttributeVo" extends="BaseResultMap">
-        <association property="id" column="id"/>
-        <association property="name" column="name"/>
-    </resultMap>
-
-    <select id="getShopAttributeByShopId" resultMap="ShopAttributeVo">
+    <select id="getShopAttributeByShopId" resultType="com.jh.jsuk.entity.vo.ShopAttributeVo">
         SELECT
             sa.id,sa.`name`
         FROM

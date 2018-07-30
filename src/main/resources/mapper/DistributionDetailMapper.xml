@@ -16,4 +16,13 @@
         id, user_id, money, detail, publish_time
     </sql>
 
+  <!--根据distributionUserId查询对应的配送订单集合-->
+  <select id="selectDistributionDetailListByDistributionUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from
+    js_distribution_detail
+    where id={distributionUserId}
+  </select>
+
 </mapper>

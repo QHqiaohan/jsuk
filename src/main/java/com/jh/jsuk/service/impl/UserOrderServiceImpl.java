@@ -86,7 +86,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (orderStatus != null) {
             wrapper.eq(UserOrder.STATUS, orderStatus.getKey());
         }
-        wrapper.ne(UserOrder.IS_USER_DEL, 1);
+//        wrapper.ne(UserOrder.IS_USER_DEL, 1);
         return selectCount(wrapper);
     }
 

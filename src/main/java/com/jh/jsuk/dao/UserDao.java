@@ -25,4 +25,6 @@ public interface UserDao extends BaseMapper<User> {
     User findUserHeadImgById(Integer id);
 
     List<UserListVo> listPage(Page page,@Param("ew") EntityWrapper wrapper);
+
+    List<User> selectUserListBy(@Param("keywords") String keywords);
 }

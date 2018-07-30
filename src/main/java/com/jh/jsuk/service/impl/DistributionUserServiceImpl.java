@@ -1,15 +1,19 @@
 package com.jh.jsuk.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.SqlHelper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.DistributionUserDao;
 import com.jh.jsuk.entity.DistributionDetail;
 import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.entity.dto.MessageDTO;
+import com.jh.jsuk.entity.vo.PlatformDistributionUserVo;
 import com.jh.jsuk.mq.DjsMessageProducer;
 import com.jh.jsuk.service.DistributionDetailService;
 import com.jh.jsuk.service.DistributionUserService;
+import com.jh.jsuk.utils.MyEntityWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -73,5 +77,19 @@ public class DistributionUserServiceImpl extends ServiceImpl<DistributionUserDao
             bigDecimal.add(money);
         }
         return bigDecimal;
+    }
+
+    @Override
+    public Page getDistributionUserList(Page page, Wrapper wrapper) {
+        wrapper=SqlHelper.fillWrapper(page,wrapper);
+
+        return page.setRecords(baseMapper.getDistributionUserList(page,wrapper));
+    }
+
+    @Override
+    public Page searchDistributionUserBy(Page page, Wrapper wrapper, String account, String name) {
+        wrapper=SqlHelper.fillWrapper(page,wrapper);
+        page.setRecords(baseMapper.searchDistributionUserBy(page,wrapper,account,name));
+        return page;
     }
 }

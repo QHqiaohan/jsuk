@@ -13,9 +13,9 @@ public enum OrderStatus {
 
     SUCCESS(3, "交易成功", "succ"),
 
-    REFUND_MONEY(4, "退款", "arfd"),
+    REFUND_MONEY(4, "退款", "rfmy"),
 
-    REFUND_GOODS(5, "退货", "rfud"),
+    REFUND_GOODS(5, "退货", "rfgd"),
 
     CLOSED(6, "拒绝", "clsd"),
 

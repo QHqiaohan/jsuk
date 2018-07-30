@@ -9,16 +9,12 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Constant;
-import com.jh.jsuk.entity.DistributionUser;
-import com.jh.jsuk.entity.Qa;
-import com.jh.jsuk.entity.UserBank;
-import com.jh.jsuk.entity.UserOrder;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
 import com.jh.jsuk.entity.vo.DistributionUserVo;
-import com.jh.jsuk.service.DistributionUserService;
-import com.jh.jsuk.service.QaService;
-import com.jh.jsuk.service.UserBankService;
+import com.jh.jsuk.entity.vo.PlatformDistributionUserVo;
+import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.*;
 import io.swagger.annotations.*;
@@ -51,9 +47,10 @@ public class DistributionUserController {
     private JwtHelper jwtHelper;
     @Autowired
     UserBankService userBankService;
-
     @Autowired
     QaService qaService;
+    @Autowired
+    private DistributionDetailService distributionDetailService;
 
     @ApiOperation("骑手-登陆")
     @PostMapping("/login")
@@ -416,5 +413,79 @@ public class DistributionUserController {
         }
 
     }
+
+    /**
+     * 后台管理系统-骑手相关
+     *
+     */
+
+    @ApiOperation("后台管理系统-配送管理-用户列表-高级检索")
+    @RequestMapping(value="/searchDistributionUserBy",method={RequestMethod.GET,RequestMethod.POST})
+    public Result searchDistributionUserBy(String account,String name,Integer current,Integer size){
+        current=current==null?1:current;
+        size=size==null?10:size;
+
+        Page page=new Page(current,size);
+        MyEntityWrapper<DistributionUser> ew = new MyEntityWrapper<>();
+        Page distributionUserPage=distributionUserService.searchDistributionUserBy(page,ew,account,name);
+
+        return new Result().success(distributionUserPage);
+    }
+
+
+    @ApiOperation("后台管理系统-配送管理-骑手列表")
+    @RequestMapping(value="/getDistributionUserList",method={RequestMethod.GET,RequestMethod.POST})
+    public Result getDistributionUserList(Integer current,Integer size){
+        current=current==null?1:current;
+        size=size==null?10:size;
+
+        Page page=new Page(current,size);
+        MyEntityWrapper<DistributionUser> ew = new MyEntityWrapper<>();
+        Page distributionUserPage=distributionUserService.getDistributionUserList(page,ew);
+
+        return new Result().success(distributionUserPage);
+    }
+
+    @ApiOperation("后台管理系统-配送管理-骑手列表-查看详情")
+    @RequestMapping(value="/getDistributionDetailList",method={RequestMethod.GET,RequestMethod.POST})
+    public Result getDistributionDetailList(@RequestParam Integer distributionUserId,Integer current,Integer size){
+        current=current==null?1:current;
+        size=size==null?10:size;
+
+        Page distributionDetailPage=distributionDetailService.selectPage(new Page(current,size),
+                                                                         new EntityWrapper<DistributionDetail>()
+                                                                             .eq(DistributionDetail.USER_ID,distributionUserId)
+            );
+
+        return new Result().success(distributionDetailPage);
+    }
+
+
+    @ApiOperation("后台管理系统-配送管理-骑手列表-编辑")
+    @RequestMapping(value="/editDistributionUser",method={RequestMethod.POST})
+    public Result editDistributionUser(@ModelAttribute DistributionUser distributionUser){
+        try{
+            String password=distributionUser.getPassword();
+            distributionUser.setPassword(MD5Util.getMD5(password));
+            distributionUser.updateById();
+        }catch(Exception e){
+            return new Result().erro("编辑失败");
+        }
+        return new Result().success("编辑成功");
+    }
+
+    @ApiOperation("后台管理系统-配送管理-骑手列表-删除")
+    @RequestMapping(value="/deleteDistributionUser",method={RequestMethod.GET,RequestMethod.POST})
+    public Result deleteDistributionUser(@RequestParam Integer distributionUserId){
+        DistributionUser distributionUser=distributionUserService.selectById(distributionUserId);
+        if(distributionUser==null){
+            return new Result().erro("系统错误,请稍后再试");
+        }
+        distributionUser.setCanUse(0);
+        distributionUser.updateById();
+
+        return new Result().success("删除成功");
+    }
+
 }
 

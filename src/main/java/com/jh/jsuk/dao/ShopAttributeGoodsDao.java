@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.jh.jsuk.entity.ShopAttributeGoods;
 import com.jh.jsuk.entity.vo.ShopAttributeVo;
 
+import java.util.List;
+
 /**
  * <p>
  * 店铺分类属性关联商品表 Mapper 接口
@@ -14,5 +16,5 @@ import com.jh.jsuk.entity.vo.ShopAttributeVo;
  */
 public interface ShopAttributeGoodsDao extends BaseMapper<ShopAttributeGoods> {
 
-    ShopAttributeVo getShopAttributeByShopId(Integer shopId);
+    List<ShopAttributeVo> getShopAttributeByShopId(Integer shopId);
 }

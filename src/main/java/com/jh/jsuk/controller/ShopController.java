@@ -104,7 +104,7 @@ public class ShopController {
     @ApiOperation("用户端-根据店铺id查看店铺内部的商品分类-属性")
     @RequestMapping(value = "/getShopAttributeByShopId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopAttributeByShopId(@ApiParam(value = "店铺id", required = true) Integer shopId) {
-        ShopAttributeVo attributeVo = shopAttributeGoodsService.getShopAttributeByShopId(shopId);
+        List<ShopAttributeVo> attributeVo = shopAttributeGoodsService.getShopAttributeByShopId(shopId);
         return new Result().success(attributeVo);
     }
 
