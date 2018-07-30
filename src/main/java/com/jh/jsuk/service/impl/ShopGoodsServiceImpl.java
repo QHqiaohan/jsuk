@@ -6,14 +6,15 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ShopGoodsDao;
 import com.jh.jsuk.dao.ShopRushBuyActivityDao;
+import com.jh.jsuk.entity.Shop;
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
 import com.jh.jsuk.entity.vo.ShopGoodsVo2;
-import com.jh.jsuk.entity.vo.ShopOrderGoods;
 import com.jh.jsuk.envm.ShopGoodsStatus;
 import com.jh.jsuk.service.ShopGoodsService;
+import com.jh.jsuk.service.ShopService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,9 +83,17 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
         return page;
     }
 
+    @Autowired
+    ShopService shopService;
+
     @Override
     public GoodsSizeVo getShopGoodsById(Integer id) {
         GoodsSizeVo vo = baseMapper.getShopGoodsById(id);
+        if(vo != null) {
+            Shop shop = shopService.selectById(vo.getShopId());
+            if (shop != null)
+                vo.setShopName(shop.getShopName());
+        }
         if (vo != null) {
             List<ShopGoodsSize> sizes = vo.getShopGoodsSize();
             if (CollectionUtils.isNotEmpty(sizes)) {
@@ -172,7 +181,7 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
                             Integer brandId, String address, Integer goodsType, String lowPrice, String highPrice, Integer shopId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.getShopList(page, wrapper, address, attributeId, shopModularId, categoryId, brandId, name, goodsType,
-                lowPrice, highPrice, type, shopId));
+            lowPrice, highPrice, type, shopId));
         return page;
     }
 
