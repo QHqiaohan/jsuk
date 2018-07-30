@@ -16,6 +16,7 @@ import com.jh.jsuk.service.ShopGoodsService;
 import com.jh.jsuk.service.ShopGoodsSizeService;
 import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.R;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,6 +68,13 @@ public class WGoodsController {
         return R.succ(goodsEvaluateService.listEvaluate(page, categoryId, kw, brandId, session.getShopId(), nickName));
     }
 
+    /**
+     * 删除评价
+     */
+    @RequestMapping("/evaluate/del")
+    public R delEvaluate(Integer evaluateId){
+        return R.succ();
+    }
     @GetMapping("/allCount")
     public R allCount() {
         Map<String, Object> map = new HashMap<>();

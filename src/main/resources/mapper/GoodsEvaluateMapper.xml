@@ -35,9 +35,18 @@
   </resultMap>
 
   <select id="listEvaluate" resultMap="goodsEvaluateVo">
-    SELECT e.* FROM `js_goods_evaluate` e left join js_shop_goods g on e.goods_id = g.id
-    left join js_user u on u.id = e.user_id
-    where 1=1
+    SELECT
+    e.*
+    FROM
+    `js_goods_evaluate` e
+    LEFT JOIN js_shop_goods g ON e.goods_id = g.id
+    LEFT JOIN js_user u ON u.id = e.user_id
+    LEFT JOIN js_shop s ON s.id=g.shop_id
+    WHERE
+    1=1
+    <if test="shopId != null">
+      and s.id=#{shopId}
+    </if>
     <if test="keyWord != null">
       and g.goods_name like #{keyWord}
     </if>
