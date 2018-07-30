@@ -80,6 +80,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     @Autowired
     private ShoppingCartService shoppingCartService;
 
+    @Autowired
+    private ShopService shopService;
+
     @Override
     public int statusCount(OrderStatus orderStatus, Integer shopId) {
         EntityWrapper<UserOrder> wrapper = new EntityWrapper<>();
@@ -140,27 +143,23 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Override
     public Page getOrderByUserId(Page page, Wrapper wrapper, Integer userId, Integer status, String goodsName) {
-       /* wrapper = SqlHelper.fillWrapper(page, wrapper);
-        List<UserOrderInfoVo> orderByUserId = baseMapper.getOrderByUserId(page, wrapper, userId, status, goodsName);
-        List<UserOrderInfoVo> orders = new ArrayList<>();
-        Set<Integer> idSet = new HashSet<>();
-        for (UserOrderInfoVo vo : orderByUserId) {
-            if (idSet.add(vo.getId())) {
-                orders.add(vo);
-            }
-        }
-        page.setRecords(orders);*/
         if (null == status) {
             if (goodsName != null) {
-                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId).like(UserOrder.GOODS_NAME, goodsName));
+                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
+                    .like(UserOrder.GOODS_NAME, goodsName).orderBy(false, UserOrder.CREAT_TIME)
+                    .where("is_user_del=0 and is_shop_del=0"));
             } else {
-                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId));
+                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
+                    .orderBy(false, UserOrder.CREAT_TIME).where("is_user_del=0 and is_shop_del=0"));
             }
         } else {
             if (goodsName != null) {
-                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId).eq(UserOrder.STATUS, status).like(UserOrder.GOODS_NAME, goodsName));
+                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
+                    .eq(UserOrder.STATUS, status).like(UserOrder.GOODS_NAME, goodsName)
+                    .orderBy(false, UserOrder.CREAT_TIME).where("is_user_del=0 and is_shop_del=0"));
             } else {
-                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId).eq(UserOrder.STATUS, status));
+                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
+                    .eq(UserOrder.STATUS, status).orderBy(false, UserOrder.CREAT_TIME).where("is_user_del=0 and is_shop_del=0"));
             }
 
         }
@@ -185,6 +184,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 shopGoodsVo.setNum(orderGoods.getNum());
                 shopGoodsVos.add(shopGoodsVo);
             }
+            vo.setShop(shopService.selectById(userOrder.getShopId()));
             vo.setShopGoodsVos(shopGoodsVos);
             userOrderListVos.add(vo);
         }
@@ -372,8 +372,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setCouponReduce(orderPrice.getCouponReduce());
             o.setIntegralReduce(orderPrice.getIntegralReduce());
             o.setPayType(orderDto.getPayType());
-            StringBuilder goodsName= new StringBuilder();
-            for (UserOrderGoods userOrderGoods:gs){
+            StringBuilder goodsName = new StringBuilder();
+            for (UserOrderGoods userOrderGoods : gs) {
                 ShopGoods shopGoods = shopGoodsService.selectById(userOrderGoods.getGoodsId());
                 goodsName.append(shopGoods.getGoodsName());
                 goodsName.append(",");
