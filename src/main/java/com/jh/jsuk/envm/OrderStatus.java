@@ -19,9 +19,7 @@ public enum OrderStatus {
 
     CLOSED(6, "拒绝", "clsd"),
 
-    CANCEL(7, "取消", "casl"),
-
-    REFUND_SUCC(8,"退款成功","rfsucc");
+    CANCEL(7, "取消", "casl");
 
     private final Integer key;
 
