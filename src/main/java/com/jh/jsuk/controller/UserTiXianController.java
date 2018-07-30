@@ -49,16 +49,16 @@ public class UserTiXianController {
      * 后台管理系统
      * 财务管理
      */
-
+/*
     @ApiOperation("后台管理系统-财务管理-提现记录")
     @RequestMapping(value="/getTiXianPage",method={RequestMethod.GET,RequestMethod.POST})
+   //@GetMapping("getTiXianPage")
     public Result getTiXianPage(Page page){
-
         Page<UserTiXianVo> userTiXianPage=userTiXianService.selectByAdvance(page,null,null,null,null);
         return new Result().success(userTiXianPage);
-    }
+    }*/
 
-/*    @ApiOperation("后台管理系统-财务管理-提现记录-高级检索")
+/*    @ApiOperation("后台管理系统-财务管理-提现记录&&高级检索")
     @RequestMapping(value="/advanceSearchTiXianPage",method={RequestMethod.GET,RequestMethod.POST})
     @ApiImplicitParams(value={
         @ApiImplicitParam(name="提现id,流水号",value="tixianId",dataType = "Integer"),
@@ -67,7 +67,6 @@ public class UserTiXianController {
         @ApiImplicitParam(name="当前页",value="current",dataType = "Integer"),
         @ApiImplicitParam(name="每页显示条数",value="size",dataType = "Integer")
     })*/
-
     @GetMapping("advanceSearchTiXianPage")
     public Result advanceSearchTiXianPage(Page page,
                                           @RequestParam(required = false) Integer tixianId,
@@ -89,7 +88,7 @@ public class UserTiXianController {
 
         Page<UserTiXianVo> userTiXianPage=userTiXianService.selectByAdvance(page,tixianId,begin,end,status);
 
-        return new Result().success();
+        return new Result().success(userTiXianPage);
     }
 }
 

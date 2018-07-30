@@ -93,8 +93,8 @@ public class UserTiXianServiceImpl extends ServiceImpl<UserTiXianDao, UserTiXian
 
     @Override
     public Page<UserTiXianVo> selectByAdvance(Page page, Integer tixianId, Integer begin, Integer end, Integer status) {
-
-        return null;
+        List<UserTiXianVo> list=baseMapper.selectByAdvance(page,tixianId,begin,end,status);
+        return page.setRecords(list);
     }
 
 /*    @Override
