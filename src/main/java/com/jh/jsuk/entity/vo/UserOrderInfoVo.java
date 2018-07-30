@@ -1,5 +1,6 @@
 package com.jh.jsuk.entity.vo;
 
+import com.jh.jsuk.entity.UserAddress;
 import com.jh.jsuk.entity.UserOrder;
 import lombok.Getter;
 import lombok.Setter;
@@ -53,6 +54,8 @@ public class UserOrderInfoVo extends UserOrder {
 //    private Integer isClosed;
 //
 //    private Date sendTime;
+
+    private UserAddress addressInfo;
 
     private List<UserOrderDetailVo> shopGoodsList;
 
