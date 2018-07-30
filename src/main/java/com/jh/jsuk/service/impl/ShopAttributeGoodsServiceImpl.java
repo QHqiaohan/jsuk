@@ -7,6 +7,8 @@ import com.jh.jsuk.entity.vo.ShopAttributeVo;
 import com.jh.jsuk.service.ShopAttributeGoodsService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 店铺分类属性关联商品表 服务实现类
@@ -19,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class ShopAttributeGoodsServiceImpl extends ServiceImpl<ShopAttributeGoodsDao, ShopAttributeGoods> implements ShopAttributeGoodsService {
 
     @Override
-    public ShopAttributeVo getShopAttributeByShopId(Integer shopId) {
+    public List<ShopAttributeVo> getShopAttributeByShopId(Integer shopId) {
         return baseMapper.getShopAttributeByShopId(shopId);
     }
 }
