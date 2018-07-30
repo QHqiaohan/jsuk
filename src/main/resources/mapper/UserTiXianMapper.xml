@@ -21,4 +21,28 @@
         id, user_id, manager_id, bank_id, num, status, remark, is_del, price, create_time
     </sql>
 
+  <resultMap id="UserTiXianVo" type="com.jh.jsuk.entity.vo.UserTiXianVo" extends="BaseResultMap">
+    <association property="username" column="user_id" select="com.jh.jsuk.dao.UserDao.selectUsernameById">
+    </association>
+  </resultMap>
+
+  <select id="selectByAdvance" resultMap="UserTiXianVo">
+    select
+    <include refid="Base_Column_List"></include>
+    from
+    js_user_ti_xian
+    where is_del=0
+    <where>
+      <if test="tixianId!=null">
+        id=#{tixianId}
+      </if>
+      <if test="begin!=null and end!=null">
+        price between #{begin} and #{end}
+      </if>
+      <if test="status!=null">
+        status=#{status}
+      </if>
+    </where>
+  </select>
+
 </mapper>

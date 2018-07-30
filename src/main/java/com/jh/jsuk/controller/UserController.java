@@ -13,6 +13,7 @@ import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.Dictionary;
 import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
+import com.jh.jsuk.entity.vo.PlatformUserVo;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
@@ -48,7 +49,6 @@ public class UserController {
     UserCouponService userCouponService;
     @Autowired
     CollectService collectService;
-
     @Autowired
     CollectGoodsService collectGoodsService;
     @Autowired
@@ -61,10 +61,8 @@ public class UserController {
     private ManagerUserService managerUserService;
     @Autowired
     private UserIntegralService userIntegralService;
-
     @Autowired
     UserAddressService userAddressService;
-
     @Autowired
     UserOrderService userOrderService;
 
@@ -644,7 +642,7 @@ public class UserController {
     }
 
     @PostMapping("/ui/edit")
-    public Result uiEdit(HttpSession session, @ModelAttribute User user, Integer userId) {
+        public Result uiEdit(HttpSession session, @ModelAttribute User user, Integer userId) {
         if (userId != null) {
             user.setId(userId);
         }
@@ -652,113 +650,132 @@ public class UserController {
         return new Result().success();
     }
 
-    @ApiOperation("后台管理系统-账户设置")
-    @RequestMapping(value="/accountInfoSetting",method={RequestMethod.POST,RequestMethod.GET})
-    public Result accountInfoSetting(String userId,String account,String headImg,String oldPassword,String newPassword){
 
-        ManagerUser manager_user = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-                .eq(ManagerUser.ID,userId)
-                .eq(ManagerUser.USER_NAME, account)
-                .eq(ManagerUser.PASSWORD, MD5Util.getMD5(oldPassword))
-        );
-        if(manager_user==null){
-            return new Result().erro("旧密码不正确");
-        }else{
-            if(headImg!=null && !headImg.equals("")){
-                manager_user.setHeadImg(headImg);
+    @ApiOperation("平台管理系统-用户管理-根据用户id、账号搜索")
+    @RequestMapping(value="/searchUserListBy",method={RequestMethod.POST,RequestMethod.GET})
+    public Result searchUserListBy(@RequestParam String keywords,Integer current,Integer size){
+        current=current==null?1:current;
+        size=size==null?10:size;
+        Page<User> userPage=new Page<>(current,size);
+        List<User> userList=userService.selectUserListBy(keywords);
+
+        return new Result().success(userPage.setRecords(userList));
+    }
+
+
+    @ApiOperation("平台管理系统-用户管理-用户列表")
+    @RequestMapping(value="/getUserPage",method={RequestMethod.GET,RequestMethod.POST})
+    public Result getUserPage(Integer current,Integer size){
+        current=current==null?1:current;
+        size=size==null?10:size;
+        Page<User> userPage=userService.selectPage(new Page<User>(current,size),
+                                                   new EntityWrapper<User>()
+                                                       .eq(User.CAN_USE,1)
+            );
+        List<User> userList=userPage.getRecords();
+        Page<PlatformUserVo> platformUserVoPage=new Page<>(current,size);
+        List<PlatformUserVo> plateformUserVoList=new ArrayList<>();
+
+        for(User user:userList){
+            PlatformUserVo platformUserVo=new PlatformUserVo();
+            platformUserVo.setUser(user);
+            Integer userId=user.getId();
+            List<UserOrder> userOrderList=userOrderService.selectList(new EntityWrapper<UserOrder>()
+                                                                          .eq(UserOrder.USER_ID,userId)
+            );
+            //该用户的消费金额
+            BigDecimal consumeCount = new BigDecimal(0.00);
+            if(userOrderList!=null && userOrderList.size()>0) {
+                //该用户的订单数量
+                platformUserVo.setOrderCount(userOrderList.size());
+                for (UserOrder userOrder : userOrderList) {
+                    consumeCount=consumeCount.add(userOrder.getOrderRealPrice());
+                }
+            }else{
+                platformUserVo.setOrderCount(0);
             }
-            manager_user.setPassword(MD5Util.getMD5(newPassword));
-            manager_user.updateById();
+            platformUserVo.setConsumeCount(consumeCount);
+            //该用户可用积分
+            UserIntegral userIntegral=userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
+                                                                              .eq(UserIntegral.USER_ID,userId)
+            );
+            if(userIntegral!=null){
+                platformUserVo.setIntegralCount(userIntegral.getIntegralNumber());
+            }else{
+                platformUserVo.setIntegralCount(0);
+            }
+            plateformUserVoList.add(platformUserVo);
         }
-
-        return new Result().success("账户资料编辑成功");
+        return new Result().success(platformUserVoPage.setRecords(plateformUserVoList));
     }
 
-    @ApiOperation("后台管理系统-根据用户名搜索成员")
-    @RequestMapping(value="/getUserListByUsername",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getUserListByUsername(String username){
-        if(username==null || "".equals(username)){
+    @ApiOperation("后台管理系统-用户列表-用户详情")
+    @RequestMapping(value="/getUserInfo",method={RequestMethod.GET,RequestMethod.POST})
+    public Result getUserInfo(@RequestParam Integer userId,Integer current,Integer size){
+        current=current==null?1:current;
+        size=size==null?10:size;
+
+        PlatformUserVo platformUserVo=new PlatformUserVo();
+        User user=userService.selectOne(new EntityWrapper<User>()
+                                            .eq(User.ID,userId)
+                                            .eq(User.CAN_USE,1)
+        );
+        if(user==null){
+            return new Result().erro("该用户不可用");
+        }
+        platformUserVo.setUser(user);
+        //查询用户地址列表
+        List<UserAddress> userAddressList=userAddressService.selectList(new EntityWrapper<UserAddress>()
+            .eq(UserAddress.USER_ID,userId)
+            .eq(UserAddress.IS_DEL,0)
+        );
+        platformUserVo.setUserAddressList(userAddressList);
+        //查询订单列表
+        Page<UserOrder> userOrderPage=userOrderService.selectPage(new Page<UserOrder>(current,size),
+                                                                  new EntityWrapper<UserOrder>()
+                                                                      .eq(UserOrder.USER_ID,userId)
+                                                                      .ne(UserOrder.IS_SHOP_DEL,1)
+                                                                      .ne(UserOrder.IS_USER_DEL,1)
+            );
+        if(userOrderPage!=null && userOrderPage.getRecords().size()>0) {
+            platformUserVo.setUserOrderList(userOrderPage.getRecords());
+        }
+
+        return new Result().success(platformUserVo);
+    }
+
+
+    @ApiOperation("后台管理系统-用户管理-编辑用户信息")
+    @RequestMapping(value="/editUser",method={RequestMethod.POST})
+    public Result editUser(@ModelAttribute User user){
+        if(user==null){
             return new Result().erro("参数错误");
         }
-        List<ManagerUser> manegerUserList=managerUserService.getUserListByUsername(username);
-        if(manegerUserList==null || manegerUserList.size()==0){
-            return new Result().success("没有数据");
-        }
-        return new Result().success(manegerUserList);
+        user.updateById();
+
+        return new Result().success("用户信息编辑成功");
+    }
+
+    @ApiOperation("后台管理系统-用户管理-删除用户")
+    public Result deleteUserById(@RequestParam Integer userId){
+        User user=userService.selectOne(new EntityWrapper<User>().eq(User.ID,userId));
+        user.setCanUse(0);
+        user.updateById();
+        return new Result().success("用户删除成功");
     }
 
 
-    @ApiOperation("后台管理系统-成员管理-成员列表")
-    @RequestMapping(value="/getManagerUserList",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getManagerUserList(Integer current,Integer size){
-        Page managerUserPage=managerUserService.selectPage(new Page(current,size),
-                                                           new EntityWrapper<ManagerUser>()
-                                                               .eq(ManagerUser.CAN_USE,1)
-                );
-        return new Result().success(managerUserPage);
-    }
-
-    @ApiOperation("后台管理系统-成员管理-添加成员")
-    @RequestMapping(value="/addManagerUser",method={RequestMethod.POST})
-    public Result addManagerUser(@ModelAttribute ManagerUser managerUser){
-        String password=managerUser.getPassword();
-        managerUser.setPassword(MD5Util.getMD5(password));
-        managerUser.setUserType(1);    //用户类型 1:平台 2:商家
-        managerUser.setCanUse(1);      //是否可用 0:否  1:是
-        managerUser.setCreateTime(new Date());
-        managerUser.setUpdateTime(new Date());
-        //获取默认头像
-        Dictionary dictionaryImg = dictionaryService.selectOne(new EntityWrapper<Dictionary>().
-                eq("code", "user_default_img"));
-        managerUser.setHeadImg(dictionaryImg.getValue());
-        try{
-            managerUser.insert();
-            return new Result().success("添加成员成功");
-        }catch(Exception e){
-            e.printStackTrace();
-            return new Result().erro("添加成员失败");
-        }
-    }
-
-    @ApiOperation("后台管理系统-成员管理-是否启用成员")
-    @RequestMapping(value="/setCanUse",method={RequestMethod.GET,RequestMethod.POST})
-    public Result setCanUse(Integer userId,
-                            @ApiParam(value = "是否起用 0:否  1:是") Integer can_user){
-        ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-                .eq(ManagerUser.ID,userId)
-
+    @ApiOperation("后台管理系统-用户管理-用户详情-查看订单详情")
+    @RequestMapping(value="/getUserOrderInfo",method={RequestMethod.GET,RequestMethod.POST})
+    public Result getUserOrderInfo(@RequestParam Integer userId,@RequestParam Integer userOrderId){
+        UserOrder userOrder=userOrderService.selectOne(new EntityWrapper<UserOrder>()
+                                                           .eq(UserOrder.ID,userOrderId)
+                                                           .eq(UserOrder.USER_ID,userId)
         );
-        if(managerUser==null){
-            return new Result().erro("系统错误,请稍后再试");
-        }
-        managerUser.setCanUse(can_user);
-        managerUser.insert();
-        return new Result().success("更改成功");
+        return new Result().success(userOrder);
     }
 
-    @ApiOperation("后台管理系统-成员管理-是否启用成员")
-    @RequestMapping(value="/editManagerUser",method={RequestMethod.POST})
-    public Result editManagerUser(@ModelAttribute ManagerUser managerUser){
-        if(managerUser!=null) {
-            managerUser.updateById();
-            return new Result().success("编辑成功");
-        }else{
-            return new Result().erro("参数错误");
-        }
-    }
 
-    @ApiOperation("后台管理系统-成员管理-删除成员")
-    @RequestMapping(value="/deleteManagerUserById",method={RequestMethod.GET,RequestMethod.POST})
-    public Result deleteManagerUserById(@RequestParam Integer managerUserId){
-        ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-                                                            .eq(ManagerUser.ID,managerUserId)
-        );
-        if(managerUser==null){
-            return new Result().erro("系统错误，请稍后再试");
-        }
-        managerUser.setCanUse(0);
-        managerUser.updateById();
-        return new Result().success("删除成功");
-    }
+
 
 }

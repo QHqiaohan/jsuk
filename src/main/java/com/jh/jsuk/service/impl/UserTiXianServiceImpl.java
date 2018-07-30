@@ -6,6 +6,7 @@ import com.jh.jsuk.dao.UserTiXianDao;
 import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.ShopMoney;
 import com.jh.jsuk.entity.UserTiXian;
+import com.jh.jsuk.entity.vo.UserTiXianVo;
 import com.jh.jsuk.service.ManagerUserService;
 import com.jh.jsuk.service.ShopMoneyService;
 import com.jh.jsuk.service.UserTiXianService;
@@ -87,5 +88,10 @@ public class UserTiXianServiceImpl extends ServiceImpl<UserTiXianDao, UserTiXian
             return new Result().success();
         }
         return new Result().erro("参数错误");
+    }
+
+    @Override
+    public List<UserTiXianVo> selectByAdvance(Integer tixianId, Integer begin, Integer end, Integer status) {
+        return baseMapper.selectByAdvance(tixianId,begin,end,status);
     }
 }

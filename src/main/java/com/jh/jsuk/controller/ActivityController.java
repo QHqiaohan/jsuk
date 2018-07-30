@@ -745,5 +745,23 @@ public class ActivityController {
         }
     }
 
+    @ApiOperation("用户端-乡村旅游-根据状态获取活动报名列表")
+    @ApiImplicitParams(value={
+        @ApiImplicitParam(name="current",value="当前页",paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name="size",value="每页显示条数",paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name="status",value="状态，0=待付款,1=进行中,2=完成",paramType = "query", dataType = "integer")
+    })
+    @RequestMapping(value="/getActivityJoinByStatus",method={RequestMethod.GET,RequestMethod.POST})
+    public Result getActivityJoinByStatus(Integer current,Integer size,Integer status){
+        current=current==null?1:current;
+        size=size==null?10:size;
+        Page<ActivityJoin> activityJoinPage=activityJoinService.selectPage(new Page(current,size),
+                                                                           new EntityWrapper<ActivityJoin>()
+                                                                               .eq(status!=null,ActivityJoin.STATUS,status)
+                                                                               .eq(ActivityJoin.IS_DEL,0)
+            );
+        return new Result().success(activityJoinPage);
+    }
+
 }
 
