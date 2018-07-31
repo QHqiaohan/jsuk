@@ -11,7 +11,6 @@ import lombok.ToString;
 @ToString
 public class GoodsEvaluateDto extends GoodsEvaluate {
 
-
     @ApiModelProperty(name = "商品质量星数", value = "goodsStar")
     private Integer goodsStar;
 

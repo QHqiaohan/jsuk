@@ -1,9 +1,13 @@
 package com.jh.jsuk.controller;
 
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.jh.jsuk.entity.GoodsEvaluate;
+import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.dto.GoodsEvaluateDto;
 import com.jh.jsuk.service.GoodsEvaluateService;
+import com.jh.jsuk.service.UserService;
 import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
@@ -14,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -38,7 +44,13 @@ public class GoodsEvaluateController {
     })
     @RequestMapping(value = "/get", method = {RequestMethod.POST, RequestMethod.GET})
     public Result get(Integer goodsId, @RequestParam(defaultValue = "1") Integer count) throws Exception {
-        return new Result().success(goodsEvaluateService.get(goodsId, count));
+        Map<String,Object> map = new HashMap<>();
+        map.put("evaluates",goodsEvaluateService.get(goodsId, count));
+        EntityWrapper<GoodsEvaluate> wrapper = new EntityWrapper<>();
+        wrapper.eq(GoodsEvaluate.GOODS_ID,goodsId)
+            .ne(GoodsEvaluate.IS_DEL,1);
+        map.put("count",goodsEvaluateService.selectCount(wrapper));
+        return new Result().success(map);
     }
 
     @ApiOperation("用户-获取评价数量")
@@ -64,9 +76,12 @@ public class GoodsEvaluateController {
         return new Result().success(goodsEvaluateService.listPage(goodsId, type, page));
     }
 
+    @Autowired
+    UserService userService;
+
     @ApiOperation("用户端-添加商品评价")
     @RequestMapping(value = "/addEvaluate", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addEvaluate(@RequestBody ArrayList<GoodsEvaluateDto> list) {
+    public Result addEvaluate(@RequestBody ArrayList<GoodsEvaluateDto> list,Integer userId) {
         if(list == null || list.isEmpty())
             return R.err("没数据");
         for (GoodsEvaluateDto dto : list) {
@@ -79,6 +94,10 @@ public class GoodsEvaluateController {
             } else {
                 dto.setStarNumber(5);
             }
+            dto.setUserId(userId);
+            User user = userService.selectById(userId);
+            if(user!= null)
+            dto.setUserName(user.getNickName());
             goodsEvaluateService.insert(dto);
         }
         return new Result().success("添加成功");
