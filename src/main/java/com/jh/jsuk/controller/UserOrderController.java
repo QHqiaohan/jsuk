@@ -645,7 +645,7 @@ public class UserOrderController {
     @ApiOperation(value = "用户端-催一催")
     @RequestMapping(value = "/pushAPush", method = {RequestMethod.POST, RequestMethod.GET})
     public Result pushAPush(@ApiParam(value = "订单ID", required = true) Integer id) {
-        return new Result().setMsg(userOrderService.pushAPush(id));
+        return new Result().success(userOrderService.pushAPush(id));
     }
 
 

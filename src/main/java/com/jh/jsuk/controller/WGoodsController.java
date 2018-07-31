@@ -10,14 +10,12 @@ import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.dto.ShopGoodsDTO;
 import com.jh.jsuk.envm.ShopGoodsStatus;
-import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.service.GoodsCategoryService;
 import com.jh.jsuk.service.GoodsEvaluateService;
 import com.jh.jsuk.service.ShopGoodsService;
 import com.jh.jsuk.service.ShopGoodsSizeService;
 import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.R;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -84,6 +82,15 @@ public class WGoodsController {
     @RequestMapping("/evaluate/getById")
     public R getById(Integer evaluateId) {
         return R.succ(goodsEvaluateService.selectById(evaluateId));
+    }
+
+    @PostMapping("/evaluate")
+    public R updateById(Integer id,Integer isShow){
+        GoodsEvaluate evaluate = new GoodsEvaluate();
+        evaluate.setId(id);
+        evaluate.setIsShow(isShow);
+        evaluate.updateById();
+        return R.succ("修改成功");
     }
 
     @GetMapping("/allCount")

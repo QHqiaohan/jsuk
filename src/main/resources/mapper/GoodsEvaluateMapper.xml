@@ -44,7 +44,6 @@
     LEFT JOIN js_shop s ON s.id=g.shop_id
     WHERE
     e.is_del != 1
-    and e.is_show = 1
     <if test="shopId != null">
       and s.id=#{shopId}
     </if>
