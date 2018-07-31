@@ -4,6 +4,7 @@ package com.jh.jsuk.controller;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.enums.SqlLike;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.common.collect.Maps;
@@ -304,7 +305,7 @@ public class ManagerUserController {
         return new Result().success("账户资料编辑成功");
     }
 
-    @ApiOperation("后台管理系统-根据用户名或姓名搜索成员")
+/*    @ApiOperation("后台管理系统-根据用户名或姓名搜索成员")
     @RequestMapping(value="/getUserListByUsername",method={RequestMethod.GET,RequestMethod.POST})
     @ApiImplicitParams(value={
         @ApiImplicitParam(name="username",value="用户名/姓名",required=true, dataType = "String")
@@ -318,17 +319,17 @@ public class ManagerUserController {
             return new Result().success("没有数据");
         }
         return new Result().success(manegerUserList);
-    }
+    }*/
 
 
-    @ApiOperation("后台管理系统-成员管理-成员列表")
+    @ApiOperation("后台管理系统-成员管理-成员列表&根据用户名或姓名搜索成员")
     @RequestMapping(value="/getManagerUserList",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getManagerUserList(Integer current,Integer size){
-        current=current==null?1:current;
-        size=size==null?10:size;
-        Page managerUserPage=managerUserService.selectPage(new Page(current,size),
+    public Result getManagerUserList(Page page,String username){
+        Page managerUserPage=managerUserService.selectPage(page,
             new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.CAN_USE,1)
+                .eq(ManagerUser.IS_DEL,0)
+                .like(username!=null,ManagerUser.NAME,username, SqlLike.DEFAULT)
         );
         return new Result().success(managerUserPage);
     }
@@ -359,15 +360,15 @@ public class ManagerUserController {
     @RequestMapping(value="/setCanUse",method={RequestMethod.GET,RequestMethod.POST})
     public Result setCanUse(Integer userId,
                             @ApiParam(value = "是否起用 0:否  1:是") Integer can_user){
+        System.out.println("userId:"+userId+"...can_user:"+can_user);
         ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
             .eq(ManagerUser.ID,userId)
-
         );
         if(managerUser==null){
             return new Result().erro("系统错误,请稍后再试");
         }
         managerUser.setCanUse(can_user);
-        managerUser.insert();
+        managerUser.updateById();
         return new Result().success("更改成功");
     }
 
@@ -392,6 +393,7 @@ public class ManagerUserController {
             return new Result().erro("系统错误，请稍后再试");
         }
         managerUser.setCanUse(0);
+        managerUser.setIsDel(1);
         managerUser.updateById();
         return new Result().success("删除成功");
     }

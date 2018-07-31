@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -17,6 +20,9 @@ import java.util.Date;
  * @author lpf
  * @since 2018-06-20
  */
+@Setter
+@Getter
+@ToString
 @TableName("js_goods_evaluate")
 public class GoodsEvaluate extends Model<GoodsEvaluate> {
 
@@ -29,6 +35,10 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
      */
     @ApiModelProperty(name = "用户ID", value = "userId")
     private Integer userId;
+    /**
+     * 用户ID
+     */
+    private String userName;
     /**
      * 用户姓名
      */
@@ -72,90 +82,11 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
      */
     private Integer isShow;
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Integer getGoodsId() {
-        return goodsId;
-    }
-
-    public void setGoodsId(Integer goodsId) {
-        this.goodsId = goodsId;
-    }
-
-    public Integer getStarNumber() {
-        return starNumber;
-    }
-
-    public void setStarNumber(Integer starNumber) {
-        this.starNumber = starNumber;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public Integer getIsDel() {
-        return isDel;
-    }
-
-    public void setIsDel(Integer idDel) {
-        this.isDel = idDel;
-    }
-
     public static final String ID = "id";
 
     public static final String USER_ID = "user_id";
+
+    public static final String USER_NAME = "user_name";
 
     public static final String NAME = "name";
 
@@ -180,27 +111,4 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "GoodsEvaluate{" +
-            "id=" + id +
-            ", userId=" + userId +
-            ", name='" + name + '\'' +
-            ", createTime=" + createTime +
-            ", goodsId=" + goodsId +
-            ", starNumber=" + starNumber +
-            ", content='" + content + '\'' +
-            ", image='" + image + '\'' +
-            ", type=" + type +
-            ", isDel=" + isDel +
-            '}';
-    }
-
-    public Integer getIsShow() {
-        return isShow;
-    }
-
-    public void setIsShow(Integer isShow) {
-        this.isShow = isShow;
-    }
 }

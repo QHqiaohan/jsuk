@@ -73,8 +73,6 @@ public class LifeClassController {
         List<LifeClass> lifeClassList = lifeClassService.selectList(new EntityWrapper<>());
         return new Result().success(lifeClassList);
     }*/
-
-//暂时不知道这个接口是干嘛用的
     @ApiOperation("用户-便捷生活-车辆列表")
     @RequestMapping(value = "/getCarList", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getCarList() {

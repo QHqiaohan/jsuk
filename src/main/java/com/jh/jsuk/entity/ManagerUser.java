@@ -92,6 +92,17 @@ public class ManagerUser extends ParentUser<ManagerUser> {
      */
     private Date lastLoginTime;
 
+    //是否删除,0:未删除，1：删除
+    private Integer isDel;
+
+    public Integer getIsDel() {
+        return isDel;
+    }
+
+    public void setIsDel(Integer isDel) {
+        this.isDel = isDel;
+    }
+
     public ParentUserEx toParentUser(){
         ParentUserEx ex = new ParentUserEx();
         ex.setUserId(id);
@@ -293,6 +304,8 @@ public class ManagerUser extends ParentUser<ManagerUser> {
     public static final String LOGIN_IP = "login_ip";
 
     public static final String LAST_LOGIN_TIME = "last_login_time";
+
+    public static final String IS_DEL = "is_del";
 
     @Override
     protected Serializable pkVal() {
