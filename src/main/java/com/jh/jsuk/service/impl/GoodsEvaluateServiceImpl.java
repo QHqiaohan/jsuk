@@ -49,6 +49,7 @@ public class GoodsEvaluateServiceImpl extends ServiceImpl<GoodsEvaluateDao, Good
         Wrapper<GoodsEvaluate> wrapper = new EntityWrapper<>();
         wrapper.eq(GoodsEvaluate.GOODS_ID, goodsId)
                 .eq(GoodsEvaluate.IS_DEL, 0)
+                .eq(GoodsEvaluate.IS_SHOW,1)
                 .orderBy(GoodsEvaluate.CREATE_TIME, false);
         GoodsEvalType evalType = null;
         if (!"all".equalsIgnoreCase(type)) {
