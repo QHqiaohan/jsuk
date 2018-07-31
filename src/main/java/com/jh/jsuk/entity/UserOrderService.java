@@ -100,18 +100,4 @@ public class UserOrderService extends Model<UserOrderService> {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "UserOrderService{" +
-                "id=" + id +
-                ", orderId=" + orderId +
-                ", refundReason='" + refundReason + '\'' +
-                ", type=" + type +
-                ", content='" + content + '\'' +
-                ", image='" + image + '\'' +
-                ", price='" + price + '\'' +
-                ", sizeId=" + sizeId +
-                ", addressId=" + addressId +
-                '}';
-    }
 }
