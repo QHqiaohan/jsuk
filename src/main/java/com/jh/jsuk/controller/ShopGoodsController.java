@@ -2,6 +2,7 @@ package com.jh.jsuk.controller;
 
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +70,26 @@ public class ShopGoodsController {
         wrapper.ne(ShopGoods.IS_DEL, 1)
             .eq(ShopGoods.STATUS, ShopGoodsStatus.UPPER.getKey());
         return R.succ(shopGoodsService.selectList(wrapper));
+    }
+
+    @ApiOperation("用户端-商品id查询信息")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "goodsId", value = "商品id 逗号隔开", paramType = "query", dataType = "string")
+    })
+    @RequestMapping(value = "/getById", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getById(String goodsId) {
+        Wrapper<ShopGoods> ew = new MyEntityWrapper<>();
+        if(StrUtil.isBlank(goodsId))
+            return R.succ();
+        String[] split = goodsId.split(",");
+        List<String> list = new ArrayList<>();
+        for (String s : split) {
+            if (StrUtil.isNotBlank(s)) {
+                list.add(s);
+            }
+        }
+        ew.in(ShopGoods.ID,list);
+        return new Result().success(shopGoodsService.selectList(ew));
     }
 
     @ApiOperation("用户端-根据店铺内部的分类-属性查询商品")

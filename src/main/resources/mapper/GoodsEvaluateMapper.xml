@@ -6,6 +6,7 @@
   <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.GoodsEvaluate">
     <id column="id" property="id"/>
     <result column="user_id" property="userId"/>
+    <result column="user_name" property="userName"/>
     <result column="name" property="name"/>
     <result column="create_time" property="createTime"/>
     <result column="goods_id" property="goodsId"/>
@@ -18,7 +19,7 @@
 
   <!-- 通用查询结果列 -->
   <sql id="Base_Column_List">
-    id, user_id, name, create_time, goods_id, star_number, content, image, type, is_del
+    id, user_id,user_name, name, create_time, goods_id, star_number, content, image, `type`, is_del
   </sql>
 
   <select id="list" resultType="com.jh.jsuk.entity.GoodsEvaluate">
@@ -44,6 +45,7 @@
     LEFT JOIN js_shop s ON s.id=g.shop_id
     WHERE
     e.is_del != 1
+    and e.is_show = 1
     <if test="shopId != null">
       and s.id=#{shopId}
     </if>
