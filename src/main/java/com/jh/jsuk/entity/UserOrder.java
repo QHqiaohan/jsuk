@@ -160,6 +160,8 @@ public class UserOrder extends Model<UserOrder> {
      */
     private String goodsName;
 
+
+
     public Integer getId() {
         return id;
     }
@@ -543,4 +545,5 @@ public class UserOrder extends Model<UserOrder> {
     public void setGoodsName(String goodsName) {
         this.goodsName = goodsName;
     }
+
 }

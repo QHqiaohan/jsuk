@@ -90,5 +90,13 @@ public class UserTiXianController {
 
         return new Result().success(userTiXianPage);
     }
+
+
+    //平台-提现审核
+    @GetMapping("tiXianExamine")
+    public Result tiXianExamine(@RequestParam Integer tiXianId){
+
+        return new Result().success();
+    }
 }
 

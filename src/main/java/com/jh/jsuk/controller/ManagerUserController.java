@@ -304,7 +304,7 @@ public class ManagerUserController {
         return new Result().success("账户资料编辑成功");
     }
 
-    @ApiOperation("后台管理系统-根据用户名或姓名搜索成员")
+/*    @ApiOperation("后台管理系统-根据用户名或姓名搜索成员")
     @RequestMapping(value="/getUserListByUsername",method={RequestMethod.GET,RequestMethod.POST})
     @ApiImplicitParams(value={
         @ApiImplicitParam(name="username",value="用户名/姓名",required=true, dataType = "String")
@@ -318,17 +318,16 @@ public class ManagerUserController {
             return new Result().success("没有数据");
         }
         return new Result().success(manegerUserList);
-    }
+    }*/
 
 
-    @ApiOperation("后台管理系统-成员管理-成员列表")
+    @ApiOperation("后台管理系统-成员管理-成员列表&根据用户名或姓名搜索成员")
     @RequestMapping(value="/getManagerUserList",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getManagerUserList(Integer current,Integer size){
-        current=current==null?1:current;
-        size=size==null?10:size;
-        Page managerUserPage=managerUserService.selectPage(new Page(current,size),
+    public Result getManagerUserList(Page page,String username){
+        Page managerUserPage=managerUserService.selectPage(page,
             new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.CAN_USE,1)
+                .like(username!=null,ManagerUser.USER_NAME,username)
         );
         return new Result().success(managerUserPage);
     }
