@@ -146,20 +146,20 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (null == status) {
             if (goodsName != null) {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
-                    .like(UserOrder.GOODS_NAME, goodsName).orderBy(false, UserOrder.CREAT_TIME)
+                    .like(UserOrder.GOODS_NAME, goodsName).orderBy(true, UserOrder.CREAT_TIME,false)
                     .where("is_user_del=0 and is_shop_del=0"));
             } else {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
-                    .orderBy(false, UserOrder.CREAT_TIME).where("is_user_del=0 and is_shop_del=0"));
+                    .orderBy(true, UserOrder.CREAT_TIME,false).where("is_user_del=0 and is_shop_del=0"));
             }
         } else {
             if (goodsName != null) {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
                     .eq(UserOrder.STATUS, status).like(UserOrder.GOODS_NAME, goodsName)
-                    .orderBy(false, UserOrder.CREAT_TIME).where("is_user_del=0 and is_shop_del=0"));
+                    .orderBy(true, UserOrder.CREAT_TIME,false).where("is_user_del=0 and is_shop_del=0"));
             } else {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
-                    .eq(UserOrder.STATUS, status).orderBy(false, UserOrder.CREAT_TIME).where("is_user_del=0 and is_shop_del=0"));
+                    .eq(UserOrder.STATUS, status).orderBy(true, UserOrder.CREAT_TIME,false).where("is_user_del=0 and is_shop_del=0"));
             }
 
         }
