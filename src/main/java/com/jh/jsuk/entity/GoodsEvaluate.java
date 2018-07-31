@@ -67,6 +67,11 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
      */
     private Integer isDel;
 
+    /**
+     * 0:否 1:是
+     */
+    private Integer isShow;
+
 
     public Integer getId() {
         return id;
@@ -160,6 +165,8 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
 
     public static final String STAR_NUMBER = "star_number";
 
+    public static final String IS_SHOW = "is_show";
+
     public static final String CONTENT = "content";
 
     public static final String IMAGE = "image";
@@ -176,16 +183,24 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
     @Override
     public String toString() {
         return "GoodsEvaluate{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", name='" + name + '\'' +
-                ", createTime=" + createTime +
-                ", goodsId=" + goodsId +
-                ", starNumber=" + starNumber +
-                ", content='" + content + '\'' +
-                ", image='" + image + '\'' +
-                ", type=" + type +
-                ", isDel=" + isDel +
-                '}';
+            "id=" + id +
+            ", userId=" + userId +
+            ", name='" + name + '\'' +
+            ", createTime=" + createTime +
+            ", goodsId=" + goodsId +
+            ", starNumber=" + starNumber +
+            ", content='" + content + '\'' +
+            ", image='" + image + '\'' +
+            ", type=" + type +
+            ", isDel=" + isDel +
+            '}';
+    }
+
+    public Integer getIsShow() {
+        return isShow;
+    }
+
+    public void setIsShow(Integer isShow) {
+        this.isShow = isShow;
     }
 }
