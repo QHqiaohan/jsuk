@@ -76,27 +76,40 @@ public class UserTiXianController {
         Integer begin=null;
         Integer end=null;
 
-        if(amountScope!=null && amountScope.contains("-")){
+        if(amountScope!=null){
             try {
                 scopes = amountScope.split("-");    //以-劈开,格式:1000-2000
             }catch(Exception e){
                 return new Result().erro("金额范围参数错误");
             }
             begin=Integer.parseInt(scopes[0]);
-            end=Integer.parseInt(scopes[1]);
+            try{
+                end=Integer.parseInt(scopes[1]);
+            }catch(Exception e){
+                end=null;
+            }
         }
-
         Page<UserTiXianVo> userTiXianPage=userTiXianService.selectByAdvance(page,tixianId,begin,end,status);
-
         return new Result().success(userTiXianPage);
     }
 
 
     //平台-提现审核
-    @GetMapping("tiXianExamine")
+    //@GetMapping("tiXianExamine")
+    @ApiOperation("平台-提现记录-提现审核")
+    @RequestMapping(value="tiXianExamine",method={RequestMethod.POST,RequestMethod.GET})
     public Result tiXianExamine(@RequestParam Integer tiXianId){
+        System.out.println("tiXianId:"+tiXianId);
+        UserTiXian userTiXian=userTiXianService.selectOne(new EntityWrapper<UserTiXian>()
+                                                              .eq(UserTiXian.ID,tiXianId)
+        );
+        if(userTiXian==null){
+            return new Result().erro("参数错误");
+        }
+        userTiXian.setExamine(1);
+        userTiXian.updateById();
 
-        return new Result().success();
+        return new Result().success("提现审核成功");
     }
 }
 

@@ -4,6 +4,7 @@ package com.jh.jsuk.controller;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.enums.SqlLike;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.common.collect.Maps;
@@ -327,7 +328,8 @@ public class ManagerUserController {
         Page managerUserPage=managerUserService.selectPage(page,
             new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.CAN_USE,1)
-                .like(username!=null,ManagerUser.USER_NAME,username)
+                .eq(ManagerUser.IS_DEL,0)
+                .like(username!=null,ManagerUser.NAME,username, SqlLike.DEFAULT)
         );
         return new Result().success(managerUserPage);
     }
@@ -358,15 +360,15 @@ public class ManagerUserController {
     @RequestMapping(value="/setCanUse",method={RequestMethod.GET,RequestMethod.POST})
     public Result setCanUse(Integer userId,
                             @ApiParam(value = "是否起用 0:否  1:是") Integer can_user){
+        System.out.println("userId:"+userId+"...can_user:"+can_user);
         ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
             .eq(ManagerUser.ID,userId)
-
         );
         if(managerUser==null){
             return new Result().erro("系统错误,请稍后再试");
         }
         managerUser.setCanUse(can_user);
-        managerUser.insert();
+        managerUser.updateById();
         return new Result().success("更改成功");
     }
 
@@ -391,6 +393,7 @@ public class ManagerUserController {
             return new Result().erro("系统错误，请稍后再试");
         }
         managerUser.setCanUse(0);
+        managerUser.setIsDel(1);
         managerUser.updateById();
         return new Result().success("删除成功");
     }

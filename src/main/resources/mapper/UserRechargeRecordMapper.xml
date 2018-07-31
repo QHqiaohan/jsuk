@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.jsuk.dao.UserRechargeRecordDao">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.UserRechargeRecord">
+    <id column="id" property="id"/>
+    <result column="userId" property="userId"/>
+    <result column="recharge_type" property="rechargeType"/>
+    <result column="recharge_money" property="rechargeMoney"/>
+    <result column="id_del" property="isDel"/>
+    <result column="create_time" property="createTime"/>
+    <result column="is_ok" property="isOk"/>
+    <result column="member_id" property="memberId"/>
+    <result column="send_money" property="sendMoney"/>
+    <result column="recharge_method" property="rechargeMethod"/>
+    <result column="finish_time" property="finishTime"/>
+    <result column="status" property="status"/>
+  </resultMap>
+
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+    id, userId, recharge_type, recharge_money, id_del, create_time, is_ok, member_id,send_money,recharge_method,finish_time，status
+  </sql>
+
+  <resultMap id="UserRechargeRecordVo" type="com.jh.jsuk.entity.vo.UserRechargeRecordVo">
+    <result property="username" column="username"></result>
+  </resultMap>
+
+  <select id="getRechargeList" resultMap="UserRechargeRecordVo">
+    select
+    recharge.*,u.nick_name as username
+    from
+    js_user_recharge_record recharge
+    join
+    js_user u
+    on recharge.userId=u.id
+    where recharge.id_del=0
+    <if test="rechargeId!=null and rechargeId!=''">
+      and recharge.id=#{rechargeId}
+    </if>
+  </select>
+
+</mapper>
