@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -16,6 +19,9 @@ import java.io.Serializable;
  * @author lpf
  * @since 2018-06-28
  */
+@Setter
+@Getter
+@ToString
 @TableName("js_user_order_service")
 public class UserOrderService extends Model<UserOrderService> {
 
@@ -38,6 +44,11 @@ public class UserOrderService extends Model<UserOrderService> {
      */
     @ApiModelProperty(name = "售后类型,1=仅退款,2=退货退款,3=换货", required = true, value = "type")
     private Integer type;
+    /**
+     * 0:待处理 1：处理中 2：已完成 3：已拒绝
+     */
+    @ApiModelProperty(name = "0:待处理 1：处理中 2：已完成 3：已拒绝", required = true, value = "status")
+    private Integer status;
     /**
      * 具体原因
      */
@@ -64,78 +75,6 @@ public class UserOrderService extends Model<UserOrderService> {
     @ApiModelProperty(name = "地址ID,换货", value = "addressId")
     private Integer addressId;
 
-    public Integer getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(Integer addressId) {
-        this.addressId = addressId;
-    }
-
-    public Integer getSizeId() {
-        return sizeId;
-    }
-
-    public void setSizeId(Integer sizeId) {
-        this.sizeId = sizeId;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getRefundReason() {
-        return refundReason;
-    }
-
-    public void setRefundReason(String refundReason) {
-        this.refundReason = refundReason;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
     public static final String ID = "id";
 
     public static final String ORDER_ID = "order_id";
@@ -149,6 +88,8 @@ public class UserOrderService extends Model<UserOrderService> {
     public static final String IMAGE = "image";
 
     public static final String PRICE = "price";
+
+    public static final String STATUS = "status";
 
     public static final String SIZE_ID = "size_id";
 

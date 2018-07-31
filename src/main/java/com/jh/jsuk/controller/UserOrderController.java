@@ -1,6 +1,7 @@
 package com.jh.jsuk.controller;
 
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.github.tj123.common.RedisUtils;
@@ -648,6 +649,16 @@ public class UserOrderController {
         return new Result().setMsg(userOrderService.pushAPush(id));
     }
 
+
+    @ApiOperation(value = "用户端物流信息")
+    @ApiImplicitParams(value = {
+        @ApiImplicitParam(name = "orderId", value = "订单id", paramType = "query", dataType = "integer"),
+    })
+    @GetMapping("/disInfo")
+    public R disInfo(Integer orderId){
+        String val = LogisticsUtil.queryData("yuantong", "800848347680428412");
+        return R.succ(JSONUtil.parse(val));
+    }
 
 
 /*    @ApiOperation("商家端-订单列表")
