@@ -2,12 +2,18 @@ package com.jh.jsuk.controller;
 
 
 import com.baomidou.mybatisplus.plugins.Page;
-import com.jh.jsuk.entity.GoodsEvaluate;
+import com.jh.jsuk.entity.dto.GoodsEvaluateDto;
 import com.jh.jsuk.service.GoodsEvaluateService;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 /**
  * <p>
@@ -60,17 +66,21 @@ public class GoodsEvaluateController {
 
     @ApiOperation("用户端-添加商品评价")
     @RequestMapping(value = "/addEvaluate", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addEvaluate(@ModelAttribute GoodsEvaluate goodsEvaluate,
-                              @ApiParam("商品质量星数") Integer goodsStar,
-                              @ApiParam("送货员星数") Integer sendStar,
-                              @ApiParam("客服服务星数") Integer serviceStar) {
-        if (goodsStar != null && sendStar != null && serviceStar != null) {
-            int fullStar = (goodsStar + sendStar + serviceStar) / 3;
-            goodsEvaluate.setStarNumber(fullStar);
-        } else {
-            goodsEvaluate.setStarNumber(5);
+    public Result addEvaluate(@RequestBody ArrayList<GoodsEvaluateDto> list) {
+        if(list == null || list.isEmpty())
+            return R.err("没数据");
+        for (GoodsEvaluateDto dto : list) {
+            Integer goodsStar = dto.getGoodsStar();
+            Integer sendStar = dto.getSendStar();
+            Integer serviceStar = dto.getServiceStar();
+            if (goodsStar != null && sendStar != null && serviceStar != null) {
+                int fullStar = (goodsStar + sendStar + serviceStar) / 3;
+                dto.setStarNumber(fullStar);
+            } else {
+                dto.setStarNumber(5);
+            }
+            goodsEvaluateService.insert(dto);
         }
-        goodsEvaluate.insert();
         return new Result().success("添加成功");
     }
 
