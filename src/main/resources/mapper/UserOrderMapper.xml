@@ -38,6 +38,7 @@
     <result column="full_reduce_id" property="fullReduceId"/>
     <result column="platform_number" property="platformNumber"/>
     <result column="goods_name" property="goodsName"/>
+    <result column="freight" property="freight"/>
   </resultMap>
 
   <!-- 通用查询结果列 -->

@@ -15,7 +15,7 @@ import java.util.Date;
  * </p>
  *
  * @author tj
- * @since 2018-07-20
+ * @since 2018-07-30
  */
 @TableName("js_user_order")
 public class UserOrder extends Model<UserOrder> {
@@ -49,6 +49,10 @@ public class UserOrder extends Model<UserOrder> {
      */
     private BigDecimal orderRealPrice;
     /**
+     * 运费
+     */
+    private BigDecimal freight;
+    /**
      * 配送费
      */
     private BigDecimal distributionFee;
@@ -69,11 +73,11 @@ public class UserOrder extends Model<UserOrder> {
      */
     private Date payTime;
     /**
-     *  0 余额   1 货到付款  2 支付宝  3 微信  4 银行卡
+     * 0 余额   1 货到付款  2 支付宝  3 微信  4 银行卡
      */
     private Integer payType;
     /**
-     *   0 : 待付款  1  : 待发货  2  : 待收货  3  : 售后  4  : 退款  5 : 退货   6  : 拒绝  7  : 取消
+     * 0 : 待付款  1  : 待发货  2  : 待收货  3  : 售后  4  : 退款  5 : 退货   6  : 拒绝  7  : 取消
      */
     private Integer status;
     /**
@@ -419,7 +423,13 @@ public class UserOrder extends Model<UserOrder> {
         this.platformNumber = platformNumber;
     }
 
+    public String getGoodsName() {
+        return goodsName;
+    }
 
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
+    }
 
     public static final String ID = "id";
 
@@ -487,6 +497,8 @@ public class UserOrder extends Model<UserOrder> {
 
     public static final String PLATFORM_NUMBER = "platform_number";
 
+    public static final String FREIGHT = "freight";
+
     public static final String GOODS_NAME = "goods_name";
 
     @Override
@@ -498,12 +510,13 @@ public class UserOrder extends Model<UserOrder> {
     public String toString() {
         return "UserOrder{" +
             "id=" + id +
-            ", orderNum=" + orderNum +
+            ", orderNum='" + orderNum + '\'' +
             ", orderPrice=" + orderPrice +
             ", fullReduce=" + fullReduce +
             ", couponReduce=" + couponReduce +
             ", integralReduce=" + integralReduce +
             ", orderRealPrice=" + orderRealPrice +
+            ", freight=" + freight +
             ", distributionFee=" + distributionFee +
             ", distributionTime=" + distributionTime +
             ", distributionType=" + distributionType +
@@ -524,20 +537,21 @@ public class UserOrder extends Model<UserOrder> {
             ", sendTime=" + sendTime +
             ", couponId=" + couponId +
             ", orderType=" + orderType +
-            ", logisticsNo=" + logisticsNo +
-            ", remark=" + remark +
+            ", logisticsNo='" + logisticsNo + '\'' +
+            ", remark='" + remark + '\'' +
             ", discount=" + discount +
             ", integralRuleId=" + integralRuleId +
             ", fullReduceId=" + fullReduceId +
-            ", platformNumber=" + platformNumber +
-            "}";
+            ", platformNumber='" + platformNumber + '\'' +
+            ", goodsName='" + goodsName + '\'' +
+            '}';
     }
 
-    public String getGoodsName() {
-        return goodsName;
+    public BigDecimal getFreight() {
+        return freight;
     }
 
-    public void setGoodsName(String goodsName) {
-        this.goodsName = goodsName;
+    public void setFreight(BigDecimal freight) {
+        this.freight = freight;
     }
 }
