@@ -1,5 +1,6 @@
 package com.jh.jsuk.entity.vo;
 
+import com.jh.jsuk.entity.Shop;
 import com.jh.jsuk.entity.UserOrder;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import java.util.List;
  */
 @Data
 public class UserOrderListVo {
+    private Shop shop;
     private UserOrder userOrder;
     private List<ShopGoodsVo> shopGoodsVos;
 }

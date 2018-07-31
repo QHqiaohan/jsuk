@@ -4,12 +4,10 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * <p>
@@ -71,11 +69,11 @@ public class UserOrder extends Model<UserOrder> {
      */
     private Date payTime;
     /**
-     * 0 余额   1 货到付款  2 支付宝  3 微信  4 银行卡
+     *  0 余额   1 货到付款  2 支付宝  3 微信  4 银行卡
      */
     private Integer payType;
     /**
-     * 0 : 待付款  1  : 待发货  2  : 待收货  3  : 售后  4  : 退款  5 : 退货   6  : 拒绝  7  : 取消
+     *   0 : 待付款  1  : 待发货  2  : 待收货  3  : 售后  4  : 退款  5 : 退货   6  : 拒绝  7  : 取消
      */
     private Integer status;
     /**
@@ -154,12 +152,7 @@ public class UserOrder extends Model<UserOrder> {
      * 平台流水号
      */
     private String platformNumber;
-
-    /**
-     * 商品名称
-     */
     private String goodsName;
-
 
 
     public Integer getId() {
@@ -426,6 +419,8 @@ public class UserOrder extends Model<UserOrder> {
         this.platformNumber = platformNumber;
     }
 
+
+
     public static final String ID = "id";
 
     public static final String ORDER_NUM = "order_num";
@@ -545,5 +540,4 @@ public class UserOrder extends Model<UserOrder> {
     public void setGoodsName(String goodsName) {
         this.goodsName = goodsName;
     }
-
 }
