@@ -49,6 +49,10 @@ public class UserOrder extends Model<UserOrder> {
      */
     private BigDecimal orderRealPrice;
     /**
+     * 运费
+     */
+    private BigDecimal freight;
+    /**
      * 配送费
      */
     private BigDecimal distributionFee;
@@ -69,11 +73,11 @@ public class UserOrder extends Model<UserOrder> {
      */
     private Date payTime;
     /**
-     *  0 余额   1 货到付款  2 支付宝  3 微信  4 银行卡
+     * 0 余额   1 货到付款  2 支付宝  3 微信  4 银行卡
      */
     private Integer payType;
     /**
-     *   0 : 待付款  1  : 待发货  2  : 待收货  3  : 售后  4  : 退款  5 : 退货   6  : 拒绝  7  : 取消 
+     * 0 : 待付款  1  : 待发货  2  : 待收货  3  : 售后  4  : 退款  5 : 退货   6  : 拒绝  7  : 取消
      */
     private Integer status;
     /**
@@ -493,6 +497,8 @@ public class UserOrder extends Model<UserOrder> {
 
     public static final String PLATFORM_NUMBER = "platform_number";
 
+    public static final String FREIGHT = "freight";
+
     public static final String GOODS_NAME = "goods_name";
 
     @Override
@@ -503,40 +509,49 @@ public class UserOrder extends Model<UserOrder> {
     @Override
     public String toString() {
         return "UserOrder{" +
-        "id=" + id +
-        ", orderNum=" + orderNum +
-        ", orderPrice=" + orderPrice +
-        ", fullReduce=" + fullReduce +
-        ", couponReduce=" + couponReduce +
-        ", integralReduce=" + integralReduce +
-        ", orderRealPrice=" + orderRealPrice +
-        ", distributionFee=" + distributionFee +
-        ", distributionTime=" + distributionTime +
-        ", distributionType=" + distributionType +
-        ", creatTime=" + creatTime +
-        ", payTime=" + payTime +
-        ", payType=" + payType +
-        ", status=" + status +
-        ", isUnsubscribe=" + isUnsubscribe +
-        ", isEvaluate=" + isEvaluate +
-        ", isShopDel=" + isShopDel +
-        ", isUserDel=" + isUserDel +
-        ", isClosed=" + isClosed +
-        ", shopId=" + shopId +
-        ", addressId=" + addressId +
-        ", userId=" + userId +
-        ", cancelTime=" + cancelTime +
-        ", completeTime=" + completeTime +
-        ", sendTime=" + sendTime +
-        ", couponId=" + couponId +
-        ", orderType=" + orderType +
-        ", logisticsNo=" + logisticsNo +
-        ", remark=" + remark +
-        ", discount=" + discount +
-        ", integralRuleId=" + integralRuleId +
-        ", fullReduceId=" + fullReduceId +
-        ", platformNumber=" + platformNumber +
-        ", goodsName=" + goodsName +
-        "}";
+            "id=" + id +
+            ", orderNum='" + orderNum + '\'' +
+            ", orderPrice=" + orderPrice +
+            ", fullReduce=" + fullReduce +
+            ", couponReduce=" + couponReduce +
+            ", integralReduce=" + integralReduce +
+            ", orderRealPrice=" + orderRealPrice +
+            ", freight=" + freight +
+            ", distributionFee=" + distributionFee +
+            ", distributionTime=" + distributionTime +
+            ", distributionType=" + distributionType +
+            ", creatTime=" + creatTime +
+            ", payTime=" + payTime +
+            ", payType=" + payType +
+            ", status=" + status +
+            ", isUnsubscribe=" + isUnsubscribe +
+            ", isEvaluate=" + isEvaluate +
+            ", isShopDel=" + isShopDel +
+            ", isUserDel=" + isUserDel +
+            ", isClosed=" + isClosed +
+            ", shopId=" + shopId +
+            ", addressId=" + addressId +
+            ", userId=" + userId +
+            ", cancelTime=" + cancelTime +
+            ", completeTime=" + completeTime +
+            ", sendTime=" + sendTime +
+            ", couponId=" + couponId +
+            ", orderType=" + orderType +
+            ", logisticsNo='" + logisticsNo + '\'' +
+            ", remark='" + remark + '\'' +
+            ", discount=" + discount +
+            ", integralRuleId=" + integralRuleId +
+            ", fullReduceId=" + fullReduceId +
+            ", platformNumber='" + platformNumber + '\'' +
+            ", goodsName='" + goodsName + '\'' +
+            '}';
+    }
+
+    public BigDecimal getFreight() {
+        return freight;
+    }
+
+    public void setFreight(BigDecimal freight) {
+        this.freight = freight;
     }
 }
