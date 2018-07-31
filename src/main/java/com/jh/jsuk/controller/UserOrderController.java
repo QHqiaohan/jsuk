@@ -1,22 +1,20 @@
 package com.jh.jsuk.controller;
 
 
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tj123.common.RedisUtils;
 import com.jh.jsuk.conf.RedisKeys;
 import com.jh.jsuk.conf.Session;
-import com.jh.jsuk.entity.ManagerUser;
-import com.jh.jsuk.entity.ShopGoodsSize;
-import com.jh.jsuk.entity.UserOrder;
-import com.jh.jsuk.entity.UserOrderGoods;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
 import com.jh.jsuk.entity.rules.AccountRule;
 import com.jh.jsuk.entity.vo.UserOrderInfoVo;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
+import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.*;
 import com.jh.jsuk.utils.wx.WxPay;
 import io.swagger.annotations.*;
@@ -655,9 +653,11 @@ public class UserOrderController {
         @ApiImplicitParam(name = "orderId", value = "订单id", paramType = "query", dataType = "integer"),
     })
     @GetMapping("/disInfo")
-    public R disInfo(Integer orderId){
+    public R disInfo(Integer orderId) throws Exception{
         String val = LogisticsUtil.queryData("yuantong", "800848347680428412");
-        return R.succ(JSONUtil.parse(val));
+        LogisticsResponse logisticsResponse = new ObjectMapper().readValue(val, LogisticsResponse.class);
+        logisticsResponse.parseCom();
+        return R.succ(logisticsResponse);
     }
 
 
