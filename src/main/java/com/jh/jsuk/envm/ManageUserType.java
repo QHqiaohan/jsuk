@@ -23,4 +23,13 @@ public enum ManageUserType {
         return value;
     }
 
+    public UserType toUserType(){
+        if(ManageUserType.SHOP.equals(this)){
+            return UserType.SHOP;
+        }else if(ManageUserType.PLATFORM.equals(this)){
+            return UserType.ADMIN;
+        }
+        return null;
+    }
+
 }

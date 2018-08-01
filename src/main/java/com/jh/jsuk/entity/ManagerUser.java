@@ -1,6 +1,10 @@
 package com.jh.jsuk.entity;
 
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.jh.jsuk.envm.ManageUserType;
+import com.jh.jsuk.exception.CannotConvertException;
+import com.jh.jsuk.utils.EnumUitl;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,6 +17,7 @@ import java.util.Date;
  * @author lpf
  * @since 2018-06-20
  */
+@Slf4j
 @TableName("js_manager_user")
 public class ManagerUser extends ParentUser<ManagerUser> {
 
@@ -26,7 +31,7 @@ public class ManagerUser extends ParentUser<ManagerUser> {
 
     //昵称
     private String nickName;
-  /**
+    /**
      * 姓名
      */
     private String name;
@@ -125,7 +130,7 @@ public class ManagerUser extends ParentUser<ManagerUser> {
         this.isDel = isDel;
     }
 
-    public ParentUserEx toParentUser(){
+    public ParentUserEx toParentUser() {
         ParentUserEx ex = new ParentUserEx();
         ex.setUserId(id);
         ex.setPassword(password);
@@ -134,6 +139,12 @@ public class ManagerUser extends ParentUser<ManagerUser> {
         ex.setNickName(name);
         ex.setPhone(phone);
         ex.setShopId(shopId);
+        try {
+            ManageUserType manageUserType = EnumUitl.toEnum(ManageUserType.class, userType);
+            ex.setUserType(manageUserType.toUserType());
+        } catch (CannotConvertException e) {
+            log.error(e.getMessage(), e);
+        }
         return ex;
     }
 
@@ -337,25 +348,25 @@ public class ManagerUser extends ParentUser<ManagerUser> {
     @Override
     public String toString() {
         return "ManagerUser{" +
-        "id=" + id +
-        ", userName=" + userName +
-        ", name=" + name +
-        ", password=" + password +
-        ", shopId=" + shopId +
-        ", userType=" + userType +
-        ", canUse=" + canUse +
-        ", phone=" + phone +
-        ", telPhone=" + telPhone +
-        ", province=" + province +
-        ", city=" + city +
-        ", area=" + area +
-        ", address=" + address +
-        ", headImg=" + headImg +
-        ", eMail=" + eMail +
-        ", createTime=" + createTime +
-        ", updateTime=" + updateTime +
-        ", loginIp=" + loginIp +
-        ", lastLoginTime=" + lastLoginTime +
-        "}";
+            "id=" + id +
+            ", userName=" + userName +
+            ", name=" + name +
+            ", password=" + password +
+            ", shopId=" + shopId +
+            ", userType=" + userType +
+            ", canUse=" + canUse +
+            ", phone=" + phone +
+            ", telPhone=" + telPhone +
+            ", province=" + province +
+            ", city=" + city +
+            ", area=" + area +
+            ", address=" + address +
+            ", headImg=" + headImg +
+            ", eMail=" + eMail +
+            ", createTime=" + createTime +
+            ", updateTime=" + updateTime +
+            ", loginIp=" + loginIp +
+            ", lastLoginTime=" + lastLoginTime +
+            "}";
     }
 }
