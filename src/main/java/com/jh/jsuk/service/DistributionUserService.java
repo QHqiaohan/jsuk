@@ -37,4 +37,6 @@ public interface DistributionUserService extends IService<DistributionUser> {
     Page getDistributionUserList(Page page, Wrapper wrapper);
 
     Page searchDistributionUserBy(Page page, Wrapper wrapper, String account, String name);
+
+    Page list(Page page, String account, String name);
 }
