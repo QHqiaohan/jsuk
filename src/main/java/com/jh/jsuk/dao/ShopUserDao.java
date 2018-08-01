@@ -26,4 +26,11 @@ public interface ShopUserDao extends BaseMapper<ShopUser> {
      */
     List<ShopUserVo> listShopUser(Page page, @Param("userName") String userName, @Param("name") String name,
                                   @Param("startTime") String startTime, @Param("endTime") String endTime);
+
+    /**
+     * 通过商户id查询
+     * @param id
+     * @return
+     */
+    ShopUserVo getShopUserById(Integer id);
 }

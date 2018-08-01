@@ -6,10 +6,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
-import com.jh.jsuk.entity.vo.OrderPrice;
-import com.jh.jsuk.entity.vo.OrderResponse;
-import com.jh.jsuk.entity.vo.UserOrderDetailVo;
-import com.jh.jsuk.entity.vo.UserOrderVo;
+import com.jh.jsuk.entity.vo.*;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
 import com.jh.jsuk.exception.MessageException;
@@ -93,4 +90,9 @@ public interface UserOrderService extends IService<UserOrder> {
      * 第三方支付
      */
     String thirdPay(UserOrder userOrder,String subject);
+
+    /**
+     * 售后
+     */
+    AfterSaleVo getAddressAndPhone(Integer orderId);
 }

@@ -3,10 +3,10 @@ package com.jh.jsuk.service;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.ShopUser;
+import com.jh.jsuk.entity.vo.ShopUserVo;
 
 import java.text.ParseException;
-import java.time.LocalDate;
-import java.util.Date;
+import java.util.List;
 
 /**
  * Author: xyl
@@ -16,4 +16,6 @@ import java.util.Date;
 public interface ShopUserService extends IService<ShopUser> {
 
     Page list(Page page, String userName, String name, String[] sectionTime) throws ParseException;
+
+    List<ShopUserVo> excelData(Integer[] ids);
 }

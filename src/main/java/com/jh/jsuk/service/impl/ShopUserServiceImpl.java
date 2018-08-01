@@ -10,6 +10,7 @@ import com.jh.jsuk.utils.DatecConvertUtils;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,5 +27,14 @@ public class ShopUserServiceImpl extends ServiceImpl<ShopUserDao, ShopUser> impl
         String endTime = sectionTime == null ? null : DatecConvertUtils.dateFormat(sectionTime[1]);
         List<ShopUserVo> shopUserVos = baseMapper.listShopUser(page, userName, name, startTime, endTime);
         return page.setRecords(shopUserVos);
+    }
+
+    @Override
+    public List<ShopUserVo> excelData(Integer[] ids) {
+        List<ShopUserVo> vos=new ArrayList<>();
+        for (Integer id:ids){
+            vos.add(baseMapper.getShopUserById(id));
+        }
+        return vos;
     }
 }

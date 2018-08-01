@@ -245,6 +245,7 @@ public class JwtFilter implements Filter {
                     } catch (Exception e) {
                         //认证过期  这里当作认证未知错误处理
                         System.out.println("认证过期2");
+                        e.printStackTrace();
                         RequestDispatcher dispatcher = request.getRequestDispatcher("/overdue");
                         dispatcher.forward(request, response);
                     }

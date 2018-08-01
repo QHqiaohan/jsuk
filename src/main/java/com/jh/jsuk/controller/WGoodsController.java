@@ -70,7 +70,7 @@ public class WGoodsController {
     /**
      * 删除评价
      */
-    @RequestMapping("/evaluate/del")
+    @PostMapping("/evaluate/del")
     public R delEvaluate(Integer evaluateId) {
         GoodsEvaluate goodsEvaluate = new GoodsEvaluate();
         goodsEvaluate.setId(evaluateId);
@@ -79,7 +79,7 @@ public class WGoodsController {
         return R.succ("删除成功");
     }
 
-    @RequestMapping("/evaluate/getById")
+    @GetMapping("/evaluate/getById")
     public R getById(Integer evaluateId) {
         return R.succ(goodsEvaluateService.selectById(evaluateId));
     }
@@ -222,7 +222,7 @@ public class WGoodsController {
      * @param flag    0 审核不通过 1 审核通过
      * @return
      */
-    @RequestMapping("/review")
+    @PostMapping("/review")
     public R review(Integer goodsId, Integer flag) {
         //只有平台才能修改
         if (session.getUserType().getKey() == 4) {

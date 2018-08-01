@@ -10,6 +10,7 @@ import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
 import com.jh.jsuk.entity.rules.AccountRule;
+import com.jh.jsuk.entity.vo.AfterSaleVo;
 import com.jh.jsuk.entity.vo.UserOrderInfoVo;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.mq.RobbingOrderProducer;
@@ -564,7 +565,12 @@ public class UserOrderController {
         userOrderService1.insert();
         return new Result().success("操作成功!");
     }
-
+    @ApiOperation(value = "用户端-申请售后-用户地址")
+    @RequestMapping(value = "/userAddress", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result userAddress(Integer orderId) {
+        AfterSaleVo saleVo=userOrderService.getAddressAndPhone(orderId);
+        return new Result().success(saleVo);
+    }
     @ApiOperation(value = "用户端-更换商品-选择商品型号")
     @RequestMapping(value = "/changeGoods", method = {RequestMethod.POST, RequestMethod.GET})
     public Result changeGoods(@ApiParam(value = "商品ID", required = true) Integer shopGoodsId) {
