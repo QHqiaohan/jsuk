@@ -23,7 +23,10 @@ public class ManagerUser extends ParentUser<ManagerUser> {
      * 账号
      */
     private String userName;
-    /**
+
+    //昵称
+    private String nickName;
+  /**
      * 姓名
      */
     private String name;
@@ -94,6 +97,25 @@ public class ManagerUser extends ParentUser<ManagerUser> {
 
     //是否删除,0:未删除，1：删除
     private Integer isDel;
+
+    //备注信息
+    private String desc;
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
 
     public Integer getIsDel() {
         return isDel;

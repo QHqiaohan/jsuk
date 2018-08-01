@@ -24,12 +24,14 @@
         <result column="login_ip" property="loginIp"/>
         <result column="last_login_time" property="lastLoginTime"/>
         <result column="is_del" property="isDel"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="desc" property="desc"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, user_name, name, password, shop_id, user_type, can_use, phone, tel_phone, province, city, area, address, head_img, e_mail, create_time,
-         update_time, login_ip, last_login_time,is_del
+         update_time, login_ip, last_login_time,is_del,nick_name,desc
     </sql>
 
     <select id="getUserListByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
