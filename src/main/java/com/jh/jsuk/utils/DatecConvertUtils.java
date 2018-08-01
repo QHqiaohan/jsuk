@@ -1,7 +1,12 @@
 package com.jh.jsuk.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,9 +22,9 @@ public class DatecConvertUtils {
      * @param date
      * @return str
      */
-    public static String DateToStr(LocalTime date) {
+    public static String DateToStr(LocalDate date) {
 
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         //时间转为字符串
         String str = date.format(f);
         return str;
@@ -38,6 +43,11 @@ public class DatecConvertUtils {
         LocalTime date = LocalTime.parse(str, f);
 
         return date;
+    }
+
+    public static String dateFormat(String str) throws ParseException {
+        Date date1 = new SimpleDateFormat("EEE MMM dd yyyy hh:mm:ss z", Locale.ENGLISH).parse(str);
+        return new SimpleDateFormat("yyyy-MM-dd").format(date1);
     }
 
 }
