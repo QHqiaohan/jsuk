@@ -62,7 +62,7 @@
   </select>
 
     <resultMap id="ActivityVo" type="com.jh.jsuk.entity.vo.ActivityVo" extends="BaseResultMap">
-        <result column="car_name" property="carName"/>
+        <result column="carName" property="carName"/>
         <association column="user_id" property="user" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"/>
         <association column="transaction_area_id" property="activityTransactionArea"
                      select="com.jh.jsuk.dao.ActivityTransactionAreaDao.findAreaById"/>
@@ -78,13 +78,13 @@
     </select>
 
     <select id="findActivityById" resultMap="ActivityVo">
-<!--        SELECT
-            <include refid="Base_Column_List"/>
-        FROM
-            `js_activity` a
-        LEFT JOIN js_car c ON a.car_id = c.id
-        WHERE
-            a.id = #{id}-->
+        <!--SELECT-->
+            <!--<include refid="Base_Column_List"/>-->
+        <!--FROM-->
+            <!--`js_activity` a-->
+        <!--LEFT JOIN js_car c ON a.car_id = c.id-->
+        <!--WHERE-->
+            <!--a.id = #{id}-->
       select
       a.*,c.car_name as carName
       from
