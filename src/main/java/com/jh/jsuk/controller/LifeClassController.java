@@ -98,26 +98,27 @@ public class LifeClassController {
 
     @ApiOperation("便捷生活-首页婚车列表")
     @RequestMapping(value = "/getActivityByClassId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getActivityByClassId(@RequestParam Integer classId) {
+    public Result getActivityByClassId(@RequestParam Integer ModularId,
+                                       @RequestParam Integer classId) {
         // 封装数据map
         Map<String, Object> map = new HashMap<>();
         // 商家方
         Page providePage = activityService.selectPage(
                 new Page<>(1, 3), new EntityWrapper<Activity>()
+                        .eq(Activity.MODULAR_ID,ModularId)
                         .eq(Activity.CLASS_ID, classId)
                         .eq(Activity.IS_DEL, 0)
                         .eq(Activity.STATUS, 1)      //1=商家,2=需求
-                        .eq(Activity.IS_RECOMMEND, 1)
                         .orderBy(Activity.RANK, false));
         map.put("provide", providePage.getRecords());
 
         // 需求方
         Page demandPage = activityService.selectPage(
                 new Page<>(1, 3), new EntityWrapper<Activity>()
+                        .eq(Activity.MODULAR_ID,ModularId)
                         .eq(Activity.CLASS_ID, classId)
                         .eq(Activity.IS_DEL, 0)
-                        .eq(Activity.STATUS, 2)
-                        .eq(Activity.IS_RECOMMEND, 1)
+                        .eq(Activity.STATUS, 2)     //1=商家,2=需求
                         .orderBy(Activity.RANK, false));
         map.put("demand", demandPage.getRecords());
 
@@ -133,6 +134,7 @@ public class LifeClassController {
     })
     @RequestMapping(value = "/getMoreActivity", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getMoreActivity(Page page,
+                                  @RequestParam Integer ModularId,
                                   @ApiParam(value = "分类ID", required = true) Integer classId,
                                   @ApiParam(value = "1=商家,2=需求方", required = true) Integer status) {
         // 封装数据map
@@ -140,6 +142,7 @@ public class LifeClassController {
         if (status == 1) {
             // 商家方
             Page providePage = activityService.selectPage(page, new EntityWrapper<Activity>()
+                    .eq(Activity.MODULAR_ID,ModularId)
                     .eq(Activity.CLASS_ID, classId)
                     .eq(Activity.IS_DEL, 0)
                     .eq(Activity.STATUS, status)
@@ -148,6 +151,7 @@ public class LifeClassController {
         } else if (status == 2) {
             // 需求方
             Page demandPage = activityService.selectPage(page, new EntityWrapper<Activity>()
+                    .eq(Activity.MODULAR_ID,ModularId)
                     .eq(Activity.CLASS_ID, classId)
                     .eq(Activity.IS_DEL, 0)
                     .eq(Activity.STATUS, status)
@@ -165,8 +169,11 @@ public class LifeClassController {
                     paramType = "query", dataType = "integer"),
     })
     @RequestMapping(value = "/getActivityListByClassId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getActivityListByClassId(Page page, @ApiParam(value = "分类ID", required = true) Integer classId) {
+    public Result getActivityListByClassId(Page page,
+                                           @RequestParam Integer ModularId,
+                                           @RequestParam Integer classId) {
         Page activityPage = activityService.selectPage(page, new EntityWrapper<Activity>()
+                .eq(Activity.MODULAR_ID,ModularId)
                 .eq(Activity.CLASS_ID, classId)
                 .eq(Activity.IS_DEL, 0)
                 .orderBy(Activity.RANK, false));
@@ -182,7 +189,7 @@ public class LifeClassController {
 
     @ApiOperation("用户-便捷生活-根据活动ID查询留言内容/总数")
     @RequestMapping(value = "/getComment", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getComment(@ApiParam(value = "活动ID", required = true) Integer activityId) {
+    public Result getComment(@RequestParam Integer activityId) {
         // 封装结果map
         Map<String, Object> map = new HashMap<>();
         int count = marketCommentService.selectCount(new EntityWrapper<MarketComment>()
