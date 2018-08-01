@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jh.jsuk.envm.UserType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -114,6 +115,7 @@ public class DistributionUser extends ParentUser<DistributionUser> {
         ex.setLastLogin(lastLoginTime);
         ex.setNickName(name);
         ex.setPhone(phone);
+        ex.setUserType(UserType.DISTRIBUTION);
         return ex;
     }
 

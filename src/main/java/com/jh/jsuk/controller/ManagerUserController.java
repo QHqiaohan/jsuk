@@ -341,6 +341,7 @@ public class ManagerUserController {
         managerUser.setPassword(MD5Util.getMD5(password));
         managerUser.setUserType(1);    //用户类型 1:平台 2:商家
         managerUser.setCanUse(1);      //是否可用 0:否  1:是
+        managerUser.setIsDel(0);
         managerUser.setCreateTime(new Date());
         managerUser.setUpdateTime(new Date());
         //获取默认头像
@@ -370,6 +371,19 @@ public class ManagerUserController {
         managerUser.setCanUse(can_user);
         managerUser.updateById();
         return new Result().success("更改成功");
+    }
+
+
+    @ApiOperation("根据id查询managerUser")
+    @RequestMapping(value="/selectManagerUserById",method={RequestMethod.POST,RequestMethod.GET})
+    public Result selectManagerUserById(Integer managerUserId){
+        ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+            .eq(ManagerUser.ID,managerUserId)
+        );
+        if(managerUser==null){
+            return new Result().erro("系统错误,请稍后再试");
+        }
+        return new Result().success(managerUser);
     }
 
     @ApiOperation("后台管理系统-成员管理-编辑成员")
