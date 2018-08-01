@@ -54,29 +54,38 @@ public class WMainController {
 
     @ApiOperation("后台-登录")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "phone", required = true, value = "手机号", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "password", required = true, value = "密码", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "type", required = true, value = "类型(商家 shp 骑手 dsb 用户 usr 管理员 amd 运维 rot)", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "phone", required = true, value = "手机号", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "password", required = true, value = "密码", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "type", required = true, value = "类型(商家 shp 骑手 dsb 用户 usr 管理员 amd 运维 rot)", paramType = "query", dataType = "string"),
     })
     @PostMapping("/login")
     public R list(String phone, String password, String type, HttpServletRequest requeset) throws Exception {
         Map<String, Object> map = new HashMap<>();
-        UserType userType = EnumUitl.toEnum(UserType.class, type, "getShortKey");
+        UserType userType = null;
+        if (StrUtil.isNotBlank(type)) {
+            userType = EnumUitl.toEnum(UserType.class, type, "getShortKey");
+        }
         ParentUserEx user = null;
-        if (UserType.USER.equals(userType)) {
-            User us = userService.selectOne(new EntityWrapper<User>().eq("phone", phone));
+        if (userType == null) {
+            ManagerUser us = managerUserService.selectOne(new EntityWrapper<ManagerUser>().eq(ManagerUser.PHONE, phone));
+            if (us != null) {
+                user = us.toParentUser();
+                userType = user.getUserType();
+            }
+        } else if (UserType.USER.equals(userType)) {
+            User us = userService.selectOne(new EntityWrapper<User>().eq(User.PHONE, phone));
             if (us != null)
                 user = us.toParentUser();
         } else if (UserType.SHOP.equals(userType)) {
-            ManagerUser us = managerUserService.selectOne(new EntityWrapper<ManagerUser>().eq("phone", phone));
+            ManagerUser us = managerUserService.selectOne(new EntityWrapper<ManagerUser>().eq(ManagerUser.PHONE, phone));
             if (us != null)
                 user = us.toParentUser();
         } else if (UserType.DISTRIBUTION.equals(userType)) {
-            DistributionUser us = distributionUserService.selectOne(new EntityWrapper<DistributionUser>().eq("phone", phone));
+            DistributionUser us = distributionUserService.selectOne(new EntityWrapper<DistributionUser>().eq(DistributionUser.PHONE, phone));
             if (us != null)
                 user = us.toParentUser();
         } else if (userType.hasManageUserType()) {
-            ManagerUser us = managerUserService.selectOne(new EntityWrapper<ManagerUser>().eq("phone", phone));
+            ManagerUser us = managerUserService.selectOne(new EntityWrapper<ManagerUser>().eq(ManagerUser.PHONE, phone));
             if (us != null)
                 user = us.toParentUser();
         }
