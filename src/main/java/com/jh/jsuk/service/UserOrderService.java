@@ -10,7 +10,6 @@ import com.jh.jsuk.entity.vo.*;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
 import com.jh.jsuk.exception.MessageException;
-import org.omg.PortableInterceptor.INACTIVE;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ public interface UserOrderService extends IService<UserOrder> {
 
     Page getShopOrderByUserId(Page page, Wrapper wrapper, Integer shopId, Integer status, String goodsName);
 
-    Page listPage(Page page, List<String> date, String kw, OrderStatus orderStatus);
+    Page listPage(Page page, List<String> date, String kw, OrderStatus orderStatus, Integer shopId);
 
     UserOrderDetailVo userOrderDetail(Integer orderId);
 

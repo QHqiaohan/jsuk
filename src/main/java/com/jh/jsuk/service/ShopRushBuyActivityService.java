@@ -14,5 +14,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface ShopRushBuyActivityService extends IService<ShopRushBuyActivity> {
 
-    Page page(Page page);
+    Page page(Page page, Integer shopId);
 }

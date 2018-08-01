@@ -5,6 +5,7 @@ import com.jh.jsuk.entity.ShopRushBuyActivity;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.jh.jsuk.entity.vo.RushBuyVo;
 import com.jh.jsuk.entity.vo.rushbuy.ShopRushBuyActivityVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,5 +21,5 @@ public interface ShopRushBuyActivityDao extends BaseMapper<ShopRushBuyActivity> 
 
     RushBuyVo findVoByGoodsSizeId(Integer goodsSizeId);
 
-    List<ShopRushBuyActivityVO> page(Page page);
+    List<ShopRushBuyActivityVO> page(Page page,@Param("shopId") Integer shopId);
 }

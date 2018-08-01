@@ -22,8 +22,8 @@ import java.util.List;
 public class ShopRushBuyActivityServiceImpl extends ServiceImpl<ShopRushBuyActivityDao, ShopRushBuyActivity> implements ShopRushBuyActivityService {
 
     @Override
-    public Page page(Page page) {
-        List<ShopRushBuyActivityVO> list = baseMapper.page(page);
+    public Page page(Page page, Integer shopId) {
+        List<ShopRushBuyActivityVO> list = baseMapper.page(page,shopId);
         return page.setRecords(list);
     }
 }

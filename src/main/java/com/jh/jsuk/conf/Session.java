@@ -53,6 +53,14 @@ public class Session {
         return String.valueOf(userType) + userId;
     }
 
+    public boolean isShop(){
+        return UserType.SHOP.equals(this.userType);
+    }
+
+    public boolean isAdmin(){
+        return UserType.ADMIN.equals(this.userType);
+    }
+
     public Integer confirmShopId() throws MessageException {
         if (!UserType.SHOP.equals(userType)) {
             throw new MessageException("非店铺没有shopId");
