@@ -65,13 +65,22 @@ public class ShoppingCartController {
                 .eq(ShoppingCart.USER_ID, userId)
                 .eq(ShoppingCart.SHOP_ID, shoppingCart.getShopId())
                 .eq(ShoppingCart.GOODS_ID, shoppingCart.getGoodsId()));
-        if (shoppingCart1 == null) {
+        if (shoppingCart1 == null) {   //商品在购物车中不存在
             shoppingCart.insert();
-        } else {
-            shoppingCart1.setNum(shoppingCart1.getNum() + 1);
-            //更新数据库中的购物车
-           // shoppingCartService.updateById(shoppingCart1);
-            shoppingCart1.updateById();
+        } else {  //商品在购物车中存在
+            //判断商品规格是否在购物车中存在
+            ShoppingCart shoppingCart2 = shoppingCartService.selectOne(new EntityWrapper<ShoppingCart>()
+                .eq(ShoppingCart.USER_ID, userId)
+                .eq(ShoppingCart.SHOP_ID, shoppingCart.getShopId())
+                .eq(ShoppingCart.GOODS_ID, shoppingCart.getGoodsId())
+                .eq(ShoppingCart.SIZE_ID, shoppingCart.getSizeId())
+            );
+            if(shoppingCart2==null){ //该商品规格在购物车中不存在
+                shoppingCart.insert();
+            }else{    //该商品规格在购物车中存在
+                shoppingCart1.setNum(shoppingCart1.getNum() + 1);
+                shoppingCart1.updateById();
+            }
         }
         return new Result().success();
     }

@@ -78,13 +78,21 @@
     </select>
 
     <select id="findActivityById" resultMap="ActivityVo">
-        SELECT
+<!--        SELECT
             <include refid="Base_Column_List"/>
         FROM
             `js_activity` a
         LEFT JOIN js_car c ON a.car_id = c.id
         WHERE
-            a.id = #{id}
+            a.id = #{id}-->
+      select
+      a.*,c.car_name as carName
+      from
+      js_activity a join js_car c
+      ON a.car_id = c.id
+      WHERE
+      a.id = #{id}
+
     </select>
 
     <!--
