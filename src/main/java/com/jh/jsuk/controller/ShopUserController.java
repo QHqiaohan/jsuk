@@ -7,21 +7,27 @@ import com.jh.jsuk.entity.ShopUser;
 import com.jh.jsuk.service.ShopUserService;
 import com.jh.jsuk.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Author: xyl
  * Date:2018/7/31 15:27
  * Description:商户信息
  */
-@RestController
+@Controller
 @RequestMapping("/shopUser")
 public class ShopUserController {
     @Autowired
@@ -36,6 +42,7 @@ public class ShopUserController {
      * @param sectionTime 创建时间区间
      * @return
      */
+    @ResponseBody
     @GetMapping("/list")
     public R list(Page page, String userName, String name, String[] sectionTime) throws ParseException {
         return R.succ(shopUserService.list(page, userName, name, sectionTime));
@@ -47,6 +54,7 @@ public class ShopUserController {
      * @param id
      * @return
      */
+    @ResponseBody
     @PostMapping("/del")
     public R del(Integer id) {
         ShopUser shopUser = new ShopUser();
@@ -55,11 +63,11 @@ public class ShopUserController {
         shopUser.updateById();
         return R.succ();
     }
-
+    @ResponseBody
     @PostMapping("/review")
     public R review(Integer id, Integer flag) {
         //只有平台才能修改
-//        if (session.getUserType().getKey() == 4) {
+        if (session.getUserType().getKey() == 4) {
             ShopUser shopUser = shopUserService.selectById(id);
             //只能修改待审核状态的商户
             if (shopUser.getIsCheck() == 0) {
@@ -69,7 +77,23 @@ public class ShopUserController {
             }
             return R.err("该商户已经审核过了");
         }
-//        return R.err("权限不足");
-//    }
+        return R.err("权限不足");
+    }
+
+    @Resource
+    @Qualifier("shopUserExcelView")
+    private View shopUserExcelView;
+
+    /**
+     * 导出商户列表
+     */
+    @RequestMapping("/export")
+    public ModelAndView exportUsers(Integer[] ids) {
+        ModelAndView view = new ModelAndView();
+        view.setView(shopUserExcelView);
+        view.addObject("shopUserVos", shopUserService.excelData(ids));
+        return view;
+    }
+
 }
 
