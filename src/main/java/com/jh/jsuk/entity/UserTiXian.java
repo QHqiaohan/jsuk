@@ -67,6 +67,31 @@ public class UserTiXian extends Model<UserTiXian> {
 
     private Date createTime;
 
+    /**
+     * 提现审核，1：通过 0：不通过
+     */
+    private Integer examine;
+    /**
+     * 提现渠道
+     */
+    private String destination;
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public Integer getExamine() {
+        return examine;
+    }
+
+    public void setExamine(Integer examine) {
+        this.examine = examine;
+    }
+
     public Integer getId() {
         return id;
     }

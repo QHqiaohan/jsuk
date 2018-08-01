@@ -14,11 +14,13 @@
         <result column="is_del" property="isDel" />
         <result column="price" property="price" />
         <result column="create_time" property="createTime" />
+        <result column="examine" property="examine" />
+        <result column="destination" property="destination" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_id, manager_id, bank_id, num, status, remark, is_del, price, create_time
+        id, user_id, manager_id, bank_id, num, status, remark, is_del, price, create_time,examine,destination
     </sql>
 
   <resultMap id="UserTiXianVo" type="com.jh.jsuk.entity.vo.UserTiXianVo" extends="BaseResultMap">
@@ -34,19 +36,21 @@
     join
     js_user u
     on tixian.user_id=u.id
-
-    where is_del=0
-    <where>
+    where
+    tixian.is_del=0
       <if test="tixianId!=null">
-        id=#{tixianId}
+        and id=#{tixianId}
       </if>
       <if test="begin!=null and end!=null">
-        price between #{begin} and #{end}
+       and price between #{begin} and #{end}
+      </if>
+      <if test="begin!=null and end==null">
+       and price>=#{begin}
       </if>
       <if test="status!=null">
-        status=#{status}
+       and status=#{status}
       </if>
-    </where>
+
   </select>
 
 </mapper>

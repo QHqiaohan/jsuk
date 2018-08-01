@@ -23,7 +23,10 @@ public class ManagerUser extends ParentUser<ManagerUser> {
      * 账号
      */
     private String userName;
-    /**
+
+    //昵称
+    private String nickName;
+  /**
      * 姓名
      */
     private String name;
@@ -91,6 +94,36 @@ public class ManagerUser extends ParentUser<ManagerUser> {
      * 上次登录时间
      */
     private Date lastLoginTime;
+
+    //是否删除,0:未删除，1：删除
+    private Integer isDel;
+
+    //备注信息
+    private String desc;
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public Integer getIsDel() {
+        return isDel;
+    }
+
+    public void setIsDel(Integer isDel) {
+        this.isDel = isDel;
+    }
 
     public ParentUserEx toParentUser(){
         ParentUserEx ex = new ParentUserEx();
@@ -293,6 +326,8 @@ public class ManagerUser extends ParentUser<ManagerUser> {
     public static final String LOGIN_IP = "login_ip";
 
     public static final String LAST_LOGIN_TIME = "last_login_time";
+
+    public static final String IS_DEL = "is_del";
 
     @Override
     protected Serializable pkVal() {

@@ -58,7 +58,10 @@ public class ShopUser extends Model<ShopUser> {
      * 身份证背面
      */
     private String cardBack;
-
+    /**
+     * 是否删除 0 未删除 1 删除
+     */
+    private Integer isDel;
 
     public Integer getId() {
         return id;
@@ -160,6 +163,8 @@ public class ShopUser extends Model<ShopUser> {
 
     public static final String CARD_BACK = "card_back";
 
+    public static final String IS_DEL = "is_del";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -168,16 +173,24 @@ public class ShopUser extends Model<ShopUser> {
     @Override
     public String toString() {
         return "ShopUser{" +
-        "id=" + id +
-        ", shopId=" + shopId +
-        ", managerUserId=" + managerUserId +
-        ", isWaiting=" + isWaiting +
-        ", isCheck=" + isCheck +
-        ", desc=" + desc +
-        ", legalPersonName=" + legalPersonName +
-        ", idCardNo=" + idCardNo +
-        ", cardFront=" + cardFront +
-        ", cardBack=" + cardBack +
-        "}";
+            "id=" + id +
+            ", shopId=" + shopId +
+            ", managerUserId=" + managerUserId +
+            ", isWaiting=" + isWaiting +
+            ", isCheck=" + isCheck +
+            ", desc=" + desc +
+            ", legalPersonName=" + legalPersonName +
+            ", idCardNo=" + idCardNo +
+            ", cardFront=" + cardFront +
+            ", cardBack=" + cardBack +
+            "}";
+    }
+
+    public Integer getIsDel() {
+        return isDel;
+    }
+
+    public void setIsDel(Integer isDel) {
+        this.isDel = isDel;
     }
 }

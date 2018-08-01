@@ -2,23 +2,52 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jh.jsuk.dao.ShopUserDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopUser">
-        <id column="id" property="id" />
-        <result column="shop_id" property="shopId" />
-        <result column="manager_user_id" property="managerUserId" />
-        <result column="is_waiting" property="isWaiting" />
-        <result column="is_check" property="isCheck" />
-        <result column="desc" property="desc" />
-        <result column="legal_person_name" property="legalPersonName" />
-        <result column="id_card_no" property="idCardNo" />
-        <result column="card_front" property="cardFront" />
-        <result column="card_back" property="cardBack" />
-    </resultMap>
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopUser">
+    <id column="id" property="id"/>
+    <result column="shop_id" property="shopId"/>
+    <result column="manager_user_id" property="managerUserId"/>
+    <result column="is_waiting" property="isWaiting"/>
+    <result column="is_check" property="isCheck"/>
+    <result column="desc" property="desc"/>
+    <result column="legal_person_name" property="legalPersonName"/>
+    <result column="id_card_no" property="idCardNo"/>
+    <result column="card_front" property="cardFront"/>
+    <result column="card_back" property="cardBack"/>
+  </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, shop_id, manager_user_id, is_waiting, is_check, desc, legal_person_name, id_card_no, card_front, card_back
-    </sql>
-
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+    id, shop_id, manager_user_id, is_waiting, is_check, desc, legal_person_name, id_card_no, card_front, card_back
+  </sql>
+  <resultMap id="shopUserVo" type="com.jh.jsuk.entity.vo.ShopUserVo" extends="BaseResultMap">
+    <result property="userName" column="user_name"/>
+    <result property="phone" column="phone"/>
+    <result property="headImg" column="head_img"/>
+    <result property="shopName" column="shop_name"/>
+    <collection property="modularPortals" column="modular_id" select="com.jh.jsuk.dao.ModularPortalDao.selectById"/>
+  </resultMap>
+  <select id="listShopUser" resultMap="shopUserVo">
+    SELECT
+    su.*, mu.user_name,
+    mu.phone,
+    mu.head_img,
+    s.shop_name,
+    mp.id as modular_id
+    FROM
+    js_shop_user su
+    LEFT JOIN js_manager_user mu ON su.manager_user_id = mu.id
+    LEFT JOIN js_shop s ON s.id = su.shop_id
+    LEFT JOIN js_modular_portal mp on mp.id=s.modular_id
+    where su.is_del = 0
+    <if test="userName != null">
+      and mu.user_name like concat('%',#{userName},'%')
+    </if>
+    <if test="name != null">
+      and su.legal_person_name like concat('%'#{name},'%')
+    </if>
+    <if test="startTime != null and endTime != null">
+      and mu.create_time between #{startTime} and #{endTime}
+    </if>
+  </select>
 </mapper>
