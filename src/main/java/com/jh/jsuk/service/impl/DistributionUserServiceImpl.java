@@ -92,4 +92,9 @@ public class DistributionUserServiceImpl extends ServiceImpl<DistributionUserDao
         page.setRecords(baseMapper.searchDistributionUserBy(page,wrapper,account,name));
         return page;
     }
+
+    @Override
+    public Page list(Page page, String account, String name) {
+        return page.setRecords(baseMapper.list(page,account,name));
+    }
 }
