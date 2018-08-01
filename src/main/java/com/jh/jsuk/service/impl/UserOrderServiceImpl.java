@@ -585,4 +585,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         return charge.toString();
     }
 
+    @Override
+    public AfterSaleVo getAddressAndPhone(Integer orderId) {
+        return baseMapper.getAddressAndPhone(orderId);
+    }
+
 }

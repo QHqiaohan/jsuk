@@ -3,6 +3,7 @@ package com.jh.jsuk.dao;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.jh.jsuk.entity.UserOrder;
+import com.jh.jsuk.entity.vo.AfterSaleVo;
 import com.jh.jsuk.entity.vo.UserOrderDetailVo;
 import com.jh.jsuk.entity.vo.UserOrderInfoVo;
 import com.jh.jsuk.entity.vo.UserOrderVo;
@@ -36,4 +37,6 @@ public interface UserOrderDao extends BaseMapper<UserOrder> {
     int updateStock(@Param("goodsSizeId") Integer goodsSizeId,@Param("num") Integer num);
 
     int updateKillStock(@Param("goodsSizeId") Integer goodsSizeId,@Param("num") Integer num);
+
+    AfterSaleVo getAddressAndPhone(@Param("orderId") Integer orderId);
 }

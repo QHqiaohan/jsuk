@@ -44,10 +44,24 @@
       and mu.user_name like concat('%',#{userName},'%')
     </if>
     <if test="name != null">
-      and su.legal_person_name like concat('%'#{name},'%')
+      and su.legal_person_name like concat('%',#{name},'%')
     </if>
     <if test="startTime != null and endTime != null">
       and mu.create_time between #{startTime} and #{endTime}
     </if>
+  </select>
+  <select id="getShopUserById" resultMap="shopUserVo">
+    SELECT
+    su.*, mu.user_name,
+    mu.phone,
+    mu.head_img,
+    s.shop_name,
+    mp.id as modular_id
+    FROM
+    js_shop_user su
+    LEFT JOIN js_manager_user mu ON su.manager_user_id = mu.id
+    LEFT JOIN js_shop s ON s.id = su.shop_id
+    LEFT JOIN js_modular_portal mp on mp.id=s.modular_id
+    where su.id = #{id}
   </select>
 </mapper>

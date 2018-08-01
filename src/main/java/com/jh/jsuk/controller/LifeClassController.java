@@ -175,7 +175,7 @@ public class LifeClassController {
 
     @ApiOperation("用户-便捷生活-根据商品ID查询商品详细信息")
     @RequestMapping(value = "/getActivityById", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getActivityById(@ApiParam(value = "商品ID", required = true) Integer id) {
+    public Result getActivityById(@RequestParam Integer id) {
         ActivityVo activityVo = activityService.findActivityById(id);
         return new Result().success(activityVo);
     }

@@ -25,7 +25,7 @@ public interface ActivityDao extends BaseMapper<Activity> {
 
     ActivityVo findActivity(Integer id);
 
-    ActivityVo findActivityById(Integer id);
+    ActivityVo findActivityById(@Param("id") Integer id);
 
     /**
      * 根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情

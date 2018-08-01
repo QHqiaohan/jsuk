@@ -43,7 +43,7 @@
 
   <!-- 通用查询结果列 -->
   <sql id="Base_Column_List">
-        id, order_num, order_price, full_reduce, coupon_reduce, integral_reduce, order_real_price, distribution_fee, distribution_time, distribution_type, creat_time, pay_time, pay_type, status, is_unsubscribe, is_evaluate, is_shop_del, is_user_del, is_closed, shop_id, address_id, user_id, cancel_time, complete_time, send_time, coupon_id, order_type, logistics_no, remark, discount, integral_rule_id, full_reduce_id, platform_number, goods_name
+    id, order_num, order_price, full_reduce, coupon_reduce, integral_reduce, order_real_price, distribution_fee, distribution_time, distribution_type, creat_time, pay_time, pay_type, status, is_unsubscribe, is_evaluate, is_shop_del, is_user_del, is_closed, shop_id, address_id, user_id, cancel_time, complete_time, send_time, coupon_id, order_type, logistics_no, remark, discount, integral_rule_id, full_reduce_id, platform_number, goods_name
   </sql>
 
   <resultMap id="UserOrderVo" type="com.jh.jsuk.entity.vo.UserOrderVo" extends="BaseResultMap">
@@ -163,15 +163,30 @@
 
 
   <update id="updateStock">
-        update js_shop_goods_size s
-        set s.stock = s.stock - #{num}
-        where s.id = #{goodsSizeId} and s.stock >= #{num}
-    </update>
+    update js_shop_goods_size s
+    set s.stock = s.stock - #{num}
+    where s.id = #{goodsSizeId} and s.stock >= #{num}
+  </update>
 
   <update id="updateKillStock">
-        update js_shop_goods_size s
-        set s.kill_stock = s.kill_stock - #{num}
-        where s.id = #{goodsSizeId} and s.kill_stock >= #{num}
-    </update>
+    update js_shop_goods_size s
+    set s.kill_stock = s.kill_stock - #{num}
+    where s.id = #{goodsSizeId} and s.kill_stock >= #{num}
+  </update>
+  <resultMap id="AfterSaleVo" type="com.jh.jsuk.entity.vo.AfterSaleVo">
+    <result column="shop_phone" property="shopPhone"/>
+    <association property="address" column="address_id" select="com.jh.jsuk.dao.UserAddressDao.selectById"/>
+  </resultMap>
+  <select id="getAddressAndPhone" resultMap="AfterSaleVo">
+    SELECT
+      ua.id    as address_id,
+      mu.phone as shop_phone
+    FROM
+      js_user_order uo
+      LEFT JOIN js_user_address ua ON uo.address_id = ua.id
+      LEFT JOIN js_shop_user su ON uo.shop_id = su.shop_id
+      LEFT JOIN js_manager_user mu ON su.manager_user_id = mu.id
+    WHERE uo.id = #{orderId}
+  </select>
 
 </mapper>

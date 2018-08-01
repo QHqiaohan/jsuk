@@ -27,4 +27,6 @@ public class ShopUserVo extends ShopUser {
     private String headImg;
 
     private List<ModularPortal> modularPortals;
+
+    private String modularNames;
 }
