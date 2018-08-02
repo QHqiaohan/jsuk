@@ -26,7 +26,14 @@
   <sql id="Base_Column_List">
     id, user_id, sender_address, order_no, get_address, goods_type, weight, real_weight, is_del, status, type, price, notes, requirement_time, publish_time, end_time
   </sql>
-
+  <resultMap id="ExpressListVo" type="com.jh.jsuk.entity.vo.ExpressListVo" extends="BaseResultMap">
+    <association property="user" column="user_id" select="com.jh.jsuk.dao.UserDao.selectById"/>
+  </resultMap>
+  <select id="listOrderByDistributionId" resultMap="ExpressListVo">
+    select *
+    from js_express
+    where distribution_user_id = #{id}
+  </select>
   <resultMap id="ExpressVo" type="com.jh.jsuk.entity.vo.ExpressVo" extends="BaseResultMap">
     <association property="senderAddressInfo" column="sender_address"
                  select="com.jh.jsuk.dao.UserAddressDao.getUserAddressbyId"></association>
