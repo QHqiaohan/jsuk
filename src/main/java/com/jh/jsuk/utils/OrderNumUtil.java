@@ -14,4 +14,11 @@ public class OrderNumUtil {
         // d 代表参数为正数型
         return machineId + String.format("%015d", hashCodeV);
     }
+
+    public static void main(String[] args) {
+        System.out.println(getOrderIdByUUId());
+        System.out.println(getOrderIdByUUId());
+        System.out.println(getOrderIdByUUId());
+
+    }
 }

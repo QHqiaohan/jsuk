@@ -35,12 +35,11 @@
 
   <resultMap id="DistributionVo" type="com.jh.jsuk.entity.vo.DistributionVo" extends="BaseResultMap">
     <result column="income" property="income"/>
-    <result property="orderAmount" column="order_amount"/>
+    <association property="orderAmount" column="id" select="com.jh.jsuk.dao.DistributionUserDao.getOrderAmount"/>
   </resultMap>
   <select id="list" resultMap="DistributionVo">
     select
     du.*,
-    count(*) as order_amount,
     sum(e.price) as income
     from js_distribution_user du
     left join js_express e on du.id = e.distribution_user_id
@@ -53,7 +52,14 @@
     </if>
     group by du.id
   </select>
-
+  <!--<resultMap id="orderAmount" type="java.lang.Integer">
+    <result column="order_amount" property=""
+  </resultMap>-->
+  <select id="getOrderAmount" resultType="java.lang.Integer">
+    select count(*) as order_amount
+    from js_express
+    where distribution_user_id = #{id}
+  </select>
   <update id="updateAccount">
     update js_distribution_user u
     set account = ifnull(account, 0) + #{amount}

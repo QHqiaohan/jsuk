@@ -2,99 +2,107 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jh.jsuk.dao.ExpressDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Express">
-        <id column="id" property="id" />
-        <result column="user_id" property="userId" />
-        <result column="sender_address" property="senderAddress" />
-        <result column="get_address" property="getAddress" />
-        <result column="goods_type" property="goodsType" />
-        <result column="weight" property="weight" />
-        <result column="real_weight" property="realWeight" />
-        <result column="is_del" property="isDel" />
-        <result column="status" property="status" />
-        <result column="type" property="type" />
-        <result column="price" property="price" />
-        <result column="notes" property="notes" />
-        <result column="requirement_time" property="requirementTime" />
-        <result column="publish_time" property="publishTime" />
-        <result column="end_time" property="endTime" />
-    </resultMap>
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Express">
+    <id column="id" property="id"/>
+    <result column="user_id" property="userId"/>
+    <result column="sender_address" property="senderAddress"/>
+    <result column="get_address" property="getAddress"/>
+    <result column="goods_type" property="goodsType"/>
+    <result column="weight" property="weight"/>
+    <result column="real_weight" property="realWeight"/>
+    <result column="is_del" property="isDel"/>
+    <result column="status" property="status"/>
+    <result column="type" property="type"/>
+    <result column="price" property="price"/>
+    <result column="notes" property="notes"/>
+    <result column="requirement_time" property="requirementTime"/>
+    <result column="publish_time" property="publishTime"/>
+    <result column="end_time" property="endTime"/>
+    <result column="order_no" property="orderNo"/>
+  </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, user_id, sender_address, get_address, goods_type, weight, real_weight, is_del, status, type, price, notes, requirement_time, publish_time, end_time
-    </sql>
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+    id, user_id, sender_address, order_no, get_address, goods_type, weight, real_weight, is_del, status, type, price, notes, requirement_time, publish_time, end_time
+  </sql>
 
   <resultMap id="ExpressVo" type="com.jh.jsuk.entity.vo.ExpressVo" extends="BaseResultMap">
-        <association property="senderAddressInfo" column="sender_address" select="com.jh.jsuk.dao.UserAddressDao.getUserAddressbyId"></association>
-        <association property="getAddressInfo" column="get_address" select="com.jh.jsuk.dao.UserAddressDao.getUserAddressbyId"></association>
-    </resultMap>
+    <association property="senderAddressInfo" column="sender_address"
+                 select="com.jh.jsuk.dao.UserAddressDao.getUserAddressbyId"></association>
+    <association property="getAddressInfo" column="get_address"
+                 select="com.jh.jsuk.dao.UserAddressDao.getUserAddressbyId"></association>
+  </resultMap>
 
-    <resultMap id="ExpressVo2" type="com.jh.jsuk.entity.vo.ExpressVo2" extends="BaseResultMap">
-        <association property="senderAddressInfo" column="sender_address"
-                     select="com.jh.jsuk.dao.UserAddressDao.getUserAddressbyId"></association>
-        <association property="getAddressInfo" column="get_address"
-                     select="com.jh.jsuk.dao.UserAddressDao.getUserAddressbyId"></association>
-        <association property="userInfo" column="user_id"
-        select="com.jh.jsuk.dao.UserDao.selectById"></association>
-    </resultMap>
+  <resultMap id="ExpressVo2" type="com.jh.jsuk.entity.vo.ExpressVo2" extends="BaseResultMap">
+    <association property="senderAddressInfo" column="sender_address"
+                 select="com.jh.jsuk.dao.UserAddressDao.getUserAddressbyId"></association>
+    <association property="getAddressInfo" column="get_address"
+                 select="com.jh.jsuk.dao.UserAddressDao.getUserAddressbyId"></association>
+    <association property="userInfo" column="user_id"
+                 select="com.jh.jsuk.dao.UserDao.selectById"></association>
+  </resultMap>
 
-    <select id="getExpressListBy" resultMap="ExpressVo">
-        SELECT
-        *
-        FROM
-        js_express
-        WHERE
-        user_id = #{userId}
-        <if test="type != null">
-            AND
-            `type` = #{type}
-        </if>
-        <if test="status != null">
-            AND
-            status = #{status}
-        </if>
-        ORDER BY publish_time DESC
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
-    <select id="getDeliverList" resultMap="ExpressVo">
-        SELECT
-        *
-        FROM
-        js_express
-        WHERE is_del != 1
-        <if test="userId != null">
-            AND distribution_user_id = #{userId}
-        </if>
-        <if test="type != null">
-            AND `type` = #{type}
-        </if>
-        <if test="status != null and status.length > 0">
-            AND status in
-            <foreach collection="status" item="item" open="(" close=")" separator=",">#{item}</foreach>
-        </if>
-        ORDER BY publish_time DESC
-    </select>
+  <select id="getExpressListBy" resultMap="ExpressVo">
+    SELECT
+    *
+    FROM
+    js_express
+    WHERE
+    user_id = #{userId}
+    <if test="type != null">
+      AND
+      `type` = #{type}
+    </if>
+    <if test="status != null">
+      AND
+      status = #{status}
+    </if>
+    ORDER BY publish_time DESC
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
+  <select id="getDeliverList" resultMap="ExpressVo">
+    SELECT
+    *
+    FROM
+    js_express
+    WHERE is_del != 1
+    <if test="userId != null">
+      AND distribution_user_id = #{userId}
+    </if>
+    <if test="type != null">
+      AND `type` = #{type}
+    </if>
+    <if test="status != null and status.length > 0">
+      AND status in
+      <foreach collection="status" item="item" open="(" close=")" separator=",">#{item}</foreach>
+    </if>
+    ORDER BY publish_time DESC
+  </select>
 
-    <select id="listPage" resultMap="ExpressVo2">
-      select <include refid="Base_Column_List"/> from js_express
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
+  <select id="listPage" resultMap="ExpressVo2">
+    select
+    <include refid="Base_Column_List"/>
+    from js_express
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
 
-    <select id="detail" resultMap="ExpressVo2">
-        select <include refid="Base_Column_List"/> from js_express
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
+  <select id="detail" resultMap="ExpressVo2">
+    select
+    <include refid="Base_Column_List"/>
+    from js_express
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
 
   <update id="deliverRobbingOrder">
-    update js_express set distribution_user_id = #{userId},`status`= #{waitDeliver}
+    update js_express
+    set distribution_user_id = #{userId}, `status` = #{waitDeliver}
     where not is_del and `status` = #{payed}
   </update>
 

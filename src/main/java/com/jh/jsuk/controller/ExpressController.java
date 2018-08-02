@@ -11,10 +11,7 @@ import com.jh.jsuk.envm.DistributionExpressStatus;
 import com.jh.jsuk.envm.ExpressStatus;
 import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
-import com.jh.jsuk.utils.EnumUitl;
-import com.jh.jsuk.utils.MyEntityWrapper;
-import com.jh.jsuk.utils.R;
-import com.jh.jsuk.utils.Result;
+import com.jh.jsuk.utils.*;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,26 +54,26 @@ public class ExpressController {
         }
         ExpressStatus expressStatus = null;
         if (status != null && !"all".equals(status)) {
-            expressStatus = EnumUitl.toEnum(ExpressStatus.class, status,"getShortKey");
+            expressStatus = EnumUitl.toEnum(ExpressStatus.class, status, "getShortKey");
         }
         return R.succ(expressService.listPage(page, expressStatus, dates, kw));
     }
 
     @GetMapping("/count")
     public R count() {
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         int all = 0;
         for (ExpressStatus status : ExpressStatus.values()) {
             int cnt = expressService.statusCount(status, session.getShopId(), session.getUserType(), session.getUserId());
             all += cnt;
-            map.put(status.getShortKey(),cnt);
+            map.put(status.getShortKey(), cnt);
         }
-        map.put("all",all);
+        map.put("all", all);
         return R.succ(map);
     }
 
     @GetMapping("/detail")
-    public R detail(Integer expressId){
+    public R detail(Integer expressId) {
         return R.succ(expressService.detail(expressId));
     }
 
@@ -84,9 +81,9 @@ public class ExpressController {
     @RequestMapping(value = "/expressRunBanner", method = {RequestMethod.POST, RequestMethod.GET})
     public Result expressRunBanner() {
         List<Banner> bannerList = bannerService.selectList(new EntityWrapper<Banner>()
-                .eq(Banner.BANNER_LOCATION, 11)
-                .eq(Banner.IS_VALID, 1)
-                .orderBy(Banner.SORT, false));
+            .eq(Banner.BANNER_LOCATION, 11)
+            .eq(Banner.IS_VALID, 1)
+            .orderBy(Banner.SORT, false));
         return new Result().success(bannerList);
     }
 
@@ -114,6 +111,7 @@ public class ExpressController {
         if (express.getUserId() == null) {
             return new Result().erro("用户信息过期");
         } else {
+            express.setOrderNo(OrderNumUtil.getOrderIdByUUId());
             boolean res = express.insert();
             distributionUserService.notifyRobbing();
             if (res) {
@@ -126,10 +124,10 @@ public class ExpressController {
 
     @ApiOperation("用户端-跑腿订单列表-不传表示查所有")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "current", value = "当前页码",
-                    paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数",
-                    paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "current", value = "当前页码",
+            paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "size", value = "每页条数",
+            paramType = "query", dataType = "integer"),
     })
     @RequestMapping(value = "/getExpressList", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getExpressList(Page page, @ModelAttribute Express express,
@@ -144,7 +142,7 @@ public class ExpressController {
     @RequestMapping(value = "/getExpressType", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getExpressType() {
         List<ExpressType> expressTypeList = expressTypeService.selectList(new EntityWrapper<ExpressType>()
-                .orderBy(ExpressType.PUBLISH_TIME, false));
+            .orderBy(ExpressType.PUBLISH_TIME, false));
         return new Result().success(expressTypeList);
     }
 
@@ -154,8 +152,8 @@ public class ExpressController {
         Express express = new Express();
         express.setStatus(5);
         boolean res = express.update(new EntityWrapper()
-                .eq(Express.ID, orderId)
-                .eq(Express.USER_ID, userId));
+            .eq(Express.ID, orderId)
+            .eq(Express.USER_ID, userId));
         if (res) {
             return new Result().success();
         } else {
@@ -169,8 +167,8 @@ public class ExpressController {
         Express express = new Express();
         express.setIsDel(1);
         boolean res = express.update(new EntityWrapper()
-                .eq(Express.ID, orderId)
-                .eq(Express.USER_ID, userId));
+            .eq(Express.ID, orderId)
+            .eq(Express.USER_ID, userId));
         if (res) {
             return new Result().success();
         } else {
@@ -184,8 +182,8 @@ public class ExpressController {
         Express express = new Express();
         express.setStatus(3);
         boolean res = express.update(new EntityWrapper()
-                .eq(Express.ID, orderId)
-                .eq(Express.USER_ID, userId));
+            .eq(Express.ID, orderId)
+            .eq(Express.USER_ID, userId));
         if (res) {
             return new Result().success();
         } else {
@@ -196,10 +194,10 @@ public class ExpressController {
     @ApiOperation("骑手端-配送单列表-不传表示所有")
     @GetMapping("/dvr/list")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "current", value = "当前页码",
-                    paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数",
-                    paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "current", value = "当前页码",
+            paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "size", value = "每页条数",
+            paramType = "query", dataType = "integer"),
     })
     public Result deliverList(Integer userId, Page page,
                               @ApiParam("状态 待抢单：wrb 待取货：wtk 待送达：dvn 已完成：cpt") @RequestParam(required = false) String status,
@@ -219,41 +217,41 @@ public class ExpressController {
         Map<String, Object> map = new HashMap<>();
         Wrapper<Express> wrapper = new EntityWrapper<>();
         wrapper.ne(Express.IS_DEL, 1)
-                .in(Express.STATUS, DistributionExpressStatus.WAIT_ROBBING.getKey());
+            .in(Express.STATUS, DistributionExpressStatus.WAIT_ROBBING.getKey());
         map.put(DistributionExpressStatus.WAIT_ROBBING.getsKey(),
-                expressService.selectCount(wrapper));
+            expressService.selectCount(wrapper));
 
         Wrapper<Express> wrapper1 = new EntityWrapper<>();
         wrapper1.eq(Express.DISTRIBUTION_USER_ID, userId)
-                .ne(Express.IS_DEL, 1)
-                .in(Express.STATUS, DistributionExpressStatus.WAIT_TAKE.getKey());
+            .ne(Express.IS_DEL, 1)
+            .in(Express.STATUS, DistributionExpressStatus.WAIT_TAKE.getKey());
         map.put(DistributionExpressStatus.WAIT_TAKE.getsKey(),
-                expressService.selectCount(wrapper1));
+            expressService.selectCount(wrapper1));
 
         Wrapper<Express> wrapper2 = new EntityWrapper<>();
         wrapper2.eq(Express.DISTRIBUTION_USER_ID, userId)
-                .ne(Express.IS_DEL, 1)
-                .in(Express.STATUS, DistributionExpressStatus.DELIVERING.getKey());
+            .ne(Express.IS_DEL, 1)
+            .in(Express.STATUS, DistributionExpressStatus.DELIVERING.getKey());
         map.put(DistributionExpressStatus.DELIVERING.getsKey(),
-                expressService.selectCount(wrapper2));
+            expressService.selectCount(wrapper2));
         return new Result().success(map);
     }
 
     @ApiOperation("骑手端-抢单")
     @PostMapping("/dvr/robbing")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "expressId", value = "配送单id",
-                    paramType = "query", dataType = "integer")
+        @ApiImplicitParam(name = "expressId", value = "配送单id",
+            paramType = "query", dataType = "integer")
     })
     public Result deliverRobbingOrder(Integer userId, Integer expressId) {
-        return new Result().success(expressService.deliverRobbingOrder(userId,expressId));
+        return new Result().success(expressService.deliverRobbingOrder(userId, expressId));
     }
 
     @ApiOperation("骑手端-取货")
     @PostMapping("/dvr/takeGoods")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "expressId", value = "配送单id",
-                    paramType = "query", dataType = "integer")
+        @ApiImplicitParam(name = "expressId", value = "配送单id",
+            paramType = "query", dataType = "integer")
     })
     public Result deliverTakeGoods(Integer expressId) {
         Express express = new Express();
@@ -266,8 +264,8 @@ public class ExpressController {
     @ApiOperation("骑手端-送达")
     @PostMapping("/dvr/delivered")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "expressId", value = "配送单id",
-                    paramType = "query", dataType = "integer")
+        @ApiImplicitParam(name = "expressId", value = "配送单id",
+            paramType = "query", dataType = "integer")
     })
     @Transactional
     public Result deliverDelivered(Integer expressId, Integer userId) {

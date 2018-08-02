@@ -32,4 +32,9 @@ public interface DistributionUserDao extends BaseMapper<DistributionUser> {
                                                               @Param("name") String name);
 
     List<DistributionVo> list(Page page, @Param("account") String account, @Param("name") String name);
+
+    /**
+     * 获取骑手订单数量
+     */
+    Integer getOrderAmount(Integer id);
 }
