@@ -1,7 +1,6 @@
 package com.jh.jsuk.controller;
 
 
-import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -9,6 +8,7 @@ import com.jh.jsuk.entity.ShopRushBuy;
 import com.jh.jsuk.envm.ShopRushBuyStatus;
 import com.jh.jsuk.service.ShopGoodsService;
 import com.jh.jsuk.service.ShopRushBuyService;
+import com.jh.jsuk.utils.Date2;
 import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
@@ -95,7 +95,10 @@ public class ShopRushBuyController {
             .eq(ShopRushBuy.IS_USE, 1)
             .ne(ShopRushBuy.IS_DEL, 1)
             .orderBy(ShopRushBuy.START_TIME));
-        DateTime dateTime = new DateTime("1970-01-01", "yyyy-MM-dd");
+        Date2 date2 = new Date2();
+        date2.setYear2(1970);
+        date2.setMonth2(0);
+        date2.setDay2(1);
         List<Map<String, Object>> times = new ArrayList<>();
         for (ShopRushBuy shopRushBuy : list) {
             Map<String, Object> map = new HashMap<>();
@@ -104,11 +107,13 @@ public class ShopRushBuyController {
             map.put("startTime", startTime);
             Date endTime = shopRushBuy.getEndTime();
             map.put("endTime", endTime);
-            if (dateTime.isBeforeOrEquals(startTime)) {
+            Date2 end = new Date2(endTime);
+            Date2 start = new Date2(startTime);
+            if (date2.isBefore(start)) {
                 map.put("status", ShopRushBuyStatus.NOT_STARTED);
-            } else if (dateTime.isIn(startTime, endTime)) {
+            } else if (date2.isAfter(start) && date2.isBefore(end)) {
                 map.put("status", ShopRushBuyStatus.ON_GOING);
-            } else if (dateTime.isAfterOrEquals(endTime)) {
+            } else if (date2.isAfter(end)) {
                 map.put("status", ShopRushBuyStatus.OVER);
             } else {
                 map.put("status", null);
