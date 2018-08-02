@@ -111,14 +111,12 @@ public class ShopRushBuyController {
             Date2 start = new Date2(startTime);
             if (date2.isBefore(start)) {
                 map.put("status", ShopRushBuyStatus.NOT_STARTED);
+            } else if (date2.isAfter(start) && date2.isBefore(end)) {
+                map.put("status", ShopRushBuyStatus.ON_GOING);
+            } else if (date2.isAfter(end)) {
+                map.put("status", ShopRushBuyStatus.OVER);
             } else {
-                if (date2.isAfter(start) && date2.isBefore(end)) {
-                    map.put("status", ShopRushBuyStatus.ON_GOING);
-                } else if (date2.isAfter(end)) {
-                    map.put("status", ShopRushBuyStatus.OVER);
-                } else {
-                    map.put("status", null);
-                }
+                map.put("status", null);
             }
             times.add(map);
         }
