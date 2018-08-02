@@ -54,6 +54,10 @@ public class UserOrderService extends Model<UserOrderService> {
      */
     private String refundReason;
     /**
+     * 商家备注
+     */
+    private String shopComment;
+    /**
      * 售后类型,1=仅退款,2=退货退款,3=换货
      */
     private Integer type;

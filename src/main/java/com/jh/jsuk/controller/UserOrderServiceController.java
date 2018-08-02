@@ -13,6 +13,7 @@ import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,6 +34,17 @@ public class UserOrderServiceController {
 
     @Autowired
     UserOrderServiceService userOrderServiceService;
+
+    @GetMapping("/get")
+    public R serviceInfo(Integer id){
+        return R.succ(userOrderServiceService.get(id));
+    }
+
+    @PatchMapping
+    public R edit(UserOrderService userOrderService){
+        userOrderServiceService.updateById(userOrderService);
+        return R.succ();
+    }
 
     @GetMapping("/pageMoney")
     public R pageMoney(Page page, String status) throws Exception {

@@ -4,10 +4,13 @@ package com.jh.jsuk.controller;
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.Shop;
 import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.ModularPortalVo;
+import com.jh.jsuk.entity.vo.ShopTelPhoneVo;
+import com.jh.jsuk.service.ManagerUserService;
 import com.jh.jsuk.service.ModularPortalService;
 import com.jh.jsuk.service.ShopGoodsService;
 import com.jh.jsuk.service.ShopService;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,12 +45,15 @@ public class ModularPortalController {
     private ShopGoodsService shopGoodsService;
     @Autowired
     private ShopService shopService;
+    @Autowired
+    ManagerUserService managerUserService;
 
     @ApiOperation(value = "用户端-根据模块ID获取店铺/商品列表")
     @RequestMapping(value = "/getShopAndGoodsByModular", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopAndGoodsByModular(@ApiParam(value = "模块ID", required = true) Integer modularId) {
         // 封装数据map
         Map<String, Object> map = MapUtil.newHashMap();
+
         /**
          * 店铺列表
          */
@@ -60,7 +67,19 @@ public class ModularPortalController {
                         .eq(Shop.MODULAR_ID, modularId)
                         .orderBy(Shop.TOTAL_VOLUME, false));
 
-        map.put("shop", shopPage.getRecords());
+        List<Shop> records = shopPage.getRecords();
+        List<ShopTelPhoneVo> list= new ArrayList<>();
+        for (Shop record : records) {
+            ShopTelPhoneVo vo = record.toTelPhoneVo();
+            list.add(vo);
+            EntityWrapper<ManagerUser> wrapper = new EntityWrapper<>();
+            wrapper.eq(ManagerUser.SHOP_ID,record.getId());
+            ManagerUser user = managerUserService.selectOne(wrapper);
+            if(user!= null){
+                vo.setTelPhone(user.getPhone());
+            }
+        }
+        map.put("shop", list);
         /**
          * 商品列表
          */
