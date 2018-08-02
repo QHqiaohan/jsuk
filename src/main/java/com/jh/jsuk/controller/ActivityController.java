@@ -536,9 +536,16 @@ public class ActivityController {
     //首页-二手市场-发布活动
     //首页-便捷生活-发布活动
     @ApiOperation(value = "用户-便捷生活&二手市场&乡村旅游-新增活动",
-            notes = "type按类型必填!!! 1=乡村旅游,2=便捷生活,3=二手市场',如果是便捷生活,classId必填!!如果是乡村旅游,modularId必填!!二手市场不用填")
+            notes = "type按类型必填!!! 1=乡村旅游,2=便捷生活,3=二手市场',如果是便捷生活,classId必填!!如果是乡村旅游,modularId必填!!二手市场不用填." +
+                "activityType:0代表普通活动,1代表共享婚车活动;status:1代表商家,2代表需求")
     @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result add(@ModelAttribute Activity activity) {
+    public Result add(@ModelAttribute Activity activity,
+                      @RequestParam Integer modularId,
+                      @RequestParam Integer activityType,
+                      @RequestParam Integer status) {
+        activity.setActivityType(activityType);
+        activity.setStatus(status);
+        activity.setModularId(modularId);
         boolean res = activity.insert();
         if (res) {
             return new Result().success("发布成功!");

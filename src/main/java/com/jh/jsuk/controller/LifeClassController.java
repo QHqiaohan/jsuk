@@ -98,15 +98,15 @@ public class LifeClassController {
 
     @ApiOperation("便捷生活-首页婚车列表")
     @RequestMapping(value = "/getActivityByClassId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getActivityByClassId(@RequestParam Integer ModularId,
-                                       @RequestParam Integer classId) {
+    public Result getActivityByClassId(@RequestParam Integer ModularId) {
         // 封装数据map
         Map<String, Object> map = new HashMap<>();
         // 商家方
         Page providePage = activityService.selectPage(
                 new Page<>(1, 3), new EntityWrapper<Activity>()
                         .eq(Activity.MODULAR_ID,ModularId)
-                        .eq(Activity.CLASS_ID, classId)
+                        .eq(Activity.ACTIVITY_TYPE,1)   //0:普通活动，1：共享婚车活动
+                        .eq(Activity.IS_RECOMMEND, 1)
                         .eq(Activity.IS_DEL, 0)
                         .eq(Activity.STATUS, 1)      //1=商家,2=需求
                         .orderBy(Activity.RANK, false));
@@ -116,7 +116,8 @@ public class LifeClassController {
         Page demandPage = activityService.selectPage(
                 new Page<>(1, 3), new EntityWrapper<Activity>()
                         .eq(Activity.MODULAR_ID,ModularId)
-                        .eq(Activity.CLASS_ID, classId)
+                        .eq(Activity.ACTIVITY_TYPE,1)
+                        .eq(Activity.IS_RECOMMEND, 1)
                         .eq(Activity.IS_DEL, 0)
                         .eq(Activity.STATUS, 2)     //1=商家,2=需求
                         .orderBy(Activity.RANK, false));
@@ -135,15 +136,14 @@ public class LifeClassController {
     @RequestMapping(value = "/getMoreActivity", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getMoreActivity(Page page,
                                   @RequestParam Integer ModularId,
-                                  @ApiParam(value = "分类ID", required = true) Integer classId,
-                                  @ApiParam(value = "1=商家,2=需求方", required = true) Integer status) {
+                                  //@ApiParam(value = "1=商家,2=需求方", required = true)
+                                  @RequestParam Integer status) {
         // 封装数据map
         Map<String, Object> map = new HashMap<>();
         if (status == 1) {
             // 商家方
             Page providePage = activityService.selectPage(page, new EntityWrapper<Activity>()
                     .eq(Activity.MODULAR_ID,ModularId)
-                    .eq(Activity.CLASS_ID, classId)
                     .eq(Activity.IS_DEL, 0)
                     .eq(Activity.STATUS, status)
                     .orderBy(Activity.RANK, false));
@@ -152,7 +152,6 @@ public class LifeClassController {
             // 需求方
             Page demandPage = activityService.selectPage(page, new EntityWrapper<Activity>()
                     .eq(Activity.MODULAR_ID,ModularId)
-                    .eq(Activity.CLASS_ID, classId)
                     .eq(Activity.IS_DEL, 0)
                     .eq(Activity.STATUS, status)
                     .orderBy(Activity.RANK, false));
@@ -211,6 +210,14 @@ public class LifeClassController {
         } else {
             return new Result().success(areaList);
         }
+    }
+
+
+    @ApiOperation("便捷生活-发布-分类")
+    @RequestMapping(value="/findLifeClass",method={RequestMethod.GET,RequestMethod.POST})
+    public Result findLifeClass(Page page){
+        Page<LifeClass> lifeClassPage=lifeClassService.selectPage(page,new EntityWrapper<LifeClass>());
+        return new Result().success(lifeClassPage);
     }
 
 }

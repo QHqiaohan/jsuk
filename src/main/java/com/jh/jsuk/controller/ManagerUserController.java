@@ -327,7 +327,6 @@ public class ManagerUserController {
     public Result getManagerUserList(Page page,String username){
         Page managerUserPage=managerUserService.selectPage(page,
             new EntityWrapper<ManagerUser>()
-                .eq(ManagerUser.CAN_USE,1)
                 .eq(ManagerUser.IS_DEL,0)
                 .like(username!=null,ManagerUser.NAME,username, SqlLike.DEFAULT)
         );
@@ -344,6 +343,22 @@ public class ManagerUserController {
         managerUser.setIsDel(0);
         managerUser.setCreateTime(new Date());
         managerUser.setUpdateTime(new Date());
+
+        /**
+         * 判断注册手机号是否存在
+         */
+        String phone=managerUser.getPhone();
+        if(phone!=null && !"".equals(phone)) {
+            List<ManagerUser> list = managerUserService.selectList(new EntityWrapper<ManagerUser>()
+                .eq(ManagerUser.IS_DEL, 0)
+            );
+            for (ManagerUser user : list) {
+                if (phone.equals(user.getPhone())) {
+                    return new Result().erro("该手机号已经注册");
+                }
+            }
+        }
+
         //获取默认头像
         Dictionary dictionaryImg = dictionaryService.selectOne(new EntityWrapper<Dictionary>().
             eq("code", "user_default_img"));

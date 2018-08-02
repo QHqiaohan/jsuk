@@ -126,6 +126,16 @@ public class Activity extends Model<Activity> {
     @ApiModelProperty(value = "交易区域ID", name = "transactionAreaId")
     private Integer transactionAreaId;
 
+    //0:普通活动，1：共享婚车活动
+    private Integer activityType;
+
+    public Integer getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(Integer activityType) {
+        this.activityType = activityType;
+    }
 
     public Integer getId() {
         return id;
@@ -336,6 +346,8 @@ public class Activity extends Model<Activity> {
     public static final String STATUS = "status";
 
     public static final String TRANSACTION_AREA_ID = "transaction_area_id";
+
+    public static final String ACTIVITY_TYPE = "activity_type";
 
     @Override
     protected Serializable pkVal() {
