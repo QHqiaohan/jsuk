@@ -11,6 +11,7 @@
     <result column="order_id" property="orderId"/>
     <result column="shop_id" property="shopId"/>
     <result column="refund_reason" property="refundReason"/>
+    <result column="shop_comment" property="shopComment"/>
     <result column="type" property="type"/>
     <result column="status" property="status"/>
     <result column="content" property="content"/>
@@ -25,7 +26,21 @@
 
   <!-- 通用查询结果列 -->
   <sql id="Base_Column_List">
-    id, service_code, user_name, user_phone, order_id, shop_id, refund_reason, `type`, status, content, image, price, goods_id, size_id, address_id, create_time, complete_time
+    id, service_code, user_name, user_phone, order_id, shop_id, refund_reason, shop_comment,
+    `type`, status, content, image, price, goods_id, size_id, address_id, create_time, complete_time
   </sql>
+
+  <resultMap id="vo" type="com.jh.jsuk.entity.vo.UserOrderServiceVo">
+    <association property="orderInfo" column="order_id"
+                 select="com.jh.jsuk.dao.UserOrderDao.selectById"/>
+    <association property="sizeInfo" column="size_id"
+                 select="com.jh.jsuk.dao.ShopGoodsSizeDao.findVoById"/>
+  </resultMap>
+
+  <select id="getVo" resultMap="vo">
+    select
+    <include refid="Base_Column_List"/>
+    from js_user_order_service where id = #{id}
+  </select>
 
 </mapper>

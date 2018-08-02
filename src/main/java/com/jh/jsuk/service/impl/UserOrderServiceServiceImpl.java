@@ -3,6 +3,7 @@ package com.jh.jsuk.service.impl;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.UserOrderServiceDao;
 import com.jh.jsuk.entity.UserOrderService;
+import com.jh.jsuk.entity.vo.UserOrderServiceVo;
 import com.jh.jsuk.service.UserOrderServiceService;
 import org.springframework.stereotype.Service;
 
@@ -17,4 +18,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserOrderServiceServiceImpl extends ServiceImpl<UserOrderServiceDao, UserOrderService> implements UserOrderServiceService {
 
+    @Override
+    public UserOrderServiceVo get(Integer id) {
+        return baseMapper.getVo(id);
+    }
 }

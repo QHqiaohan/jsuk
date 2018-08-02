@@ -214,7 +214,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         }
         EntityWrapper wrapper = new EntityWrapper();
         if (StrUtil.isNotBlank(kw)) {
-            wrapper.eq(UserOrder.ORDER_NUM, kw);
+            wrapper.like(UserOrder.ORDER_NUM, kw);
         }
         if (StrUtil.isNotBlank(start) && StrUtil.isNotBlank(stop)) {
             wrapper.gt(UserOrder.CREAT_TIME, DateTime.of(start, "yyyy-MM-dd"));
@@ -223,10 +223,12 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (orderStatus != null) {
             wrapper.eq(UserOrder.STATUS, orderStatus.getKey());
         }
-        wrapper.ne(UserOrder.IS_USER_DEL, 1);
         if (shopId != null) {
+            wrapper.ne(UserOrder.IS_SHOP_DEL, 1);
             wrapper.eq(UserOrder.SHOP_ID, shopId);
         }
+        wrapper.where("1=1");
+        wrapper.orderBy(UserOrder.CREAT_TIME,false);
         List<UserOrderVo> list = baseMapper.findVoByPage(page, wrapper);
         return page.setRecords(list);
     }
