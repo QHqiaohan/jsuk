@@ -45,7 +45,7 @@ public class JwtFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException,
-            ServletException {
+        ServletException {
         //System.out.println("进入JWT_filter");
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
@@ -53,17 +53,17 @@ public class JwtFilter implements Filter {
         String servletPath = ((HttpServletRequest) servletRequest).getServletPath();
         String[] split = servletPath.split("\\.");
         if (split.length > 0 && httpServletRequest.getSession().getAttribute("adminUserName") != null
-                && httpServletRequest.getParameterMap().size() != 0) {
+            && httpServletRequest.getParameterMap().size() != 0) {
             if (!"js".equals(split[split.length - 1]) &&
-                    !"css".equals(split[split.length - 1]) &&
-                    !"ico".equals(split[split.length - 1]) &&
-                    !"html".equals(split[split.length - 1]) &&
-                    !"woff".equals(split[split.length - 1]) &&
-                    !"ttf".equals(split[split.length - 1]) &&
-                    !"png".equals(split[split.length - 1]) &&
-                    !"jpg".equals(split[split.length - 1]) &&
-                    !"img".equals(split[split.length - 1]) &&
-                    !"gif".equals(split[split.length - 1])) {
+                !"css".equals(split[split.length - 1]) &&
+                !"ico".equals(split[split.length - 1]) &&
+                !"html".equals(split[split.length - 1]) &&
+                !"woff".equals(split[split.length - 1]) &&
+                !"ttf".equals(split[split.length - 1]) &&
+                !"png".equals(split[split.length - 1]) &&
+                !"jpg".equals(split[split.length - 1]) &&
+                !"img".equals(split[split.length - 1]) &&
+                !"gif".equals(split[split.length - 1])) {
 
                 Log al = new Log();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -78,80 +78,80 @@ public class JwtFilter implements Filter {
             }
         }
         if (servletPath.indexOf("/login") != -1
-                || servletPath.indexOf("favicon") != -1
-                || servletPath.indexOf("swagger") != -1
-                || servletPath.indexOf("bindAccount") != -1
-                || servletPath.indexOf("editPasswordByCode") != -1
-                || servletPath.indexOf("agreement") != -1
-                || servletPath.indexOf("aliPayNotify") != -1
-                || servletPath.indexOf("wxPayNotify") != -1
-                || servletPath.indexOf("keepSubmit") != -1
-                || servletPath.indexOf("/sms/") != -1
-                || servletPath.indexOf("upload") != -1
-                || servletPath.indexOf(".js") != -1
-                || servletPath.indexOf(".css") != -1
-                || servletPath.indexOf(".woff") != -1
-                || servletPath.indexOf("/ui/") != -1
-                || servletPath.indexOf("shopExamine/submit") != -1
-                || servletPath.indexOf("provinces") != -1
-                || servletPath.indexOf("citys") != -1
-                || servletPath.indexOf("areas") != -1
-                || servletPath.indexOf("version") != -1
-                || servletPath.indexOf("images") != -1
-                || servletPath.indexOf("register") != -1
-                || servletPath.indexOf("test") != -1
-                || servletPath.indexOf("v2") != -1
-                || servletPath.indexOf("configuration") != -1
-                || servletPath.indexOf("ui") != -1
-                || servletPath.indexOf("/user/invitationRegister") != -1
-                || servletPath.indexOf("/shop/edit") != -1
-                //|| servletPath.indexOf("/distributionUser/edit") != -1
-                || servletPath.indexOf("/provinces/list") != -1
-                || servletPath.indexOf("/citys/list") != -1
-                || servletPath.indexOf("/areas/list") != -1
-                || servletPath.indexOf("uiGetInfo") != -1
-                || servletPath.indexOf("/dict/") != -1
-                || servletPath.indexOf("/sys/") != -1
+            || servletPath.indexOf("favicon") != -1
+            || servletPath.indexOf("swagger") != -1
+            || servletPath.indexOf("bindAccount") != -1
+            || servletPath.indexOf("editPasswordByCode") != -1
+            || servletPath.indexOf("agreement") != -1
+            || servletPath.indexOf("aliPayNotify") != -1
+            || servletPath.indexOf("wxPayNotify") != -1
+            || servletPath.indexOf("keepSubmit") != -1
+            || servletPath.indexOf("/sms/") != -1
+            || servletPath.indexOf("upload") != -1
+            || servletPath.indexOf(".js") != -1
+            || servletPath.indexOf(".css") != -1
+            || servletPath.indexOf(".woff") != -1
+            || servletPath.indexOf("/ui/") != -1
+            || servletPath.indexOf("shopExamine/submit") != -1
+            || servletPath.indexOf("provinces") != -1
+            || servletPath.indexOf("citys") != -1
+            || servletPath.indexOf("areas") != -1
+            || servletPath.indexOf("version") != -1
+            || servletPath.indexOf("images") != -1
+            || servletPath.indexOf("register") != -1
+            || servletPath.indexOf("test") != -1
+            || servletPath.indexOf("v2") != -1
+            || servletPath.indexOf("configuration") != -1
+            || servletPath.indexOf("ui") != -1
+            || servletPath.indexOf("/user/invitationRegister") != -1
+            || servletPath.indexOf("/shop/edit") != -1
+            //|| servletPath.indexOf("/distributionUser/edit") != -1
+            || servletPath.indexOf("/provinces/list") != -1
+            || servletPath.indexOf("/citys/list") != -1
+            || servletPath.indexOf("/areas/list") != -1
+            || servletPath.indexOf("uiGetInfo") != -1
+            || servletPath.indexOf("/dict/") != -1
+            || servletPath.indexOf("/sys/") != -1
 
-                ////////////////////////////////////////////////
-                // 以下是方便测试,可能会出现效验bug
-                ////////////////////////////////////////////////
-                // 获取首页相关信息-上部分
-                || servletPath.indexOf("/getAll") != -1
-                // 获取首页相关信息-下部分
-                || servletPath.indexOf("/getAllBelow") != -1
-                || servletPath.indexOf("/getNiceChoose") != -1
-                || servletPath.indexOf("/getMoreInfo") != -1
-                || servletPath.indexOf("/getVipShop") != -1
-                || servletPath.indexOf("/getIsRecommend") != -1
-                // 限时秒杀相关
-                || servletPath.indexOf("/getKillTime") != -1
-                || servletPath.indexOf("/findKillShopGoods") != -1
-                // 商品相关API
-                || servletPath.indexOf("/getShopGoodsByAttributeId") != -1
-                || servletPath.indexOf("/getShopGoodsBy") != -1
-                || servletPath.indexOf("/getShopGoodsByCategoryId") != -1
-                || servletPath.indexOf("/getShopGoodsOnCategoryBy") != -1
-                || servletPath.indexOf("/getShopGoodsById") != -1
-                || servletPath.indexOf("/getShopListByLike") != -1
-                || servletPath.indexOf("/getShopGoodsByServiceOrPrice") != -1
-                || servletPath.indexOf("/getShopList") != -1
-                // 模块相关API
-                || servletPath.indexOf("/getShopAndGoodsByModular") != -1
-                || servletPath.indexOf("/shopListByModularId") != -1
-                || servletPath.indexOf("/shopGoodsListByModularId") != -1
-                || servletPath.indexOf("/getModularList") != -1
-                // 快递跑腿相关API
-                || servletPath.indexOf("/expressRunBanner") != -1
-                // 商品类型-品牌相关操作
-                || servletPath.indexOf("/getBrandByCategoryId") != -1
-                || servletPath.indexOf("/getShopGoodsByBrandId") != -1
-                // 地址定位选择API
-                || servletPath.indexOf("/getOpenCityList") != -1
-                // 商户端/平台用户相关
-                || servletPath.indexOf("/resultCode") != -1
-                || servletPath.indexOf("/editPassword") != -1
-                || servletPath.indexOf("getQrCode") != -1
+            ////////////////////////////////////////////////
+            // 以下是方便测试,可能会出现效验bug
+            ////////////////////////////////////////////////
+            // 获取首页相关信息-上部分
+            || servletPath.indexOf("/getAll") != -1
+            // 获取首页相关信息-下部分
+            || servletPath.indexOf("/getAllBelow") != -1
+            || servletPath.indexOf("/getNiceChoose") != -1
+            || servletPath.indexOf("/getMoreInfo") != -1
+            || servletPath.indexOf("/getVipShop") != -1
+            || servletPath.indexOf("/getIsRecommend") != -1
+            // 限时秒杀相关
+            || servletPath.indexOf("/getKillTime") != -1
+            || servletPath.indexOf("/findKillShopGoods") != -1
+            // 商品相关API
+            || servletPath.indexOf("/getShopGoodsByAttributeId") != -1
+            || servletPath.indexOf("/getShopGoodsBy") != -1
+            || servletPath.indexOf("/getShopGoodsByCategoryId") != -1
+            || servletPath.indexOf("/getShopGoodsOnCategoryBy") != -1
+            || servletPath.indexOf("/getShopGoodsById") != -1
+            || servletPath.indexOf("/getShopListByLike") != -1
+            || servletPath.indexOf("/getShopGoodsByServiceOrPrice") != -1
+            || servletPath.indexOf("/getShopList") != -1
+            // 模块相关API
+            || servletPath.indexOf("/getShopAndGoodsByModular") != -1
+            || servletPath.indexOf("/shopListByModularId") != -1
+            || servletPath.indexOf("/shopGoodsListByModularId") != -1
+            || servletPath.indexOf("/getModularList") != -1
+            // 快递跑腿相关API
+            || servletPath.indexOf("/expressRunBanner") != -1
+            // 商品类型-品牌相关操作
+            || servletPath.indexOf("/getBrandByCategoryId") != -1
+            || servletPath.indexOf("/getShopGoodsByBrandId") != -1
+            // 地址定位选择API
+            || servletPath.indexOf("/getOpenCityList") != -1
+            // 商户端/平台用户相关
+            || servletPath.indexOf("/resultCode") != -1
+            || servletPath.indexOf("/editPassword") != -1
+            || servletPath.indexOf("getQrCode") != -1
             ////////////////////////////////////////////////
             //方便ios上架开放接口 TODO 上架后最好注掉
             //|| servletPath.indexOf("/banner") != -1
@@ -164,7 +164,7 @@ public class JwtFilter implements Filter {
             //|| servletPath.indexOf("/shopGoods") != -1
             //|| servletPath.indexOf("/wish") != -1
             ///////////////////////////////////////////////
-                )
+            )
 
 
         {
@@ -184,32 +184,29 @@ public class JwtFilter implements Filter {
                         ParentUser user = null;
                         ParentUserEx userEx = null;
                         if (!session.isLogin()) {
-                            switch (jwtParam.getLoginType()) {
-                                case 1:
-                                    ManagerUser managerUser = managerUserService.selectById(jwtParam.getUserId());
-                                    if (managerUser != null) {
-                                        userEx = managerUser.toParentUser();
-                                        Integer userType = managerUser.getUserType();
-                                        session.setUserType(userType != null && userType.equals(2) ? UserType.SHOP : UserType.ADMIN);
-                                    }
-                                    user = managerUser;
-                                    break;
-                                case 2:
-                                    DistributionUser user1 = distributionUserService.selectById(jwtParam.getUserId());
-                                    if (user1 != null) {
-                                        userEx = user1.toParentUser();
-                                    }
-                                    user = user1;
-                                    session.setUserType(UserType.DISTRIBUTION);
-                                    break;
-                                case 3:
-                                    User user2 = userService.selectById(jwtParam.getUserId());
-                                    if (user2 != null) {
-                                        userEx = user2.toParentUser();
-                                    }
-                                    user = user2;
-                                    session.setUserType(UserType.USER);
-                                    break;
+                            Integer loginType = jwtParam.getLoginType();
+                            if (UserType.ADMIN.getKey().equals(loginType) || UserType.SHOP.getKey().equals(loginType)) {
+                                ManagerUser managerUser = managerUserService.selectById(jwtParam.getUserId());
+                                if (managerUser != null) {
+                                    userEx = managerUser.toParentUser();
+                                    Integer userType = managerUser.getUserType();
+                                    session.setUserType(userType != null && userType.equals(2) ? UserType.SHOP : UserType.ADMIN);
+                                }
+                                user = managerUser;
+                            } else if (UserType.DISTRIBUTION.getKey().equals(loginType)) {
+                                DistributionUser user1 = distributionUserService.selectById(jwtParam.getUserId());
+                                if (user1 != null) {
+                                    userEx = user1.toParentUser();
+                                }
+                                user = user1;
+                                session.setUserType(UserType.DISTRIBUTION);
+                            } else if (UserType.USER.getKey().equals(loginType)) {
+                                User user2 = userService.selectById(jwtParam.getUserId());
+                                if (user2 != null) {
+                                    userEx = user2.toParentUser();
+                                }
+                                user = user2;
+                                session.setUserType(UserType.USER);
                             }
                             if (userEx != null) {
                                 session.fromParentUserEx(userEx);
@@ -226,7 +223,7 @@ public class JwtFilter implements Filter {
                         }
                         if (user != null) {
                             System.out.println(user.getLastLoginTime().getTime() + "===========" + Math.round((double) jwtParam.getLoginTime().getTime
-                                    () / 1000) * 1000);
+                                () / 1000) * 1000);
                             if (user.getLastLoginTime().getTime() == Math.round((double) jwtParam.getLoginTime().getTime() / 1000) * 1000) {
                                 System.out.println("认证成功");
                                 filterChain.doFilter(request, response);

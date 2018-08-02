@@ -17,8 +17,6 @@ public class RushBuyVo {
 
     private Date endTime;
 
-    private Integer goodsSizeId;
-
     private ShopRushBuyStatus status;
 
     public void checkStatus() {

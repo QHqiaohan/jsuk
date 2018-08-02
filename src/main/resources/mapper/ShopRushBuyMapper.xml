@@ -23,20 +23,14 @@
         <result column="kill_stock" property="killStock"/>
     </resultMap>
 
-    <select id="getShopRushBuyList" resultMap="ShopGoodsKillVo">
-        SELECT
-        sgs.sales_price,
-        sgs.original_price,
-        sgs.kill_price,
-        sgs.kill_stock,
-        sg.*
-        FROM
-        js_shop_rush_buy_activity a
-        LEFT JOIN js_shop_rush_buy srb ON a.rush_buy_id = srb.id
-        LEFT JOIN js_shop_goods_size sgs ON sgs.id = a.goods_size_id
-        LEFT JOIN js_shop_goods sg ON sgs.shop_goods_id = sg.id
-        where a.rush_buy_id = #{rushBuyId}
-        and sgs.kill_stock > 0
+    <select id="getShopRushBuyList" resultType="java.util.Map">
+      select k.goods_id id,k.price,g.goods_name goodsName,g.main_image mainImage,g.sale_amont saleAmount from(
+      select a.goods_id,GROUP_CONCAT(sz.kill_price) price from
+      (select goods_id from js_shop_rush_buy_activity a where a.rush_buy_id = #{rushBuyId} and not a.is_del and a.is_use) a
+      left join js_shop_goods_size sz on a.goods_id = sz.shop_goods_id
+      where sz.kill_stock > 0
+      group by a.goods_id
+      ) k left join js_shop_goods g on k.goods_id = g.id
     </select>
 
 </mapper>

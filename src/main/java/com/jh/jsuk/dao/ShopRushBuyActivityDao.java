@@ -19,7 +19,7 @@ import java.util.List;
  */
 public interface ShopRushBuyActivityDao extends BaseMapper<ShopRushBuyActivity> {
 
-    RushBuyVo findVoByGoodsSizeId(Integer goodsSizeId);
+    RushBuyVo findVoByGoodsId(Integer goodsId);
 
     List<ShopRushBuyActivityVO> page(Page page,@Param("shopId") Integer shopId);
 }

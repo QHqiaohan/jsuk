@@ -36,10 +36,6 @@ public class ShopRushBuyActivity extends Model<ShopRushBuyActivity> {
      * 配置id
      */
     private Integer rushBuyId;
-    /**
-     * 规格id
-     */
-    private Integer goodsSizeId;
 
     private Integer goodsId;
 
@@ -62,8 +58,6 @@ public class ShopRushBuyActivity extends Model<ShopRushBuyActivity> {
     public static final String ACTIVITY_NAME = "activity_name";
 
     public static final String RUSH_BUY_ID = "rush_buy_id";
-
-    public static final String GOODS_SIZE_ID = "goods_size_id";
 
     public static final String IS_DEL = "is_del";
 

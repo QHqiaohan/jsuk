@@ -7,7 +7,6 @@
     <id column="id" property="id"/>
     <result column="shop_id" property="shopId"/>
     <result column="rush_buy_id" property="rushBuyId"/>
-    <result column="goods_size_id" property="goodsSizeId"/>
     <result column="goods_id" property="goodsId"/>
     <result column="is_del" property="isDel"/>
     <result column="is_use" property="isUse"/>
@@ -16,16 +15,16 @@
 
   <!-- 通用查询结果列 -->
   <sql id="Base_Column_List">
-        id,shop_id, rush_buy_id, goods_id,goods_size_id, is_del,is_use, publish_time
+        id,shop_id, rush_buy_id, goods_id,is_del,is_use, publish_time
     </sql>
 
-  <select id="findVoByGoodsSizeId" resultType="com.jh.jsuk.entity.vo.RushBuyVo">
-        select start_time,end_time,#{goodsSizeId} goods_size_id from js_shop_rush_buy b where
-        b.id =  (SELECT rush_buy_id FROM `js_shop_rush_buy_activity` a
-        where a.is_use and not a.is_del and a.goods_size_id = #{goodsSizeId}
-        order by publish_time desc limit 1)
-        and b.is_use and not b.is_del
-        limit 1
+  <select id="findVoByGoodsId" resultType="com.jh.jsuk.entity.vo.RushBuyVo">
+    select start_time,end_time from
+    (select rush_buy_id from js_shop_rush_buy_activity where not is_del and is_use and goods_id = #{goodsId}) a
+    left join
+    (select id,start_time,end_time from js_shop_rush_buy where not is_del and is_use) t
+    on a.rush_buy_id = t.id
+    limit 1
   </select>
 
 

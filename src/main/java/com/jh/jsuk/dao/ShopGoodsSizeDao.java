@@ -24,7 +24,6 @@ public interface ShopGoodsSizeDao extends BaseMapper<ShopGoodsSize> {
 
     List<ShopGoodsSize> getGoodsSizeByGoodsId(Integer goodsId);
 
-    List<ShopGoodsSizeRushBuyVo> getGoodsSizeByGoodsId2(Integer goodsId);
 
     List<ShopGoodsSize> selectSizeByGoodsId(Integer goodsId);
 

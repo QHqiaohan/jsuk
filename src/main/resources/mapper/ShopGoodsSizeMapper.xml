@@ -75,14 +75,5 @@
       select * from js_shop_rush_buy where id =
       (select rush_buy_id from js_shop_rush_buy_activity a where not is_del and is_use and a.goods_size_id = #{goodsSizeId} limit 1)
   </select>
-  <select id="getGoodsSizeByGoodsId2" resultType="com.jh.jsuk.entity.vo.ShopGoodsSizeRushBuyVo">
-    SELECT
-    <include refid="Base_Column_List"/>
-    FROM
-    js_shop_goods_size
-    WHERE
-    shop_goods_id=#{goodsId}
-  </select>
-
 
 </mapper>
