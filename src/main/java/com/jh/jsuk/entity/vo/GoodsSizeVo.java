@@ -39,7 +39,7 @@ public class GoodsSizeVo extends ShopGoods {
         for (ShopGoodsSizeRushBuyVo rushBuyVo : shopGoodsSize) {
             Integer id = rushBuyVo.getId();
             if(sizeId.equals(id)){
-                rushBuyVo.getRushBuyInfo().add(vo);
+                rushBuyVo.addVo(vo);
             }
         }
 //        if (rushBuyInfo == null)
