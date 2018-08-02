@@ -11,6 +11,7 @@ import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
+import com.jh.jsuk.entity.vo.ShopGoodsSizeRushBuyVo;
 import com.jh.jsuk.entity.vo.ShopGoodsVo2;
 import com.jh.jsuk.envm.ShopGoodsStatus;
 import com.jh.jsuk.service.ShopGoodsService;
@@ -95,7 +96,7 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
                 vo.setShopName(shop.getShopName());
         }
         if (vo != null) {
-            List<ShopGoodsSize> sizes = vo.getShopGoodsSize();
+            List<ShopGoodsSizeRushBuyVo> sizes = vo.getShopGoodsSize();
             if (CollectionUtils.isNotEmpty(sizes)) {
                 for (ShopGoodsSize size : sizes) {
                     if (size != null)

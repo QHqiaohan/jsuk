@@ -24,6 +24,7 @@
         b.id =  (SELECT rush_buy_id FROM `js_shop_rush_buy_activity` a
         where a.is_use and not a.is_del and a.goods_size_id = #{goodsSizeId}
         order by publish_time desc limit 1)
+        and b.is_use and not b.is_del
         limit 1
   </select>
 
