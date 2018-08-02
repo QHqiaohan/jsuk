@@ -92,6 +92,11 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
     }
 
     @Override
+    public Page listOrderByDistributionId(Page page, Integer distributionId) {
+        return page.setRecords(baseMapper.listOrderByDistributionId(page,distributionId));
+    }
+
+    @Override
     public ExpressVo2 detail(Integer expressId) {
         EntityWrapper wrapper = new EntityWrapper();
         wrapper.eq(Express.ID, expressId);

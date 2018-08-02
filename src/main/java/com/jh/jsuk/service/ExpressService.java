@@ -28,6 +28,8 @@ public interface ExpressService extends IService<Express> {
 
     int statusCount(ExpressStatus cancel, Integer shopId, UserType userType, Integer userId);
 
+    Page listOrderByDistributionId(Page page,Integer distributionId);
+
     ExpressVo2 detail(Integer expressId);
 
     /**
