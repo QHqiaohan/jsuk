@@ -2,6 +2,7 @@ package com.jh.jsuk.controller;
 
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.ShopRushBuyActivity;
 import com.jh.jsuk.service.ShopRushBuyActivityService;
 import com.jh.jsuk.utils.R;
@@ -23,9 +24,16 @@ public class ShopRushBuyActivityController {
     @Autowired
     ShopRushBuyActivityService shopRushBuyActivityService;
 
+    @Autowired
+    Session session;
+
     @GetMapping
     public R page(Page page){
-        return R.succ(shopRushBuyActivityService.page(page));
+        Integer shopId = null;
+        if(session.isShop()){
+            shopId = session.getShopId();
+        }
+        return R.succ(shopRushBuyActivityService.page(page,shopId));
     }
 
     @PutMapping

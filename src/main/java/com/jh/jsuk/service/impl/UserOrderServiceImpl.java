@@ -89,6 +89,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (orderStatus != null) {
             wrapper.eq(UserOrder.STATUS, orderStatus.getKey());
         }
+        if(shopId != null){
+            wrapper.eq(UserOrder.SHOP_ID ,shopId);
+        }
 //        wrapper.ne(UserOrder.IS_USER_DEL, 1);
         return selectCount(wrapper);
     }
@@ -146,20 +149,20 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (null == status) {
             if (goodsName != null) {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
-                    .like(UserOrder.GOODS_NAME, goodsName).orderBy(true, UserOrder.CREAT_TIME,false)
+                    .like(UserOrder.GOODS_NAME, goodsName).orderBy(true, UserOrder.CREAT_TIME, false)
                     .where("is_user_del=0 and is_shop_del=0"));
             } else {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
-                    .orderBy(true, UserOrder.CREAT_TIME,false).where("is_user_del=0 and is_shop_del=0"));
+                    .orderBy(true, UserOrder.CREAT_TIME, false).where("is_user_del=0 and is_shop_del=0"));
             }
         } else {
             if (goodsName != null) {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
                     .eq(UserOrder.STATUS, status).like(UserOrder.GOODS_NAME, goodsName)
-                    .orderBy(true, UserOrder.CREAT_TIME,false).where("is_user_del=0 and is_shop_del=0"));
+                    .orderBy(true, UserOrder.CREAT_TIME, false).where("is_user_del=0 and is_shop_del=0"));
             } else {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
-                    .eq(UserOrder.STATUS, status).orderBy(true, UserOrder.CREAT_TIME,false).where("is_user_del=0 and is_shop_del=0"));
+                    .eq(UserOrder.STATUS, status).orderBy(true, UserOrder.CREAT_TIME, false).where("is_user_del=0 and is_shop_del=0"));
             }
 
         }
@@ -200,7 +203,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public Page listPage(Page page, List<String> date, String kw, OrderStatus orderStatus) {
+    public Page listPage(Page page, List<String> date, String kw, OrderStatus orderStatus, Integer shopId) {
         String start = null, stop = null;
         if (date != null && !date.isEmpty()) {
             start = date.get(0);
@@ -211,7 +214,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         }
         EntityWrapper wrapper = new EntityWrapper();
         if (StrUtil.isNotBlank(kw)) {
-            wrapper.eq(UserOrder.ORDER_NUM, kw);
+            wrapper.like(UserOrder.ORDER_NUM, kw);
         }
         if (StrUtil.isNotBlank(start) && StrUtil.isNotBlank(stop)) {
             wrapper.gt(UserOrder.CREAT_TIME, DateTime.of(start, "yyyy-MM-dd"));
@@ -220,7 +223,12 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (orderStatus != null) {
             wrapper.eq(UserOrder.STATUS, orderStatus.getKey());
         }
-        wrapper.ne(UserOrder.IS_USER_DEL, 1);
+        if (shopId != null) {
+            wrapper.ne(UserOrder.IS_SHOP_DEL, 1);
+            wrapper.eq(UserOrder.SHOP_ID, shopId);
+        }
+        wrapper.where("1=1");
+        wrapper.orderBy(UserOrder.CREAT_TIME,false);
         List<UserOrderVo> list = baseMapper.findVoByPage(page, wrapper);
         return page.setRecords(list);
     }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.DistributionUser;
+import com.jh.jsuk.entity.vo.DistributionVo;
 import com.jh.jsuk.entity.vo.PlatformDistributionUserVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
@@ -21,12 +22,19 @@ import java.util.List;
  */
 public interface DistributionUserDao extends BaseMapper<DistributionUser> {
 
-    Integer updateAccount(@Param("amount") BigDecimal amount,@Param("userId") Integer userId);
+    Integer updateAccount(@Param("amount") BigDecimal amount, @Param("userId") Integer userId);
 
     List<PlatformDistributionUserVo> getDistributionUserList(RowBounds rowBounds, @Param("ew") Wrapper wrapper);
 
     List<PlatformDistributionUserVo> searchDistributionUserBy(RowBounds rowBounds,
-                                  @Param("ew") Wrapper wrapper,
-                                  @Param("account") String account,
-                                  @Param("name") String name);
+                                                              @Param("ew") Wrapper wrapper,
+                                                              @Param("account") String account,
+                                                              @Param("name") String name);
+
+    List<DistributionVo> list(Page page, @Param("account") String account, @Param("name") String name);
+
+    /**
+     * 获取骑手订单数量
+     */
+    Integer getOrderAmount(Integer id);
 }

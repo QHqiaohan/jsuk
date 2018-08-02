@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.ShopRushBuy;
+import com.jh.jsuk.envm.ShopRushBuyStatus;
 import com.jh.jsuk.service.ShopGoodsService;
 import com.jh.jsuk.service.ShopRushBuyService;
+import com.jh.jsuk.utils.Date2;
 import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
@@ -17,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 //import com.jh.jsuk.service.ShopRushBuySizeService;
 
@@ -42,68 +44,94 @@ public class ShopRushBuyController {
 //    private ShopRushBuySizeService shopRushBuySizeService;
 
     @GetMapping("/page")
-    public R listPage(Page page){
+    public R listPage(Page page) {
         Wrapper<ShopRushBuy> wrapper = new EntityWrapper<>();
-        wrapper.ne(ShopRushBuy.IS_DEL,1);
+        wrapper.ne(ShopRushBuy.IS_DEL, 1);
         return R.succ(shopRushBuyService.selectPage(page, wrapper));
     }
 
     @GetMapping("/list")
-    public R list(){
+    public R list() {
         Wrapper<ShopRushBuy> wrapper = new EntityWrapper<>();
-        wrapper.ne(ShopRushBuy.IS_DEL,1)
-                .eq(ShopRushBuy.IS_USE,1);
+        wrapper.ne(ShopRushBuy.IS_DEL, 1)
+            .eq(ShopRushBuy.IS_USE, 1);
         return R.succ(shopRushBuyService.selectList(wrapper));
     }
 
     @PostMapping("/update")
-    public R update(ShopRushBuy rushBuy){
+    public R update(ShopRushBuy rushBuy) {
         rushBuy.updateById();
         return R.succ();
     }
 
     @PutMapping
-    public R add(ShopRushBuy rushBuy){
+    public R add(ShopRushBuy rushBuy) {
         rushBuy.insert();
         return R.succ();
     }
 
     @PatchMapping
-    public R edit(ShopRushBuy rushBuy){
+    public R edit(ShopRushBuy rushBuy) {
         rushBuy.updateById();
         return R.succ();
     }
 
     @DeleteMapping
-    public R delete(ShopRushBuy shopRushBuy){
+    public R delete(ShopRushBuy shopRushBuy) {
         shopRushBuy.setIsDel(1);
         shopRushBuy.updateById();
         return R.succ();
     }
 
     @GetMapping("/get")
-    public R get(Integer id){
+    public R get(Integer id) {
         return R.succ(shopRushBuyService.selectById(id));
     }
 
     @ApiOperation("秒杀时间列表")
     @RequestMapping("/getKillTime")
     public Result getKillTime() {
-        List<ShopRushBuy> shopRushBuyList = shopRushBuyService.selectList(new EntityWrapper<ShopRushBuy>()
-                .eq(ShopRushBuy.IS_USE,1)
-                .orderBy(ShopRushBuy.START_TIME));
-        if (CollectionUtils.isEmpty(shopRushBuyList)) {
+        List<ShopRushBuy> list = shopRushBuyService.selectList(new EntityWrapper<ShopRushBuy>()
+            .eq(ShopRushBuy.IS_USE, 1)
+            .ne(ShopRushBuy.IS_DEL, 1)
+            .orderBy(ShopRushBuy.START_TIME));
+        Date2 date2 = new Date2();
+        date2.setYear2(1970);
+        date2.setMonth2(0);
+        date2.setDay2(1);
+        List<Map<String, Object>> times = new ArrayList<>();
+        for (ShopRushBuy shopRushBuy : list) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", shopRushBuy.getId());
+            Date startTime = shopRushBuy.getStartTime();
+            map.put("startTime", startTime);
+            Date endTime = shopRushBuy.getEndTime();
+            map.put("endTime", endTime);
+            Date2 end = new Date2(endTime);
+            Date2 start = new Date2(startTime);
+            if (date2.isBefore(start)) {
+                map.put("status", ShopRushBuyStatus.NOT_STARTED);
+            } else if (date2.isAfter(start) && date2.isBefore(end)) {
+                map.put("status", ShopRushBuyStatus.ON_GOING);
+            } else if (date2.isAfter(end)) {
+                map.put("status", ShopRushBuyStatus.OVER);
+            } else {
+                map.put("status", null);
+            }
+            times.add(map);
+        }
+        if (CollectionUtils.isEmpty(list)) {
             return new Result().success("秒杀配置还未设置", null);
         } else {
-            return new Result().success(shopRushBuyList);
+            return new Result().success(times);
         }
     }
 
     @ApiOperation(value = "根据时间查询秒杀商品")//, notes = "status:0=未开始,1=进行中,2=已结束")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "id", value = "秒杀时间ID", required = true, paramType = "query", dataType = "integer")
+        @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "id", value = "秒杀时间ID", required = true, paramType = "query", dataType = "integer")
     })
     @RequestMapping("/findKillShopGoods")
     public Result findKillShopGoods(Page page, Integer id) {
@@ -115,7 +143,7 @@ public class ShopRushBuyController {
         if (rushBuyTime == null) {
             return r.erro("秒杀配置还未设置");
         }
-        page = shopRushBuyService.getShopRushBuyList(page,id);
+        page = shopRushBuyService.getShopRushBuyList(page, id);
         return r.success(page);
     }
 

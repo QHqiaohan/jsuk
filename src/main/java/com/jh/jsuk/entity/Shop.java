@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.jh.jsuk.entity.vo.ShopTelPhoneVo;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
@@ -127,6 +128,33 @@ public class Shop extends Model<Shop> {
      */
     private String discountInfo;
 
+    public ShopTelPhoneVo toTelPhoneVo(){
+        ShopTelPhoneVo vo = new ShopTelPhoneVo();
+        vo.setId(id);
+        vo.setModularId(modularId);
+        vo.setHeadImg(headImg);
+        vo.setShopName(shopName);
+        vo.setAddress(address);
+        vo.setLatitude(latitude);
+        vo.setLongitude(longitude);
+        vo.setShopImg(shopImg);
+        vo.setAnnouncement(announcement);
+        vo.setStartTime(startTime);
+        vo.setEndTime(endTime);
+        vo.setAccountPoint(accountPoint);
+        vo.setTotalVolume(totalVolume);
+        vo.setDeliveryFee(deliveryFee);
+        vo.setStarNum(starNum);
+        vo.setProvinceId(provinceId);
+        vo.setCityId(cityId);
+        vo.setAreaId(areaId);
+        vo.setPublishTime(publishTime);
+        vo.setCanUse(canUse);
+        vo.setIsRecommend(isRecommend);
+        vo.setContent(content);
+        vo.setDiscountInfo(discountInfo);
+        return vo;
+    }
 
     public Integer getId() {
         return id;

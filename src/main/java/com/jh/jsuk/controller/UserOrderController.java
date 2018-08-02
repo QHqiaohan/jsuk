@@ -94,7 +94,21 @@ public class UserOrderController {
         if (status != null && !"all".equals(status)) {
             orderStatus = EnumUitl.toEnum(OrderStatus.class, status, "getShortKey");
         }
-        return R.succ(userOrderService.listPage(page, date == null ? null : Arrays.asList(date), kw, orderStatus));
+        Integer shopId = null;
+        if(session.isShop()){
+            shopId = session.getShopId();
+        }
+        return R.succ(userOrderService.listPage(page, date == null ? null : Arrays.asList(date), kw, orderStatus,shopId));
+    }
+
+    @GetMapping("/get")
+    public R orderDetail(Integer id){
+        return R.succ(userOrderService.selectById(id));
+    }
+
+    @PatchMapping
+    public R orderDetail(UserOrder userOrder){
+        return R.succ(userOrderService.updateById(userOrder));
     }
 
     @ApiOperation(value = "用户端&商家端-订单详情/再次购买")
@@ -126,8 +140,12 @@ public class UserOrderController {
         Map<String, Object> map = new HashMap<>();
         OrderStatus[] statuses = OrderStatus.values();
         int all = 0;
+        Integer shopId = null;
+        if(session.isShop()){
+            shopId = session.getShopId();
+        }
         for (OrderStatus status : statuses) {
-            int cnt = userOrderService.statusCount(status, session.getShopId());
+            int cnt = userOrderService.statusCount(status, shopId);
             all += cnt;
             map.put(status.getShortKey(), cnt);
         }

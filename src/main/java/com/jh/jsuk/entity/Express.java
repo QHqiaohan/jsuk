@@ -96,6 +96,10 @@ public class Express extends Model<Express> {
      * 完成时间
      */
     private Date endTime;
+    /**
+     * 订单编号
+     */
+    private String orderNo;
 
     @JsonIgnore
     public boolean isCompleted() {
@@ -271,21 +275,29 @@ public class Express extends Model<Express> {
     @Override
     public String toString() {
         return "Express{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", senderAddress=" + senderAddress +
-                ", getAddress=" + getAddress +
-                ", goodsType=" + goodsType +
-                ", weight=" + weight +
-                ", realWeight=" + realWeight +
-                ", isDel=" + isDel +
-                ", status=" + status +
-                ", type=" + type +
-                ", price=" + price +
-                ", notes=" + notes +
-                ", requirementTime=" + requirementTime +
-                ", publishTime=" + publishTime +
-                ", endTime=" + endTime +
-                "}";
+            "id=" + id +
+            ", userId=" + userId +
+            ", senderAddress=" + senderAddress +
+            ", getAddress=" + getAddress +
+            ", goodsType=" + goodsType +
+            ", weight=" + weight +
+            ", realWeight=" + realWeight +
+            ", isDel=" + isDel +
+            ", status=" + status +
+            ", type=" + type +
+            ", price=" + price +
+            ", notes=" + notes +
+            ", requirementTime=" + requirementTime +
+            ", publishTime=" + publishTime +
+            ", endTime=" + endTime +
+            "}";
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
 }

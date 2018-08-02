@@ -2,54 +2,83 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jh.jsuk.dao.DistributionUserDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.DistributionUser">
-        <id column="id" property="id" />
-        <result column="phone" property="phone" />
-        <result column="password" property="password" />
-        <result column="name" property="name" />
-        <result column="id_card_no" property="idCardNo" />
-        <result column="card_front" property="cardFront" />
-        <result column="card_back" property="cardBack" />
-        <result column="last_login_time" property="lastLoginTime" />
-        <result column="login_ip" property="loginIp" />
-        <result column="longitude" property="longitude" />
-        <result column="latitude" property="latitude" />
-        <result column="head_img" property="headImg" />
-        <result column="gender" property="gender" />
-        <result column="age" property="age" />
-        <result column="star_num" property="starNum" />
-        <result column="account" property="account" />
-        <result column="publish_time" property="publishTime" />
-        <result column="can_use" property="canUse" />
-        <result column="status" property="status" />
-        <result column="desc" property="desc" />
-        <result column="is_online" property="isOnline" />
-    </resultMap>
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.DistributionUser">
+    <id column="id" property="id"/>
+    <result column="phone" property="phone"/>
+    <result column="password" property="password"/>
+    <result column="name" property="name"/>
+    <result column="id_card_no" property="idCardNo"/>
+    <result column="card_front" property="cardFront"/>
+    <result column="card_back" property="cardBack"/>
+    <result column="last_login_time" property="lastLoginTime"/>
+    <result column="login_ip" property="loginIp"/>
+    <result column="longitude" property="longitude"/>
+    <result column="latitude" property="latitude"/>
+    <result column="head_img" property="headImg"/>
+    <result column="gender" property="gender"/>
+    <result column="age" property="age"/>
+    <result column="star_num" property="starNum"/>
+    <result column="account" property="account"/>
+    <result column="publish_time" property="publishTime"/>
+    <result column="can_use" property="canUse"/>
+    <result column="status" property="status"/>
+    <result column="desc" property="desc"/>
+    <result column="is_online" property="isOnline"/>
+  </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, phone, password, name, id_card_no, card_front, card_back, last_login_time, login_ip, longitude, latitude, head_img, gender, age,
-        star_num, account, publish_time, can_use, status, desc,is_online
-    </sql>
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+    id, phone, password, name, id_card_no, card_front, card_back, last_login_time, login_ip, longitude, latitude, head_img, gender, age,
+    star_num, account, publish_time, can_use, status, desc, is_online
+  </sql>
 
-    <update id="updateAccount">
-      update js_distribution_user u set account = ifnull(account,0) + #{amount} where u.id = #{userId}
-    </update>
+  <resultMap id="DistributionVo" type="com.jh.jsuk.entity.vo.DistributionVo" extends="BaseResultMap">
+    <result column="income" property="income"/>
+    <association property="orderAmount" column="id" select="com.jh.jsuk.dao.DistributionUserDao.getOrderAmount"/>
+  </resultMap>
+  <select id="list" resultMap="DistributionVo">
+    select
+    du.*,
+    sum(e.price) as income
+    from js_distribution_user du
+    left join js_express e on du.id = e.distribution_user_id
+    where du.can_use = 1
+    <if test="account!=null">
+      and ( du.id like concat('%',#{account},'%') or du.phone like concat('%',#{account},'%'))
+    </if>
+    <if test="name!=null">
+      and du.name like concat('%',#{name},'%')
+    </if>
+    group by du.id
+  </select>
+  <!--<resultMap id="orderAmount" type="java.lang.Integer">
+    <result column="order_amount" property=""
+  </resultMap>-->
+  <select id="getOrderAmount" resultType="java.lang.Integer">
+    select count(*) as order_amount
+    from js_express
+    where distribution_user_id = #{id}
+  </select>
+  <update id="updateAccount">
+    update js_distribution_user u
+    set account = ifnull(account, 0) + #{amount}
+    where u.id = #{userId}
+  </update>
 
-  <resultMap id="PlatformDistributionUserVo" type="com.jh.jsuk.entity.vo.PlatformDistributionUserVo" extends="BaseResultMap">
+  <resultMap id="PlatformDistributionUserVo" type="com.jh.jsuk.entity.vo.PlatformDistributionUserVo"
+             extends="BaseResultMap">
     <collection property="distributionDetailList" column="id"
                 select="com.jh.jsuk.dao.DistributionDetailDao.selectDistributionDetailListByDistributionUserId">
     </collection>
   </resultMap>
 
   <select id="getDistributionUserList" resultMap="PlatformDistributionUserVo">
-    select
-    *
+    select *
     from
-    js_distribution_user
+      js_distribution_user
     where
-    can_use=1
+      can_use = 1
   </select>
 
   <select id="searchDistributionUserBy" resultMap="PlatformDistributionUserVo">
@@ -66,6 +95,5 @@
       and name like concat('%',#{name},'%')
     </if>
   </select>
-
 
 </mapper>

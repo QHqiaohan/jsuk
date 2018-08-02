@@ -37,6 +37,9 @@
   <select id="page" resultMap="vo">
     select <include refid="Base_Column_List"/> from js_shop_rush_buy_activity
     where not is_del
+    <if test="shopId != null">
+      and shop_id = #{shopId}
+    </if>
   </select>
 
 
