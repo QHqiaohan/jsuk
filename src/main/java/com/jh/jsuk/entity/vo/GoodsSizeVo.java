@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,29 +26,15 @@ public class GoodsSizeVo extends ShopGoods {
 
     private List<ShopGoodsSize> shopGoodsSize;
 
-    private List<RushBuyVo> rushBuyInfo;
+    private RushBuyVo rushBuyInfo;
 
     private GoodsCategory categoryInfo;
 
     public void addRushBuyInfo(RushBuyVo vo) {
-        if (rushBuyInfo == null)
-            rushBuyInfo = new ArrayList<>();
-        rushBuyInfo.add(vo);
+        if(vo == null)
+            return;
+        vo.checkStatus();
+        rushBuyInfo = vo;
     }
 
-//    private List<ShopRushBuySizeVo> rushBuyInfo;
-//
-//    public void addRushBuyInfo(ShopRushBuySizeVo shopRushBuySizeVo){
-//        if (rushBuyInfo == null) {
-//            rushBuyInfo = new ArrayList<>();
-//        }
-//        rushBuyInfo.add(shopRushBuySizeVo);
-//    }
-//    public List<ShopGoodsSize> getShopGoodsSize() {
-//        return shopGoodsSize;
-//   }
-//
-//    public void setShopGoodsSize(List<ShopGoodsSize> shopGoodsSize) {
-//       this.shopGoodsSize = shopGoodsSize;
-//   }
 }

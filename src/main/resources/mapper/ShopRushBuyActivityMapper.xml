@@ -7,7 +7,6 @@
     <id column="id" property="id"/>
     <result column="shop_id" property="shopId"/>
     <result column="rush_buy_id" property="rushBuyId"/>
-    <result column="goods_size_id" property="goodsSizeId"/>
     <result column="goods_id" property="goodsId"/>
     <result column="is_del" property="isDel"/>
     <result column="is_use" property="isUse"/>
@@ -16,20 +15,21 @@
 
   <!-- 通用查询结果列 -->
   <sql id="Base_Column_List">
-        id,shop_id, rush_buy_id, goods_id,goods_size_id, is_del,is_use, publish_time
+        id,shop_id, rush_buy_id, goods_id,is_del,is_use, publish_time
     </sql>
 
-  <select id="findVoByGoodsSizeId" resultType="com.jh.jsuk.entity.vo.RushBuyVo">
-        select start_time,end_time,#{goodsSizeId} goods_size_id from js_shop_rush_buy b where
-        b.id =  (SELECT rush_buy_id FROM `js_shop_rush_buy_activity` a
-        where a.is_use and not a.is_del and a.goods_size_id = #{goodsSizeId}
-        order by publish_time desc limit 1)
-        limit 1
+  <select id="findVoByGoodsId" resultType="com.jh.jsuk.entity.vo.RushBuyVo">
+    select start_time,end_time from
+    (select rush_buy_id from js_shop_rush_buy_activity where not is_del and is_use and goods_id = #{goodsId}) a
+    left join
+    (select id,start_time,end_time from js_shop_rush_buy where not is_del and is_use) t
+    on a.rush_buy_id = t.id
+    limit 1
   </select>
 
 
   <resultMap id="vo" type="com.jh.jsuk.entity.vo.rushbuy.ShopRushBuyActivityVO" extends="BaseResultMap">
-    <association property="good" column="goods_size_id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.shortVo"/>
+    <association property="good" column="goods_id" select="com.jh.jsuk.dao.ShopGoodsDao.shortVo"/>
     <association property="time" column="rush_buy_id" select="com.jh.jsuk.dao.ShopRushBuyDao.shortVo"/>
     <association property="shop" column="shop_id" select="com.jh.jsuk.dao.ShopDao.shortVo"/>
   </resultMap>
@@ -40,6 +40,18 @@
     <if test="shopId != null">
       and shop_id = #{shopId}
     </if>
+  </select>
+
+  <resultMap id="sizeVo" type="com.jh.jsuk.entity.vo.rushbuy.RushBuyActivityVO" extends="BaseResultMap">
+    <collection property="sizes" column="goods_id"
+                select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizes"/>
+  </resultMap>
+
+  <select id="selectVo" resultMap="sizeVo">
+    select <include refid="Base_Column_List"/> from js_shop_rush_buy_activity
+    <where>
+      ${ew.sqlSegment}
+    </where>
   </select>
 
 

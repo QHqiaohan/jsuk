@@ -14,6 +14,7 @@ import com.jh.jsuk.entity.Dictionary;
 import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
 import com.jh.jsuk.entity.vo.PlatformUserVo;
+import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
@@ -21,7 +22,6 @@ import com.jh.jsuk.utils.*;
 import com.jh.jsuk.utils.wx.MD5Util;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -194,7 +194,7 @@ public class UserController {
             JwtParam jwtParam = new JwtParam();
             jwtParam.setUserId(us.getId());
             jwtParam.setLoginTime(loginTime);
-            jwtParam.setLoginType(3);
+            jwtParam.setLoginType(UserType.USER.getKey());
             String subject = JwtHelper.generalSubject(jwtParam);
             String jwt = jwtHelper.createJWT(Constant.JWT_ID, subject);
             AccessToken accessToken = new AccessToken();

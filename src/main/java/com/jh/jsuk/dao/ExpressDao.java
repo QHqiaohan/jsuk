@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.Express;
+import com.jh.jsuk.entity.vo.ExpressListVo;
 import com.jh.jsuk.entity.vo.ExpressVo;
 import com.jh.jsuk.entity.vo.ExpressVo2;
 import org.apache.ibatis.annotations.Param;
@@ -22,7 +23,7 @@ import java.util.List;
 public interface ExpressDao extends BaseMapper<Express> {
 
     List getExpressListBy(Page page, @Param("ew") Wrapper wrapper, @Param("status") Integer status, @Param("type") Integer type, @Param("userId")
-            Integer userId);
+        Integer userId);
 
     List<ExpressVo> getDeliverList(Page page, @Param("ew") Wrapper ew, @Param("status") Integer[] status,
                                    @Param("type") Integer type, @Param("userId") Integer userId);
@@ -31,6 +32,8 @@ public interface ExpressDao extends BaseMapper<Express> {
 
     ExpressVo2 detail(@Param("ew") EntityWrapper wrapper);
 
-    int deliverRobbingOrder(@Param("userId") Integer userId,@Param("expressId") Integer expressId,@Param("payed") Integer payed
-            ,@Param("waitDeliver") Integer waitDeliver);
+    int deliverRobbingOrder(@Param("userId") Integer userId, @Param("expressId") Integer expressId, @Param("payed") Integer payed
+        , @Param("waitDeliver") Integer waitDeliver);
+
+    List<ExpressListVo> listOrderByDistributionId(Page page, @Param("id") Integer id);
 }

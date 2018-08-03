@@ -9,8 +9,10 @@ import java.io.Serializable;
 @Setter
 @Getter
 @ToString
-public class SGoodsVo implements Serializable {
+public class SGoodsSizeVo implements Serializable {
 
     private String name;
+
+    private String sizeName;
 
 }
