@@ -57,7 +57,7 @@ public class ShopRushBuyActivityController {
 
     @GetMapping("/get")
     public R get(Integer id){
-        return R.succ(shopRushBuyActivityService.selectById(id));
+        return R.succ(shopRushBuyActivityService.selectVo(id));
     }
 
 }

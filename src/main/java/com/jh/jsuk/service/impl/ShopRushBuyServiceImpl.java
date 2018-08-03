@@ -1,6 +1,5 @@
 package com.jh.jsuk.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ShopRushBuyDao;
@@ -21,6 +20,6 @@ public class ShopRushBuyServiceImpl extends ServiceImpl<ShopRushBuyDao, ShopRush
 
     @Override
     public Page getShopRushBuyList(Page page, Integer rushBuyId) {
-        return page.setRecords(baseMapper.getShopRushBuyList(page, rushBuyId, new EntityWrapper()));
+        return page.setRecords(baseMapper.getShopRushBuyList(page, rushBuyId));
     }
 }

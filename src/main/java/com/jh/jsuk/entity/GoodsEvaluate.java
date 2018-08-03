@@ -39,6 +39,11 @@ public class GoodsEvaluate extends Model<GoodsEvaluate> {
      * 用户ID
      */
     private String userName;
+
+    /**
+     * 用户ID
+     */
+    private String userHeadImg;
     /**
      * 用户姓名
      */

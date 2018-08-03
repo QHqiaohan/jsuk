@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -36,21 +37,19 @@ public class ShopRushBuyActivity extends Model<ShopRushBuyActivity> {
      * 配置id
      */
     private Integer rushBuyId;
-    /**
-     * 规格id
-     */
-    private Integer goodsSizeId;
 
     private Integer goodsId;
 
     /**
      * 1=删除,0=未删除
      */
+    @JsonIgnore
     private Integer isDel;
 
     /**
      * 1=上架,0=下架
      */
+    @JsonIgnore
     private Integer isUse;
 
     private Date publishTime;
@@ -62,8 +61,6 @@ public class ShopRushBuyActivity extends Model<ShopRushBuyActivity> {
     public static final String ACTIVITY_NAME = "activity_name";
 
     public static final String RUSH_BUY_ID = "rush_buy_id";
-
-    public static final String GOODS_SIZE_ID = "goods_size_id";
 
     public static final String IS_DEL = "is_del";
 

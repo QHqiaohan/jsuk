@@ -1,9 +1,12 @@
 package com.jh.jsuk.service;
 
-import com.jh.jsuk.entity.ShopGoodsSize;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.ShopRushBuy;
+import com.jh.jsuk.entity.vo.rushbuy.RushBuySizeVo;
 import com.jh.jsuk.envm.OrderType;
+
+import java.util.List;
 
 /**
  * <p>
@@ -47,4 +50,6 @@ public interface ShopGoodsSizeService extends IService<ShopGoodsSize> {
      * @throws Exception
      */
     ShopRushBuy getCachedRushByTime(Integer goodsSizeId) throws Exception;
+
+    List<RushBuySizeVo> sizes(Integer goodsId);
 }

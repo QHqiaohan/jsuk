@@ -46,6 +46,11 @@ public class ShopGoodsSizeController {
         return R.succ(shopGoodsSizeService.selectList(wrapper));
     }
 
+    @GetMapping("/sizes")
+    public R goodsSizes(Integer goodsId){
+        return R.succ(shopGoodsSizeService.sizes(goodsId));
+    }
+
     @ApiOperation("用户端-根据sizeId获取信息")
     @ApiImplicitParams(value = {
         @ApiImplicitParam(name = "goodsSizeId", value = "goodsSizeId", required = true, paramType = "query", dataType = "string")

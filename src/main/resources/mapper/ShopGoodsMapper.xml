@@ -267,7 +267,7 @@
     <resultMap id="GoodsSizeVo" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
       <association property="categoryInfo" column="category_id" select="com.jh.jsuk.dao.GoodsCategoryDao.selectById"/>
       <collection property="shopGoodsSize" column="id"
-                     select="com.jh.jsuk.dao.ShopGoodsSizeDao.getGoodsSizeByGoodsId2"></collection>
+                     select="com.jh.jsuk.dao.ShopGoodsSizeDao.getGoodsSizeByGoodsId"></collection>
     </resultMap>
 
 
