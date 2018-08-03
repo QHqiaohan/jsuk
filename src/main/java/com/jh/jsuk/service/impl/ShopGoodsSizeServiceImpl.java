@@ -101,17 +101,17 @@ public class ShopGoodsSizeServiceImpl extends ServiceImpl<ShopGoodsSizeDao, Shop
     }
 
     @Override
-    public ShopRushBuy getCachedRushByTime(Integer goodsSizeId) throws Exception {
-        if (goodsSizeId == null)
+    public ShopRushBuy getCachedRushByTime(Integer goodsId) throws Exception {
+        if (goodsId == null)
             return null;
-        String key = RedisKeys.subKey(RedisKeys.SHOP_GOODS_SIZE_RUSH_BUY, String.valueOf(goodsSizeId));
-        String nullKey = RedisKeys.subKey(RedisKeys.SHOP_GOODS_SIZE_RUSH_BUY_NULL, String.valueOf(goodsSizeId));
+        String key = RedisKeys.subKey(RedisKeys.SHOP_GOODS_SIZE_RUSH_BUY, String.valueOf(goodsId));
+        String nullKey = RedisKeys.subKey(RedisKeys.SHOP_GOODS_SIZE_RUSH_BUY_NULL, String.valueOf(goodsId));
         if (redisUtils.hasKey(key)) {
             return redisUtils.get(key, ShopRushBuy.class);
         }
         if (redisUtils.hasKey(nullKey))
             return null;
-        ShopRushBuy shopRushBuy = baseMapper.selectRushBuyByGoodsSizeId(goodsSizeId);
+        ShopRushBuy shopRushBuy = baseMapper.selectRushBuyByGoodsSizeId(goodsId);
         if (shopRushBuy == null) {
             redisUtils.setStr(nullKey, "null", 10);
         } else {
