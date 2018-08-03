@@ -10,6 +10,7 @@ import com.jh.jsuk.entity.vo.rushbuy.RushBuySizeVo;
 import com.jh.jsuk.service.ShopGoodsSizeService;
 import com.jh.jsuk.service.ShopRushBuyActivityService;
 import com.jh.jsuk.utils.R;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ import java.util.List;
  * @author tj
  * @since 2018-07-17
  */
+@Slf4j
 @RestController
 @RequestMapping("/shopRushBuyActivity")
 public class ShopRushBuyActivityController {
@@ -59,9 +61,13 @@ public class ShopRushBuyActivityController {
 
     @PutMapping
     public R add(@RequestBody RushBuyActivityVO ent) {
-        shopRushBuyActivityService.insert(ent);
-        update(ent.getSizes());
-        return R.succ();
+        try{
+            shopRushBuyActivityService.insert(ent);
+            update(ent.getSizes());
+            return R.succ();
+        }catch (Exception e){
+            return R.err("商品重复");
+        }
     }
 
     @PatchMapping
