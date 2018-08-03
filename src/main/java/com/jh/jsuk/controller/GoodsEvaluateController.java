@@ -96,8 +96,10 @@ public class GoodsEvaluateController {
             }
             dto.setUserId(userId);
             User user = userService.selectById(userId);
-            if(user!= null)
-            dto.setUserName(user.getNickName());
+            if(user!= null){
+                dto.setUserHeadImg(user.getHeadImg());;
+                dto.setUserName(user.getNickName());
+            }
             goodsEvaluateService.insert(dto);
         }
         return new Result().success("添加成功");

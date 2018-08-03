@@ -29,7 +29,7 @@
 
 
   <resultMap id="vo" type="com.jh.jsuk.entity.vo.rushbuy.ShopRushBuyActivityVO" extends="BaseResultMap">
-    <association property="good" column="goods_size_id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.shortVo"/>
+    <association property="good" column="goods_id" select="com.jh.jsuk.dao.ShopGoodsDao.shortVo"/>
     <association property="time" column="rush_buy_id" select="com.jh.jsuk.dao.ShopRushBuyDao.shortVo"/>
     <association property="shop" column="shop_id" select="com.jh.jsuk.dao.ShopDao.shortVo"/>
   </resultMap>
@@ -40,6 +40,18 @@
     <if test="shopId != null">
       and shop_id = #{shopId}
     </if>
+  </select>
+
+  <resultMap id="sizeVo" type="com.jh.jsuk.entity.vo.rushbuy.RushBuyActivityVO" extends="BaseResultMap">
+    <collection property="sizes" column="goods_id"
+                select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizes"/>
+  </resultMap>
+
+  <select id="selectVo" resultMap="sizeVo">
+    select <include refid="Base_Column_List"/> from js_shop_rush_buy_activity
+    <where>
+      ${ew.sqlSegment}
+    </where>
   </select>
 
 

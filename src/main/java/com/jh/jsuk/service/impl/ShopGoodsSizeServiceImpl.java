@@ -8,11 +8,13 @@ import com.jh.jsuk.conf.RedisKeys;
 import com.jh.jsuk.dao.ShopGoodsSizeDao;
 import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.ShopRushBuy;
+import com.jh.jsuk.entity.vo.rushbuy.RushBuySizeVo;
 import com.jh.jsuk.envm.OrderType;
 import com.jh.jsuk.service.ShopGoodsSizeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -116,6 +118,11 @@ public class ShopGoodsSizeServiceImpl extends ServiceImpl<ShopGoodsSizeDao, Shop
             redisUtils.set(key, shopRushBuy, 10);
         }
         return shopRushBuy;
+    }
+
+    @Override
+    public List<RushBuySizeVo> sizes(Integer goodsId) {
+        return baseMapper.selectSizes(goodsId);
     }
 
 }

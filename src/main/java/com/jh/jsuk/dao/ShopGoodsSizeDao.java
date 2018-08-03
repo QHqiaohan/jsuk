@@ -3,9 +3,9 @@ package com.jh.jsuk.dao;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.ShopRushBuy;
-import com.jh.jsuk.entity.vo.ShopGoodsSizeRushBuyVo;
 import com.jh.jsuk.entity.vo.ShopGoodsSizeVo;
-import com.jh.jsuk.entity.vo.rushbuy.SGoodsVo;
+import com.jh.jsuk.entity.vo.rushbuy.RushBuySizeVo;
+import com.jh.jsuk.entity.vo.rushbuy.SGoodsSizeVo;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -35,7 +35,10 @@ public interface ShopGoodsSizeDao extends BaseMapper<ShopGoodsSize> {
             "select size_name,shop_goods_id goods_id from js_shop_goods_size where id = #{id}\n" +
             ") sz\n" +
             "left JOIN js_shop_goods g on sz.goods_id = g.id")
-    SGoodsVo shortVo(Integer id);
+    SGoodsSizeVo shortVo(Integer id);
+
+    @Select("select * from js_shop_goods_size where shop_goods_id = #{goodsId}")
+    List<RushBuySizeVo> selectSizes(Integer goodsId);
 
 
 }
