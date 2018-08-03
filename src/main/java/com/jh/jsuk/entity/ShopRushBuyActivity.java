@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -43,13 +42,11 @@ public class ShopRushBuyActivity extends Model<ShopRushBuyActivity> {
     /**
      * 1=删除,0=未删除
      */
-    @JsonIgnore
     private Integer isDel;
 
     /**
      * 1=上架,0=下架
      */
-    @JsonIgnore
     private Integer isUse;
 
     private Date publishTime;
