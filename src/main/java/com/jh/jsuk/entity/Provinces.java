@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+
 import java.io.Serializable;
 
 /**
@@ -35,7 +36,10 @@ public class Provinces extends Model<Provinces> {
      */
     private String abbr;
     private Integer zip;
-
+    /**
+     * 是否删除
+     */
+    private Integer isDel;
 
     public Integer getId() {
         return id;
@@ -97,6 +101,8 @@ public class Provinces extends Model<Provinces> {
 
     public static final String ZIP = "zip";
 
+    public static final String IS_DEL = "is_del";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -105,12 +111,20 @@ public class Provinces extends Model<Provinces> {
     @Override
     public String toString() {
         return "Provinces{" +
-        "id=" + id +
-        ", provinceName=" + provinceName +
-        ", alias=" + alias +
-        ", pinyin=" + pinyin +
-        ", abbr=" + abbr +
-        ", zip=" + zip +
-        "}";
+            "id=" + id +
+            ", provinceName=" + provinceName +
+            ", alias=" + alias +
+            ", pinyin=" + pinyin +
+            ", abbr=" + abbr +
+            ", zip=" + zip +
+            "}";
+    }
+
+    public Integer getIsDel() {
+        return isDel;
+    }
+
+    public void setIsDel(Integer isDel) {
+        this.isDel = isDel;
     }
 }
