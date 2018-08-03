@@ -45,11 +45,11 @@ public interface ShopGoodsSizeService extends IService<ShopGoodsSize> {
 
     /**
      * 获取商品的缓存了的秒杀时间
-     * @param goodsSizeId
+     * @param goodsId
      * @return
      * @throws Exception
      */
-    ShopRushBuy getCachedRushByTime(Integer goodsSizeId) throws Exception;
+    ShopRushBuy getCachedRushByTime(Integer goodsId) throws Exception;
 
     List<RushBuySizeVo> sizes(Integer goodsId);
 }

@@ -24,6 +24,7 @@ import com.jh.jsuk.envm.PayType;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
+import com.jh.jsuk.utils.Date2;
 import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.PingPPUtil;
 import com.jh.jsuk.utils.ShopJPushUtils;
@@ -289,15 +290,15 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     /**
      * 判断商品是不是秒杀过期
      *
-     * @param goodsSizeId
+     * @param goodsId
      * @param time
      * @return
      */
-    public boolean isRushBuyTimeOut(Integer goodsSizeId, Date time) {
-        if (goodsSizeId == null || time == null)
+    public boolean isRushBuyTimeOut(Integer goodsId, Date time) {
+        if (goodsId == null || time == null)
             return true;
         try {
-            ShopRushBuy tm = shopGoodsSizeService.getCachedRushByTime(goodsSizeId);
+            ShopRushBuy tm = shopGoodsSizeService.getCachedRushByTime(goodsId);
             if (tm == null) {
                 return true;
             }
@@ -306,7 +307,11 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             if (startTime == null || endTime == null) {
                 return true;
             }
-            DateTime date = DateTime.of(time);
+            Date2 date2 = new Date2(time).setTime2(time.getTime());
+            date2.setYear2(1970);
+            date2.setMonth2(0);
+            date2.setDay2(1);
+            DateTime date = new DateTime(date2.getTime());
             if (date.isIn(startTime, endTime)) {
                 return false;
             }
@@ -333,7 +338,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             int column;
             ShopSubmitOrderGoodsDto good = iterator.next();
             if (OrderType.RUSH_BUY.equals(orderType)) {
-                if (isRushBuyTimeOut(good.getGoodsSizeId(), createTime)) {
+                if (isRushBuyTimeOut(good.getGoodsId(), createTime)) {
                     isTimeOut = true;
                     continue;
                 }

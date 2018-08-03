@@ -29,7 +29,7 @@ public interface ShopGoodsSizeDao extends BaseMapper<ShopGoodsSize> {
 
     ShopGoodsSizeVo findVoById(Integer shopGoodsSizeId);
 
-    ShopRushBuy selectRushBuyByGoodsSizeId(Integer goodsSizeId);
+    ShopRushBuy selectRushBuyByGoodsSizeId(Integer goodsId);
 
     @Select("select size_name sizeName,goods_name name from (\n" +
             "select size_name,shop_goods_id goods_id from js_shop_goods_size where id = #{id}\n" +
