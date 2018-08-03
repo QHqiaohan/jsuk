@@ -111,9 +111,20 @@ public class User extends ParentUser<User> {
     /**
      * 上次登录时间
      */
+
     @ApiModelProperty(value = "上次登录时间", name = "lastLoginTime")
     private Date lastLoginTime;
 
+    //生日
+    private Date birthday;
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
 
     public ParentUserEx toParentUser() {
         ParentUserEx ex = new ParentUserEx();

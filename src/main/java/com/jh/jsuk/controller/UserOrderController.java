@@ -88,6 +88,15 @@ public class UserOrderController {
     @Autowired
     private CouponService couponService;
 
+
+    //平台-查看订单详情
+    @RequestMapping(value="/getUserOrderById",method={RequestMethod.POST,RequestMethod.GET})
+    public Result getUserOrderById(@RequestParam Integer detailOrderId){
+        System.out.println("订单id:"+detailOrderId);
+        UserOrder userOrder=userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID,detailOrderId));
+        return new Result().success(userOrder);
+    }
+
     @GetMapping("/page")
     public R userOrderPage(Page page, String[] date, String kw, String status) throws Exception {
         OrderStatus orderStatus = null;

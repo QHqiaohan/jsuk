@@ -78,8 +78,8 @@ public class ShoppingCartController {
             if(shoppingCart2==null){ //该商品规格在购物车中不存在
                 shoppingCart.insert();
             }else{    //该商品规格在购物车中存在
-                shoppingCart1.setNum(shoppingCart1.getNum() + 1);
-                shoppingCart1.updateById();
+                shoppingCart2.setNum(shoppingCart.getNum() + 1);
+                shoppingCart2.updateById();
             }
         }
         return new Result().success();
