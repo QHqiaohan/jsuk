@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.common.collect.Maps;
 import com.jh.jsuk.conf.Constant;
+import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
@@ -66,6 +67,9 @@ public class ManagerUserController {
     private ShopMonthStatisticsService shopMonthStatisticsService;
     @Autowired
     private DictionaryService dictionaryService;
+
+    @Autowired
+    Session session;
 
     @ApiOperation(value = "商家端-收款码")
     @RequestMapping(value = "getQrCode", method = {RequestMethod.POST, RequestMethod.GET})
@@ -279,25 +283,20 @@ public class ManagerUserController {
     @ApiOperation("后台管理系统-账户设置")
     @RequestMapping(value="/accountInfoSetting",method={RequestMethod.POST,RequestMethod.GET})
     @ApiImplicitParams(value={
-        @ApiImplicitParam(name="userId",value="用户id",dataType = "Integer"),
-        @ApiImplicitParam(name="account",value="账户",dataType = "String"),
         @ApiImplicitParam(name="headImg",value="头像",dataType = "String"),
-        @ApiImplicitParam(name="oldPassword",value="旧密码",dataType = "String"),
         @ApiImplicitParam(name="newPassword",value="新密码",dataType = "String")
     })
-    public Result accountInfoSetting(Integer userId,String account,String headImg,String oldPassword,String newPassword){
+    public Result accountInfoSetting(@ModelAttribute ManagerUser managerUser,String newPassword){
 
+        System.out.println(newPassword);
         ManagerUser manager_user = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-            .eq(ManagerUser.ID,userId)
-            .eq(ManagerUser.USER_NAME, account)
-            .eq(ManagerUser.PASSWORD, MD5Util.getMD5(oldPassword))
+            .eq(ManagerUser.ID,managerUser.getId())
+            .eq(ManagerUser.USER_NAME, managerUser.getUserName())
+            .eq(ManagerUser.PASSWORD, MD5Util.getMD5(managerUser.getPassword()))
         );
         if(manager_user==null){
             return new Result().erro("旧密码不正确");
         }else{
-            if(headImg!=null && !headImg.equals("")){
-                manager_user.setHeadImg(headImg);
-            }
             manager_user.setPassword(MD5Util.getMD5(newPassword));
             manager_user.updateById();
         }
@@ -305,21 +304,22 @@ public class ManagerUserController {
         return new Result().success("账户资料编辑成功");
     }
 
-/*    @ApiOperation("后台管理系统-根据用户名或姓名搜索成员")
-    @RequestMapping(value="/getUserListByUsername",method={RequestMethod.GET,RequestMethod.POST})
-    @ApiImplicitParams(value={
-        @ApiImplicitParam(name="username",value="用户名/姓名",required=true, dataType = "String")
-    })
-    public Result getUserListByUsername(String username){
-        if(username==null || "".equals(username)){
-            return new Result().erro("参数错误");
+    @ApiOperation("后台-账户设置")
+    @RequestMapping(value="/getAdmin",method={RequestMethod.POST,RequestMethod.GET})
+    public Result getAdmin(){
+        //获取登录用户id
+        Integer userId = session.getUserId();
+        //System.out.println(userId);
+        ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+                                                                  .eq(ManagerUser.ID,userId)
+                                                                  .eq(ManagerUser.IS_DEL,0)
+                                                                  .eq(ManagerUser.CAN_USE,1)
+        );
+        if(managerUser==null){
+            return new Result().erro("系统错误");
         }
-        List<ManagerUser> manegerUserList=managerUserService.getUserListByUsername(username);
-        if(manegerUserList==null || manegerUserList.size()==0){
-            return new Result().success("没有数据");
-        }
-        return new Result().success(manegerUserList);
-    }*/
+        return new Result().success(managerUser);
+    }
 
 
     @ApiOperation("后台管理系统-成员管理-成员列表&根据用户名或姓名搜索成员")

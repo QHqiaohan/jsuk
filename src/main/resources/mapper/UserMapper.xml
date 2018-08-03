@@ -22,11 +22,13 @@
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
         <result column="last_login_time" property="lastLoginTime"/>
+        <result column="birthday" property="birthday"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, nick_name, phone, level, sex, head_img, password, login_ip, wx_token, weibo_token, qq_token, can_use, is_secondary_market, is_available, address, create_time, update_time, last_login_time
+        id, nick_name, phone, level, sex, head_img, password, login_ip, wx_token, weibo_token, qq_token, can_use,
+      is_secondary_market, is_available, address, create_time, update_time, last_login_time,birthday
     </sql>
 
     <resultMap id="UserInfoVo" type="com.jh.jsuk.entity.vo.UserInfoVo" extends="BaseResultMap">

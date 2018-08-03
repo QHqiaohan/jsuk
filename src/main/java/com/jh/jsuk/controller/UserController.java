@@ -651,29 +651,29 @@ public class UserController {
     }
 
 
-    @ApiOperation("平台管理系统-用户管理-根据用户id、账号搜索")
-    @RequestMapping(value="/searchUserListBy",method={RequestMethod.POST,RequestMethod.GET})
-    public Result searchUserListBy(@RequestParam String keywords,Integer current,Integer size){
-        current=current==null?1:current;
-        size=size==null?10:size;
-        Page<User> userPage=new Page<>(current,size);
-        List<User> userList=userService.selectUserListBy(keywords);
-
-        return new Result().success(userPage.setRecords(userList));
-    }
+//    @ApiOperation("平台管理系统-用户管理-根据用户id、账号搜索")
+////    @RequestMapping(value="/searchUserListBy",method={RequestMethod.POST,RequestMethod.GET})
+////    public Result searchUserListBy(@RequestParam String keywords,Integer current,Integer size){
+////        current=current==null?1:current;
+////        size=size==null?10:size;
+////        Page<User> userPage=new Page<>(current,size);
+////        List<User> userList=userService.selectUserListBy(keywords);
+////
+////        return new Result().success(userPage.setRecords(userList));
+////    }
 
 
     @ApiOperation("平台管理系统-用户管理-用户列表")
     @RequestMapping(value="/getUserPage",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getUserPage(Integer current,Integer size){
-        current=current==null?1:current;
-        size=size==null?10:size;
-        Page<User> userPage=userService.selectPage(new Page<User>(current,size),
+    public Result getUserPage(Page page,String searchKeywords){
+        Page<User> userPage=userService.selectPage(page,
                                                    new EntityWrapper<User>()
+                                                       .like(searchKeywords!=null,"nick_name",searchKeywords)
                                                        .eq(User.CAN_USE,1)
             );
         List<User> userList=userPage.getRecords();
-        Page<PlatformUserVo> platformUserVoPage=new Page<>(current,size);
+
+       // Page plateformUserVoPage=new Page(page.getCurrent(),page.getSize());
         List<PlatformUserVo> plateformUserVoList=new ArrayList<>();
 
         for(User user:userList){
@@ -689,7 +689,11 @@ public class UserController {
                 //该用户的订单数量
                 platformUserVo.setOrderCount(userOrderList.size());
                 for (UserOrder userOrder : userOrderList) {
-                    consumeCount=consumeCount.add(userOrder.getOrderRealPrice());
+                    BigDecimal orderRealPrice = userOrder.getOrderRealPrice();
+                    if(orderRealPrice==null){
+                        orderRealPrice=new BigDecimal("0.00");
+                    }
+                    consumeCount=consumeCount.add(orderRealPrice);
                 }
             }else{
                 platformUserVo.setOrderCount(0);
@@ -706,18 +710,17 @@ public class UserController {
             }
             plateformUserVoList.add(platformUserVo);
         }
-        return new Result().success(platformUserVoPage.setRecords(plateformUserVoList));
+        return new Result().success(page.setRecords(plateformUserVoList));
     }
 
     @ApiOperation("后台管理系统-用户列表-用户详情")
     @RequestMapping(value="/getUserInfo",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getUserInfo(@RequestParam Integer userId,Integer current,Integer size){
-        current=current==null?1:current;
-        size=size==null?10:size;
-
+    public Result getUserInfo(@RequestParam Integer detailUserId,Page page){
+        System.out.println("userId:"+detailUserId);
+        detailUserId=31;
         PlatformUserVo platformUserVo=new PlatformUserVo();
         User user=userService.selectOne(new EntityWrapper<User>()
-                                            .eq(User.ID,userId)
+                                            .eq(User.ID,detailUserId)
                                             .eq(User.CAN_USE,1)
         );
         if(user==null){
@@ -726,21 +729,20 @@ public class UserController {
         platformUserVo.setUser(user);
         //查询用户地址列表
         List<UserAddress> userAddressList=userAddressService.selectList(new EntityWrapper<UserAddress>()
-            .eq(UserAddress.USER_ID,userId)
+            .eq(UserAddress.USER_ID,detailUserId)
             .eq(UserAddress.IS_DEL,0)
         );
         platformUserVo.setUserAddressList(userAddressList);
         //查询订单列表
-        Page<UserOrder> userOrderPage=userOrderService.selectPage(new Page<UserOrder>(current,size),
+        Page<UserOrder> userOrderPage=userOrderService.selectPage(page,
                                                                   new EntityWrapper<UserOrder>()
-                                                                      .eq(UserOrder.USER_ID,userId)
+                                                                      .eq(UserOrder.USER_ID,detailUserId)
                                                                       .ne(UserOrder.IS_SHOP_DEL,1)
                                                                       .ne(UserOrder.IS_USER_DEL,1)
             );
         if(userOrderPage!=null && userOrderPage.getRecords().size()>0) {
             platformUserVo.setUserOrderList(userOrderPage.getRecords());
         }
-
         return new Result().success(platformUserVo);
     }
 
@@ -751,14 +753,21 @@ public class UserController {
         if(user==null){
             return new Result().erro("参数错误");
         }
+        if(user.getPassword()==null || "".equals(user.getPassword())){
+            return new Result().erro("请设置密码");
+        }
+        user.setPassword(MD5Util.getMD5(user.getPassword()));
         user.updateById();
-
         return new Result().success("用户信息编辑成功");
     }
 
-    @ApiOperation("后台管理系统-用户管理-删除用户")
+    //@ApiOperation("后台管理系统-用户管理-删除用户")
+    @GetMapping("deleteUserById")
     public Result deleteUserById(@RequestParam Integer userId){
         User user=userService.selectOne(new EntityWrapper<User>().eq(User.ID,userId));
+        if(user==null){
+            return new Result().erro("系统错误");
+        }
         user.setCanUse(0);
         user.updateById();
         return new Result().success("用户删除成功");
@@ -775,6 +784,18 @@ public class UserController {
         return new Result().success(userOrder);
     }
 
+
+/*    @ApiOperation("平台-获取用户")
+    @RequestMapping(value="/getUserInfoById",method = {RequestMethod.POST})*/
+    @GetMapping("getUserInfoById")
+    public Result getUserInfoById(@RequestParam Integer userId){
+        userId=31;
+        User user=userService.selectOne(new EntityWrapper<User>().eq(User.ID,userId));
+        if(user==null){
+            return new Result().erro("系统错误");
+        }
+        return new Result().success(user);
+    }
 
 
 

@@ -11,6 +11,8 @@ public class ShoppingCartVo implements Serializable {
 
     private Boolean canGetCoupon;
 
+    private List<GoodsVo> goods;
+
     public void setCanGetCoupon(Boolean canGetCoupon) {
         this.canGetCoupon = canGetCoupon;
     }
@@ -18,8 +20,6 @@ public class ShoppingCartVo implements Serializable {
     public Boolean getCanGetCoupon() {
         return canGetCoupon;
     }
-    private List<GoodsVo> goods;
-
 
     public String getUserId() {
         return userId;
