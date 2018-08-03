@@ -717,7 +717,6 @@ public class UserController {
     @RequestMapping(value="/getUserInfo",method={RequestMethod.GET,RequestMethod.POST})
     public Result getUserInfo(@RequestParam Integer detailUserId,Page page){
         System.out.println("userId:"+detailUserId);
-        detailUserId=31;
         PlatformUserVo platformUserVo=new PlatformUserVo();
         User user=userService.selectOne(new EntityWrapper<User>()
                                             .eq(User.ID,detailUserId)
@@ -762,9 +761,9 @@ public class UserController {
     }
 
     //@ApiOperation("后台管理系统-用户管理-删除用户")
-    @GetMapping("deleteUserById")
-    public Result deleteUserById(@RequestParam Integer userId){
-        User user=userService.selectOne(new EntityWrapper<User>().eq(User.ID,userId));
+    @RequestMapping(value="/deleteUserById",method={RequestMethod.GET,RequestMethod.POST})
+    public Result deleteUserById(@RequestParam Integer delUserId){
+        User user=userService.selectOne(new EntityWrapper<User>().eq(User.ID,delUserId));
         if(user==null){
             return new Result().erro("系统错误");
         }
@@ -785,12 +784,10 @@ public class UserController {
     }
 
 
-/*    @ApiOperation("平台-获取用户")
-    @RequestMapping(value="/getUserInfoById",method = {RequestMethod.POST})*/
-    @GetMapping("getUserInfoById")
-    public Result getUserInfoById(@RequestParam Integer userId){
-        userId=31;
-        User user=userService.selectOne(new EntityWrapper<User>().eq(User.ID,userId));
+    @ApiOperation("平台-获取用户")
+    @RequestMapping(value="/getUserInfoById",method = {RequestMethod.POST,RequestMethod.GET})
+    public Result getUserInfoById(@RequestParam Integer userBianjiId){
+        User user=userService.selectOne(new EntityWrapper<User>().eq(User.ID,userBianjiId));
         if(user==null){
             return new Result().erro("系统错误");
         }
