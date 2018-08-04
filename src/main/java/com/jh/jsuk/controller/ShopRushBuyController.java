@@ -47,7 +47,13 @@ public class ShopRushBuyController {
     public R listPage(Page page) {
         Wrapper<ShopRushBuy> wrapper = new EntityWrapper<>();
         wrapper.ne(ShopRushBuy.IS_DEL, 1);
-        return R.succ(shopRushBuyService.selectPage(page, wrapper));
+        Page pg = shopRushBuyService.selectPage(page, wrapper);
+        List records = pg.getRecords();
+        for (Object record : records) {
+            ShopRushBuy buy = (ShopRushBuy) record;
+            buy.checkStatus();
+        }
+        return R.succ(pg);
     }
 
     @GetMapping("/list")
