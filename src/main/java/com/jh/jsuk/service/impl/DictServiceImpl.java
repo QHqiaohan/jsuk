@@ -47,6 +47,7 @@ public class DictServiceImpl extends ServiceImpl<DictDao, Dict> implements DictS
                         map.put(key, method.invoke(value));
                     }
                 }
+                map.put("VALUE", String.valueOf(value));
                 list.add(map);
             }
         } else {

@@ -1,5 +1,8 @@
 package com.jh.jsuk.envm;
 
+import lombok.Getter;
+
+@Getter
 public enum ShopRushBuyStatus {
 
 
