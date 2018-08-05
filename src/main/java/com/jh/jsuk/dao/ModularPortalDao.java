@@ -3,6 +3,7 @@ package com.jh.jsuk.dao;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.jh.jsuk.entity.ModularPortal;
 import com.jh.jsuk.entity.vo.ModularPortalVo;
+import com.jh.jsuk.entity.vo.ModularPortalVo2;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface ModularPortalDao extends BaseMapper<ModularPortal> {
     List<ModularPortal> findChildrenModular();
 
     List<ModularPortal> findChildListByParentId(Integer id);
+
+    List<ModularPortalVo2> list();
 }

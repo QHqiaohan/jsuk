@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ModularPortalDao;
 import com.jh.jsuk.entity.ModularPortal;
 import com.jh.jsuk.entity.vo.ModularPortalVo;
+import com.jh.jsuk.entity.vo.ModularPortalVo2;
 import com.jh.jsuk.service.ModularPortalService;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +33,11 @@ public class ModularPortalServiceImpl extends ServiceImpl<ModularPortalDao, Modu
     @Override
     public List<ModularPortal> findChildListByParentId(Integer id) {
         return modularPortalDao.findChildListByParentId(id);
+    }
+
+    @Override
+    public List<ModularPortalVo2> list() {
+
+        return baseMapper.list();
     }
 }

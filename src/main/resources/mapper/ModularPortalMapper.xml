@@ -2,53 +2,68 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jh.jsuk.dao.ModularPortalDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ModularPortal">
-        <id column="id" property="id"/>
-        <result column="name" property="name"/>
-        <result column="logo" property="logo"/>
-        <result column="parent_id" property="parentId"/>
-        <result column="sort_order" property="sortOrder"/>
-        <result column="status" property="status"/>
-        <result column="type" property="type"/>
-        <result column="publish_time" property="publishTime"/>
-        <result column="update_time" property="updateTime"/>
-    </resultMap>
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ModularPortal">
+    <id column="id" property="id"/>
+    <result column="name" property="name"/>
+    <result column="logo" property="logo"/>
+    <result column="parent_id" property="parentId"/>
+    <result column="sort_order" property="sortOrder"/>
+    <result column="status" property="status"/>
+    <result column="type" property="type"/>
+    <result column="publish_time" property="publishTime"/>
+    <result column="update_time" property="updateTime"/>
+  </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, name, logo, parent_id, sort_order, status, type, publish_time, update_time
-    </sql>
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+    id, name, logo, parent_id, sort_order, status, type, publish_time, update_time
+  </sql>
 
-    <resultMap id="ModularPortalVo" type="com.jh.jsuk.entity.vo.ModularPortalVo" extends="BaseResultMap">
-        <association column="id" property="modularPortalVoList" select="com.jh.jsuk.dao.ModularPortalDao.findChildrenModular"/>
-    </resultMap>
+  <resultMap id="ModularPortalVo" type="com.jh.jsuk.entity.vo.ModularPortalVo" extends="BaseResultMap">
+    <association column="id" property="modularPortalVoList"
+                 select="com.jh.jsuk.dao.ModularPortalDao.findChildrenModular"/>
+  </resultMap>
+  <resultMap id="ModularPortalVo2" type="com.jh.jsuk.entity.vo.ModularPortalVo2">
+    <result column="id" property="parentId"/>
+    <result column="name" property="parentName"/>
+    <collection column="id" property="modularPortals"
+                select="com.jh.jsuk.dao.ModularPortalDao.findChildListByParentId"/>
+  </resultMap>
+  <select id="list" resultMap="ModularPortalVo2">
+    <![CDATA[
+    select
+      id,
+      name
+    from js_modular_portal
+    where id < 11
+    ]]>
+  </select>
+  <select id="getModularList" resultMap="ModularPortalVo">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    `js_modular_portal`
+    ORDER BY
+    sort_order DESC
+    LIMIT 1,7
+  </select>
 
-    <select id="getModularList" resultMap="ModularPortalVo">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM
-        `js_modular_portal`
-        ORDER BY
-        sort_order DESC
-        LIMIT 1,7
-    </select>
+  <select id="findChildrenModular" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    `js_modular_portal`
+    WHERE
+    parent_id = #{id}
+    ORDER BY sort_order DESC
+  </select>
 
-    <select id="findChildrenModular" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM
-        `js_modular_portal`
-        WHERE
-        parent_id = #{id}
-        ORDER BY sort_order DESC
-    </select>
-
-    <select id="findChildListByParentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from  js_modular_portal
-        where parent_id=#{id}
-    </select>
+  <select id="findChildListByParentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from js_modular_portal
+    where status = 1 and parent_id=#{id}
+  </select>
 
 </mapper>
