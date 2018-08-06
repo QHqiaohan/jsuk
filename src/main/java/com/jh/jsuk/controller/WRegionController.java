@@ -9,10 +9,8 @@ import com.jh.jsuk.service.CitysService;
 import com.jh.jsuk.service.ProvincesService;
 import com.jh.jsuk.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Author:xyl
@@ -38,19 +36,19 @@ public class WRegionController {
     }
 
     @PostMapping("/addCity")
-    public R addCity(String name, Integer provincesId) {
+    public R addCity(String name, Integer upperId) {
         Citys city = new Citys();
         city.setCityName(name);
-        city.setProvinceId(provincesId);
+        city.setProvinceId(upperId);
         city.insert();
         return R.succ();
     }
 
     @PostMapping("/addAreas")
-    public R addAreas(String name, Integer cityId) {
+    public R addAreas(String name, Integer upperId) {
         Areas areas = new Areas();
         areas.setAreaName(name);
-        areas.setCityId(cityId);
+        areas.setCityId(upperId);
         areas.insert();
         return R.succ();
     }
