@@ -2,7 +2,9 @@ package com.jh.jsuk.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.Activity;
+import com.jh.jsuk.entity.vo.ActivitySecondVo;
 import com.jh.jsuk.entity.vo.ActivityVo;
 import com.jh.jsuk.entity.vo.ActivityVoT;
 import org.apache.ibatis.annotations.Param;
@@ -33,4 +35,6 @@ public interface ActivityDao extends BaseMapper<Activity> {
     Activity getActivityInfoById(Integer id);
 
     ActivityVoT selectActivityVoT(@Param("id") Integer id);
+
+    List<ActivitySecondVo> getSecondaryMarketList(Page page, @Param(value="keywords") String keywords);
 }

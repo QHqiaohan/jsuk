@@ -126,8 +126,33 @@ public class Activity extends Model<Activity> {
     @ApiModelProperty(value = "交易区域ID", name = "transactionAreaId")
     private Integer transactionAreaId;
 
+
     //0:普通活动，1：共享婚车活动
     private Integer activityType;
+
+    /**
+     * 门店地址
+     */
+    private String portalAddress;
+
+    //是否审核通过.1:是，0：否
+    private Integer examine;
+
+    public Integer getExamine() {
+        return examine;
+    }
+
+    public void setExamine(Integer examine) {
+        this.examine = examine;
+    }
+
+    public String getPortalAddress() {
+        return portalAddress;
+    }
+
+    public void setPortalAddress(String portalAddress) {
+        this.portalAddress = portalAddress;
+    }
 
     public Integer getActivityType() {
         return activityType;

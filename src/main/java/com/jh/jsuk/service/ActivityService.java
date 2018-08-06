@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.Activity;
+import com.jh.jsuk.entity.vo.ActivitySecondVo;
 import com.jh.jsuk.entity.vo.ActivityVo;
 import com.jh.jsuk.entity.vo.ActivityVoT;
 
@@ -37,4 +38,6 @@ public interface ActivityService extends IService<Activity> {
     Activity getActivityInfoById(Integer id);
 
     ActivityVoT selectActivityVoT(Integer id);
+
+    Page<ActivitySecondVo> getSecondaryMarketList(Page page, String keywords);
 }

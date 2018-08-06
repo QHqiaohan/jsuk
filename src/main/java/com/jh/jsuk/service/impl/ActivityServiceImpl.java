@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ActivityDao;
 import com.jh.jsuk.entity.Activity;
+import com.jh.jsuk.entity.vo.ActivitySecondVo;
 import com.jh.jsuk.entity.vo.ActivityVo;
 import com.jh.jsuk.entity.vo.ActivityVoT;
 import com.jh.jsuk.service.ActivityService;
@@ -68,6 +69,13 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityDao, Activity> impl
     @Override
     public ActivityVoT selectActivityVoT(Integer id) {
         return baseMapper.selectActivityVoT(id);
+    }
+
+    @Override
+    public Page<ActivitySecondVo> getSecondaryMarketList(Page page, String keywords) {
+        List<ActivitySecondVo> list=baseMapper.getSecondaryMarketList(page,keywords);
+        page.setRecords(list);
+        return page;
     }
 
 }

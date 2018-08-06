@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.Dictionary;
+import com.jh.jsuk.entity.vo.ActivitySecondVo;
 import com.jh.jsuk.entity.vo.ActivityVo;
 import com.jh.jsuk.entity.vo.ActivityVoT;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
@@ -765,6 +766,77 @@ public class ActivityController {
                                                                                .eq(ActivityJoin.IS_DEL,0)
             );
         return new Result().success(activityJoinPage);
+    }
+
+
+    @ApiOperation("平台-APP促销-乡村旅游-查询乡村旅游子模块")
+    @RequestMapping(value="/selectVillageChildModular",method={RequestMethod.GET,RequestMethod.POST})
+    public Result selectVillageChildModular(){
+        //parent_id:9=乡村旅游,status:1有效,0无效
+        List<ModularPortal> modularPortalList=modularPortalService.selectList(new EntityWrapper<ModularPortal>()
+                                                                                  .eq(ModularPortal.PARENT_ID,9)
+                                                                                  .eq(ModularPortal.STATUS,1)
+        );
+        return new Result().success(modularPortalList);
+    }
+
+    //后台-APP促销管理-发布乡村旅游活动
+    @PostMapping("/addVillageActivity")
+    public Result addVillageActivity(@ModelAttribute Activity activity){
+        if(activity==null){
+            return new Result().erro("参数错误");
+        }
+        try {
+            activity.setType(1);       // 1=乡村旅游
+            activity.setStatus(1);    //  1=商家,2=需求
+            activity.setActivityType(0);    //0:普通活动，1：共享婚车活动
+
+            activity.insert();
+        }catch(Exception e){
+            return new Result().erro("系统错误");
+        }
+        return new Result().success("乡村旅游活动发布成功");
+    }
+
+
+    //平台-二手市场
+    @RequestMapping(value="/getSecondaryMarketList",method={RequestMethod.GET,RequestMethod.POST})
+    public Result getSecondaryMarketList(Page page,String keywords){
+        Page<ActivitySecondVo> secondaryActivityPage=activityService.getSecondaryMarketList(page,keywords);
+        for(ActivitySecondVo vo:secondaryActivityPage.getRecords()){
+            String[] images = vo.getImages().split(",");
+            vo.setImageArray(images);
+            ModularPortal modularPortal=modularPortalService.selectById(vo.getModularId());
+            if(modularPortal!=null)
+            vo.setModularName(modularPortal.getName());
+        }
+
+        return new Result().success(secondaryActivityPage);
+    }
+
+
+    //平台-二手市场-审核
+    @RequestMapping(value="/examineToPass",method={RequestMethod.GET,RequestMethod.POST})
+    public Result examineToPass(@RequestParam Integer activityId){
+        Activity activity=activityService.selectById(activityId);
+        if(activity==null){
+            return new Result().erro("系统错误");
+        }
+        activity.setExamine(1);
+        activity.updateById();
+        return new Result().success("审核成功");
+    }
+
+
+    //平台-二手市场-删除
+    @RequestMapping(value="/deleteSecondActivity",method={RequestMethod.GET,RequestMethod.POST})
+    public Result deleteSecondActivity(@RequestParam Integer activityId){
+        Activity activity=activityService.selectById(activityId);
+        if(activity==null){
+            return new Result().erro("系统错误");
+        }
+        activity.deleteById();
+        return new Result().success("删除成功");
     }
 
 }
