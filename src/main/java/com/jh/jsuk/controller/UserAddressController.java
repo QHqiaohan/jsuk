@@ -30,7 +30,6 @@ public class UserAddressController {
     @ApiOperation("后台-用户管理-地址管理-设置默认地址")
     @RequestMapping(value="/setDefaultAddress",method = {RequestMethod.GET,RequestMethod.POST})
     public Result setDefaultAddress(@RequestParam Integer id, @RequestParam Integer isDefault){
-        System.out.println(id+","+isDefault);
         UserAddress userAddress=userAddressService.selectOne(new EntityWrapper<UserAddress>()
                                                                  .eq(UserAddress.ID,id)
         );
