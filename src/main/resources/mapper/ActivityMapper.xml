@@ -26,12 +26,14 @@
         <result column="status" property="status"/>
         <result column="transaction_area_id" property="transactionAreaId"/>
         <result column="activity_type" property="activityType"/>
+        <result column="portal_address" property="portalAddress"/>
+        <result column="examine" property="examine"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, phone, name, title, price, fixed_price, content, start_time, end_time, publish_time, is_del, type, user_id, rank, class_id,
-         modular_id, car_id, is_recommend, images, status, transaction_area_id,activity_type
+         modular_id, car_id, is_recommend, images, status, transaction_area_id,activity_type,portal_address,examine
     </sql>
 
     <resultMap id="ActivityVoT" type="com.jh.jsuk.entity.vo.ActivityVoT" extends="BaseResultMap">
@@ -79,13 +81,6 @@
     </select>
 
     <select id="findActivityById" resultMap="ActivityVo">
-        <!--SELECT-->
-            <!--<include refid="Base_Column_List"/>-->
-        <!--FROM-->
-            <!--`js_activity` a-->
-        <!--LEFT JOIN js_car c ON a.car_id = c.id-->
-        <!--WHERE-->
-            <!--a.id = #{id}-->
       select
       a.*,c.car_name as carName
       from
@@ -105,5 +100,24 @@
         FROM js_activity
         WHERE id=#{id}
     </select>
+
+
+  <resultMap id="ActivitySecondVo" type="com.jh.jsuk.entity.vo.ActivitySecondVo" extends="BaseResultMap">
+    <result column="imageList" property="imageList"/>
+  </resultMap>
+
+
+  <select id="getSecondaryMarketList" resultMap="ActivitySecondVo">
+    SELECT
+    <include refid="Base_Column_List"></include>
+    FROM js_activity
+    <where>
+      <if test="keywords!=null and keywords!=''">
+        title like concat('%',#{keywords},'%')
+        or
+        id=#{keywords}
+      </if>
+    </where>
+  </select>
 
 </mapper>
