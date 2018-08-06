@@ -804,8 +804,10 @@ public class ActivityController {
     public Result getSecondaryMarketList(Page page,String keywords){
         Page<ActivitySecondVo> secondaryActivityPage=activityService.getSecondaryMarketList(page,keywords);
         for(ActivitySecondVo vo:secondaryActivityPage.getRecords()){
-            String[] images = vo.getImages().split(",");
-            vo.setImageArray(images);
+            if(vo.getImages()!=null) {
+                String[] images = vo.getImages().split(",");
+                vo.setImageArray(images);
+            }
             ModularPortal modularPortal=modularPortalService.selectById(vo.getModularId());
             if(modularPortal!=null)
             vo.setModularName(modularPortal.getName());

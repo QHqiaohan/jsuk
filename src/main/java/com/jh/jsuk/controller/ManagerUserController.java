@@ -287,24 +287,16 @@ public class ManagerUserController {
         @ApiImplicitParam(name="newPassword",value="新密码",dataType = "String")
     })
     public Result accountInfoSetting(@ModelAttribute ManagerUser managerUser,String newPassword){
+        System.out.println("旧密码:"+managerUser.getPassword());
+        System.out.println("新密码:"+newPassword);
 
-        System.out.println(newPassword);
-        ManagerUser manager_user = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-            .eq(ManagerUser.ID,managerUser.getId())
-            .eq(ManagerUser.USER_NAME, managerUser.getUserName())
-            .eq(ManagerUser.PASSWORD, MD5Util.getMD5(managerUser.getPassword()))
-        );
-        if(manager_user==null){
-            return new Result().erro("旧密码不正确");
-        }else{
-            manager_user.setPassword(MD5Util.getMD5(newPassword));
-            manager_user.updateById();
-        }
+        managerUser.setPassword(MD5Util.getMD5(newPassword));
+        managerUser.updateById();
 
         return new Result().success("账户资料编辑成功");
     }
 
-    @ApiOperation("后台-账户设置")
+    @ApiOperation("后台-账户设置-查询账户详情")
     @RequestMapping(value="/getAdmin",method={RequestMethod.POST,RequestMethod.GET})
     public Result getAdmin(){
         //获取登录用户id
