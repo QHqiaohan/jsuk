@@ -42,7 +42,9 @@ public class WDistributionUserController {
 
     @PatchMapping
     public R edit(DistributionUser distributionUser) {
-        distributionUser.setPassword(MD5Util.getMD5(distributionUser.getPassword()));
+        if (distributionUser.getPassword() != null) {
+            distributionUser.setPassword(MD5Util.getMD5(distributionUser.getPassword()));
+        }
         distributionUser.updateById();
         return R.succ();
     }

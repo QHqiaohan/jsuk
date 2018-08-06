@@ -127,6 +127,7 @@ public class WMainController {
         map.put("nickName", session.getNickName());
         map.put("lastLogin", session.getLastLogin());
         map.put("shopName", session.getShopName());
+        map.put("shopId", session.getShopId());
         return R.succ(map);
     }
 
