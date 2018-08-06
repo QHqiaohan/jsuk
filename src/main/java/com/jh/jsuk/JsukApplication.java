@@ -17,4 +17,5 @@ public class JsukApplication {
         SpringApplication.run(JsukApplication.class, args);
         System.out.println("ヾ(◍°∇°◍)ﾉﾞ项目启动成功ヾ(◍°∇°◍)ﾉﾞ");
     }
+
 }

@@ -3,6 +3,7 @@ package com.jh.jsuk.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.ModularPortal;
 import com.jh.jsuk.entity.vo.ModularPortalVo;
+import com.jh.jsuk.entity.vo.ModularPortalVo2;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface ModularPortalService extends IService<ModularPortal> {
     List<ModularPortalVo> getModularList();
 
     List<ModularPortal> findChildListByParentId(Integer id);
+
+    List<ModularPortalVo2> list();
 }
