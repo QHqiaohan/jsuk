@@ -47,6 +47,7 @@
   </sql>
 
   <resultMap id="UserOrderVo" type="com.jh.jsuk.entity.vo.UserOrderVo" extends="BaseResultMap">
+    <association property="userName" column="user_id" select="com.jh.jsuk.dao.UserDao.userName"/>
     <association property="shop" column="shop_id"
                  select="com.jh.jsuk.dao.ShopDao.selectShopPhoneById"></association>
     <association property="distributionUser" column="distribution_user_id"

@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.vo.UserInfoVo;
 import com.jh.jsuk.entity.vo.UserListVo;
+import com.jh.jsuk.entity.vo.UserVo2;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -27,4 +29,11 @@ public interface UserDao extends BaseMapper<User> {
     List<UserListVo> listPage(Page page,@Param("ew") EntityWrapper wrapper);
 
     List<User> selectUserListBy(@Param("keywords") String keywords);
+
+    @Select("select nick_name from js_user where id = #{id}")
+    String userName(Integer id);
+
+    @Select("select nick_name,head_img,phone where id = #{id}")
+    UserVo2 userVo2(Integer id);
+
 }

@@ -66,6 +66,9 @@ public class UserController {
     @Autowired
     UserOrderService userOrderService;
 
+    @Autowired
+    UserInviteLogService userInviteLogService;
+
     @PostMapping("/update")
     public R update(User user){
         user.setPassword(null);
@@ -354,11 +357,13 @@ public class UserController {
                     required = true, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "code", value = "验证码",
                     required = true, paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "inviteUserId", value = "邀请人 id",
+                    required = false, paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "token", value = "第三方登陆唯一标识符",
                     required = false, paramType = "query", dataType = "string")
     })
     @PostMapping("/register")
-    public Result register(@ModelAttribute User user, @RequestParam String code, HttpSession session) throws Exception {
+    public Result register(@ModelAttribute User user, @RequestParam String code,@RequestParam(required = false) Integer inviteUserId, HttpSession session) throws Exception {
         try {
             // 效验手机验证码
             String verificationCode = (String) session.getAttribute(user.getPhone() + "register0");
@@ -380,6 +385,9 @@ public class UserController {
                     eq("code", "user_default_name"));
             user.setNickName(dictionaryName.getValue());
             user.insert();
+            if(inviteUserId != null){
+                userInviteLogService.addInvite(user.getId(),inviteUserId);
+            }
             return new Result().success();
         } catch (MybatisPlusException e) {
             throw new RuntimeException("服务器繁忙");

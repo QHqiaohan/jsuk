@@ -54,9 +54,9 @@ public class UserOrderController {
 
     @Autowired
     UserOrderGoodsService userOrderGoodsService;
-
-    @Autowired
-    UserInvitationPayService userInvitationPayService;
+//
+//    @Autowired
+//    UserInvitationPayService userInvitationPayService;
 
     @Autowired
     DistributionUserService distributionUserService;
