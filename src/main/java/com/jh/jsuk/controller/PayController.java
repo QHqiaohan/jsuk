@@ -147,18 +147,18 @@ public class PayController {
      */
     @ApiOperation("下单 在本地系统生成订单")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "userId", value = "用户ID",
-                    required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "goodsId", value = "商品ID",
-                    required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "carId", value = "购物车ID",
-                    required = false, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "orderType", value = "订单类型 0:普通订单 1:秒杀订单 2:会员购买 3:充值 4:到店支付",
-                    required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "memberConfigId", value = "充值配置ID",
-                    required = false, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "paymentAmount", value = "到店支付金额",
-                    required = true, paramType = "query", dataType = "String")
+        @ApiImplicitParam(name = "userId", value = "用户ID",
+            required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "goodsId", value = "商品ID",
+            required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "carId", value = "购物车ID",
+            required = false, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "orderType", value = "订单类型 0:普通订单 1:秒杀订单 2:会员购买 3:充值 4:到店支付",
+            required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "memberConfigId", value = "充值配置ID",
+            required = false, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "paymentAmount", value = "到店支付金额",
+            required = true, paramType = "query", dataType = "String")
     })
     @Transactional
     @RequestMapping(value = "placeAnOrder", method = RequestMethod.POST)
@@ -300,16 +300,16 @@ public class PayController {
      */
     @ApiOperation("预下单 在支付系统生成订单")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "orderId", value = "订单号",
-                    required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "payWay", value = "支付方式 0:支付宝 1:微信",
-                    required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "userId", value = "用户ID",
-                    required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "orderType", value = "订单类型 0:普通订单 1:秒杀订单 2:会员充值",
-                    required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "isDeduction", value = "是否使用折扣 1:是 0:否",
-                    required = true, paramType = "query", dataType = "string")
+        @ApiImplicitParam(name = "orderId", value = "订单号",
+            required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "payWay", value = "支付方式 0:支付宝 1:微信",
+            required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "userId", value = "用户ID",
+            required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "orderType", value = "订单类型 0:普通订单 1:秒杀订单 2:会员充值",
+            required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "isDeduction", value = "是否使用折扣 1:是 0:否",
+            required = true, paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "pre_order", method = RequestMethod.POST)
     @Transactional(propagation = Propagation.REQUIRED)
@@ -346,7 +346,7 @@ public class PayController {
             //当为购买订单时memberConfigId必须
             if (StrUtil.equals(orderType, "2")) {
                 userRemainder = userRemainderService.selectOne(new MyEntityWrapper<UserRemainder>().eq(UserRemainder.ORDER_NUM, orderId)
-                        .eq(UserRemainder.IS_OK, "0")
+                    .eq(UserRemainder.IS_OK, "0")
                 );
                 if (userRemainder == null) {
                     return ServerResponse.createByErrorMessage("订单不存在");
@@ -589,32 +589,47 @@ public class PayController {
 
     @ApiOperation(value = "用户端-支付")
     @RequestMapping(value = "/balancePay", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result balancePay(@ApiParam(name = "orderId", value = "订单Id") Integer orderId,
+    public Result balancePay(@ApiParam(name = "orderId", value = "订单Id") String orderId,
                              @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信-4银行卡") Integer payType) throws MessageException {
-        UserOrder userOrder = userOrderService.selectById(orderId);
+        String[] ids = orderId.split(",");
+        List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
         switch (payType) {
             //余额支付
             case 0:
-                userOrderService.balancePay(userOrder);
-                break;
+                userOrderService.balancePay(userOrders);
+                return new Result().success("余额支付成功!");
             //货到付款
-            case 1:
-                break;
+             /*case 1:
+                break;*/
             //支付宝
             case 2:
-                userOrder.setPayType(PayType.ALI_PAY.getKey());
-                return new Result().success(userOrderService.thirdPay(userOrder));
+                for (UserOrder u : userOrders) {
+                    u.setPayType(PayType.ALI_PAY.getKey());
+                }
+                return new Result().success(userOrderService.thirdPay(userOrders));
             //微信
             case 3:
-                userOrder.setPayType(PayType.WECHAT_PAY.getKey());
-                return new Result().success(userOrderService.thirdPay(userOrder));
+                for (UserOrder u : userOrders) {
+                    u.setPayType(PayType.WECHAT_PAY.getKey());
+                }
+                return new Result().success(userOrderService.thirdPay(userOrders));
             //银行卡
             case 4:
-                userOrder.setPayType(PayType.BANK_PAY.getKey());
-                return new Result().success(userOrderService.thirdPay(userOrder));
+                for (UserOrder u : userOrders) {
+                    u.setPayType(PayType.BANK_PAY.getKey());
+                }
+                return new Result().success(userOrderService.thirdPay(userOrders));
             default:
                 return new Result().erro("支付方式不存在");
         }
-        return new Result().success("支付成功");
+    }
+
+    @ApiOperation(value = "用户端-第三方支付-支付完成")
+    @RequestMapping(value = "/complete", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result complete(@ApiParam(name = "orderId", value = "订单Id") String orderId,
+                           @ApiParam(name = "status", value = "支付状态 0失败 1成功") Integer status) {
+        String[] ids = orderId.split(",");
+        List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
+        return new Result().success(userOrderService.payComplete(userOrders,status));
     }
 }

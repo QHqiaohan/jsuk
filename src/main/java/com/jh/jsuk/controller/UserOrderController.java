@@ -89,14 +89,6 @@ public class UserOrderController {
     private CouponService couponService;
 
 
-    //平台-查看订单详情
-    @RequestMapping(value="/getUserOrderById",method={RequestMethod.POST,RequestMethod.GET})
-    public Result getUserOrderById(@RequestParam Integer oid){
-        System.out.println("订单id:"+oid);
-        UserOrder userOrder=userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID,oid));
-        return new Result().success(userOrder);
-    }
-
     @GetMapping("/page")
     public R userOrderPage(Page page, String[] date, String kw, String status) throws Exception {
         OrderStatus orderStatus = null;
@@ -759,4 +751,12 @@ public class UserOrderController {
 
         return new Result().success(map);
     }*/
+
+    //平台-查看订单详情
+    @RequestMapping(value="/getUserOrderById",method={RequestMethod.POST,RequestMethod.GET})
+    public Result getUserOrderById(@RequestParam Integer orderId){
+        System.out.println("orderId:"+orderId);
+        UserOrder userOrder=userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID,orderId));
+        return new Result().success(userOrder);
+    }
 }

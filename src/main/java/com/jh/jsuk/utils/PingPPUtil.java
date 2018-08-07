@@ -51,12 +51,12 @@ public class PingPPUtil {
      *
      * @return Charge
      */
-    public static Charge createCharge(UserOrder userOrder, User user, ShopGoods shopGoods) {
+    public static Charge createCharge(UserOrder userOrder, User user, ShopGoods shopGoods, BigDecimal price) {
         init();
         Charge charge = null;
         String channel = getChannel(userOrder);
         Map<String, Object> chargeMap = new HashMap<>();
-        chargeMap.put("amount", userOrder.getOrderRealPrice().multiply(new BigDecimal("100")));//订单总金额, 人民币单位：分（如订单总金额为 1 元，此处请填 100）
+        chargeMap.put("amount", price.multiply(new BigDecimal("100")));//订单总金额, 人民币单位：分（如订单总金额为 1 元，此处请填 100）
         chargeMap.put("currency", "cny");//人民币
         chargeMap.put("subject", shopGoods.getGoodsName()); //商品标题
         chargeMap.put("body", shopGoods.getGoodsName());
