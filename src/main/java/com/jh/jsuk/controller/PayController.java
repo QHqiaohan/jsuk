@@ -593,7 +593,6 @@ public class PayController {
                              @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信-4银行卡") Integer payType) throws MessageException {
         String[] ids = orderId.split(",");
         List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
-//        UserOrder userOrder = userOrderService.selectById(orderId);
         switch (payType) {
             //余额支付
             case 0:
@@ -607,19 +606,19 @@ public class PayController {
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.ALI_PAY.getKey());
                 }
-                return new Result().success("操作成功", userOrderService.thirdPay(userOrders));
+                return new Result().success(userOrderService.thirdPay(userOrders));
             //微信
             case 3:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.WECHAT_PAY.getKey());
                 }
-                return new Result().success("操作成功", userOrderService.thirdPay(userOrders));
+                return new Result().success(userOrderService.thirdPay(userOrders));
             //银行卡
             case 4:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.BANK_PAY.getKey());
                 }
-                return new Result().success("操作成功", userOrderService.thirdPay(userOrders));
+                return new Result().success(userOrderService.thirdPay(userOrders));
             default:
                 return new Result().erro("支付方式不存在");
         }
