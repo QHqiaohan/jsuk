@@ -78,7 +78,7 @@ public interface UserOrderService extends IService<UserOrder> {
      * @return
      * @throws Exception
      */
-    OrderPrice orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId,Integer isUseIntegral) throws Exception;
+    OrderPrice orderPrice(ShopSubmitOrderDto orderDto, OrderType orderType, Integer userId, Integer isUseIntegral) throws Exception;
 
     /**
      * 订单余额支付
@@ -94,4 +94,9 @@ public interface UserOrderService extends IService<UserOrder> {
      * 售后
      */
     AfterSaleVo getAddressAndPhone(Integer orderId);
+
+    /**
+     * 支付完成
+     */
+    PayResult payComplete(List<UserOrder> userOrders, Integer status);
 }

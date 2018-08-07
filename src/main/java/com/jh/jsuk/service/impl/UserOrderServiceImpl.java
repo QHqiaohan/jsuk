@@ -70,6 +70,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     private UserOrderService userOrderService;
     @Autowired
     RedisUtils redisUtils;
+    @Autowired
+    private UserAddressService userAddressService;
 
     @Autowired
     private CouponService couponService;
@@ -572,7 +574,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (userRemainderService.getRemainder(userOrders.get(0).getUserId()).compareTo(price) < 0) {
             throw new MessageException("余额不足");
         }
-        for (UserOrder userOrder:userOrders){
+        for (UserOrder userOrder : userOrders) {
             //用户交易记录
             UserRemainder userRemainder = new UserRemainder();
             userRemainder.setCreateTime(new Date());
@@ -615,6 +617,30 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     @Override
     public AfterSaleVo getAddressAndPhone(Integer orderId) {
         return baseMapper.getAddressAndPhone(orderId);
+    }
+
+    @Override
+    public PayResult payComplete(List<UserOrder> userOrders, Integer status) {
+        if (status==1){
+            //支付成功
+            for (UserOrder userOrder : userOrders) {
+                //修改订单信息
+                userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
+                userOrder.setPayTime(new Date());
+                userOrder.updateById();
+            }
+        }
+        PayResult payResult = new PayResult();
+        payResult.setOrderNum(userOrders.get(0).getOrderNum());
+        payResult.setPayType(userOrders.get(0).getPayType());
+        payResult.setPayName(userService.selectById(userOrders.get(0).getUserId()).getPhone());
+        BigDecimal price = new BigDecimal("0.00");
+        for (UserOrder u : userOrders) {
+            price = price.add(u.getOrderRealPrice());
+        }
+        payResult.setPrice(price);
+        payResult.setReceiver(userAddressService.selectById(userOrders.get(0).getAddressId()).getName());
+        return payResult;
     }
 
 }
