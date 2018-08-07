@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.enums.SqlLike;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.Dictionary;
 import com.jh.jsuk.entity.vo.ActivitySecondVo;
@@ -22,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -61,6 +63,9 @@ public class ActivityController {
     private DictionaryService dictionaryService;
     @Autowired
     private ActivityJoinService activityJoinService;
+
+    @Autowired
+    private Session session;
 
     @ApiOperation(value = "用户-获取首页相关信息-上部分")
     @RequestMapping(value = "/getAll", method = {RequestMethod.POST, RequestMethod.GET})
@@ -781,18 +786,18 @@ public class ActivityController {
     }
 
     //后台-APP促销管理-发布乡村旅游活动
-    @PostMapping("/addVillageActivity")
-    public Result addVillageActivity(@ModelAttribute Activity activity){
-        if(activity==null){
-            return new Result().erro("参数错误");
-        }
+    @RequestMapping(value="/addVillageActivity",method={RequestMethod.POST})
+    public Result addVillageActivity(@ModelAttribute Activity activity) throws UnsupportedEncodingException {
         try {
+            activity.setPublishTime(new Date());
             activity.setType(1);       // 1=乡村旅游
-            activity.setStatus(1);    //  1=商家,2=需求
             activity.setActivityType(0);    //0:普通活动，1：共享婚车活动
-
-            activity.insert();
+            //获取登录用户id
+            Integer userId=session.getUserId();
+            activity.setUserId(userId);
+            activityService.insert(activity);
         }catch(Exception e){
+            e.printStackTrace();
             return new Result().erro("系统错误");
         }
         return new Result().success("乡村旅游活动发布成功");

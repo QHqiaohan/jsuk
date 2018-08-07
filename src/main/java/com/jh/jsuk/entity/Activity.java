@@ -128,15 +128,25 @@ public class Activity extends Model<Activity> {
 
 
     //0:普通活动，1：共享婚车活动
+    @ApiModelProperty(value = "活动类型", name = "activity_type")
     private Integer activityType;
 
     /**
      * 门店地址
      */
-    private String portalAddress;
+    @ApiModelProperty(value = "门店地址", name = "address")
+    private String address;
 
     //是否审核通过.1:是，0：否
     private Integer examine;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public Integer getExamine() {
         return examine;
@@ -144,14 +154,6 @@ public class Activity extends Model<Activity> {
 
     public void setExamine(Integer examine) {
         this.examine = examine;
-    }
-
-    public String getPortalAddress() {
-        return portalAddress;
-    }
-
-    public void setPortalAddress(String portalAddress) {
-        this.portalAddress = portalAddress;
     }
 
     public Integer getActivityType() {
@@ -404,5 +406,39 @@ public class Activity extends Model<Activity> {
         ", status=" + status +
         ", transactionAreaId=" + transactionAreaId +
         "}";
+    }
+
+    public Activity(Integer id, String phone, String name, String title, BigDecimal price,
+                    BigDecimal fixedPrice, String content, String startTime, String endTime,
+                    Date publishTime, Integer isDel, Integer type, Integer userId, String rank,
+                    Integer classId, Integer modularId, Integer carId, Integer isRecommend, String images,
+                    Integer status, Integer transactionAreaId, Integer activityType, String address, Integer examine) {
+        this.id = id;
+        this.phone = phone;
+        this.name = name;
+        this.title = title;
+        this.price = price;
+        this.fixedPrice = fixedPrice;
+        this.content = content;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.publishTime = publishTime;
+        this.isDel = isDel;
+        this.type = type;
+        this.userId = userId;
+        this.rank = rank;
+        this.classId = classId;
+        this.modularId = modularId;
+        this.carId = carId;
+        this.isRecommend = isRecommend;
+        this.images = images;
+        this.status = status;
+        this.transactionAreaId = transactionAreaId;
+        this.activityType = activityType;
+        this.address = address;
+        this.examine = examine;
+    }
+
+    public Activity() {
     }
 }
