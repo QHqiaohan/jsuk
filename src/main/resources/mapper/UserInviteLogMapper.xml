@@ -2,19 +2,46 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jh.jsuk.dao.UserInviteLogDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.UserInviteLog">
-        <id column="id" property="id" />
-        <result column="log" property="log" />
-        <result column="user_id" property="userId" />
-        <result column="invite_user_id" property="inviteUserId" />
-        <result column="money" property="money" />
-        <result column="create_time" property="createTime" />
-    </resultMap>
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.UserInviteLog">
+    <id column="id" property="id"/>
+    <result column="log" property="log"/>
+    <result column="user_id" property="userId"/>
+    <result column="invite_user_id" property="inviteUserId"/>
+    <result column="money" property="money"/>
+    <result column="create_time" property="createTime"/>
+  </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
         id, log, user_id, invite_user_id, money, create_time
     </sql>
+
+  <resultMap id="vo" type="com.jh.jsuk.entity.vo.UserInviteLogVo">
+    <association property="userInfo" column="invite_user_id"
+                 select="com.jh.jsuk.dao.UserDao.userVo2"/>
+  </resultMap>
+
+  <select id="getRewardInfo" resultType="com.jh.jsuk.entity.vo.UserInviteLogVo">
+    select
+    <include refid="Base_Column_List"/>
+    from js_user_invite_log where invite_user_id = #{id}
+  </select>
+
+  <select id="getTotal" resultType="java.math.BigDecimal">
+    SELECT sum(money) FROM `js_user_invite_log` where invite_user_id = #{userId};
+  </select>
+
+  <select id="lv1Detail" resultMap="vo">
+    SELECT sum(money) FROM `js_user_invite_log` where invite_user_id = #{userId};
+  </select>
+
+  <select id="lv2Detail" resultMap="vo">
+    SELECT sum(money) FROM `js_user_invite_log` where invite_user_id = #{userId};
+  </select>
+
+  <select id="lv3Detail" resultMap="vo">
+    SELECT sum(money) FROM `js_user_invite_log` where invite_user_id = #{userId};
+  </select>
 
 </mapper>
