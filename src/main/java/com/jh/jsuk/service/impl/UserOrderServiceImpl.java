@@ -514,29 +514,30 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (isUseIntegral == 1) {
             //计算积分抵扣
             //查询用户总积分
-            UserIntegral userIntegral = userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
-                .eq(UserIntegral.USER_ID, userId));
-            Integer integralNum = userIntegral.getIntegralNumber();    //总积分
+            Integer integralNum = userIntegralService.getIntegral(userId);    //总积分
             //积分抵扣与规则
             IntegralRule integralRule = integralRuleService.selectOne(new EntityWrapper<IntegralRule>()
                 .eq(IntegralRule.ID, 1)
             );
+            //使用的积分
+            Integer useIntegral;
             //积分可以抵扣多少钱
             BigDecimal integralReduce = new BigDecimal(integralNum / integralRule.getIntegral()).multiply(integralRule.getDeduction());
-            int remainIntegral;//用户剩余积分
             if (integralReduce.compareTo(totalPriceWithOutDiscount) > 0) {
-                totalPriceWithOutDiscount = new BigDecimal("0.00");
-                orderPrice.setIntegralReduce(totalPriceWithOutDiscount);
-                remainIntegral = integralNum - totalPriceWithOutDiscount.setScale(0, BigDecimal.ROUND_UP).intValue();
+                useIntegral = totalPriceWithOutDiscount.intValue() / integralRule.getDeduction().intValue() * integralRule.getIntegral();
             } else {
-                remainIntegral = integralNum % integralRule.getIntegral();
-                //积分抵扣价格
-                orderPrice.setIntegralReduce(integralReduce.setScale(2));
-                //减去积分抵扣价格
-                totalPriceWithOutDiscount = totalPriceWithOutDiscount.subtract(integralReduce);
+                useIntegral = integralNum - integralNum % integralRule.getIntegral();
             }
-            userIntegral.setIntegralNumber(remainIntegral);
-            userIntegral.updateById();
+            //积分抵扣价格
+            orderPrice.setIntegralReduce(integralReduce.setScale(2));
+            //减去积分抵扣价格
+            totalPriceWithOutDiscount = totalPriceWithOutDiscount.subtract(integralReduce);
+            //积分交易记录
+            UserIntegral userIntegral = new UserIntegral();
+            userIntegral.setIntegralNumber(useIntegral);
+            userIntegral.setUserId(userId);
+            userIntegral.setIntegralType(-1);
+            userIntegral.insert();
         }
 
 
@@ -621,7 +622,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Override
     public PayResult payComplete(List<UserOrder> userOrders, Integer status) {
-        if (status==1){
+        if (status == 1) {
             //支付成功
             for (UserOrder userOrder : userOrders) {
                 //修改订单信息

@@ -23,17 +23,17 @@ public class UserIntegralServiceImpl extends ServiceImpl<UserIntegralDao, UserIn
     @Override
     public Integer getIntegral(Integer userId) {
         EntityWrapper<UserIntegral> wrapper = new EntityWrapper<>();
-        wrapper.eq(UserIntegral.USER_ID,userId);
+        wrapper.eq(UserIntegral.USER_ID, userId);
         List<UserIntegral> integrals = selectList(wrapper);
         int rtn = 0;
         for (UserIntegral integral : integrals) {
             Integer integralType = integral.getIntegralType();
             Integer number = integral.getIntegralNumber();
-            if(number == null)
+            if (number == null)
                 number = 0;
-            if(integralType == null || integral.equals(-1)){
+            if (integralType == null || integralType == -1) {
                 rtn -= number;
-            }else {
+            } else {
                 rtn += number;
             }
         }
