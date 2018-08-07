@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.management.AttributeList;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -90,8 +91,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (orderStatus != null) {
             wrapper.eq(UserOrder.STATUS, orderStatus.getKey());
         }
-        if(shopId != null){
-            wrapper.eq(UserOrder.SHOP_ID ,shopId);
+        if (shopId != null) {
+            wrapper.eq(UserOrder.SHOP_ID, shopId);
         }
 //        wrapper.ne(UserOrder.IS_USER_DEL, 1);
         return selectCount(wrapper);
@@ -229,7 +230,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             wrapper.eq(UserOrder.SHOP_ID, shopId);
         }
         wrapper.where("1=1");
-        wrapper.orderBy(UserOrder.CREAT_TIME,false);
+        wrapper.orderBy(UserOrder.CREAT_TIME, false);
         List<UserOrderVo> list = baseMapper.findVoByPage(page, wrapper);
         return page.setRecords(list);
     }
@@ -561,40 +562,53 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public void balancePay(UserOrder userOrder) throws MessageException {
+    public void balancePay(List<UserOrder> userOrders) throws MessageException {
+        //获取订单价格
+        BigDecimal price = new BigDecimal("0.00");
+        for (UserOrder u : userOrders) {
+            price = price.add(u.getOrderRealPrice());
+        }
         //用户余额不足
-        if (userRemainderService.getRemainder(userOrder.getUserId()).compareTo(userOrder.getOrderRealPrice()) < 0) {
+        if (userRemainderService.getRemainder(userOrders.get(0).getUserId()).compareTo(price) < 0) {
             throw new MessageException("余额不足");
         }
-        UserRemainder userRemainder = new UserRemainder();
-        userRemainder.setCreateTime(new Date());
-        userRemainder.setRemainder(userOrder.getOrderRealPrice());
-        userRemainder.setType(-1);
-        userRemainder.setUserId(userOrder.getUserId());
-        userRemainder.setOrderNum(userOrder.getOrderNum());
-        userRemainder.setIsOk(2);
-        userRemainder.setPlatformNumber(userOrder.getPlatformNumber());
-        userRemainder.insert();
+        for (UserOrder userOrder:userOrders){
+            //用户交易记录
+            UserRemainder userRemainder = new UserRemainder();
+            userRemainder.setCreateTime(new Date());
+            userRemainder.setRemainder(userOrder.getOrderRealPrice());
+            userRemainder.setType(-1);
+            userRemainder.setUserId(userOrder.getUserId());
+            userRemainder.setOrderNum(userOrder.getOrderNum());
+            userRemainder.setIsOk(2);
+            userRemainder.setPlatformNumber(userOrder.getPlatformNumber());
+            userRemainder.insert();
+            //修改订单信息
+            userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
+            userOrder.setPayType(PayType.BALANCE_PAY.getKey());
+            userOrder.setPayTime(new Date());
+            userOrder.updateById();
+        }
         //商家余额
         ShopMoney shopMoney = new ShopMoney();
-        shopMoney.setMoney(userOrder.getOrderRealPrice().toString());
+        shopMoney.setMoney(price.toString());
         shopMoney.setPublishTime(new Date());
         shopMoney.setType(1);
-        shopMoney.setShopId(userOrder.getShopId());
+        shopMoney.setShopId(userOrders.get(0).getShopId());
         shopMoney.insert();
-        //修改订单信息
-        userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
-        userOrder.setPayType(PayType.BALANCE_PAY.getKey());
-        userOrder.setPayTime(new Date());
-        userOrder.updateById();
     }
 
     @Override
-    public String thirdPay(UserOrder userOrder, String subject) {
+    public String thirdPay(List<UserOrder> userOrders) {
+        UserOrder userOrder = userOrders.get(0);
         User user = userService.selectById(userOrder.getUserId());
         UserOrderGoods userOrderGoods = userOrderGoodsService.selectList(new EntityWrapper<UserOrderGoods>().eq(UserOrderGoods.ORDER_ID, userOrder.getId())).get(0);
         ShopGoods shopGoods = shopGoodsService.selectById(userOrderGoods.getGoodsId());
-        Charge charge = PingPPUtil.createCharge(userOrder, user, shopGoods, subject);
+        BigDecimal price = new BigDecimal("0.00");
+        for (UserOrder u : userOrders) {
+            price = price.add(u.getOrderRealPrice());
+        }
+        Charge charge = PingPPUtil.createCharge(userOrder, user, shopGoods, price);
         return charge.toString();
     }
 
