@@ -79,8 +79,7 @@ public class ShopRushBuyActivityController {
 
     @DeleteMapping
     public R delete(ShopRushBuyActivity ent) {
-        ent.setIsDel(1);
-        ent.updateById();
+        ent.deleteById();
         return R.succ();
     }
 

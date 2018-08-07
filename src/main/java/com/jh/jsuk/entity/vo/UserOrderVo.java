@@ -3,6 +3,8 @@ package com.jh.jsuk.entity.vo;
 
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.utils.Distance;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -15,6 +17,9 @@ public class UserOrderVo extends UserOrder {
     private List<UserOrderGoodsVo> goodsList;
     private Double distance;
 
+    @Setter
+    @Getter
+    private String userName;
 
     private ShopGoods shopGoods;
 
