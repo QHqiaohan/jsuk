@@ -279,6 +279,26 @@
     WHERE
     goods_name like concat('%',#{keywords},'%')
   </select>
+  <resultMap id="GoodsVo2" type="com.jh.jsuk.entity.vo.GoodsVo2">
+    <result column="id" property="id"/>
+    <result column="main_image" property="image"/>
+    <result column="goods_name" property="goodsName"/>
+    <result column="price" property="price"/>
+    <result column="sale_amont" property="saleAmount"/>
+  </resultMap>
+  <select id="guessYourLike" resultMap="GoodsVo2">
+    select
+      jsg.id,
+      jsg.main_image,
+      jsg.goods_name,
+      jsg.sale_amont,
+      avg(jsgs.sales_price) as price
+    from js_shop_goods jsg
+      left join js_shop_goods_size jsgs on jsgs.shop_goods_id = jsg.id
+    group by jsg.id
+    order by rand()
+    limit 4
+  </select>
 
 
   <select id="shopGoodsListByModularId" resultMap="GoodsSizeVo">
