@@ -297,7 +297,7 @@
       left join js_shop_goods_size jsgs on jsgs.shop_goods_id = jsg.id
     group by jsg.id
     order by rand()
-    limit 10
+    limit 4
   </select>
 
 
