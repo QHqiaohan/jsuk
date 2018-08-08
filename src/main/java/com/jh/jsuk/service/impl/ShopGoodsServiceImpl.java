@@ -10,6 +10,7 @@ import com.jh.jsuk.entity.Shop;
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
+import com.jh.jsuk.entity.vo.GoodsVo2;
 import com.jh.jsuk.entity.vo.ShopGoodsVo2;
 import com.jh.jsuk.envm.ShopGoodsStatus;
 import com.jh.jsuk.service.ShopGoodsService;
@@ -168,6 +169,11 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     @Override
     public List<GoodsSizeVo> getShopGoodsByKeywords(String keywords) {
         return baseMapper.getShopGoodsByKeywords(keywords);
+    }
+
+    @Override
+    public List<GoodsVo2> guessYourLike() {
+        return baseMapper.guessYourLike();
     }
 
 

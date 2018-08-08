@@ -79,7 +79,7 @@ public class ShopGoodsController {
     @RequestMapping(value = "/getById", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getById(String goodsId) {
         Wrapper<ShopGoods> ew = new MyEntityWrapper<>();
-        if(StrUtil.isBlank(goodsId))
+        if (StrUtil.isBlank(goodsId))
             return R.succ();
         String[] split = goodsId.split(",");
         List<String> list = new ArrayList<>();
@@ -88,7 +88,7 @@ public class ShopGoodsController {
                 list.add(s);
             }
         }
-        ew.in(ShopGoods.ID,list);
+        ew.in(ShopGoods.ID, list);
         return new Result().success(shopGoodsService.selectList(ew));
     }
 
@@ -529,5 +529,11 @@ public class ShopGoodsController {
         shopGoodsSize.setId(sizeId);
         shopGoodsSize.updateById();
         return new Result().success();
+    }
+
+    @ApiOperation("用户端 - 猜你喜欢")
+    @GetMapping(value = "/guessYourLike")
+    public Result guessYourLike() {
+        return new Result().success(shopGoodsService.guessYourLike());
     }
 }
