@@ -6,8 +6,11 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.MarketCommentDao;
 import com.jh.jsuk.entity.MarketComment;
+import com.jh.jsuk.entity.vo.MarketCommentVo;
 import com.jh.jsuk.service.MarketCommentService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -25,5 +28,10 @@ public class MarketCommentServiceImpl extends ServiceImpl<MarketCommentDao, Mark
         wrapper = SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.findCommentByActivityId(page, wrapper, activityId));
         return page;
+    }
+
+    @Override
+    public List<MarketCommentVo> selectMarketCommentVoList(Integer activityId) {
+        return baseMapper.selectMarketCommentVoList(activityId);
     }
 }

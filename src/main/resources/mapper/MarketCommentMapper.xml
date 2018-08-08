@@ -35,6 +35,15 @@
         <association property="user" column="user_id" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"></association>
     </resultMap>
 
+  <select id="selectMarketCommentVoList" resultMap="MarketCommentVo">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    js_market_comment
+    WHERE
+    activity_id = #{activityId}
+  </select>
+
     <select id="findCommentByActivityId" resultMap="MarketCommentVo">
         SELECT
         <include refid="result1"/>

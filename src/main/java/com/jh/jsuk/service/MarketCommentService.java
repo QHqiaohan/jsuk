@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.MarketComment;
+import com.jh.jsuk.entity.vo.MarketCommentVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,4 +19,6 @@ import com.jh.jsuk.entity.MarketComment;
 public interface MarketCommentService extends IService<MarketComment> {
 
     Page findCommentByActivityId(Page page, Wrapper wrapper, Integer activityId);
+
+    List<MarketCommentVo> selectMarketCommentVoList(Integer activityId);
 }
