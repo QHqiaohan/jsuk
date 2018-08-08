@@ -45,21 +45,28 @@ public class MenuController {
 
 
     @RequestMapping(value="/selectMenuList",method = {RequestMethod.POST,RequestMethod.GET})
-    public Result selectMenuList(Page page){
-        Page menuPage=menuService.selectPage(page,new EntityWrapper<Menu>()
+    public Result selectMenuList(){
+        List<Menu> menuList=menuService.selectList(new EntityWrapper<Menu>()
                                                   .orderBy(Menu.ORDER_NUM,false)
         );
-        return new Result().success(menuPage);
+        return new Result().success(menuList);
     }
 
 
     //根据管理员id查询拥有的权限
     @RequestMapping(value="/queryMenuByUid",method = {RequestMethod.POST,RequestMethod.GET})
     public Result queryMenuByUid(@RequestParam(value="menuUserId") Integer userId){
-        System.out.println(userId);
+        if(userId==null){
+            return new Result().erro("请选择管理员");
+        }
         List<Menu> managerUserMenList=menuService.queryMenuByUid(userId);
-
+        System.out.println("size:"+managerUserMenList.size());
         return new Result().success(managerUserMenList);
+    }
+
+
+    public boolean judgeMenu(@RequestParam Integer menuId,@RequestParam Integer userId){
+        return true;
     }
 
 

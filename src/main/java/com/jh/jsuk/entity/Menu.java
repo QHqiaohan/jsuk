@@ -29,7 +29,7 @@ public class Menu extends Model<Menu> {
     /**
      * 菜单名称
      */
-    private String name;
+    private String menuName;
     /**
      * 菜单URL
      */
@@ -77,11 +77,11 @@ public class Menu extends Model<Menu> {
     }
 
     public String getName() {
-        return name;
+        return menuName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String menuName) {
+        this.menuName = menuName;
     }
 
     public String getUrl() {
@@ -170,7 +170,7 @@ public class Menu extends Model<Menu> {
         return "Menu{" +
         "menuId=" + menuId +
         ", parentId=" + parentId +
-        ", name=" + name +
+        ", name=" + menuName +
         ", url=" + url +
         ", perms=" + perms +
         ", type=" + type +

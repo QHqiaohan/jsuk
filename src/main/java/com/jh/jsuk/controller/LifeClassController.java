@@ -101,6 +101,7 @@ public class LifeClassController {
     @RequestMapping(value = "/getActivityByClassId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getActivityByClassId(@RequestParam Integer classId, @RequestParam Integer ModularId) {
         // 封装数据map
+        ModularId=ModularId==null?7:ModularId;
         Map<String, Object> map = new HashMap<>();
 
         Page demandPage = activityService.selectPage(
