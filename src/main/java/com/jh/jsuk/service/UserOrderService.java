@@ -61,6 +61,8 @@ public interface UserOrderService extends IService<UserOrder> {
      */
     String pushAPush(Integer orderId);
 
+    String createServiceCode() throws Exception;
+
     /**
      * 提交订单
      *

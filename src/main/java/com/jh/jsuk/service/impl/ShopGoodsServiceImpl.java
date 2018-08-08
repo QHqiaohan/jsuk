@@ -87,7 +87,7 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     @Override
     public GoodsSizeVo getShopGoodsById(Integer id) {
         GoodsSizeVo vo = baseMapper.getShopGoodsById(id);
-        if(vo != null) {
+        if (vo != null) {
             Shop shop = shopService.selectById(vo.getShopId());
             if (shop != null)
                 vo.setShopName(shop.getShopName());
@@ -147,10 +147,13 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     }
 
     @Override
-    public Page list(Page page, ShopGoodsStatus status, String categoryId, String keyWord, String brandId, Integer shopId) {
+    public Page list(Page page, ShopGoodsStatus status, String categoryId, String keyWord, String brandId, Integer shopId, Integer userType) {
         if (keyWord != null)
             keyWord = "%" + keyWord.trim() + "%";
         List<GoodsSizeVo> list = baseMapper.shopGoodsList(page, status != null ? status.getKey() : null, categoryId, keyWord, brandId, shopId);
+        for (GoodsSizeVo vo : list) {
+            vo.setUserType(userType);
+        }
         return page.setRecords(list);
     }
 

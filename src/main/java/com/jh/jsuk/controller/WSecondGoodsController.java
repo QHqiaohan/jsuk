@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Author:xyl
  * Date:2018/8/7 10:54
- * Description: 二手市场
+ * Description: 后台 - 二手市场
  */
 @RestController
 @RequestMapping("/secondGoods")

@@ -46,13 +46,13 @@ public interface ShopGoodsService extends IService<ShopGoods> {
     Page getIsRecommend(Page page, Wrapper wrapper);
 
     Page getShopList(Page page, Wrapper wrapper, Integer type, Integer attributeId, String name, Integer shopModularId, Integer categoryId, Integer
-            brandId, String address, Integer goodsType, String lowPrice, String highPrice,Integer shopId);
+        brandId, String address, Integer goodsType, String lowPrice, String highPrice, Integer shopId);
 
     void returnStock(Integer goodsId, Integer num);
 
     Page findShopGoodsAndGoodsSizeByShopId(Page page, Wrapper wrapper, Integer shopId);
 
-    Page list(Page page, ShopGoodsStatus status, String categoryId, String keyWord, String brandId, Integer shopId);
+    Page list(Page page, ShopGoodsStatus status, String categoryId, String keyWord, String brandId, Integer shopId, Integer userType);
 
     Page listRecycle(Page page, String categoryId, String kw, String brandId, Integer shopId);
 

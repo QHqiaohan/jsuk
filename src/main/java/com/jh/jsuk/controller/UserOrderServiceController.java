@@ -1,6 +1,7 @@
 package com.jh.jsuk.controller;
 
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
@@ -36,18 +37,18 @@ public class UserOrderServiceController {
     UserOrderServiceService userOrderServiceService;
 
     @GetMapping("/get")
-    public R serviceInfo(Integer id){
+    public R serviceInfo(Integer id) {
         return R.succ(userOrderServiceService.get(id));
     }
 
     @PatchMapping
-    public R edit(UserOrderService userOrderService){
+    public R edit(UserOrderService userOrderService) {
         userOrderServiceService.updateById(userOrderService);
         return R.succ();
     }
 
     @GetMapping("/pageMoney")
-    public R pageMoney(Page page, String status) throws Exception {
+    public R pageMoney(Page page, String status, String kw, String[] date) throws Exception {
         OrderRefundStatus sts = null;
         if (StrUtil.isNotBlank(status) && !"all".equals(status)) {
             sts = EnumUitl.valueOf(OrderRefundStatus.class, status);
@@ -56,6 +57,18 @@ public class UserOrderServiceController {
         wrapper.eq(UserOrderService.TYPE, RefundType.RETURN_MONEY.getKey());
         if (sts != null) {
             wrapper.eq(UserOrderService.STATUS, sts.getKey());
+        }
+        if (kw != null) {
+            wrapper.like(UserOrderService.SERVICE_CODE, "%" + kw.trim() + "%");
+        }
+        String start = null, stop = null;
+        if (date != null && date.length > 0) {
+            start = date[0];
+            stop = date[1];
+        }
+        if (StrUtil.isNotBlank(start) && StrUtil.isNotBlank(stop)) {
+            wrapper.gt(UserOrderService.CREATE_TIME, DateTime.of(start, "yyyy-MM-dd"));
+            wrapper.lt(UserOrderService.CREATE_TIME, DateTime.of(stop, "yyyy-MM-dd"));
         }
         return R.succ(userOrderServiceService.selectPage(page, wrapper));
     }
@@ -67,7 +80,7 @@ public class UserOrderServiceController {
         OrderRefundStatus[] values = OrderRefundStatus.values();
         for (OrderRefundStatus value : values) {
             EntityWrapper<UserOrderService> wrapper = new EntityWrapper<>();
-            wrapper.eq(UserOrderService.STATUS,value.getKey());
+            wrapper.eq(UserOrderService.STATUS, value.getKey());
             wrapper.in(UserOrderService.TYPE, new Integer[]{RefundType.RETURN_GOODS.getKey(), RefundType.CHANGE_GOODS.getKey()});
             int cnt = userOrderServiceService.selectCount(wrapper);
             all += cnt;
@@ -84,7 +97,7 @@ public class UserOrderServiceController {
         OrderRefundStatus[] values = OrderRefundStatus.values();
         for (OrderRefundStatus value : values) {
             EntityWrapper<UserOrderService> wrapper = new EntityWrapper<>();
-            wrapper.eq(UserOrderService.STATUS,value.getKey());
+            wrapper.eq(UserOrderService.STATUS, value.getKey());
 //            wrapper.in(UserOrderService.TYPE, new Integer[]{RefundType.RETURN_GOODS.getKey(), RefundType.CHANGE_GOODS.getKey()});
             wrapper.eq(UserOrderService.TYPE, RefundType.RETURN_MONEY.getKey());
             int cnt = userOrderServiceService.selectCount(wrapper);
@@ -96,7 +109,7 @@ public class UserOrderServiceController {
     }
 
     @GetMapping("/page")
-    public R page(Page page, String status) throws Exception {
+    public R page(Page page, String status, String kw, String[] date) throws Exception {
         OrderRefundStatus sts = null;
         if (StrUtil.isNotBlank(status) && !"all".equals(status)) {
             sts = EnumUitl.valueOf(OrderRefundStatus.class, status);
@@ -106,6 +119,19 @@ public class UserOrderServiceController {
         if (sts != null) {
             wrapper.eq(UserOrderService.STATUS, sts.getKey());
         }
+        if (kw != null) {
+            wrapper.like(UserOrderService.SERVICE_CODE, "%" + kw.trim() + "%");
+        }
+        String start = null, stop = null;
+        if (date != null && date.length > 0) {
+            start = date[0];
+            stop = date[1];
+        }
+        if (StrUtil.isNotBlank(start) && StrUtil.isNotBlank(stop)) {
+            wrapper.gt(UserOrderService.CREATE_TIME, DateTime.of(start, "yyyy-MM-dd"));
+            wrapper.lt(UserOrderService.CREATE_TIME, DateTime.of(stop, "yyyy-MM-dd"));
+        }
+        wrapper.orderBy(UserOrderService.CREATE_TIME, false);
         return R.succ(userOrderServiceService.selectPage(page, wrapper));
     }
 

@@ -5,6 +5,7 @@ import com.jh.jsuk.dao.UserOrderServiceDao;
 import com.jh.jsuk.entity.UserOrderService;
 import com.jh.jsuk.entity.vo.UserOrderServiceVo;
 import com.jh.jsuk.service.UserOrderServiceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,5 +22,14 @@ public class UserOrderServiceServiceImpl extends ServiceImpl<UserOrderServiceDao
     @Override
     public UserOrderServiceVo get(Integer id) {
         return baseMapper.getVo(id);
+    }
+
+    @Autowired
+    com.jh.jsuk.service.UserOrderService orderService;
+
+    @Override
+    public void newService(UserOrderService userOrderService) throws Exception {
+        userOrderService.setServiceCode(orderService.createServiceCode());
+        userOrderService.insert();
     }
 }
