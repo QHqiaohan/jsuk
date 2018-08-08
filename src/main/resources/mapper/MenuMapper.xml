@@ -21,4 +21,21 @@
         menu_id, parent_id, name, url, perms, type, icon, order_num, gmt_create, gmt_modified
     </sql>
 
+  <select id="queryMenuByUid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+          menu.*
+    from
+          js_manager_user user
+    join
+          js_sys_menu menu
+    join
+          js_sys_menu_user mu
+    on
+          user.id=mu.user_id
+    and
+          mu.menu_id=menu.menu_id
+    where
+          user.id=#{uid}
+  </select>
+
 </mapper>

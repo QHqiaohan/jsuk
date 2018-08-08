@@ -99,20 +99,9 @@ public class LifeClassController {
 
     @ApiOperation("便捷生活-首页婚车列表")
     @RequestMapping(value = "/getActivityByClassId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getActivityByClassId(@RequestParam Integer classId, Integer ModularId) {
+    public Result getActivityByClassId(@RequestParam Integer classId, @RequestParam Integer ModularId) {
         // 封装数据map
         Map<String, Object> map = new HashMap<>();
-       /* // 商家方
-        Page providePage = activityService.selectPage(
-                new Page<>(1, 3), new EntityWrapper<Activity>()
-                        .eq(Activity.MODULAR_ID,ModularId)
-                        .eq(Activity.ACTIVITY_TYPE,1)   //0:普通活动，1：共享婚车活动
-                        .eq(Activity.IS_RECOMMEND, 1)
-                        .eq(Activity.IS_DEL, 0)
-                        .eq(Activity.STATUS, 1)      //1=商家,2=需求
-                        .orderBy(Activity.RANK, false));
-        map.put("provide", providePage.getRecords());
-        // 需求方*/
 
         Page demandPage = activityService.selectPage(
                 new Page<>(1, 3),

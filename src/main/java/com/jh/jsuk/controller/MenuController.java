@@ -55,10 +55,11 @@ public class MenuController {
 
     //根据管理员id查询拥有的权限
     @RequestMapping(value="/queryMenuByUid",method = {RequestMethod.POST,RequestMethod.GET})
-    public Result queryMenuByUid(@RequestParam Integer uid){
-        System.out.println(uid);
+    public Result queryMenuByUid(@RequestParam(value="menuUserId") Integer userId){
+        System.out.println(userId);
+        List<Menu> managerUserMenList=menuService.queryMenuByUid(userId);
 
-        return new Result().success();
+        return new Result().success(managerUserMenList);
     }
 
 
