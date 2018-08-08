@@ -2,387 +2,389 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jh.jsuk.dao.ShopGoodsDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopGoods">
-        <id column="id" property="id"/>
-        <result column="shop_id" property="shopId"/>
-        <result column="attribute_id" property="attributeId"/>
-        <result column="shop_modular_id" property="shopModularId"/>
-        <result column="brand_id" property="brandId"/>
-        <result column="is_recommend" property="isRecommend"/>
-        <result column="goods_label_id" property="goodsLabelId"/>
-        <result column="goods_name" property="goodsName"/>
-        <result column="goods_img" property="goodsImg"/>
-        <result column="goods_desc" property="goodsDesc"/>
-        <result column="status" property="status"/>
-        <result column="is_del" property="isDel"/>
-        <result column="create_time" property="createTime"/>
-        <result column="update_time" property="updateTime"/>
-        <result column="main_image" property="mainImage"/>
-        <result column="goods_break" property="goodsBreak"/>
-        <result column="sale_amont" property="saleAmont"/>
-        <result column="goods_type" property="goodsType"/>
-        <result column="category_id" property="categoryId"/>
-        <result column="address" property="address"/>
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShopGoods">
+    <id column="id" property="id"/>
+    <result column="shop_id" property="shopId"/>
+    <result column="attribute_id" property="attributeId"/>
+    <result column="shop_modular_id" property="shopModularId"/>
+    <result column="brand_id" property="brandId"/>
+    <result column="is_recommend" property="isRecommend"/>
+    <result column="goods_label_id" property="goodsLabelId"/>
+    <result column="goods_name" property="goodsName"/>
+    <result column="goods_img" property="goodsImg"/>
+    <result column="goods_desc" property="goodsDesc"/>
+    <result column="status" property="status"/>
+    <result column="is_del" property="isDel"/>
+    <result column="create_time" property="createTime"/>
+    <result column="update_time" property="updateTime"/>
+    <result column="main_image" property="mainImage"/>
+    <result column="goods_break" property="goodsBreak"/>
+    <result column="sale_amont" property="saleAmont"/>
+    <result column="goods_type" property="goodsType"/>
+    <result column="category_id" property="categoryId"/>
+    <result column="address" property="address"/>
 
-    </resultMap>
+  </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, shop_id, attribute_id, shop_modular_id, is_recommend, goods_label_id, goods_name, goods_img, goods_desc, status, is_del, create_time,
-        update_time, main_image, goods_break, sale_amont, goods_type, category_id, brand_id, address
-    </sql>
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+    id, shop_id, attribute_id, shop_modular_id, is_recommend, goods_label_id, goods_name, goods_img, goods_desc, status, is_del, create_time,
+    update_time, main_image, goods_break, sale_amont, goods_type, category_id, brand_id, address
+  </sql>
 
-    <resultMap id="GoodsSalesPriceVo" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
-        <association property="salesPrice" column="id"
-                     select="com.jh.jsuk.dao.ShopGoodsSizeDao.getSalesPriceByGoodsId"/>
-    </resultMap>
+  <resultMap id="GoodsSalesPriceVo" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
+    <association property="salesPrice" column="id"
+                 select="com.jh.jsuk.dao.ShopGoodsSizeDao.getSalesPriceByGoodsId"/>
+  </resultMap>
 
-    <select id="findShopGoodsByModularId" resultMap="GoodsSalesPriceVo">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM
-        js_shop_goods
-        WHERE
-        is_recommend = '1'
-        AND `status` = '1'
-        AND not is_del
-        AND shop_modular_id = #{modularId}
-        ORDER BY
-        sale_amont DESC
-        LIMIT 0,
-        4
-    </select>
+  <select id="findShopGoodsByModularId" resultMap="GoodsSalesPriceVo">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    js_shop_goods
+    WHERE
+    is_recommend = '1'
+    AND `status` = '1'
+    AND not is_del
+    AND shop_modular_id = #{modularId}
+    ORDER BY
+    sale_amont DESC
+    LIMIT 0,
+    4
+  </select>
 
-    <select id="shopGoodsListByAttributeId" resultMap="GoodsSalesPriceVo">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM
-        js_shop_goods
-        WHERE
-        `status` = '1'
-        AND not is_del
-        and shop_id = #{shopId}
-        <if test="attributeId != null ">
-            AND attribute_id = #{attributeId}
-        </if>
-        ORDER BY
-        sale_amont DESC
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
+  <select id="shopGoodsListByAttributeId" resultMap="GoodsSalesPriceVo">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    js_shop_goods
+    WHERE
+    `status` = '1'
+    AND not is_del
+    and shop_id = #{shopId}
+    <if test="attributeId != null ">
+      AND attribute_id = #{attributeId}
+    </if>
+    ORDER BY
+    sale_amont DESC
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
 
-    <select id="getShopGoodsByLikeName" resultMap="GoodsSalesPriceVo">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM
-        js_shop_goods
-        WHERE
-        `status` = '1'
-        AND not is_del
-        AND goods_name LIKE CONCAT('%', #{name}, '%')
-        ORDER BY
-        sale_amont DESC
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
+  <select id="getShopGoodsByLikeName" resultMap="GoodsSalesPriceVo">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    js_shop_goods
+    WHERE
+    `status` = '1'
+    AND not is_del
+    AND goods_name LIKE CONCAT('%', #{name}, '%')
+    ORDER BY
+    sale_amont DESC
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
 
-    <resultMap id="GoodsSalesPriceVoT" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
-        <result column="sales_price" property="salesPrice"/>
-        <result column="original_price" property="originalPrice"/>
-    </resultMap>
+  <resultMap id="GoodsSalesPriceVoT" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
+    <result column="sales_price" property="salesPrice"/>
+    <result column="original_price" property="originalPrice"/>
+  </resultMap>
 
-    <select id="getShopGoodsBy" resultMap="GoodsSalesPriceVoT">
-        SELECT
-        sg.*,sgs.sales_price
-        FROM
-        js_shop_goods sg
-        LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
-        WHERE
-        sg.status = 1
-        and sg.is_del = 0
-        <!-- and sg.shop_id = #{shopId}-->
-        <if test="type == 2">
-            ORDER BY
-            sg.sale_amont DESC
-        </if>
-        <if test="type == 3">
-            and sg.goods_type = 3
-            ORDER BY
-            sg.create_time DESC
-        </if>
-        <if test="type == null">
-            ORDER BY
-            sg.create_time
-        </if>
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
+  <select id="getShopGoodsBy" resultMap="GoodsSalesPriceVoT">
+    SELECT
+    sg.*,sgs.sales_price
+    FROM
+    js_shop_goods sg
+    LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
+    WHERE
+    sg.status = 1
+    and sg.is_del = 0
+    <!-- and sg.shop_id = #{shopId}-->
+    <if test="type == 2">
+      ORDER BY
+      sg.sale_amont DESC
+    </if>
+    <if test="type == 3">
+      and sg.goods_type = 3
+      ORDER BY
+      sg.create_time DESC
+    </if>
+    <if test="type == null">
+      ORDER BY
+      sg.create_time
+    </if>
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
 
-    <select id="getShopGoodsOrderBySalesPrice" resultMap="GoodsSalesPriceVoT">
-        SELECT
-        sg.*,sgs.sales_price
-        FROM
-        js_shop_goods sg
-        LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
-        WHERE
-        sg.status = 1
-        and sg.is_del = 0
-        <!--and sg.shop_id = #{shopId}-->
-        <if test="type == 1">
-            ORDER BY
-            sgs.sales_price + 0 DESC
-        </if>
-        <if test="type == -1">
-            ORDER BY
-            sgs.sales_price + 0
-        </if>
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
+  <select id="getShopGoodsOrderBySalesPrice" resultMap="GoodsSalesPriceVoT">
+    SELECT
+    sg.*,sgs.sales_price
+    FROM
+    js_shop_goods sg
+    LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
+    WHERE
+    sg.status = 1
+    and sg.is_del = 0
+    <!--and sg.shop_id = #{shopId}-->
+    <if test="type == 1">
+      ORDER BY
+      sgs.sales_price + 0 DESC
+    </if>
+    <if test="type == -1">
+      ORDER BY
+      sgs.sales_price + 0
+    </if>
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
 
-    <select id="getShopGoodsOnCategoryBy" resultMap="GoodsSalesPriceVoT">
-        SELECT
-        sg.*,sgs.sales_price
-        FROM
-        js_shop_goods sg
-        LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
-        WHERE sg.category_id = #{categoryId}
-        and sg.status = 1
-        and not sg.is_del
-        <if test="type == 1">
-            ORDER BY
-            sgs.sales_price + 0 DESC
-        </if>
-        <if test="type == -1">
-            ORDER BY
-            sgs.sales_price + 0
-        </if>
-        <if test="type == 2">
-            ORDER BY
-            sg.sale_amont DESC
-        </if>
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
+  <select id="getShopGoodsOnCategoryBy" resultMap="GoodsSalesPriceVoT">
+    SELECT
+    sg.*,sgs.sales_price
+    FROM
+    js_shop_goods sg
+    LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
+    WHERE sg.category_id = #{categoryId}
+    and sg.status = 1
+    and not sg.is_del
+    <if test="type == 1">
+      ORDER BY
+      sgs.sales_price + 0 DESC
+    </if>
+    <if test="type == -1">
+      ORDER BY
+      sgs.sales_price + 0
+    </if>
+    <if test="type == 2">
+      ORDER BY
+      sg.sale_amont DESC
+    </if>
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
 
-    <select id="getShopGoodsByCategoryId" resultMap="GoodsSalesPriceVoT">
-        SELECT
-        sg.*,sgs.sales_price
-        FROM
-        js_shop_goods sg
-        LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
-        WHERE sg.category_id = #{categoryId}
-        and sg.status = 1
-        and not sg.is_del
-        ORDER BY sg.sale_amont DESC
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
+  <select id="getShopGoodsByCategoryId" resultMap="GoodsSalesPriceVoT">
+    SELECT
+    sg.*,sgs.sales_price
+    FROM
+    js_shop_goods sg
+    LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
+    WHERE sg.category_id = #{categoryId}
+    and sg.status = 1
+    and not sg.is_del
+    ORDER BY sg.sale_amont DESC
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
 
-    <select id="getShopGoodsByServiceOrPrice" resultMap="GoodsSalesPriceVoT">
-        SELECT
-        sg.*,sgs.sales_price
-        FROM
-        js_shop_goods sg
-        LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
-        where sg.category_id = #{categoryId}
-        <if test="goodsType != null ">
-            AND sg.goods_type = #{goodsType}
-        </if>
-        <if test="lowPrice != null">
-            <if test="highPrice != null ">
-                AND (sgs.sales_price BETWEEN #{lowPrice} AND #{highPrice})
-            </if>
-        </if>
-        ORDER BY sg.sale_amont DESC
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
-
-
-    <select id="getShopList" resultMap="GoodsSalesPriceVoT">
-        SELECT
-        sg.*,sgs.sales_price
-        FROM
-        js_shop_goods sg
-        LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
-        where
-        sg.status = 1
-        AND not sg.is_del
-        and sgs.stock > 0
-        <if test="shopId != null">
-            AND sg.shop_id = #{shopId}
-        </if>
-        <if test="attributeId != null">
-            AND sg.attribute_id = #{attributeId}
-        </if>
-        <if test="shopModularId != null">
-            AND sg.shop_modular_id = #{shopModularId}
-        </if>
-        <if test="categoryId != null">
-            AND sg.category_id = #{categoryId}
-        </if>
-        <if test="brandId != null">
-            AND sg.brand_id = #{brandId}
-        </if>
-        <if test="goodsType != null ">
-            AND sg.goods_type = #{goodsType}
-        </if>
-        <if test="lowPrice != null">
-            <if test="highPrice != null ">
-                AND (sgs.sales_price BETWEEN #{lowPrice} AND #{highPrice})
-            </if>
-        </if>
-        <if test="name != null">
-            AND sg.goods_name LIKE CONCAT('%', #{name}, '%')
-        </if>
-        <if test="address != null">
-            AND sg.address LIKE CONCAT('%', #{address}, '%')
-        </if>
-        <if test="type == 1">
-            ORDER BY
-            sgs.sales_price + 0 DESC
-        </if>
-        <if test="type == 0">
-            ORDER BY
-            sgs.sales_price + 0
-        </if>
-        <if test="type == 2">
-            ORDER BY
-            sg.sale_amont DESC
-        </if>
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
-
-    <resultMap id="GoodsSizeVo" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
-      <association property="categoryInfo" column="category_id" select="com.jh.jsuk.dao.GoodsCategoryDao.selectById"/>
-      <collection property="shopGoodsSize" column="id"
-                     select="com.jh.jsuk.dao.ShopGoodsSizeDao.getGoodsSizeByGoodsId"></collection>
-    </resultMap>
+  <select id="getShopGoodsByServiceOrPrice" resultMap="GoodsSalesPriceVoT">
+    SELECT
+    sg.*,sgs.sales_price
+    FROM
+    js_shop_goods sg
+    LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
+    where sg.category_id = #{categoryId}
+    <if test="goodsType != null ">
+      AND sg.goods_type = #{goodsType}
+    </if>
+    <if test="lowPrice != null">
+      <if test="highPrice != null ">
+        AND (sgs.sales_price BETWEEN #{lowPrice} AND #{highPrice})
+      </if>
+    </if>
+    ORDER BY sg.sale_amont DESC
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
 
 
-    <!--首页-分类-点击三级分类-商品搜索-->
-    <select id="getShopGoodsByKeywords" parameterType="java.lang.String" resultMap="GoodsSizeVo">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM js_shop_goods
-        WHERE
-        goods_name like concat('%',#{keywords},'%')
-    </select>
+  <select id="getShopList" resultMap="GoodsSalesPriceVoT">
+    SELECT
+    sg.*,sgs.sales_price
+    FROM
+    js_shop_goods sg
+    LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
+    where
+    sg.status = 1
+    AND not sg.is_del
+    and sgs.stock > 0
+    <if test="shopId != null">
+      AND sg.shop_id = #{shopId}
+    </if>
+    <if test="attributeId != null">
+      AND sg.attribute_id = #{attributeId}
+    </if>
+    <if test="shopModularId != null">
+      AND sg.shop_modular_id = #{shopModularId}
+    </if>
+    <if test="categoryId != null">
+      AND sg.category_id = #{categoryId}
+    </if>
+    <if test="brandId != null">
+      AND sg.brand_id = #{brandId}
+    </if>
+    <if test="goodsType != null ">
+      AND sg.goods_type = #{goodsType}
+    </if>
+    <if test="lowPrice != null">
+      <if test="highPrice != null ">
+        AND (sgs.sales_price BETWEEN #{lowPrice} AND #{highPrice})
+      </if>
+    </if>
+    <if test="name != null">
+      AND sg.goods_name LIKE CONCAT('%', #{name}, '%')
+    </if>
+    <if test="address != null">
+      AND sg.address LIKE CONCAT('%', #{address}, '%')
+    </if>
+    <if test="type == 1">
+      ORDER BY
+      sgs.sales_price + 0 DESC
+    </if>
+    <if test="type == 0">
+      ORDER BY
+      sgs.sales_price + 0
+    </if>
+    <if test="type == 2">
+      ORDER BY
+      sg.sale_amont DESC
+    </if>
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
 
-
-    <select id="shopGoodsListByModularId" resultMap="GoodsSizeVo">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM js_shop_goods
-        WHERE
-        shop_modular_id = #{modularId}
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
-
-    <select id="getShopGoodsById" resultMap="GoodsSizeVo">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM js_shop_goods
-        WHERE
-        id = #{id}
-    </select>
-
-    <select id="getShopGoodsByBrandId" resultMap="GoodsSalesPriceVo">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM js_shop_goods
-        WHERE
-        brand_id = #{brandId}
-        ORDER BY sale_amont DESC
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
-
-    <select id="getIsRecommend" resultMap="GoodsSalesPriceVo">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM js_shop_goods
-        WHERE
-        is_recommend = 1
-        ORDER BY sale_amont DESC
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
-
-    <resultMap id="ShopGoodsVoT" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
-        <association property="shopGoodsSize" column="id"
-                     select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></association>
-    </resultMap>
-
-  <resultMap id="ShopGoodsVoT2" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
+  <resultMap id="GoodsSizeVo" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
+    <association property="categoryInfo" column="category_id" select="com.jh.jsuk.dao.GoodsCategoryDao.selectById"/>
     <collection property="shopGoodsSize" column="id"
-                 select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></collection>
+                select="com.jh.jsuk.dao.ShopGoodsSizeDao.getGoodsSizeByGoodsId"></collection>
   </resultMap>
 
 
-    <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="ShopGoodsVoT">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM js_shop_goods
-        WHERE
-        shop_id = #{shopId}
-        AND is_del=0
-        <where>
-            ${ew.sqlSegment}
-        </where>
-    </select>
+  <!--首页-分类-点击三级分类-商品搜索-->
+  <select id="getShopGoodsByKeywords" parameterType="java.lang.String" resultMap="GoodsSizeVo">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM js_shop_goods
+    WHERE
+    goods_name like concat('%',#{keywords},'%')
+  </select>
 
-    <resultMap id="shopGoodsVo2" type="com.jh.jsuk.entity.vo.ShopGoodsVo2" extends="BaseResultMap">
-        <result column="price" property="price"/>
-        <association property="brandInfo" column="brand_id" select="com.jh.jsuk.dao.GoodsBrandDao.selectById"/>
-        <association property="categoryInfo" column="category_id" select="com.jh.jsuk.dao.GoodsCategoryDao.selectById"/>
-    </resultMap>
-    <select id="shopGoodsList" resultMap="GoodsSizeVo">
-        select sg.*
-        from js_shop_goods sg
-        where sg.is_del != 1 and sg.shop_id = #{shopId}
-        <if test="keyWord != null">
-            and sg.goods_name like #{keyWord}
-        </if>
-        <if test="categoryId != null">
-            and sg.category_id = #{categoryId}
-        </if>
-        <if test="brandId">
-            and sg.brand_id = #{brandId}
-        </if>
-        <if test="status != null">
-            and sg.status = #{status}
-        </if>
-    </select>
-    <select id="shopGoodsRecycleList" resultMap="shopGoodsVo2">
-        select * from js_shop_goods
-        where not is_del and shop_id = #{shopId}
-        <if test="keyWord != null">
-            and goods_name like #{keyWord}
-        </if>
-        <if test="categoryId != null">
-            and category_id = #{categoryId}
-        </if>
-        <if test="brandId">
-            and brand_id = #{brandId}
-        </if>
-    </select>
 
+  <select id="shopGoodsListByModularId" resultMap="GoodsSizeVo">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM js_shop_goods
+    WHERE
+    shop_modular_id = #{modularId}
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
+
+  <select id="getShopGoodsById" resultMap="GoodsSizeVo">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM js_shop_goods
+    WHERE
+    id = #{id}
+  </select>
+
+  <select id="getShopGoodsByBrandId" resultMap="GoodsSalesPriceVo">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM js_shop_goods
+    WHERE
+    brand_id = #{brandId}
+    ORDER BY sale_amont DESC
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
+
+  <select id="getIsRecommend" resultMap="GoodsSalesPriceVo">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM js_shop_goods
+    WHERE
+    is_recommend = 1
+    ORDER BY sale_amont DESC
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
+
+  <resultMap id="ShopGoodsVoT" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
+    <association property="shopGoodsSize" column="id"
+                 select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></association>
+  </resultMap>
+
+  <resultMap id="ShopGoodsVoT2" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
+    <collection property="shopGoodsSize" column="id"
+                select="com.jh.jsuk.dao.ShopGoodsSizeDao.selectSizeByGoodsId"></collection>
+  </resultMap>
+
+
+  <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="ShopGoodsVoT">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM js_shop_goods
+    WHERE
+    shop_id = #{shopId}
+    AND is_del=0
+    <where>
+      ${ew.sqlSegment}
+    </where>
+  </select>
+
+  <resultMap id="shopGoodsVo2" type="com.jh.jsuk.entity.vo.ShopGoodsVo2" extends="BaseResultMap">
+    <result column="price" property="price"/>
+    <association property="brandInfo" column="brand_id" select="com.jh.jsuk.dao.GoodsBrandDao.selectById"/>
+    <association property="categoryInfo" column="category_id" select="com.jh.jsuk.dao.GoodsCategoryDao.selectById"/>
+  </resultMap>
+  <select id="shopGoodsList" resultMap="GoodsSizeVo">
+    select sg.*
+    from js_shop_goods sg
+    where sg.is_del != 1
+    <if test="shopId != null">
+      and sg.shop_id = #{shopId}
+    </if>
+    <if test="keyWord != null">
+      and sg.goods_name like #{keyWord}
+    </if>
+    <if test="categoryId != null">
+      and sg.category_id = #{categoryId}
+    </if>
+    <if test="brandId">
+      and sg.brand_id = #{brandId}
+    </if>
+    <if test="status != null">
+      and sg.status = #{status}
+    </if>
+  </select>
+  <select id="shopGoodsRecycleList" resultMap="shopGoodsVo2">
+    select * from js_shop_goods
+    where not is_del and shop_id = #{shopId}
+    <if test="keyWord != null">
+      and goods_name like #{keyWord}
+    </if>
+    <if test="categoryId != null">
+      and category_id = #{categoryId}
+    </if>
+    <if test="brandId">
+      and brand_id = #{brandId}
+    </if>
+  </select>
 
 
 </mapper>
