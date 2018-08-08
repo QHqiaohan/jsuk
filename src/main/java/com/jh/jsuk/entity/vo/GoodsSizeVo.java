@@ -30,8 +30,10 @@ public class GoodsSizeVo extends ShopGoods {
 
     private GoodsCategory categoryInfo;
 
+    private Integer userType;
+
     public void addRushBuyInfo(RushBuyVo vo) {
-        if(vo == null)
+        if (vo == null)
             return;
         vo.checkStatus();
         rushBuyInfo = vo;

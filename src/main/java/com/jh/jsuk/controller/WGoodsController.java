@@ -50,7 +50,7 @@ public class WGoodsController {
         if (status != null && !"all".equals(status)) {
             goodsStatus = EnumUitl.toEnum(ShopGoodsStatus.class, status, "getShortKey");
         }
-        return R.succ(shopGoodsService.list(page, goodsStatus, categoryId, kw, brandId, session.getShopId()));
+        return R.succ(shopGoodsService.list(page, goodsStatus, categoryId, kw, brandId, session.getUserType().getKey() == 4 ? null : session.getShopId(), session.getUserType().getKey()));
     }
 
     @GetMapping("/listRecycle")
@@ -85,7 +85,7 @@ public class WGoodsController {
     }
 
     @PostMapping("/evaluate")
-    public R updateById(Integer id,Integer isShow){
+    public R updateById(Integer id, Integer isShow) {
         GoodsEvaluate evaluate = new GoodsEvaluate();
         evaluate.setId(id);
         evaluate.setIsShow(isShow);
@@ -97,21 +97,36 @@ public class WGoodsController {
     public R allCount() {
         Map<String, Object> map = new HashMap<>();
         EntityWrapper<ShopGoods> wrapper = new EntityWrapper<>();
-        wrapper.ne(ShopGoods.IS_DEL, 1)
-            .eq(ShopGoods.STATUS, ShopGoodsStatus.WAIT_CONFIRM.getKey())
-            .eq(ShopGoods.SHOP_ID, session.getShopId());
+        if (session.getUserType().getKey() == 4) {
+            wrapper.ne(ShopGoods.IS_DEL, 1)
+                .eq(ShopGoods.STATUS, ShopGoodsStatus.WAIT_CONFIRM.getKey());
+        } else {
+            wrapper.ne(ShopGoods.IS_DEL, 1)
+                .eq(ShopGoods.STATUS, ShopGoodsStatus.WAIT_CONFIRM.getKey())
+                .eq(ShopGoods.SHOP_ID, session.getShopId());
+        }
         int waitConfirm = shopGoodsService.selectCount(wrapper);
 
         EntityWrapper<ShopGoods> wrapper1 = new EntityWrapper<>();
-        wrapper1.ne(ShopGoods.IS_DEL, 1)
-            .eq(ShopGoods.STATUS, ShopGoodsStatus.UPPER.getKey())
-            .eq(ShopGoods.SHOP_ID, session.getShopId());
+        if (session.getUserType().getKey() == 4) {
+            wrapper1.ne(ShopGoods.IS_DEL, 1)
+                .eq(ShopGoods.STATUS, ShopGoodsStatus.UPPER.getKey());
+        } else {
+            wrapper1.ne(ShopGoods.IS_DEL, 1)
+                .eq(ShopGoods.STATUS, ShopGoodsStatus.UPPER.getKey())
+                .eq(ShopGoods.SHOP_ID, session.getShopId());
+        }
         int upper = shopGoodsService.selectCount(wrapper1);
 
         EntityWrapper<ShopGoods> wrapper2 = new EntityWrapper<>();
-        wrapper2.ne(ShopGoods.IS_DEL, 1)
-            .eq(ShopGoods.STATUS, ShopGoodsStatus.LOWER.getKey())
-            .eq(ShopGoods.SHOP_ID, session.getShopId());
+        if (session.getUserType().getKey() == 4) {
+            wrapper2.ne(ShopGoods.IS_DEL, 1)
+                .eq(ShopGoods.STATUS, ShopGoodsStatus.LOWER.getKey());
+        } else {
+            wrapper2.ne(ShopGoods.IS_DEL, 1)
+                .eq(ShopGoods.STATUS, ShopGoodsStatus.LOWER.getKey())
+                .eq(ShopGoods.SHOP_ID, session.getShopId());
+        }
         int lower = shopGoodsService.selectCount(wrapper2);
 
         map.put(ShopGoodsStatus.WAIT_CONFIRM.getShortKey(), waitConfirm);
