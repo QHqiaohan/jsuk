@@ -28,6 +28,7 @@ import com.jh.jsuk.utils.Date2;
 import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.PingPPUtil;
 import com.jh.jsuk.utils.ShopJPushUtils;
+import com.pingplusplus.exception.ChannelException;
 import com.pingplusplus.model.Charge;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -623,7 +625,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public String thirdPay(List<UserOrder> userOrders) {
+    public String thirdPay(List<UserOrder> userOrders) throws UnsupportedEncodingException, ChannelException {
         UserOrder userOrder = userOrders.get(0);
         User user = userService.selectById(userOrder.getUserId());
         UserOrderGoods userOrderGoods = userOrderGoodsService.selectList(new EntityWrapper<UserOrderGoods>().eq(UserOrderGoods.ORDER_ID, userOrder.getId())).get(0);

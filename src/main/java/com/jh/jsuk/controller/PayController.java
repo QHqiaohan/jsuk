@@ -27,6 +27,7 @@ import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import com.jh.jsuk.utils.ServerResponse;
 import com.jh.jsuk.utils.UuidUtil;
+import com.pingplusplus.exception.ChannelException;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,7 @@ import javax.annotation.Resource;
 import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -590,7 +592,7 @@ public class PayController {
     @ApiOperation(value = "用户端-支付")
     @RequestMapping(value = "/balancePay", method = {RequestMethod.POST, RequestMethod.GET})
     public Result balancePay(@ApiParam(name = "orderId", value = "订单Id") String orderId,
-                             @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信-4银行卡") Integer payType) throws MessageException {
+                             @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信公众号-4微信APP-5银行卡") Integer payType) throws MessageException, UnsupportedEncodingException, ChannelException {
         String[] ids = orderId.split(",");
         List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
         switch (payType) {
@@ -607,14 +609,20 @@ public class PayController {
                     u.setPayType(PayType.ALI_PAY.getKey());
                 }
                 return new Result().success(userOrderService.thirdPay(userOrders));
-            //微信
+            //微信公众号
             case 3:
                 for (UserOrder u : userOrders) {
-                    u.setPayType(PayType.WECHAT_PAY.getKey());
+                    u.setPayType(PayType.WECHAT_PUB_PAY.getKey());
+                }
+                return new Result().success(userOrderService.thirdPay(userOrders));
+            //微信APP
+            case 4:
+                for (UserOrder u : userOrders) {
+                    u.setPayType(PayType.WECHAT_APP_PAY.getKey());
                 }
                 return new Result().success(userOrderService.thirdPay(userOrders));
             //银行卡
-            case 4:
+            case 5:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.BANK_PAY.getKey());
                 }
@@ -630,6 +638,6 @@ public class PayController {
                            @ApiParam(name = "status", value = "支付状态 0失败 1成功") Integer status) {
         String[] ids = orderId.split(",");
         List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
-        return new Result().success(userOrderService.payComplete(userOrders,status));
+        return new Result().success(userOrderService.payComplete(userOrders, status));
     }
 }
