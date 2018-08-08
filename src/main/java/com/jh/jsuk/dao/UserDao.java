@@ -33,7 +33,7 @@ public interface UserDao extends BaseMapper<User> {
     @Select("select nick_name from js_user where id = #{id}")
     String userName(Integer id);
 
-    @Select("select nick_name,head_img,phone where id = #{id}")
+    @Select("select nick_name,head_img,phone from js_user where id = #{id}")
     UserVo2 userVo2(Integer id);
 
 }
