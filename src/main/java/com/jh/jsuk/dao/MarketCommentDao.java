@@ -3,6 +3,7 @@ package com.jh.jsuk.dao;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.jh.jsuk.entity.MarketComment;
+import com.jh.jsuk.entity.vo.MarketCommentVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 
@@ -21,4 +22,6 @@ public interface MarketCommentDao extends BaseMapper<MarketComment> {
     Integer getCommentCount(Integer activityId);
 
     List findCommentByActivityId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("activityId") Integer activityId);
+
+    List<MarketCommentVo> selectMarketCommentVoList(@Param("activityId") Integer activityId);
 }

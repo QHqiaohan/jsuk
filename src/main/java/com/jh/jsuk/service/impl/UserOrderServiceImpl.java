@@ -35,7 +35,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.AttributeList;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -288,6 +287,28 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             redisUtils.setStr(key, String.valueOf(count));
         }
         return RandomUtil.randomNumbers(6) + String.format("%06d", count);
+    }
+
+    @Autowired
+    UserOrderServiceService userOrderServiceService;
+
+    /**
+     * 生成服务单号
+     *
+     * @return
+     */
+    @Override
+    public synchronized String createServiceCode() throws Exception {
+        String key = RedisKeys.SHOP_GOODS_ORDER_SERVICE_CODE;
+        Long count = null;
+        if (redisUtils.hasKey(key)) {
+            count = redisUtils.autoIncrement(key);
+        }
+        if (count == null) {
+            count = (long) userOrderServiceService.selectCount(null);
+            redisUtils.setStr(key, String.valueOf(count));
+        }
+        return String.format("%06d", count);
     }
 
     /**

@@ -16,4 +16,6 @@ public interface UserOrderServiceService extends IService<UserOrderService> {
 
     UserOrderServiceVo get(Integer id);
 
+    void newService(UserOrderService userOrderService) throws Exception;
+
 }

@@ -41,6 +41,11 @@ public class RedisKeys {
     public static final String SHOP_GOODS_ORDER_NUM = "shop_goods_order_num";
 
     /**
+     * 订单号
+     */
+    public static final String SHOP_GOODS_ORDER_SERVICE_CODE = "shop_goods_order_service_code";
+
+    /**
      * 阻止重复提交
      */
     public static final String PREVENT_RE_SUBMIT = "prevent_re_submit";

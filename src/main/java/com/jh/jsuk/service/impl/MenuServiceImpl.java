@@ -6,6 +6,8 @@ import com.jh.jsuk.service.MenuService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 菜单管理 服务实现类
@@ -17,4 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuService {
 
+    @Override
+    public List<Menu> queryMenuByUid(Integer uid) {
+        return baseMapper.queryMenuByUid(uid);
+    }
 }

@@ -4,7 +4,7 @@ package com.jh.jsuk.controller;
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.enums.SqlLike;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
+
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
@@ -394,7 +394,7 @@ public class ActivityController {
                 .orderBy(Banner.SORT, false));
         map.put("banner", bannerList);
         /**
-         * 获取二手市场商品(活动)列表
+         * 获取二手市场商品列表
          */
         MyEntityWrapper<User> ew = new MyEntityWrapper<>();
         Page activityList = activityService.getActivityList(page, ew, userId);
@@ -406,7 +406,7 @@ public class ActivityController {
     @ApiOperation("二手市场-商品详细信息")
     @RequestMapping(value = "/toMarketInfo", method = {RequestMethod.POST, RequestMethod.GET})
     //接收前台传过来的activityId
-    public Result toMarketInfo(@ApiParam(value = "商品ID", required = true) Integer id) {
+    public Result toMarketInfo(@RequestParam Integer id) {
         ActivityVo activityVo = activityService.findActivity(id);
         return new Result().success(activityVo);
     }
@@ -420,14 +420,18 @@ public class ActivityController {
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer")})
     @RequestMapping(value = "/findMyActivity", method = {RequestMethod.POST, RequestMethod.GET})
     public Result findMyActivity(Page page,
-                                 @ApiParam(value="用户id",required=true) Integer userId,
-                                 //@ApiParam(value = "1=乡村旅游,2=便捷生活,3=二手市场", required = true)
+                                // @ApiParam(value="用户id",required=true)
+                                 @RequestParam  Integer userId,
+                                 @ApiParam(value = "1=乡村旅游,2=便捷生活,3=二手市场", required = true) Integer type,
                                  @RequestParam Integer modularId) {
         Page myInfoPage = activityService.selectPage(page, new EntityWrapper<Activity>()
                 .eq(Activity.IS_DEL, 0)
                 .eq(Activity.MODULAR_ID, modularId)
+                .eq(type!=null,Activity.TYPE,type)
                 .eq(Activity.USER_ID, userId)
                 .orderBy(Activity.PUBLISH_TIME, false));
+
+
         if (CollectionUtils.isEmpty(myInfoPage.getRecords())) {
             return new Result().success("活动列表为空");
         } else {
@@ -545,15 +549,11 @@ public class ActivityController {
     //首页-二手市场-发布活动
     //首页-便捷生活-发布活动
     @ApiOperation(value = "用户-便捷生活&二手市场&乡村旅游-新增活动",
-            notes = "type按类型必填!!! 1=乡村旅游,2=便捷生活,3=二手市场',如果是便捷生活,classId必填!!如果是乡村旅游,modularId必填!!二手市场不用填." +
-                "activityType:0代表普通活动,1代表共享婚车活动;status:1代表商家,2代表需求")
+            notes = "type按类型必填!!! 1=乡村旅游,2=便捷生活,3=二手市场',如果是便捷生活,classId必填!!如果是乡村旅游,modularId必填!!二手市场不用填.")
     @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.GET})
     public Result add(@ModelAttribute Activity activity,
-                      @RequestParam Integer modularId,
-                      @RequestParam Integer activityType,
-                      @RequestParam Integer status) {
-        activity.setActivityType(activityType);
-        activity.setStatus(status);
+                      @RequestParam Integer modularId) {
+
         activity.setModularId(modularId);
         boolean res = activity.insert();
         if (res) {

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.ActivityVo;
+import com.jh.jsuk.entity.vo.MarketCommentVo;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
@@ -86,7 +87,7 @@ public class LifeClassController {
 
     @ApiOperation("用户-便捷生活-根据分类选择车辆")
     @RequestMapping(value = "/getCarByClassId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getCarByClassId(@ApiParam(value = "分类ID", required = true) @RequestParam Integer classId) {
+    public Result getCarByClassId(@RequestParam Integer classId) {
         List<Car> carList = carService.selectList(new EntityWrapper<Car>()
                 .eq(Car.CLASS_ID, classId)
                 .orderBy(Car.RANK, false));
@@ -98,27 +99,16 @@ public class LifeClassController {
 
     @ApiOperation("便捷生活-首页婚车列表")
     @RequestMapping(value = "/getActivityByClassId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getActivityByClassId(@RequestParam Integer ModularId) {
+    public Result getActivityByClassId(@RequestParam Integer classId, @RequestParam Integer ModularId) {
         // 封装数据map
         Map<String, Object> map = new HashMap<>();
-       /* // 商家方
-        Page providePage = activityService.selectPage(
-                new Page<>(1, 3), new EntityWrapper<Activity>()
-                        .eq(Activity.MODULAR_ID,ModularId)
-                        .eq(Activity.ACTIVITY_TYPE,1)   //0:普通活动，1：共享婚车活动
-                        .eq(Activity.IS_RECOMMEND, 1)
-                        .eq(Activity.IS_DEL, 0)
-                        .eq(Activity.STATUS, 1)      //1=商家,2=需求
-                        .orderBy(Activity.RANK, false));
-        map.put("provide", providePage.getRecords());
-        // 需求方*/
 
         Page demandPage = activityService.selectPage(
-                new Page<>(1, 3), new EntityWrapper<Activity>()
+                new Page<>(1, 3),
+                new EntityWrapper<Activity>()
                         .eq(Activity.MODULAR_ID,ModularId)
-                        .eq(Activity.ACTIVITY_TYPE,1)
-                        .eq(Activity.IS_RECOMMEND, 1)
                         .eq(Activity.IS_DEL, 0)
+                        .eq(Activity.CLASS_ID,classId)
                         .orderBy(Activity.RANK, false));
         map.put("list", demandPage.getRecords());
 
@@ -179,10 +169,13 @@ public class LifeClassController {
         int count = marketCommentService.selectCount(new EntityWrapper<MarketComment>()
                 .eq(MarketComment.ACTIVITY_ID, activityId));
         map.put("count", count);
-        List<MarketComment> marketCommentList = marketCommentService.selectList(new EntityWrapper<MarketComment>()
+/*        List<MarketComment> marketCommentList = marketCommentService.selectList(new EntityWrapper<MarketComment>()
                 .eq(MarketComment.ACTIVITY_ID, activityId)
                 .orderBy(MarketComment.PUBLISH_TIME, false));
+        map.put("comment", marketCommentList);*/
+        List<MarketCommentVo> marketCommentList=marketCommentService.selectMarketCommentVoList(activityId);
         map.put("comment", marketCommentList);
+
         return new Result().success(map);
     }
 
