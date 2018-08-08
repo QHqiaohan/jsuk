@@ -92,6 +92,14 @@ public class WGoodsController {
         evaluate.updateById();
         return R.succ("修改成功");
     }
+    @PostMapping("/forbidden")
+    public R forbidden(Integer id, Integer isRecommend) {
+        ShopGoods shopGoods = new ShopGoods();
+        shopGoods.setId(id);
+        shopGoods.setIsRecommend(isRecommend);
+        shopGoods.updateById();
+        return R.succ("修改成功");
+    }
 
     @GetMapping("/allCount")
     public R allCount() {
