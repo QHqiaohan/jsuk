@@ -1,6 +1,8 @@
 package com.jh.jsuk.entity.vo;
 
 import com.jh.jsuk.entity.Activity;
+import com.jh.jsuk.entity.User;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -8,25 +10,13 @@ import java.io.Serializable;
 /**
  * 二手市场相关
  */
+@Data
 public class ActivitySecondVo extends Activity implements Serializable {
 
     private String[] imageArray;
 
+    private User user;
+
     private String modularName;
 
-    public String getModularName() {
-        return modularName;
-    }
-
-    public void setModularName(String modularName) {
-        this.modularName = modularName;
-    }
-
-    public String[] getImageArray() {
-        return imageArray;
-    }
-
-    public void setImageArray(String[] imageArray) {
-        this.imageArray = imageArray;
-    }
 }

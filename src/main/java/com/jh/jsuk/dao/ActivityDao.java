@@ -36,5 +36,7 @@ public interface ActivityDao extends BaseMapper<Activity> {
 
     ActivityVoT selectActivityVoT(@Param("id") Integer id);
 
-    List<ActivitySecondVo> getSecondaryMarketList(Page page, @Param(value="keywords") String keywords);
+    List<ActivitySecondVo> getSecondaryMarketList(Page page, @Param(value = "keywords") String keywords);
+
+    List<ActivitySecondVo> listSecondGoods(Page page, @Param(value = "kw") String kw);
 }

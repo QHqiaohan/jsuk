@@ -7,6 +7,7 @@ import com.jh.jsuk.entity.Activity;
 import com.jh.jsuk.entity.vo.ActivitySecondVo;
 import com.jh.jsuk.entity.vo.ActivityVo;
 import com.jh.jsuk.entity.vo.ActivityVoT;
+import com.jh.jsuk.entity.vo.SecondGoodsVo;
 
 import java.util.List;
 
@@ -40,4 +41,6 @@ public interface ActivityService extends IService<Activity> {
     ActivityVoT selectActivityVoT(Integer id);
 
     Page<ActivitySecondVo> getSecondaryMarketList(Page page, String keywords);
+
+    Page<ActivitySecondVo> listSecondGoods(Page page, String kw);
 }

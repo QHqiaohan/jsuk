@@ -13,7 +13,7 @@ import com.jh.jsuk.entity.vo.ActivityVoT;
 import com.jh.jsuk.service.ActivityService;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,10 +49,10 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityDao, Activity> impl
      * 根据modularId查询模块对应的活动
      */
     @Override
-    public List<Activity> getActivityListByModularId(Integer modularId){
-        EntityWrapper ew=new EntityWrapper();
+    public List<Activity> getActivityListByModularId(Integer modularId) {
+        EntityWrapper ew = new EntityWrapper();
         ew.setEntity(new Activity());
-        ew.where("modular_id={0}",modularId);
+        ew.where("modular_id={0}", modularId);
 
         return baseMapper.selectList(ew);
     }
@@ -73,8 +73,20 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityDao, Activity> impl
 
     @Override
     public Page<ActivitySecondVo> getSecondaryMarketList(Page page, String keywords) {
-        List<ActivitySecondVo> list=baseMapper.getSecondaryMarketList(page,keywords);
+        List<ActivitySecondVo> list = baseMapper.getSecondaryMarketList(page, keywords);
         page.setRecords(list);
+        return page;
+    }
+
+    @Override
+    public Page<ActivitySecondVo> listSecondGoods(Page page, String kw) {
+        List<ActivitySecondVo> vos = baseMapper.listSecondGoods(page, kw);
+        for (ActivitySecondVo vo : vos) {
+            if (vo.getImages() != null) {
+                vo.setImageArray(vo.getImages().split(","));
+            }
+        }
+        page.setRecords(vos);
         return page;
     }
 
