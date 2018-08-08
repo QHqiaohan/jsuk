@@ -2,56 +2,56 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jh.jsuk.dao.ActivityDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Activity">
-        <id column="id" property="id"/>
-        <result column="phone" property="phone"/>
-        <result column="name" property="name"/>
-        <result column="title" property="title"/>
-        <result column="price" property="price"/>
-        <result column="fixed_price" property="fixedPrice"/>
-        <result column="content" property="content"/>
-        <result column="start_time" property="startTime"/>
-        <result column="end_time" property="endTime"/>
-        <result column="publish_time" property="publishTime"/>
-        <result column="is_del" property="isDel"/>
-        <result column="type" property="type"/>
-        <result column="user_id" property="userId"/>
-        <result column="rank" property="rank"/>
-        <result column="class_id" property="classId"/>
-        <result column="modular_id" property="modularId"/>
-        <result column="car_id" property="carId"/>
-        <result column="is_recommend" property="isRecommend"/>
-        <result column="images" property="images"/>
-        <result column="status" property="status"/>
-        <result column="transaction_area_id" property="transactionAreaId"/>
-        <result column="activity_type" property="activityType"/>
-        <result column="address" property="address"/>
-        <result column="examine" property="examine"/>
-    </resultMap>
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Activity">
+    <id column="id" property="id"/>
+    <result column="phone" property="phone"/>
+    <result column="name" property="name"/>
+    <result column="title" property="title"/>
+    <result column="price" property="price"/>
+    <result column="fixed_price" property="fixedPrice"/>
+    <result column="content" property="content"/>
+    <result column="start_time" property="startTime"/>
+    <result column="end_time" property="endTime"/>
+    <result column="publish_time" property="publishTime"/>
+    <result column="is_del" property="isDel"/>
+    <result column="type" property="type"/>
+    <result column="user_id" property="userId"/>
+    <result column="rank" property="rank"/>
+    <result column="class_id" property="classId"/>
+    <result column="modular_id" property="modularId"/>
+    <result column="car_id" property="carId"/>
+    <result column="is_recommend" property="isRecommend"/>
+    <result column="images" property="images"/>
+    <result column="status" property="status"/>
+    <result column="transaction_area_id" property="transactionAreaId"/>
+    <result column="activity_type" property="activityType"/>
+    <result column="address" property="address"/>
+    <result column="examine" property="examine"/>
+  </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, phone, name, title, price, fixed_price, content, start_time, end_time, publish_time, is_del, type, user_id, rank, class_id,
-         modular_id, car_id, is_recommend, images, status, transaction_area_id,activity_type,address,examine
-    </sql>
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+    id, phone, name, title, price, fixed_price, content, start_time, end_time, publish_time, is_del, type, user_id, rank, class_id,
+    modular_id, car_id, is_recommend, images, status, transaction_area_id, activity_type, address, examine
+  </sql>
 
-    <resultMap id="ActivityVoT" type="com.jh.jsuk.entity.vo.ActivityVoT" extends="BaseResultMap">
-        <association column="id" property="commentCount" select="com.jh.jsuk.dao.MarketCommentDao.getCommentCount"/>
-        <association column="user_id" property="user" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"></association>
-    </resultMap>
+  <resultMap id="ActivityVoT" type="com.jh.jsuk.entity.vo.ActivityVoT" extends="BaseResultMap">
+    <association column="id" property="commentCount" select="com.jh.jsuk.dao.MarketCommentDao.getCommentCount"/>
+    <association column="user_id" property="user" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"></association>
+  </resultMap>
 
-    <select id="getActivityList" resultMap="ActivityVoT">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM
-        js_activity
-        WHERE
-        is_del = 0
-        AND type = 3
-        ORDER BY
-        publish_time DESC
-    </select>
+  <select id="getActivityList" resultMap="ActivityVoT">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    js_activity
+    WHERE
+    is_del = 0
+    AND type = 3
+    ORDER BY
+    publish_time DESC
+  </select>
 
   <select id="selectActivityVoT" parameterType="java.lang.Integer" resultMap="ActivityVoT">
     SELECT
@@ -64,21 +64,21 @@
     is_del = 0
   </select>
 
-    <resultMap id="ActivityVo" type="com.jh.jsuk.entity.vo.ActivityVo" extends="BaseResultMap">
-        <result column="carName" property="carName"/>
-        <association column="user_id" property="user" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"/>
-        <association column="transaction_area_id" property="activityTransactionArea"
-                     select="com.jh.jsuk.dao.ActivityTransactionAreaDao.findAreaById"/>
-    </resultMap>
+  <resultMap id="ActivityVo" type="com.jh.jsuk.entity.vo.ActivityVo" extends="BaseResultMap">
+    <result column="carName" property="carName"/>
+    <association column="user_id" property="user" select="com.jh.jsuk.dao.UserDao.findUserHeadImgById"/>
+    <association column="transaction_area_id" property="activityTransactionArea"
+                 select="com.jh.jsuk.dao.ActivityTransactionAreaDao.findAreaById"/>
+  </resultMap>
 
-    <select id="findActivity" resultMap="ActivityVo">
-        SELECT
-            <include refid="Base_Column_List"/>
-        FROM
-            `js_activity`
-        WHERE
-            id = #{id}
-    </select>
+  <select id="findActivity" resultMap="ActivityVo">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    `js_activity`
+    WHERE
+    id = #{id}
+  </select>
 
     <select id="findActivityById" parameterType="java.lang.Integer" resultMap="ActivityVo">
       select
@@ -90,19 +90,19 @@
 
     </select>
 
-    <!--
-    根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情
-    -->
-    <select id="getActivityInfoById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List"></include>
-        FROM js_activity
-        WHERE id=#{id}
-    </select>
+  <!--
+  根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情
+  -->
+  <select id="getActivityInfoById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"></include>
+    FROM js_activity
+    WHERE id=#{id}
+  </select>
 
 
   <resultMap id="ActivitySecondVo" type="com.jh.jsuk.entity.vo.ActivitySecondVo" extends="BaseResultMap">
-    <result column="imageList" property="imageList"/>
+    <association property="user" column="user_id" select="com.jh.jsuk.dao.UserDao.selectById"/>
   </resultMap>
 
 
@@ -118,5 +118,13 @@
       </if>
     </where>
   </select>
-
+  <select id="listSecondGoods" resultMap="ActivitySecondVo">
+    SELECT
+    <include refid="Base_Column_List"></include>
+    FROM js_activity
+    where type = 3 and is_del = 0
+    <if test="kw!=null and kw!=''">
+      and content like concat('%',#{kw},'%')
+    </if>
+  </select>
 </mapper>
