@@ -80,18 +80,15 @@
     id = #{id}
   </select>
 
-  <select id="findActivityById" resultMap="ActivityVo">
-    select
-      a.*,
-      c.car_name as carName
-    from
-      js_activity a
-      join js_car c
-        ON a.car_id = c.id
-    WHERE
-      a.id = #{id}
+    <select id="findActivityById" parameterType="java.lang.Integer" resultMap="ActivityVo">
+      select
+      <include refid="Base_Column_List"/>
+      from
+      js_activity
+      WHERE
+      id = #{id}
 
-  </select>
+    </select>
 
   <!--
   根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情
@@ -115,9 +112,9 @@
     FROM js_activity
     <where>
       <if test="keywords!=null and keywords!=''">
-        content like concat('%',#{keywords},'%')
+        title like concat('%',#{keywords},'%')
         or
-        content like concat('%',#{keywords},'%')
+        id=#{keywords}
       </if>
     </where>
   </select>

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
+import com.jh.jsuk.entity.vo.GoodsVo2;
 import com.jh.jsuk.entity.vo.ShopGoodsVo2;
 import com.jh.jsuk.entity.vo.rushbuy.SGoodsVo;
 import org.apache.ibatis.annotations.Param;
@@ -73,4 +74,5 @@ public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
     @Select("select goods_name name from js_shop_goods where id = #{goodsId}")
     SGoodsVo shortVo(Integer goodsId);
 
+    List<GoodsVo2> guessYourLike();
 }

@@ -6,7 +6,7 @@
     <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Menu">
         <id column="menu_id" property="menuId" />
         <result column="parent_id" property="parentId" />
-        <result column="name" property="name" />
+        <result column="menu_name" property="menuName" />
         <result column="url" property="url" />
         <result column="perms" property="perms" />
         <result column="type" property="type" />
@@ -18,7 +18,24 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        menu_id, parent_id, name, url, perms, type, icon, order_num, gmt_create, gmt_modified
+        menu_id, parent_id, menu_name, url, perms, type, icon, order_num, gmt_create, gmt_modified
     </sql>
+
+  <select id="queryMenuByUid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+         <include refid="Base_Column_List"></include>
+    from
+          js_manager_user user
+    join
+          js_sys_menu menu
+    join
+          js_sys_menu_user mu
+    on
+          user.id=mu.user_id
+    and
+          mu.mid=menu.menu_id
+    where
+          user.id=#{uid}
+  </select>
 
 </mapper>
