@@ -18,7 +18,6 @@ import java.util.*;
  */
 public class PingPPUtil {
     private final static String appId = "app_HGSirL9a90uHrfvr";
-
     private static void init() {
         // 设置 API Key
         Pingpp.apiKey = "sk_test_0aHKuT4CubjHuLCif5mDizLS";
@@ -134,9 +133,9 @@ public class PingPPUtil {
             //支付宝
             case 2:
                 return "alipay";
-            //微信
+            //微信公众号支付
             case 3:
-                return "wx";
+                return "wx_pub";
             //银行卡
             case 4:
                 return "upacp";
