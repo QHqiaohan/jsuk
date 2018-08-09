@@ -115,6 +115,7 @@ public class User extends ParentUser<User> {
     @ApiModelProperty(value = "上次登录时间", name = "lastLoginTime")
     private Date lastLoginTime;
 
+    private String openId;
     //生日
     private Date birthday;
 
@@ -319,6 +320,8 @@ public class User extends ParentUser<User> {
 
     public static final String LAST_LOGIN_TIME = "last_login_time";
 
+    public static final String OPEN_ID = "open_id";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -327,24 +330,34 @@ public class User extends ParentUser<User> {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
-                ", nickName=" + nickName +
-                ", phone=" + phone +
-                ", level=" + level +
-                ", sex=" + sex +
-                ", headImg=" + headImg +
-                ", password=" + password +
-                ", loginIp=" + loginIp +
-                ", wxToken=" + wxToken +
-                ", weiboToken=" + weiboToken +
-                ", qqToken=" + qqToken +
-                ", canUse=" + canUse +
-                ", isSecondaryMarket=" + isSecondaryMarket +
-                ", isAvailable=" + isAvailable +
-                ", address=" + address +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", lastLoginTime=" + lastLoginTime +
-                "}";
+            "id=" + id +
+            ", nickName='" + nickName + '\'' +
+            ", phone='" + phone + '\'' +
+            ", level=" + level +
+            ", sex=" + sex +
+            ", headImg='" + headImg + '\'' +
+            ", password='" + password + '\'' +
+            ", loginIp='" + loginIp + '\'' +
+            ", wxToken='" + wxToken + '\'' +
+            ", weiboToken='" + weiboToken + '\'' +
+            ", qqToken='" + qqToken + '\'' +
+            ", canUse=" + canUse +
+            ", isSecondaryMarket=" + isSecondaryMarket +
+            ", isAvailable=" + isAvailable +
+            ", address='" + address + '\'' +
+            ", createTime=" + createTime +
+            ", updateTime=" + updateTime +
+            ", lastLoginTime=" + lastLoginTime +
+            ", openId='" + openId + '\'' +
+            ", birthday=" + birthday +
+            '}';
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 }

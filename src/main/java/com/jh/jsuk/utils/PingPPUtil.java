@@ -23,8 +23,8 @@ public class PingPPUtil {
 
     private static void init() {
         // 设置 API Key
-        Pingpp.apiKey = "sk_test_0aHKuT4CubjHuLCif5mDizLS";
-
+//        Pingpp.apiKey = "sk_test_0aHKuT4CubjHuLCif5mDizLS";
+        Pingpp.apiKey = "sk_live_CqrXj5aTqvP0uvXr9SHK8K88";
         // 设置私钥路径，用于请求签名
 //        Pingpp.privateKeyPath = privateKeyFilePath;
 
@@ -53,12 +53,13 @@ public class PingPPUtil {
      *
      * @return Charge
      */
-    public static Charge createCharge(UserOrder userOrder, User user, ShopGoods shopGoods, BigDecimal price, String code) throws UnsupportedEncodingException, ChannelException {
+    public static Charge createCharge(UserOrder userOrder, User user, ShopGoods shopGoods, BigDecimal price, String openId) throws UnsupportedEncodingException, ChannelException {
         init();
         Charge charge = null;
         String channel = getChannel(userOrder);
         Map<String, Object> chargeMap = new HashMap<>();
-        chargeMap.put("amount", price.multiply(new BigDecimal("100")));//订单总金额, 人民币单位：分（如订单总金额为 1 元，此处请填 100）
+//        chargeMap.put("amount", price.multiply(new BigDecimal("100")));//订单总金额, 人民币单位：分（如订单总金额为 1 元，此处请填 100）
+        chargeMap.put("amount", 1);
         chargeMap.put("currency", "cny");//人民币
         chargeMap.put("subject", shopGoods.getGoodsName()); //商品标题
         chargeMap.put("body", shopGoods.getGoodsName());
@@ -70,7 +71,7 @@ public class PingPPUtil {
         chargeMap.put("app", app);
 
         // extra 取值请查看相应方法说明
-        chargeMap.put("extra", channelExtra(channel, code));
+        chargeMap.put("extra", channelExtra(channel, openId));
 
         try {
             //发起交易请求
@@ -84,7 +85,7 @@ public class PingPPUtil {
         return charge;
     }
 
-    private static Map<String, Object> channelExtra(String channel, String code) throws UnsupportedEncodingException, ChannelException {
+    private static Map<String, Object> channelExtra(String channel, String openId) throws UnsupportedEncodingException, ChannelException {
         Map<String, Object> extra = new HashMap<>();
 
         switch (channel) {
@@ -95,7 +96,7 @@ public class PingPPUtil {
                 extra = wxExtra();
                 break;
             case "wx_pub":
-                extra = wxPubExtra(code);
+                extra = wxPubExtra(openId);
                 break;
             case "upacp":
                 extra = upacpExtra();
@@ -128,7 +129,7 @@ public class PingPPUtil {
         return extra;
     }
 
-    private static Map<String, Object> wxPubExtra(String code) throws UnsupportedEncodingException, ChannelException {
+    private static Map<String, Object> wxPubExtra(String openId) {
         Map<String, Object> extra = new HashMap<>();
         // 可选，指定支付方式，指定不能使用信用卡支付可设置为 no_credit 。
         extra.put("limit_pay", "no_credit");
@@ -137,7 +138,7 @@ public class PingPPUtil {
         // extra.put("goods_tag", "YOUR_GOODS_TAG");
 
         // 必须，用户在商户 appid 下的唯一标识。
-        extra.put("open_id", WxPubOAuthUtil.getOpenid(code));
+        extra.put("open_id",openId);
 
         return extra;
     }
