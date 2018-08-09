@@ -28,7 +28,7 @@ public class WxPubOAuthUtil {
     /**
      * 微信公共号里面获取 openid 时的回跳 URL
      */
-    public static String redirectUrl = "http://www.mcwob.cn";
+    public static String redirectUrl = "http://www.mcwob.cn/wechat/";
     /**
      * 微信公共号的 appId，通常为 `wx` 开头的字符串
      */
@@ -44,13 +44,13 @@ public class WxPubOAuthUtil {
         System.out.println("------- 如果要是用微信的 jsapi 并且要启用签名, 请参考以下方法 -------");
     }*/
 
-    public static String getOpenid() throws UnsupportedEncodingException, ChannelException {
-        System.out.println("1. 你需要有一个处理回跳的 URL");
+    public static String getOpenid(String code) throws UnsupportedEncodingException, ChannelException {
+//        System.out.println("1. 你需要有一个处理回跳的 URL");
 //            redirectUrl = "http://用于处理回跳的URL";
-        String url = WxpubOAuth.createOauthUrlForCode(wxAppId, redirectUrl, false);
-        System.out.println("2. 跳转到该 URL");
-        System.out.println(url);
-        return getOpenidWithCode(url);
+//        String url = WxpubOAuth.createOauthUrlForCode(wxAppId, redirectUrl, false);
+      /*  System.out.println("2. 跳转到该 URL");
+        System.out.println(url);*/
+        return WxpubOAuth.getOpenId(wxAppId, wxAppSecret, code);
     }
 
     public static String getOpenidWithCode(String url) throws UnsupportedEncodingException, ChannelException {
