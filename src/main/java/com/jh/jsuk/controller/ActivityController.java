@@ -550,7 +550,7 @@ public class ActivityController {
     //首页-便捷生活-发布活动
     @ApiOperation(value = "用户-便捷生活&二手市场&乡村旅游-新增活动",
             notes = "type按类型必填!!! 1=乡村旅游,2=便捷生活,3=二手市场',如果是便捷生活,classId必填!!如果是乡村旅游,modularId必填!!二手市场不用填.")
-    @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/add", method = {RequestMethod.POST})
     public Result add(@ModelAttribute Activity activity,
                       @RequestParam Integer modularId) {
 
