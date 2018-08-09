@@ -505,7 +505,7 @@ public class ActivityController {
             paramType = "query", dataType = "Integer"),
     })
     @RequestMapping(value = "/addComment", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addComment(MarketComment marketComment) throws Exception {
+    public Result addComment(MarketComment marketComment) {
         //获取敏感词
         Dictionary dictionary = dictionaryService.selectOne(new EntityWrapper<Dictionary>().eq("code", "sensitive_words"));
         String sensitiveWord = dictionary.getValue();
@@ -554,14 +554,17 @@ public class ActivityController {
         } catch (IOException e) {
             e.printStackTrace();
             return new Result().erro("新增失败", e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return new Result().success();
     }
 
     //乡村旅游现在不需要新增活动的功能
     //首页-二手市场-发布活动
     //首页-便捷生活-发布活动
     @ApiOperation(value = "用户-便捷生活&二手市场&乡村旅游-新增活动",
-        notes = "type按类型必填!!! 1=乡村旅游,2=便捷生活,3=二手市场',如果是便捷生活,classId必填!!如果是乡村旅游,modularId必填!!二手市场不用填.")
+            notes = "type按类型必填!!! 1=乡村旅游,2=便捷生活,3=二手市场',如果是便捷生活,classId必填!!如果是乡村旅游,modularId必填!!二手市场不用填.")
     @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.GET})
     public Result add(@ModelAttribute Activity activity,
                       @RequestParam Integer modularId) {

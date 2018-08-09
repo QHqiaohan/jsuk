@@ -1,5 +1,6 @@
 package com.jh.jsuk.service;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
@@ -19,4 +20,5 @@ public interface DistributionApplyService extends IService<DistributionApply> {
 
     Page<UserApplyVo> selectPageByUserInfo(Page page, Wrapper wrapper);
 
+    Page searchDistributionUserTiXian(Page page, Wrapper wrapper);
 }

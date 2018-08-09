@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.UserTiXianDao;
+import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.ShopMoney;
 import com.jh.jsuk.entity.UserTiXian;
 import com.jh.jsuk.entity.vo.UserTiXianVo;
+import com.jh.jsuk.service.DistributionUserService;
 import com.jh.jsuk.service.ManagerUserService;
 import com.jh.jsuk.service.ShopMoneyService;
 import com.jh.jsuk.service.UserTiXianService;
@@ -34,19 +36,23 @@ public class UserTiXianServiceImpl extends ServiceImpl<UserTiXianDao, UserTiXian
     private ShopMoneyService shopMoneyService;
     @Autowired
     private ManagerUserService managerUserService;
+    @Autowired
+    private DistributionUserService distributionUserService;
 
     @Override
     @Transactional
     public Result tixian(UserTiXian userTiXian, Integer type, Integer userId) {
-        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-                .eq(ManagerUser.ID, userId));
-        if(managerUser==null){
-            return new Result().erro("该商家不存在");
-        }
-        Integer shopId = managerUser.getShopId();
+
         if (type == 2) {             //2=用户,0=商家,1=骑手
+            //用户提现
             return new Result().success();
         } else if (type == 0) {        //商家提现
+            ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+                .eq(ManagerUser.ID, userId));
+            if(managerUser==null){
+                return new Result().erro("该商家不存在");
+            }
+            Integer shopId = managerUser.getShopId();
             List<ShopMoney> shopMoneyList = shopMoneyService.selectList(new EntityWrapper<ShopMoney>()
                     .eq(ShopMoney.SHOP_ID, shopId));
             if (CollectionUtils.isEmpty(shopMoneyList)) {
@@ -74,18 +80,18 @@ public class UserTiXianServiceImpl extends ServiceImpl<UserTiXianDao, UserTiXian
                 }
                 if (sum >= Double.parseDouble(userTiXian.getPrice())) {
                     userTiXian.insert();
-                    ShopMoney shopMoney=new ShopMoney();
+                    /*ShopMoney shopMoney=new ShopMoney();
                     shopMoney.setShopId(shopId);
                     shopMoney.setMoney("-"+userTiXian.getPrice());
                     shopMoney.setType(0);
                     shopMoney.setPublishTime(new Date());
-                    shopMoney.insert();
-                    return new Result().success("提现成功");
+                    shopMoney.insert();*/
+                    return new Result().success("提现成功,等待平台审核");
                 } else {
                     return new Result().erro("账户余额不足");
                 }
             }
-        } else if (type == 1) {
+        } else if (type == 1) {    //骑手提现
             return new Result().success();
         }
         return new Result().erro("参数错误");

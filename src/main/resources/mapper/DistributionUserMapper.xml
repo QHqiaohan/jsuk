@@ -96,4 +96,14 @@
     </if>
   </select>
 
+  <select id="selectDistributionUserById" resultMap="BaseResultMap">
+    select
+     id, phone, password, name, id_card_no, card_front, card_back, last_login_time, login_ip, longitude, latitude, head_img, gender, age,
+    star_num, account, publish_time, can_use, status, is_online
+    from
+    js_distribution_user
+    where
+    id=#{user_id}
+  </select>
+
 </mapper>

@@ -35,4 +35,15 @@
         </where>
     </select>
 
+  <resultMap id="DistributionApplyVo" type="com.jh.jsuk.entity.vo.DistributionApplyVo" extends="BaseResultMap">
+    <association column="user_id" property="distributionUser" select="com.jh.jsuk.dao.DistributionUserDao.selectDistributionUserById">
+    </association>
+  </resultMap>
+
+  <select id="searchDistributionUserTiXian" resultMap="DistributionApplyVo">
+    select
+     id, bank_id, money, status, user_id,publish_time, poundage,user_nick_name
+    from js_distribution_apply
+  </select>
+
 </mapper>
