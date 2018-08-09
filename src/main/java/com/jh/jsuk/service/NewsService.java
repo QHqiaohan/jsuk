@@ -2,6 +2,8 @@ package com.jh.jsuk.service;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.Activity;
+import com.jh.jsuk.entity.MarketComment;
 import com.jh.jsuk.entity.News;
 import com.jh.jsuk.entity.NewsUser;
 
@@ -70,4 +72,6 @@ public interface NewsService extends IService<News> {
      * @throws Exception
      */
     Page listSecondHandMarket(Integer userId, Page page) throws Exception;
+
+    void pushComment(MarketComment marketComment, Activity activity) throws Exception;
 }
