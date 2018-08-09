@@ -5,9 +5,12 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.NewsDao;
+import com.jh.jsuk.entity.Activity;
+import com.jh.jsuk.entity.MarketComment;
 import com.jh.jsuk.entity.News;
 import com.jh.jsuk.entity.NewsUser;
 import com.jh.jsuk.envm.NewsType;
+import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.service.NewsService;
 import com.jh.jsuk.service.NewsUserService;
 import com.jh.jsuk.utils.JPushUtils;
@@ -19,7 +22,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -77,7 +79,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
         News news = selectById(newsUser.getNewsId());
         pushTaskExecutor.execute(() -> {
             try {
-                JPushUtils.push(String.valueOf(newsUser.getReceivedId()), news.getContent(), news.getTitle(), new HashMap<>());
+                JPushUtils.push(UserType.USER, String.valueOf(newsUser.getReceivedId()), news.getContent(), news.getTitle());
                 newsUser.setIsPushed(1);
                 newsUser.updateById();
             } catch (Exception e) {
@@ -108,7 +110,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
             newsUser.insert();
             pushTaskExecutor.execute(() -> {
                 try {
-                    JPushUtils.push(String.valueOf(receivedUserId), news.getContent(), news.getTitle(), new HashMap<>());
+                    JPushUtils.push(UserType.USER, String.valueOf(receivedUserId), news.getContent(), news.getTitle());
                     newsUser.setIsPushed(1);
                     newsUser.updateById();
                 } catch (Exception e) {
@@ -124,8 +126,8 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
         }
         Wrapper<NewsUser> wpr = new EntityWrapper<>();
         wpr.in(NewsUser.NEWS_ID, newsIds)
-                .eq(NewsUser.RECEIVED_ID, userId)
-                .eq(NewsUser.IS_READ, 0);
+            .eq(NewsUser.RECEIVED_ID, userId)
+            .eq(NewsUser.IS_READ, 0);
         NewsUser newsUser = new NewsUser();
         newsUser.setIsRead(1);
         newsUser.setIsPushed(1);
@@ -157,5 +159,16 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
         }
         setRead(newsIds, userId);
         return page.setRecords(list);
+    }
+
+    @Override
+    public void pushComment(MarketComment marketComment, Activity activity) throws Exception {
+        News news = new News();
+        news.setNewsType(NewsType.SH_MKT);
+        news.setTitle("二手市场有人留言了");
+        news.setContent(marketComment.getComment());
+        news.setMarketCommentId(marketComment.getId());
+        news.setSendUserId(marketComment.getUserId() == null ? null : String.valueOf(marketComment.getUserId()));
+        push(news, activity.getUserId());
     }
 }

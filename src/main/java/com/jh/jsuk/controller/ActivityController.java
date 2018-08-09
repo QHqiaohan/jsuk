@@ -77,47 +77,47 @@ public class ActivityController {
          * 首页banner
          */
         List<Banner> bannerList = bannerService.selectList(new EntityWrapper<Banner>()
-                // 0=首页
-                .eq(Banner.BANNER_LOCATION, 0)
-                // 1=有效
-                .eq(Banner.IS_VALID, 1)
-                .orderBy(Banner.SORT, false));
+            // 0=首页
+            .eq(Banner.BANNER_LOCATION, 0)
+            // 1=有效
+            .eq(Banner.IS_VALID, 1)
+            .orderBy(Banner.SORT, false));
         map.put("banner", bannerList);
         /**
          * 模块分类
          */
         Page<ModularPortal> modularPortalPage = modularPortalService.selectPage(
-                new Page<>(1, 10),
-                new EntityWrapper<ModularPortal>()
-                        // 父菜单
-                        .eq(ModularPortal.PARENT_ID, 0)
-                        // 1=有效
-                        .eq(ModularPortal.STATUS, 1)
-                        .orderBy(ModularPortal.SORT_ORDER, false));
+            new Page<>(1, 10),
+            new EntityWrapper<ModularPortal>()
+                // 父菜单
+                .eq(ModularPortal.PARENT_ID, 0)
+                // 1=有效
+                .eq(ModularPortal.STATUS, 1)
+                .orderBy(ModularPortal.SORT_ORDER, false));
 
         map.put("modular", modularPortalPage.getRecords());
         /**
          * 快报
          */
         Page<ExpressNews> expressNewsPage = expressNewsService.selectPage(
-                new Page<>(1, 4),
-                new EntityWrapper<ExpressNews>()
-                        // 1=首页
-                        .eq(ExpressNews.TYPE, 1)
-                        // 0=未删除
-                        .eq(ExpressNews.IS_DEL, 0)
-                        .orderBy(ExpressNews.PUBLISH_TIME, false));
+            new Page<>(1, 4),
+            new EntityWrapper<ExpressNews>()
+                // 1=首页
+                .eq(ExpressNews.TYPE, 1)
+                // 0=未删除
+                .eq(ExpressNews.IS_DEL, 0)
+                .orderBy(ExpressNews.PUBLISH_TIME, false));
         map.put("news", expressNewsPage.getRecords());
 
         /**
          * 活动模块
          */
         Page<ActivitySmall> activitySmallPage = activitySmallService.selectPage(
-                new Page<>(1, 2),
-                new EntityWrapper<ActivitySmall>()
-                        .eq(ActivitySmall.IS_DEL, 1)
-                        .eq(ActivitySmall.STATUS, 1)
-                        .orderBy(ActivitySmall.RANK, false));
+            new Page<>(1, 2),
+            new EntityWrapper<ActivitySmall>()
+                .eq(ActivitySmall.IS_DEL, 1)
+                .eq(ActivitySmall.STATUS, 1)
+                .orderBy(ActivitySmall.RANK, false));
         map.put("activity", activitySmallPage.getRecords());
         return new Result().success(map);
     }
@@ -136,21 +136,21 @@ public class ActivityController {
          * 精选商家
          */
         Page<Shop> shopPage = shopService.selectPage(
-                new Page<>(1, 8),
-                new EntityWrapper<Shop>()
-                        .eq(Shop.CAN_USE, 1)
-                        .eq(Shop.IS_RECOMMEND, 1)
-                        .eq(Shop.MODULAR_ID, 0)
-                        .orderBy(Shop.TOTAL_VOLUME, false));
+            new Page<>(1, 8),
+            new EntityWrapper<Shop>()
+                .eq(Shop.CAN_USE, 1)
+                .eq(Shop.IS_RECOMMEND, 1)
+                .eq(Shop.MODULAR_ID, 0)
+                .orderBy(Shop.TOTAL_VOLUME, false));
         map.put("shop", shopPage);
         /**
          * 专题精选
          */
         Page<SpecialTheme> themePage = specialThemeService.selectPage(
-                new Page<>(1, 1),
-                new EntityWrapper<SpecialTheme>()
-                        .eq(SpecialTheme.IS_DEL, 0)
-                        .orderBy(SpecialTheme.RANK, false));
+            new Page<>(1, 1),
+            new EntityWrapper<SpecialTheme>()
+                .eq(SpecialTheme.IS_DEL, 0)
+                .orderBy(SpecialTheme.RANK, false));
         map.put("specialTheme", themePage.getRecords().size() > 0 ? themePage.getRecords().get(0) : null);
         return new Result().success(map);
     }
@@ -165,91 +165,91 @@ public class ActivityController {
              * 获取banner
              */
             List<Banner> bannerList = bannerService.selectList(new EntityWrapper<Banner>()
-                    // 1=城乡优购
-                    .eq(Banner.BANNER_LOCATION, 1)
-                    .eq(Banner.IS_VALID, 1)
-                    .orderBy(Banner.SORT, false));
+                // 1=城乡优购
+                .eq(Banner.BANNER_LOCATION, 1)
+                .eq(Banner.IS_VALID, 1)
+                .orderBy(Banner.SORT, false));
             map.put("banner", bannerList);
             /**
              * 快报
              */
             Page<ExpressNews> expressNewsPage = expressNewsService.selectPage(
-                    new Page<>(1, 4),
-                    new EntityWrapper<ExpressNews>()
-                            .eq(ExpressNews.IS_DEL, 0)
-                            .eq(ExpressNews.TYPE, 2)
-                            .orderBy(ExpressNews.PUBLISH_TIME, false));
+                new Page<>(1, 4),
+                new EntityWrapper<ExpressNews>()
+                    .eq(ExpressNews.IS_DEL, 0)
+                    .eq(ExpressNews.TYPE, 2)
+                    .orderBy(ExpressNews.PUBLISH_TIME, false));
 
             map.put("news", expressNewsPage.getRecords());
             /**
              * 分类
              */
             Page<ModularPortal> modularPortalPage = modularPortalService.selectPage(
-                    new Page<>(1, 10),
-                    new EntityWrapper<ModularPortal>()
-                            .eq(ModularPortal.PARENT_ID, modularId)
-                            .eq(ModularPortal.STATUS, 1)
-                            .orderBy(ModularPortal.SORT_ORDER, false));
+                new Page<>(1, 10),
+                new EntityWrapper<ModularPortal>()
+                    .eq(ModularPortal.PARENT_ID, modularId)
+                    .eq(ModularPortal.STATUS, 1)
+                    .orderBy(ModularPortal.SORT_ORDER, false));
             map.put("modular", modularPortalPage.getRecords());
         } else if (modularId == 4) {
             /**
              * 获取banner
              */
             List<Banner> bannerList = bannerService.selectList(new EntityWrapper<Banner>()
-                    // 8=聚鲜U客
-                    .eq(Banner.BANNER_LOCATION, 8)
-                    .eq(Banner.IS_VALID, 1)
-                    .orderBy(Banner.SORT, false));
+                // 8=聚鲜U客
+                .eq(Banner.BANNER_LOCATION, 8)
+                .eq(Banner.IS_VALID, 1)
+                .orderBy(Banner.SORT, false));
             map.put("banner", bannerList);
             /**
              * 快报
              */
             Page<ExpressNews> expressNewsPage = expressNewsService.selectPage(
-                    new Page<>(1, 4),
-                    new EntityWrapper<ExpressNews>()
-                            .eq(ExpressNews.IS_DEL, 0)
-                            .eq(ExpressNews.TYPE, 3)
-                            .orderBy(ExpressNews.PUBLISH_TIME, false));
+                new Page<>(1, 4),
+                new EntityWrapper<ExpressNews>()
+                    .eq(ExpressNews.IS_DEL, 0)
+                    .eq(ExpressNews.TYPE, 3)
+                    .orderBy(ExpressNews.PUBLISH_TIME, false));
             map.put("news", expressNewsPage.getRecords());
             /**
              * 分类
              */
             Page<ModularPortal> modularPortalPage = modularPortalService.selectPage(
-                    new Page<>(1, 5),
-                    new EntityWrapper<ModularPortal>()
-                            .eq(ModularPortal.PARENT_ID, modularId)
-                            .eq(ModularPortal.STATUS, 1)
-                            .orderBy(ModularPortal.SORT_ORDER, false));
+                new Page<>(1, 5),
+                new EntityWrapper<ModularPortal>()
+                    .eq(ModularPortal.PARENT_ID, modularId)
+                    .eq(ModularPortal.STATUS, 1)
+                    .orderBy(ModularPortal.SORT_ORDER, false));
             map.put("modular", modularPortalPage.getRecords());
         } else if (modularId == 6) {
             /**
              * 获取banner
              */
             List<Banner> bannerList = bannerService.selectList(new EntityWrapper<Banner>()
-                    // 9=本地商城
-                    .eq(Banner.BANNER_LOCATION, 9)
-                    .eq(Banner.IS_VALID, 1)
-                    .orderBy(Banner.SORT, false));
+                // 9=本地商城
+                .eq(Banner.BANNER_LOCATION, 9)
+                .eq(Banner.IS_VALID, 1)
+                .orderBy(Banner.SORT, false));
             map.put("banner", bannerList);
             /**
              * 快报
              */
             Page<ExpressNews> expressNewsPage = expressNewsService.selectPage(
-                    new Page<>(1, 4),
-                    new EntityWrapper<ExpressNews>()
-                            .eq(ExpressNews.IS_DEL, 0)
-                            .eq(ExpressNews.TYPE, 4)
-                            .orderBy(ExpressNews.PUBLISH_TIME, false));
+                new Page<>(1, 4),
+                new EntityWrapper<ExpressNews>()
+                    .eq(ExpressNews.IS_DEL, 0)
+                    .eq(ExpressNews.TYPE, 4)
+                    .orderBy(ExpressNews.PUBLISH_TIME, false));
             map.put("news", expressNewsPage.getRecords());
             /**
              * 分类
              */
             Page<ModularPortal> modularPortalPage = modularPortalService.selectPage(
-                    new Page<>(1, 5),
-                    new EntityWrapper<ModularPortal>()
-                            .eq(ModularPortal.PARENT_ID, modularId)
-                            .eq(ModularPortal.STATUS, 1)
-                            .orderBy(ModularPortal.SORT_ORDER, false));
+                new Page<>(1, 5),
+                new EntityWrapper<ModularPortal>()
+                    .eq(ModularPortal.PARENT_ID, modularId)
+                    .eq(ModularPortal.STATUS, 1)
+                    .orderBy(ModularPortal.SORT_ORDER, false));
             map.put("modular", modularPortalPage.getRecords());
         }
         return new Result().success(map);
@@ -265,20 +265,20 @@ public class ActivityController {
              * 获取banner
              */
             List<Banner> bannerList = bannerService.selectList(new EntityWrapper<Banner>()
-                    // 2=特色家乡
-                    .eq(Banner.BANNER_LOCATION, 2)
-                    .eq(Banner.IS_VALID, 1)
-                    .orderBy(Banner.SORT, false));
+                // 2=特色家乡
+                .eq(Banner.BANNER_LOCATION, 2)
+                .eq(Banner.IS_VALID, 1)
+                .orderBy(Banner.SORT, false));
             map.put("banner", bannerList);
             /**
              * 分类
              */
             Page<ModularPortal> modularPortalPage = modularPortalService.selectPage(
-                    new Page<>(1, 5),
-                    new EntityWrapper<ModularPortal>()
-                            .eq(ModularPortal.PARENT_ID, modularId)
-                            .eq(ModularPortal.STATUS, 1)
-                            .orderBy(ModularPortal.SORT_ORDER));
+                new Page<>(1, 5),
+                new EntityWrapper<ModularPortal>()
+                    .eq(ModularPortal.PARENT_ID, modularId)
+                    .eq(ModularPortal.STATUS, 1)
+                    .orderBy(ModularPortal.SORT_ORDER));
             map.put("modular", modularPortalPage.getRecords());
             /**
              * 店铺列表
@@ -290,20 +290,20 @@ public class ActivityController {
              * 获取banner
              */
             List<Banner> bannerList = bannerService.selectList(new EntityWrapper<Banner>()
-                    // 10=直销平台
-                    .eq(Banner.BANNER_LOCATION, 10)
-                    .eq(Banner.IS_VALID, 1)
-                    .orderBy(Banner.SORT, false));
+                // 10=直销平台
+                .eq(Banner.BANNER_LOCATION, 10)
+                .eq(Banner.IS_VALID, 1)
+                .orderBy(Banner.SORT, false));
             map.put("banner", bannerList);
             /**
              * 分类
              */
             Page<ModularPortal> modularPortalPage = modularPortalService.selectPage(
-                    new Page<>(1, 5),
-                    new EntityWrapper<ModularPortal>()
-                            .eq(ModularPortal.PARENT_ID, modularId)
-                            .eq(ModularPortal.STATUS, 1)
-                            .orderBy(ModularPortal.SORT_ORDER));
+                new Page<>(1, 5),
+                new EntityWrapper<ModularPortal>()
+                    .eq(ModularPortal.PARENT_ID, modularId)
+                    .eq(ModularPortal.STATUS, 1)
+                    .orderBy(ModularPortal.SORT_ORDER));
             map.put("modular", modularPortalPage.getRecords());
             /**
              * 店铺列表
@@ -328,20 +328,20 @@ public class ActivityController {
          * 获取banner
          */
         List<Banner> bannerList = bannerService.selectList(new EntityWrapper<Banner>()
-                // 3=会员商城
-                .eq(Banner.BANNER_LOCATION, 3)
-                .eq(Banner.IS_VALID, 1)
-                .orderBy(Banner.SORT, false));
+            // 3=会员商城
+            .eq(Banner.BANNER_LOCATION, 3)
+            .eq(Banner.IS_VALID, 1)
+            .orderBy(Banner.SORT, false));
         map.put("banner", bannerList);
         /**
          * 分类
          */
         Page<ModularPortal> modularPortalPage = modularPortalService.selectPage(
-                new Page<>(1, 5),
-                new EntityWrapper<ModularPortal>()
-                        .eq(ModularPortal.PARENT_ID, modularId)
-                        .eq(ModularPortal.STATUS, 1)
-                        .orderBy(ModularPortal.SORT_ORDER));
+            new Page<>(1, 5),
+            new EntityWrapper<ModularPortal>()
+                .eq(ModularPortal.PARENT_ID, modularId)
+                .eq(ModularPortal.STATUS, 1)
+                .orderBy(ModularPortal.SORT_ORDER));
         map.put("modular", modularPortalPage.getRecords());
         /**
          * 店铺列表
@@ -358,8 +358,8 @@ public class ActivityController {
 
     @ApiOperation("用户端-首页精品推荐列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer")
+        @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer")
     })
     @RequestMapping(value = "/getIsRecommend", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getIsRecommend(Page page) {
@@ -371,10 +371,10 @@ public class ActivityController {
     //首页-二手市场，展示banner和活动列表
     @ApiOperation(value = "二手市场-获取banner/商品列表/留言总数", notes = "isSecondaryMarket:0=未开启二手市场,1=开启")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "current", value = "当前页码",
-                    paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数",
-                    paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "current", value = "当前页码",
+            paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "size", value = "每页条数",
+            paramType = "query", dataType = "integer"),
     })
     @RequestMapping(value = "/getToMarket", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getToMarket(Page page, Integer userId) {
@@ -388,10 +388,10 @@ public class ActivityController {
          * 获取banner
          */
         List<Banner> bannerList = bannerService.selectList(new EntityWrapper<Banner>()
-                // 5=二手市场
-                .eq(Banner.BANNER_LOCATION, 5)
-                .eq(Banner.IS_VALID, 1)
-                .orderBy(Banner.SORT, false));
+            // 5=二手市场
+            .eq(Banner.BANNER_LOCATION, 5)
+            .eq(Banner.IS_VALID, 1)
+            .orderBy(Banner.SORT, false));
         map.put("banner", bannerList);
         /**
          * 获取二手市场商品列表
@@ -416,20 +416,20 @@ public class ActivityController {
     //首页-便捷生活-点击右上角查询我发布的便捷生活列表，前台传type=2
     @ApiOperation("用户-二手市场&便捷生活-查询我发布的")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer")})
+        @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer")})
     @RequestMapping(value = "/findMyActivity", method = {RequestMethod.POST, RequestMethod.GET})
     public Result findMyActivity(Page page,
-                                // @ApiParam(value="用户id",required=true)
-                                 @RequestParam  Integer userId,
+                                 // @ApiParam(value="用户id",required=true)
+                                 @RequestParam Integer userId,
                                  @ApiParam(value = "1=乡村旅游,2=便捷生活,3=二手市场", required = true) Integer type,
                                  @RequestParam Integer modularId) {
         Page myInfoPage = activityService.selectPage(page, new EntityWrapper<Activity>()
-                .eq(Activity.IS_DEL, 0)
-                .eq(Activity.MODULAR_ID, modularId)
-                .eq(type!=null,Activity.TYPE,type)
-                .eq(Activity.USER_ID, userId)
-                .orderBy(Activity.PUBLISH_TIME, false));
+            .eq(Activity.IS_DEL, 0)
+            .eq(Activity.MODULAR_ID, modularId)
+            .eq(type != null, Activity.TYPE, type)
+            .eq(Activity.USER_ID, userId)
+            .orderBy(Activity.PUBLISH_TIME, false));
 
 
         if (CollectionUtils.isEmpty(myInfoPage.getRecords())) {
@@ -448,8 +448,8 @@ public class ActivityController {
         // 0=未删除，1=删除
         activity.setIsDel(1);
         boolean res = activity.update(new EntityWrapper<Activity>()
-                .eq(Activity.USER_ID, userId)
-                .eq(Activity.ID, activityId));
+            .eq(Activity.USER_ID, userId)
+            .eq(Activity.ID, activityId));
         if (res) {
             return new Result().success();
         } else {
@@ -479,9 +479,9 @@ public class ActivityController {
     //用户-首页-便捷生活-查看活动详情-根据活动id获取留言
     @ApiOperation("用户-二手市场&便捷生活-根据商品ID获取留言")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "shopId", value = "店铺id", required = true, paramType = "query", dataType = "integer")
+        @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "shopId", value = "店铺id", required = true, paramType = "query", dataType = "integer")
     })
     @RequestMapping(value = "/getMarketCommentById", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getMarketCommentById(@ApiParam(value = "商品ID", required = true) Integer activityId, Page page) {
@@ -490,17 +490,19 @@ public class ActivityController {
         return new Result().success(commentPage);
     }
 
+    @Autowired
+    NewsService newsService;
 
     //首页-二手市场-活动列表-活动详情-发表/回复留言
     //首页-便捷生活-活动列表-活动详情-留言/回复留言
     @ApiOperation(value = "用户-二手市场&便捷生活-发表/回复留言", notes = "comment_id为空=新留言,不为空=回复")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "comment", value = "留言内容",
-                    required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "activityId", value = "活动ID",
-                    required = true, paramType = "query", dataType = "Integer"),
-            @ApiImplicitParam(name = "commentId", value = "留言ID",
-                    paramType = "query", dataType = "Integer"),
+        @ApiImplicitParam(name = "comment", value = "留言内容",
+            required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "activityId", value = "活动ID",
+            required = true, paramType = "query", dataType = "Integer"),
+        @ApiImplicitParam(name = "commentId", value = "留言ID",
+            paramType = "query", dataType = "Integer"),
     })
     @RequestMapping(value = "/addComment", method = {RequestMethod.POST, RequestMethod.GET})
     public Result addComment(MarketComment marketComment) {
@@ -520,9 +522,16 @@ public class ActivityController {
             String content = SensitiveWordUtil.replaceSensitiveWord(marketComment.getComment(), '*');
             marketComment.setComment(content);
             // comment_id为空=新评论,不为空=回复
+            Activity activity = activityService.selectById(marketComment.getActivityId());
+            Integer type = activity.getType();
+            boolean isSHMartket = type != null && type.equals(3);
+
             if (marketComment.getCommentId() == null) {     //发表评论
                 boolean res = marketComment.insert();
                 if (res) {
+                    if (isSHMartket) {
+                        newsService.pushComment(marketComment, activity);
+                    }
                     return new Result().success("发表留言成功!");
                 } else {
                     return new Result().erro("发表留言失败,请稍后再试", res);
@@ -533,6 +542,9 @@ public class ActivityController {
                 前端需要把回复的评论对象id作为传过来的marketComment的comment_id
                  */
                 boolean res = marketComment.insert();
+                if (isSHMartket) {
+                    newsService.pushComment(marketComment, activity);
+                }
                 if (res) {
                     return new Result().success("回复留言成功!");
                 } else {
@@ -550,7 +562,7 @@ public class ActivityController {
     //首页-便捷生活-发布活动
     @ApiOperation(value = "用户-便捷生活&二手市场&乡村旅游-新增活动",
             notes = "type按类型必填!!! 1=乡村旅游,2=便捷生活,3=二手市场',如果是便捷生活,classId必填!!如果是乡村旅游,modularId必填!!二手市场不用填.")
-    @RequestMapping(value = "/add", method = {RequestMethod.POST})
+    @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.GET})
     public Result add(@ModelAttribute Activity activity,
                       @RequestParam Integer modularId) {
 
@@ -566,14 +578,14 @@ public class ActivityController {
 
     //用户-乡村旅游-乡村旅游banner
     @ApiOperation("用户-乡村旅游-乡村旅游banner")
-    @RequestMapping(value="/getVillageBanner",method = {RequestMethod.POST,RequestMethod.GET})
-    public Result getVillageBanner(){
-        Result result=new Result();
+    @RequestMapping(value = "/getVillageBanner", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getVillageBanner() {
+        Result result = new Result();
 
-        List<Banner> villageBannerList=bannerService.selectList(new EntityWrapper<Banner>()
-                                     .eq(Banner.BANNER_LOCATION,4)    // 4:乡村旅游
-                                     .eq(Banner.IS_VALID,1)          //  是否有效 0:无效 1:有效
-                                     .orderBy(Banner.SORT,false)     //    排序 数字越大越靠前
+        List<Banner> villageBannerList = bannerService.selectList(new EntityWrapper<Banner>()
+            .eq(Banner.BANNER_LOCATION, 4)    // 4:乡村旅游
+            .eq(Banner.IS_VALID, 1)          //  是否有效 0:无效 1:有效
+            .orderBy(Banner.SORT, false)     //    排序 数字越大越靠前
         );
         return result.success(villageBannerList);
     }
@@ -581,19 +593,19 @@ public class ActivityController {
 
     //用户-乡村旅游-关键字搜索
     @ApiOperation("用户-乡村旅游-关键字搜索")
-    @RequestMapping(value="/searchActivityByKeywords",method={RequestMethod.GET,RequestMethod.POST})
-    public Result searchActivityByKeywords(@RequestParam String keywords){
-        Result result=new Result();
-        if(keywords!=null && !keywords.equals("")){
+    @RequestMapping(value = "/searchActivityByKeywords", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result searchActivityByKeywords(@RequestParam String keywords) {
+        Result result = new Result();
+        if (keywords != null && !keywords.equals("")) {
             keywords.trim();
         }
-        EntityWrapper ew=new EntityWrapper();
+        EntityWrapper ew = new EntityWrapper();
         ew.setEntity(new Activity());
-        ew.like("title",keywords, SqlLike.DEFAULT);
-        List<Activity> searchList=activityService.selectList(ew);
+        ew.like("title", keywords, SqlLike.DEFAULT);
+        List<Activity> searchList = activityService.selectList(ew);
 
-        if(searchList==null || searchList.size()==0){
-           return result.erro("抱歉,暂时还没有发布相关活动...");
+        if (searchList == null || searchList.size() == 0) {
+            return result.erro("抱歉,暂时还没有发布相关活动...");
         }
         return result.success(searchList);
     }
@@ -601,11 +613,11 @@ public class ActivityController {
 
     //根据首页父模块id获取子模块
     @ApiOperation("用户-乡村旅游-乡村旅游子模块")
-    @RequestMapping(value="/getChildModularByParentId", method={RequestMethod.GET,RequestMethod.POST})
-    public Result getChildModularByParentId(@RequestParam Integer id){
-        Result result=new Result();
-        List<ModularPortal> childModularList=modularPortalService.selectList(new EntityWrapper<ModularPortal>()
-                                                                            .eq(ModularPortal.PARENT_ID,id)
+    @RequestMapping(value = "/getChildModularByParentId", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result getChildModularByParentId(@RequestParam Integer id) {
+        Result result = new Result();
+        List<ModularPortal> childModularList = modularPortalService.selectList(new EntityWrapper<ModularPortal>()
+            .eq(ModularPortal.PARENT_ID, id)
         );
         //List<ModularPortal> list=modularPortalService.findChildListByParentId(id);
         return result.success(childModularList);
@@ -614,20 +626,20 @@ public class ActivityController {
 
     //用户-乡村旅游-热门推荐
     @ApiOperation("用户-乡村旅游-热门推荐")
-    @RequestMapping(value="/getHotActivityList",method={RequestMethod.POST,RequestMethod.GET})
-    public Result getHotActivityList( Integer current, Integer size, @RequestParam Integer ModularId){
-        current=current==null?1:current;
-        size=size==null?10:size;
-        Result result=new Result();
-        Page<Activity> activityPage = activityService.selectPage(new Page<Activity>(current,size),
-                                                                 new EntityWrapper<Activity>()
-                                                                         .eq(Activity.IS_DEL,0)
-                                                                         .eq(Activity.IS_RECOMMEND,1)
-                                                                         .eq(Activity.MODULAR_ID,ModularId)
-                                                                         .orderBy(Activity.PUBLISH_TIME,false
-                                                                         )
+    @RequestMapping(value = "/getHotActivityList", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getHotActivityList(Integer current, Integer size, @RequestParam Integer ModularId) {
+        current = current == null ? 1 : current;
+        size = size == null ? 10 : size;
+        Result result = new Result();
+        Page<Activity> activityPage = activityService.selectPage(new Page<Activity>(current, size),
+            new EntityWrapper<Activity>()
+                .eq(Activity.IS_DEL, 0)
+                .eq(Activity.IS_RECOMMEND, 1)
+                .eq(Activity.MODULAR_ID, ModularId)
+                .orderBy(Activity.PUBLISH_TIME, false
+                )
         );
-        if(activityPage.getRecords()==null || activityPage.getRecords().size()==0){
+        if (activityPage.getRecords() == null || activityPage.getRecords().size() == 0) {
             return result.erro("亲，暂时没有热门活动哦...");
         }
         return result.success(activityPage);
@@ -641,21 +653,21 @@ public class ActivityController {
                                   @RequestParam Integer status,
                                   @RequestParam Integer userId) {
         // 封装活动信息的list
-        Map<String,Activity> activityMap=new HashMap<>();
-        List<Activity> activityList=new ArrayList<>();
+        Map<String, Activity> activityMap = new HashMap<>();
+        List<Activity> activityList = new ArrayList<>();
 
         //从js_activity_join表中查询我参加的活动列表,显示全部活动列表时status传null
-        List<ActivityJoin> activityJoinList=new ArrayList<>();
-        if(status!=null) {
+        List<ActivityJoin> activityJoinList = new ArrayList<>();
+        if (status != null) {
             activityJoinList = activityJoinService.selectList(new EntityWrapper<ActivityJoin>()
-                    .eq(ActivityJoin.STATUS, status)
-                    .eq(ActivityJoin.USER_ID, userId));
-        }else{
+                .eq(ActivityJoin.STATUS, status)
+                .eq(ActivityJoin.USER_ID, userId));
+        } else {
             activityJoinList = activityJoinService.selectList(new EntityWrapper<ActivityJoin>()
-                    .eq(ActivityJoin.USER_ID, userId));
+                .eq(ActivityJoin.USER_ID, userId));
         }
 
-        if(activityJoinList==null || activityJoinList.size()==0){
+        if (activityJoinList == null || activityJoinList.size() == 0) {
             return new Result().success();
         }
 
@@ -663,11 +675,11 @@ public class ActivityController {
         for (ActivityJoin activityJoin : activityJoinList) {
             Integer activityId = activityJoin.getActivityId();
             // 根据活动ID查询活动信息
-            Activity activity=activityService.selectOne(new EntityWrapper<Activity>()
-                                          .eq(Activity.ID,activityId)
-                                           //is_del,是否删除,0:未删除,1:删除
-                                          .eq(Activity.IS_DEL,0)
-                                          .orderBy(Activity.PUBLISH_TIME,false)
+            Activity activity = activityService.selectOne(new EntityWrapper<Activity>()
+                .eq(Activity.ID, activityId)
+                //is_del,是否删除,0:未删除,1:删除
+                .eq(Activity.IS_DEL, 0)
+                .orderBy(Activity.PUBLISH_TIME, false)
             );
             activityList.add(activity);
         }
@@ -679,23 +691,23 @@ public class ActivityController {
      * 根据活动的modular_id连js_modular_portal表查询该活动对应的模块类型(亲子,户外拓展...)
      */
     @ApiOperation("用户-乡村旅游-我的活动列表-页面加载时调用(根据活动的modular_id查询该活动对应的模块类型)")
-    @RequestMapping(value="/getMudularName",method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getMudularName(@RequestParam Integer modularId){
-       ModularPortal modular= modularPortalService.selectById(modularId);
-       return new Result().success(modular.getName());
+    @RequestMapping(value = "/getMudularName", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getMudularName(@RequestParam Integer modularId) {
+        ModularPortal modular = modularPortalService.selectById(modularId);
+        return new Result().success(modular.getName());
     }
 
     //用户-乡村旅游-我的活动列表-删除活动
     @ApiOperation("用户-乡村旅游-我的活动列表-删除活动")
-    @RequestMapping(value="/deleteActivityById",method = {RequestMethod.POST, RequestMethod.GET})
-    public Result deleteActivityById(@RequestParam Integer activityId){
-        Result result=new Result();
-        try{
+    @RequestMapping(value = "/deleteActivityById", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result deleteActivityById(@RequestParam Integer activityId) {
+        Result result = new Result();
+        try {
             activityJoinService.delete(new EntityWrapper<ActivityJoin>()
-                    .eq(ActivityJoin.ACTIVITY_ID,activityId)
+                .eq(ActivityJoin.ACTIVITY_ID, activityId)
             );
             result.success("删除活动成功");
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             result.excption("抱歉!出错啦...我们会尽快解决");
         }
@@ -708,15 +720,15 @@ public class ActivityController {
      * 根据modularId查询模块对应的活动列表
      */
     @ApiOperation("用户-乡村旅游-查询亲子、户外拓展、采摘活动、酒店住宿、特产购买对应活动")
-    @RequestMapping(value="/getActivityListByModularId",method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getActivityListByModularId(@RequestParam Integer modularId, Integer current, Integer size){
-        current=current==null?1:current;
-        size=size==null?10:size;
+    @RequestMapping(value = "/getActivityListByModularId", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getActivityListByModularId(@RequestParam Integer modularId, Integer current, Integer size) {
+        current = current == null ? 1 : current;
+        size = size == null ? 10 : size;
 
-        Page activityPage=activityService.selectPage(new Page(current,size),
-                                                     new EntityWrapper<Activity>()
-                                                         .eq(Activity.MODULAR_ID,modularId)
-                );
+        Page activityPage = activityService.selectPage(new Page(current, size),
+            new EntityWrapper<Activity>()
+                .eq(Activity.MODULAR_ID, modularId)
+        );
         return new Result().success(activityPage);
     }
 
@@ -724,11 +736,11 @@ public class ActivityController {
      * 根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情
      */
     @ApiOperation("用户-乡村旅游-根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情")
-    @RequestMapping(value="getActivityInfoById",method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getActivityInfoById(@RequestParam Integer id){
-        Result result=new Result();
+    @RequestMapping(value = "getActivityInfoById", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getActivityInfoById(@RequestParam Integer id) {
+        Result result = new Result();
 
-        ActivityVoT activityVoT=activityService.selectActivityVoT(id);
+        ActivityVoT activityVoT = activityService.selectActivityVoT(id);
         return result.success(activityVoT);
     }
 
@@ -737,11 +749,11 @@ public class ActivityController {
      * 支付定金完成后调用该方法
      */
     @ApiOperation("用户-乡村旅游-活动-活动详情-活动报名(支付定金完成后调用该方法)")
-    @RequestMapping(value="/join",method = {RequestMethod.POST, RequestMethod.GET})
-    public Result join(Integer activityId,Integer userId, @RequestBody @ApiParam(name="activityJoin对象") ActivityJoin activityJoin){
-        Result result=new Result();
+    @RequestMapping(value = "/join", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result join(Integer activityId, Integer userId, @RequestBody @ApiParam(name = "activityJoin对象") ActivityJoin activityJoin) {
+        Result result = new Result();
 
-        try{
+        try {
             activityJoin.setActivityId(activityId);
             activityJoin.setUserId(userId);
             activityJoin.setIsDel(0);
@@ -749,54 +761,54 @@ public class ActivityController {
 
             activityJoin.insert();
             return result.success("参与成功!");
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return result.erro("参加活动失败");
         }
     }
 
     @ApiOperation("用户端-乡村旅游-根据状态获取活动报名列表")
-    @ApiImplicitParams(value={
-        @ApiImplicitParam(name="current",value="当前页",paramType = "query", dataType = "integer"),
-        @ApiImplicitParam(name="size",value="每页显示条数",paramType = "query", dataType = "integer"),
-        @ApiImplicitParam(name="status",value="状态，0=待付款,1=进行中,2=完成",paramType = "query", dataType = "integer")
+    @ApiImplicitParams(value = {
+        @ApiImplicitParam(name = "current", value = "当前页", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "size", value = "每页显示条数", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "status", value = "状态，0=待付款,1=进行中,2=完成", paramType = "query", dataType = "integer")
     })
-    @RequestMapping(value="/getActivityJoinByStatus",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getActivityJoinByStatus(Integer current,Integer size,Integer status){
-        current=current==null?1:current;
-        size=size==null?10:size;
-        Page<ActivityJoin> activityJoinPage=activityJoinService.selectPage(new Page(current,size),
-                                                                           new EntityWrapper<ActivityJoin>()
-                                                                               .eq(status!=null,ActivityJoin.STATUS,status)
-                                                                               .eq(ActivityJoin.IS_DEL,0)
-            );
+    @RequestMapping(value = "/getActivityJoinByStatus", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result getActivityJoinByStatus(Integer current, Integer size, Integer status) {
+        current = current == null ? 1 : current;
+        size = size == null ? 10 : size;
+        Page<ActivityJoin> activityJoinPage = activityJoinService.selectPage(new Page(current, size),
+            new EntityWrapper<ActivityJoin>()
+                .eq(status != null, ActivityJoin.STATUS, status)
+                .eq(ActivityJoin.IS_DEL, 0)
+        );
         return new Result().success(activityJoinPage);
     }
 
 
     @ApiOperation("平台-APP促销-乡村旅游-查询乡村旅游子模块")
-    @RequestMapping(value="/selectVillageChildModular",method={RequestMethod.GET,RequestMethod.POST})
-    public Result selectVillageChildModular(){
+    @RequestMapping(value = "/selectVillageChildModular", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result selectVillageChildModular() {
         //parent_id:9=乡村旅游,status:1有效,0无效
-        List<ModularPortal> modularPortalList=modularPortalService.selectList(new EntityWrapper<ModularPortal>()
-                                                                                  .eq(ModularPortal.PARENT_ID,9)
-                                                                                  .eq(ModularPortal.STATUS,1)
+        List<ModularPortal> modularPortalList = modularPortalService.selectList(new EntityWrapper<ModularPortal>()
+            .eq(ModularPortal.PARENT_ID, 9)
+            .eq(ModularPortal.STATUS, 1)
         );
         return new Result().success(modularPortalList);
     }
 
     //后台-APP促销管理-发布乡村旅游活动
-    @RequestMapping(value="/addVillageActivity",method={RequestMethod.POST})
+    @RequestMapping(value = "/addVillageActivity", method = {RequestMethod.POST})
     public Result addVillageActivity(@ModelAttribute Activity activity) throws UnsupportedEncodingException {
         try {
             activity.setPublishTime(new Date());
             activity.setType(1);       // 1=乡村旅游
             activity.setActivityType(0);    //0:普通活动，1：共享婚车活动
             //获取登录用户id
-            Integer userId=session.getUserId();
+            Integer userId = session.getUserId();
             activity.setUserId(userId);
             activityService.insert(activity);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new Result().erro("系统错误");
         }
@@ -805,17 +817,17 @@ public class ActivityController {
 
 
     //平台-二手市场
-    @RequestMapping(value="/getSecondaryMarketList",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getSecondaryMarketList(Page page,String keywords){
-        Page<ActivitySecondVo> secondaryActivityPage=activityService.getSecondaryMarketList(page,keywords);
-        for(ActivitySecondVo vo:secondaryActivityPage.getRecords()){
-            if(vo.getImages()!=null) {
+    @RequestMapping(value = "/getSecondaryMarketList", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result getSecondaryMarketList(Page page, String keywords) {
+        Page<ActivitySecondVo> secondaryActivityPage = activityService.getSecondaryMarketList(page, keywords);
+        for (ActivitySecondVo vo : secondaryActivityPage.getRecords()) {
+            if (vo.getImages() != null) {
                 String[] images = vo.getImages().split(",");
                 vo.setImageArray(images);
             }
-            ModularPortal modularPortal=modularPortalService.selectById(vo.getModularId());
-            if(modularPortal!=null)
-            vo.setModularName(modularPortal.getName());
+            ModularPortal modularPortal = modularPortalService.selectById(vo.getModularId());
+            if (modularPortal != null)
+                vo.setModularName(modularPortal.getName());
         }
 
         return new Result().success(secondaryActivityPage);
@@ -823,10 +835,10 @@ public class ActivityController {
 
 
     //平台-二手市场-审核
-    @RequestMapping(value="/examineToPass",method={RequestMethod.GET,RequestMethod.POST})
-    public Result examineToPass(@RequestParam Integer activityId){
-        Activity activity=activityService.selectById(activityId);
-        if(activity==null){
+    @RequestMapping(value = "/examineToPass", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result examineToPass(@RequestParam Integer activityId) {
+        Activity activity = activityService.selectById(activityId);
+        if (activity == null) {
             return new Result().erro("系统错误");
         }
         activity.setExamine(1);
@@ -836,10 +848,10 @@ public class ActivityController {
 
 
     //平台-二手市场-删除
-    @RequestMapping(value="/deleteSecondActivity",method={RequestMethod.GET,RequestMethod.POST})
-    public Result deleteSecondActivity(@RequestParam Integer activityId){
-        Activity activity=activityService.selectById(activityId);
-        if(activity==null){
+    @RequestMapping(value = "/deleteSecondActivity", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result deleteSecondActivity(@RequestParam Integer activityId) {
+        Activity activity = activityService.selectById(activityId);
+        if (activity == null) {
             return new Result().erro("系统错误");
         }
         activity.deleteById();
