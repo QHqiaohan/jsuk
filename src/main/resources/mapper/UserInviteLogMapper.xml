@@ -10,11 +10,12 @@
     <result column="invite_user_id" property="inviteUserId"/>
     <result column="money" property="money"/>
     <result column="create_time" property="createTime"/>
+    <result column="is_tixian" property="isTixian"/>
   </resultMap>
 
   <!-- 通用查询结果列 -->
   <sql id="Base_Column_List">
-        id, log, user_id, invite_user_id, money, create_time
+        id, log, user_id, invite_user_id, money, create_time,is_tixian
     </sql>
 
   <resultMap id="vo" type="com.jh.jsuk.entity.vo.UserInviteLogVo">

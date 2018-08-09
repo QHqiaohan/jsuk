@@ -23,19 +23,19 @@
         id, user_id, manager_id, bank_id, num, status, remark, is_del, price, create_time,examine,destination
     </sql>
 
-  <resultMap id="UserTiXianVo" type="com.jh.jsuk.entity.vo.UserTiXianVo" extends="BaseResultMap">
-    <result column="username" property="username" />
+  <resultMap id="ShopUserTiXianVo" type="com.jh.jsuk.entity.vo.ShopUserTiXianVo" extends="BaseResultMap">
+    <association property="shopUser" column="manager_id" select="com.jh.jsuk.dao.ShopUserDao.selectShopUserByMid"></association>
   </resultMap>
 
-  <select id="selectByAdvance" resultMap="UserTiXianVo">
+  <resultMap id="UserTiXianVo" type="com.jh.jsuk.entity.vo.UserTiXianVo" extends="BaseResultMap">
+    <association property="user" column="user_id" select="com.jh.jsuk.dao.UserDao.findTiXianUser"></association>
+  </resultMap>
+
+  <select id="selectByAdvance2" resultMap="UserTiXianVo">
     select
-    tixian.*,
-    u.nick_name as username
+    <include refid="Base_Column_List"></include>
     from
     js_user_ti_xian tixian
-    join
-    js_user u
-    on tixian.user_id=u.id
     where
     tixian.is_del=0
       <if test="tixianId!=null">
@@ -50,6 +50,31 @@
       <if test="status!=null">
        and status=#{status}
       </if>
+  </select>
+
+  <select id="selectByAdvance" resultMap="ShopUserTiXianVo">
+    select
+    tixian.*
+    from
+    js_user_ti_xian tixian
+    join
+    js_manager_user manager
+    on tixian.manager_id=manager.id
+    where
+    tixian.is_del=0
+    and manager.user_type=2
+    <if test="tixianId!=null">
+      and tixian.id=#{tixianId}
+    </if>
+    <if test="begin!=null and end!=null">
+      and tixian.price between #{begin} and #{end}
+    </if>
+    <if test="begin!=null and end==null">
+      and tixian.price>=#{begin}
+    </if>
+    <if test="status!=null">
+      and tixian.status=#{status}
+    </if>
 
   </select>
 
