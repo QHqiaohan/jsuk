@@ -7,7 +7,9 @@ import com.jh.jsuk.envm.PayType;
 import com.pingplusplus.Pingpp;
 import com.pingplusplus.exception.*;
 import com.pingplusplus.model.Charge;
+import com.pingplusplus.util.WxpubOAuth;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -18,6 +20,7 @@ import java.util.*;
  */
 public class PingPPUtil {
     private final static String appId = "app_HGSirL9a90uHrfvr";
+
     private static void init() {
         // 设置 API Key
         Pingpp.apiKey = "sk_test_0aHKuT4CubjHuLCif5mDizLS";
@@ -50,7 +53,7 @@ public class PingPPUtil {
      *
      * @return Charge
      */
-    public static Charge createCharge(UserOrder userOrder, User user, ShopGoods shopGoods, BigDecimal price) {
+    public static Charge createCharge(UserOrder userOrder, User user, ShopGoods shopGoods, BigDecimal price) throws UnsupportedEncodingException, ChannelException {
         init();
         Charge charge = null;
         String channel = getChannel(userOrder);
@@ -81,7 +84,7 @@ public class PingPPUtil {
         return charge;
     }
 
-    private static Map<String, Object> channelExtra(String channel) {
+    private static Map<String, Object> channelExtra(String channel) throws UnsupportedEncodingException, ChannelException {
         Map<String, Object> extra = new HashMap<>();
 
         switch (channel) {
@@ -90,6 +93,9 @@ public class PingPPUtil {
                 break;
             case "wx":
                 extra = wxExtra();
+                break;
+            case "wx_pub":
+                extra = wxPubExtra();
                 break;
             case "upacp":
                 extra = upacpExtra();
@@ -121,6 +127,19 @@ public class PingPPUtil {
         // extra.put("goods_tag", "YOUR_GOODS_TAG");
         return extra;
     }
+    private static Map<String, Object> wxPubExtra() throws UnsupportedEncodingException, ChannelException {
+        Map<String, Object> extra = new HashMap<>();
+        // 可选，指定支付方式，指定不能使用信用卡支付可设置为 no_credit 。
+        extra.put("limit_pay", "no_credit");
+
+        // 可选，商品标记，代金券或立减优惠功能的参数。
+        // extra.put("goods_tag", "YOUR_GOODS_TAG");
+
+        // 必须，用户在商户 appid 下的唯一标识。
+        extra.put("open_id", WxPubOAuthUtil.getOpenid());
+
+        return extra;
+    }
 
     private static Map<String, Object> upacpExtra() {
         Map<String, Object> extra = new HashMap<>();
@@ -136,8 +155,11 @@ public class PingPPUtil {
             //微信公众号支付
             case 3:
                 return "wx_pub";
-            //银行卡
+            //微信支付
             case 4:
+                return "wx";
+            //银行卡
+            case 5:
                 return "upacp";
         }
         return null;

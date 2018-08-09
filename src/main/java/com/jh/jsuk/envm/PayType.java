@@ -13,9 +13,11 @@ public enum PayType {
 
     ALI_PAY(2, "支付宝"),
 
-    WECHAT_PAY(3, "微信"),
+    WECHAT_PUB_PAY(3, "微信公众号"),
 
-    BANK_PAY(4, "银行卡");
+    WECHAT_APP_PAY(4, "微信"),
+
+    BANK_PAY(5, "银行卡");
 
     private final int key;
 

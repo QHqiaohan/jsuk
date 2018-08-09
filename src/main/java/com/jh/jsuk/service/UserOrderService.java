@@ -10,7 +10,9 @@ import com.jh.jsuk.entity.vo.*;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
 import com.jh.jsuk.exception.MessageException;
+import com.pingplusplus.exception.ChannelException;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -90,7 +92,7 @@ public interface UserOrderService extends IService<UserOrder> {
     /**
      * 第三方支付
      */
-    String thirdPay(List<UserOrder> userOrders);
+    String thirdPay(List<UserOrder> userOrders) throws UnsupportedEncodingException, ChannelException;
 
     /**
      * 售后

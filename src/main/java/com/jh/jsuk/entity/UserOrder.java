@@ -73,7 +73,7 @@ public class UserOrder extends Model<UserOrder> {
      */
     private Date payTime;
     /**
-     * 0 余额   1 货到付款  2 支付宝  3 微信  4 银行卡
+     * 0 余额   1 货到付款  2 支付宝  3 微信公众号  4 微信APP  5 银行卡
      */
     private Integer payType;
     /**
