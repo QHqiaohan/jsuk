@@ -23,10 +23,7 @@ import com.jh.jsuk.envm.PayType;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
-import com.jh.jsuk.utils.MyEntityWrapper;
-import com.jh.jsuk.utils.Result;
-import com.jh.jsuk.utils.ServerResponse;
-import com.jh.jsuk.utils.UuidUtil;
+import com.jh.jsuk.utils.*;
 import com.pingplusplus.exception.ChannelException;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -589,8 +586,7 @@ public class PayController {
     @ApiOperation(value = "用户端-支付")
     @RequestMapping(value = "/balancePay", method = {RequestMethod.POST, RequestMethod.GET})
     public Result balancePay(@ApiParam(name = "orderId", value = "订单Id") String orderId,
-                             @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信公众号-4微信APP-5银行卡") Integer payType,
-                             @ApiParam(name = "code", value = "公众号支付才传") String code) throws MessageException, UnsupportedEncodingException, ChannelException {
+                             @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信公众号-4微信APP-5银行卡") Integer payType) throws MessageException, UnsupportedEncodingException, ChannelException {
         String[] ids = orderId.split(",");
         List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
         switch (payType) {
@@ -606,25 +602,25 @@ public class PayController {
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.ALI_PAY.getKey());
                 }
-                return new Result().success(userOrderService.thirdPay(userOrders,null));
+                return new Result().success(userOrderService.thirdPay(userOrders));
             //微信公众号
             case 3:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.WECHAT_PUB_PAY.getKey());
                 }
-                return new Result().success(userOrderService.thirdPay(userOrders,code));
+                return new Result().success(userOrderService.thirdPay(userOrders));
             //微信APP
             case 4:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.WECHAT_APP_PAY.getKey());
                 }
-                return new Result().success(userOrderService.thirdPay(userOrders,null));
+                return new Result().success(userOrderService.thirdPay(userOrders));
             //银行卡
             case 5:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.BANK_PAY.getKey());
                 }
-                return new Result().success(userOrderService.thirdPay(userOrders,null));
+                return new Result().success(userOrderService.thirdPay(userOrders));
             default:
                 return new Result().erro("支付方式不存在");
         }
@@ -639,8 +635,13 @@ public class PayController {
         return new Result().success(userOrderService.payComplete(userOrders, status));
     }
 
-    @GetMapping(value = "/getCode")
-    public Result getCode(String code) {
-        return new Result().success("", code);
+    @ApiOperation(value = "获取openId")
+    @GetMapping(value = "/getOpenId")
+    public Result getCode(Integer userId, String code) throws UnsupportedEncodingException, ChannelException {
+        User user = new User();
+        user.setId(userId);
+        user.setOpenId(WxPubOAuthUtil.getOpenid(code));
+        user.updateById();
+        return new Result().success();
     }
 }
