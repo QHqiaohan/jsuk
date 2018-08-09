@@ -38,4 +38,11 @@
           user.id=#{uid}
   </select>
 
+
+  <insert id="setMenu">
+    INSERT INTO
+    js_sys_menu_user(mid,user_id)
+    values(#{menuId},#{userId})
+  </insert>
+
 </mapper>

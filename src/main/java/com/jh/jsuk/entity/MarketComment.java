@@ -47,6 +47,16 @@ public class MarketComment extends Model<MarketComment> {
      */
     private Integer isDel;
 
+    //1=二手市场，2=乡村旅游，3=便捷生活
+    private Integer type;
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 
     public Integer getId() {
         return id;

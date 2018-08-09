@@ -59,6 +59,13 @@ public class Menu extends Model<Menu> {
      */
     private Date gmtModified;
 
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
+    }
 
     public Long getMenuId() {
         return menuId;
@@ -74,14 +81,6 @@ public class Menu extends Model<Menu> {
 
     public void setParentId(Long parentId) {
         this.parentId = parentId;
-    }
-
-    public String getName() {
-        return menuName;
-    }
-
-    public void setName(String menuName) {
-        this.menuName = menuName;
     }
 
     public String getUrl() {

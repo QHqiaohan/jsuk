@@ -23,4 +23,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
     public List<Menu> queryMenuByUid(Integer uid) {
         return baseMapper.queryMenuByUid(uid);
     }
+
+    @Override
+    public void setMenu(Integer menuId, Integer userId) {
+        baseMapper.setMenu(menuId,userId);
+    }
 }

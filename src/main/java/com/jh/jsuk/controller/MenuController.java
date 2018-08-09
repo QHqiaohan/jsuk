@@ -65,9 +65,21 @@ public class MenuController {
     }
 
 
-    public boolean judgeMenu(@RequestParam Integer menuId,@RequestParam Integer userId){
-        return true;
+    //设置权限
+    @RequestMapping(value="/setMenu",method = {RequestMethod.POST,RequestMethod.GET})
+    public Result setMenu(@RequestParam Integer menuId,@RequestParam Integer userId){
+        if(menuId==null || userId==null){
+            return new Result().erro("请选择管理员");
+        }
+        try {
+            menuService.setMenu(menuId, userId);
+            return new Result().success("设置成功");
+        }catch(Exception e){
+            return new Result().erro("设置失败");
+        }
+
     }
+
 
 
 }
