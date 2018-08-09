@@ -625,7 +625,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public String thirdPay(List<UserOrder> userOrders) throws UnsupportedEncodingException, ChannelException {
+    public String thirdPay(List<UserOrder> userOrders, String code) throws UnsupportedEncodingException, ChannelException {
         UserOrder userOrder = userOrders.get(0);
         User user = userService.selectById(userOrder.getUserId());
         UserOrderGoods userOrderGoods = userOrderGoodsService.selectList(new EntityWrapper<UserOrderGoods>().eq(UserOrderGoods.ORDER_ID, userOrder.getId())).get(0);
@@ -634,7 +634,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         for (UserOrder u : userOrders) {
             price = price.add(u.getOrderRealPrice());
         }
-        Charge charge = PingPPUtil.createCharge(userOrder, user, shopGoods, price);
+        Charge charge = PingPPUtil.createCharge(userOrder, user, shopGoods, price,code);
         return charge.toString();
     }
 

@@ -92,7 +92,7 @@ public interface UserOrderService extends IService<UserOrder> {
     /**
      * 第三方支付
      */
-    String thirdPay(List<UserOrder> userOrders) throws UnsupportedEncodingException, ChannelException;
+    String thirdPay(List<UserOrder> userOrders, String code) throws UnsupportedEncodingException, ChannelException;
 
     /**
      * 售后

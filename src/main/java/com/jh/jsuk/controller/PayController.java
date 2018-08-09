@@ -36,10 +36,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.PostConstruct;
@@ -592,7 +589,8 @@ public class PayController {
     @ApiOperation(value = "用户端-支付")
     @RequestMapping(value = "/balancePay", method = {RequestMethod.POST, RequestMethod.GET})
     public Result balancePay(@ApiParam(name = "orderId", value = "订单Id") String orderId,
-                             @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信公众号-4微信APP-5银行卡") Integer payType) throws MessageException, UnsupportedEncodingException, ChannelException {
+                             @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信公众号-4微信APP-5银行卡") Integer payType,
+                             @ApiParam(name = "code", value = "公众号支付才传") String code) throws MessageException, UnsupportedEncodingException, ChannelException {
         String[] ids = orderId.split(",");
         List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
         switch (payType) {
@@ -608,25 +606,25 @@ public class PayController {
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.ALI_PAY.getKey());
                 }
-                return new Result().success(userOrderService.thirdPay(userOrders));
+                return new Result().success(userOrderService.thirdPay(userOrders,null));
             //微信公众号
             case 3:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.WECHAT_PUB_PAY.getKey());
                 }
-                return new Result().success(userOrderService.thirdPay(userOrders));
+                return new Result().success(userOrderService.thirdPay(userOrders,code));
             //微信APP
             case 4:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.WECHAT_APP_PAY.getKey());
                 }
-                return new Result().success(userOrderService.thirdPay(userOrders));
+                return new Result().success(userOrderService.thirdPay(userOrders,null));
             //银行卡
             case 5:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.BANK_PAY.getKey());
                 }
-                return new Result().success(userOrderService.thirdPay(userOrders));
+                return new Result().success(userOrderService.thirdPay(userOrders,null));
             default:
                 return new Result().erro("支付方式不存在");
         }
@@ -639,5 +637,10 @@ public class PayController {
         String[] ids = orderId.split(",");
         List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
         return new Result().success(userOrderService.payComplete(userOrders, status));
+    }
+
+    @GetMapping(value = "/getCode")
+    public Result getCode(String code) {
+        return new Result().success("", code);
     }
 }
