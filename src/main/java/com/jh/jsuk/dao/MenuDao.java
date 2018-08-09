@@ -17,4 +17,6 @@ import java.util.List;
 public interface MenuDao extends BaseMapper<Menu> {
 
     List<Menu> queryMenuByUid(@Param("uid") Integer uid);
+
+    void setMenu(@Param("menuId") Integer menuId, @Param("userId") Integer userId);
 }

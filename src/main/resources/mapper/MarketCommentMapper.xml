@@ -11,11 +11,12 @@
         <result column="user_id" property="userId" />
         <result column="activity_id" property="activityId" />
         <result column="is_del" property="isDel" />
+        <result column="type" property="type" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, comment, publish_time, comment_id, user_id, activity_id, is_del
+        id, comment, publish_time, comment_id, user_id, activity_id, is_del,type
     </sql>
 
     <sql id="result1">
