@@ -601,24 +601,28 @@ public class PayController {
             case 2:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.ALI_PAY.getKey());
+                    u.updateById();
                 }
                 return new Result().success(userOrderService.thirdPay(userOrders));
             //微信公众号
             case 3:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.WECHAT_PUB_PAY.getKey());
+                    u.updateById();
                 }
                 return new Result().success(userOrderService.thirdPay(userOrders));
             //微信APP
             case 4:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.WECHAT_APP_PAY.getKey());
+                    u.updateById();
                 }
                 return new Result().success(userOrderService.thirdPay(userOrders));
             //银行卡
             case 5:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.BANK_PAY.getKey());
+                    u.updateById();
                 }
                 return new Result().success(userOrderService.thirdPay(userOrders));
             default:
