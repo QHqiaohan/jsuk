@@ -3,21 +3,21 @@ package com.jh.jsuk.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.jh.jsuk.entity.ManagerUser;
-import com.jh.jsuk.entity.ShopMoney;
+import com.jh.jsuk.entity.DistributionApply;
+import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.entity.UserTiXian;
+import com.jh.jsuk.entity.vo.DistributionApplyVo;
 import com.jh.jsuk.entity.vo.UserTiXianVo;
-import com.jh.jsuk.service.ManagerUserService;
-import com.jh.jsuk.service.ShopMoneyService;
+import com.jh.jsuk.service.DistributionApplyService;
+import com.jh.jsuk.service.DistributionUserService;
 import com.jh.jsuk.service.UserTiXianService;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
+import java.math.BigDecimal;
+
 
 /**
  * <p>
@@ -34,6 +34,10 @@ public class UserTiXianController {
 
     @Autowired
     private UserTiXianService userTiXianService;
+    @Autowired
+    private DistributionApplyService distributionApplyService;
+    @Autowired
+    private DistributionUserService distributionUserService;
 
     @ApiOperation("提现")
     @RequestMapping(value = "/addTiXian", method = {RequestMethod.POST, RequestMethod.GET})
@@ -49,24 +53,7 @@ public class UserTiXianController {
      * 后台管理系统
      * 财务管理
      */
-/*
-    @ApiOperation("后台管理系统-财务管理-提现记录")
-    @RequestMapping(value="/getTiXianPage",method={RequestMethod.GET,RequestMethod.POST})
-   //@GetMapping("getTiXianPage")
-    public Result getTiXianPage(Page page){
-        Page<UserTiXianVo> userTiXianPage=userTiXianService.selectByAdvance(page,null,null,null,null);
-        return new Result().success(userTiXianPage);
-    }*/
 
-/*    @ApiOperation("后台管理系统-财务管理-提现记录&&高级检索")
-    @RequestMapping(value="/advanceSearchTiXianPage",method={RequestMethod.GET,RequestMethod.POST})
-    @ApiImplicitParams(value={
-        @ApiImplicitParam(name="提现id,流水号",value="tixianId",dataType = "Integer"),
-        @ApiImplicitParam(name="金额范围",value="amountScope",dataType = "String"),
-        @ApiImplicitParam(name="状态,0=处理中，1=已提现，2=提现失败，3=取消",value="status",dataType = "Integer"),
-        @ApiImplicitParam(name="当前页",value="current",dataType = "Integer"),
-        @ApiImplicitParam(name="每页显示条数",value="size",dataType = "Integer")
-    })*/
     @GetMapping("advanceSearchTiXianPage")
     public Result advanceSearchTiXianPage(Page page,
                                           @RequestParam(required = false) Integer tixianId,
@@ -96,10 +83,9 @@ public class UserTiXianController {
 
     //平台-提现审核
     //@GetMapping("tiXianExamine")
-    @ApiOperation("平台-提现记录-提现审核")
+    @ApiOperation("平台-提现记录-用户提现审核")
     @RequestMapping(value="tiXianExamine",method={RequestMethod.POST,RequestMethod.GET})
     public Result tiXianExamine(@RequestParam Integer tiXianId){
-        System.out.println("tiXianId:"+tiXianId);
         UserTiXian userTiXian=userTiXianService.selectOne(new EntityWrapper<UserTiXian>()
                                                               .eq(UserTiXian.ID,tiXianId)
         );
@@ -110,6 +96,47 @@ public class UserTiXianController {
         userTiXian.updateById();
 
         return new Result().success("提现审核成功");
+    }
+
+
+    //平台-骑手提现列表
+    @RequestMapping(value="searchDistributionUserTiXian",method={RequestMethod.POST,RequestMethod.GET})
+    public Result searchDistributionUserTiXian(Page page){
+           EntityWrapper<DistributionApply> ew=new EntityWrapper<>();
+           Page distributionUserTiXianPage=distributionApplyService.searchDistributionUserTiXian(page,ew);
+           return new Result().success(distributionUserTiXianPage);
+    }
+
+    //平台-骑手提现审核
+    @RequestMapping(value="distributionTiXianExamine",method={RequestMethod.POST})
+    public Result distributionTiXianExamine(@RequestParam Integer distributionApplyId,
+                                            @RequestParam Integer status){
+        DistributionApply distributionApply = distributionApplyService.selectById(distributionApplyId);
+        if(distributionApply==null){
+            return new Result().erro("系统错误");
+        }
+        distributionApply.setStatus(status);
+        distributionApply.updateById();
+        if(status==1){
+            //审核通过
+            Integer distributionUserId=distributionApply.getUserId();   //骑手Id
+            DistributionUser distributionUser=distributionUserService.selectById(distributionUserId);
+            if(distributionUser==null){
+                return new Result().erro("系统错误");
+            }
+            if(distributionApply.getPoundage()==null){
+                distributionApply.setPoundage(new BigDecimal(0));
+            }
+            if(distributionApply.getMoney()==null){
+                distributionApply.setMoney(new BigDecimal(0));
+            }
+            BigDecimal account = distributionUser.getAccount().add(distributionApply.getMoney()).subtract(distributionApply.getPoundage());
+            distributionUser.setAccount(account);
+            distributionUser.updateById();
+            return new Result().success("审核通过");
+        }
+        return new Result().erro("审核拒绝");
+
     }
 }
 

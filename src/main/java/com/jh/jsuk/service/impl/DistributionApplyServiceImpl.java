@@ -7,8 +7,11 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.DistributionApplyDao;
 import com.jh.jsuk.entity.DistributionApply;
 import com.jh.jsuk.entity.vo.UserApplyVo;
+import com.jh.jsuk.entity.vo.DistributionApplyVo;
 import com.jh.jsuk.service.DistributionApplyService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -27,6 +30,14 @@ public class DistributionApplyServiceImpl extends ServiceImpl<DistributionApplyD
     public Page<UserApplyVo> selectPageByUserInfo(Page page, Wrapper wrapper) {
         SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(this.baseMapper.selectPageByUserInfo(page, wrapper));
+        return page;
+    }
+
+    @Override
+    public Page searchDistributionUserTiXian(Page page, Wrapper wrapper) {
+        SqlHelper.fillWrapper(page,wrapper);
+        List<DistributionApplyVo> list=baseMapper.searchDistributionUserTiXian(page,wrapper);
+        page.setRecords(list);
         return page;
     }
 

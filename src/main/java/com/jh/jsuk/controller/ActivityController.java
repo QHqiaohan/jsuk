@@ -554,7 +554,10 @@ public class ActivityController {
         } catch (IOException e) {
             e.printStackTrace();
             return new Result().erro("新增失败", e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return new Result().success();
     }
 
     //乡村旅游现在不需要新增活动的功能
