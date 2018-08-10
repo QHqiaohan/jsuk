@@ -24,5 +24,9 @@ public interface DistributionApplyDao extends BaseMapper<DistributionApply> {
     List<UserApplyVo> selectPageByUserInfo(RowBounds page, @Param("ew") Wrapper wrapper);
 
 
-    List<DistributionApplyVo> searchDistributionUserTiXian(Page page, Wrapper wrapper);
+    List<DistributionApplyVo> searchDistributionUserTiXian(Page page, Wrapper wrapper,
+                                                           @Param("tixianId") Integer tixianId,
+                                                           @Param("begin") Integer begin,
+                                                           @Param("end") Integer end,
+                                                           @Param("status") Integer status);
 }
