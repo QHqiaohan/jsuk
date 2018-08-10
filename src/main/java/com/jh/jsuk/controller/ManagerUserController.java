@@ -124,6 +124,7 @@ public class ManagerUserController {
         shop.setShopName(shopName);
         shop.setModularId(modularId);
         shop.setAddress(address);
+        shop.setShopPhone(phone);
         shop.insert();
 
         ManagerUser managerUser = new ManagerUser();

@@ -27,12 +27,13 @@
         <result column="is_recommend" property="isRecommend"/>
         <result column="content" property="content"/>
         <result column="discount_info" property="discountInfo"/>
+      <result column="shop_phone" property="shopPhone"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, modular_id, head_img, shop_name, address, longitude, latitude, shop_img, announcement, start_time, end_time, account_point,
-        total_volume, delivery_fee, star_num, province_id, city_id, area_id, publish_time, can_use, is_recommend, content, discount_info
+        total_volume, delivery_fee, star_num, province_id, city_id, area_id, publish_time, can_use, is_recommend, content, discount_info,shop_phone
     </sql>
 
     <resultMap id="ShopTelPhoneVo" type="com.jh.jsuk.entity.vo.ShopTelPhoneVo" extends="BaseResultMap">

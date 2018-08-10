@@ -45,7 +45,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.security.DigestException;
 import java.util.*;
 import java.util.concurrent.Callable;
 
@@ -686,14 +685,17 @@ public class PayController {
         @ApiImplicitParam(name = "url", value = "生成url"),
     })
     @RequestMapping(value = "/ticket", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result jsapiTicket(@RequestParam String url) {
+    public Result jsapiTicket(@RequestParam String url) throws Exception {
         String timestamp = System.currentTimeMillis() / 1000L + "";
-        String str = "jsapi_ticket=" + JsapiTicketUtil.JsapiTicket().get("ticket") + "&noncestr=" + WxPay.getRandomString(16) + "&timestamp=" + timestamp + "&url=" + url;
+        String ticket = JsapiTicketUtil.JsapiTicket2();
+//        String ss = "jsapi_ticket=&noncestr=Wm3WZYTPz0wzccnW&timestamp=1414587457&url=http://mp.weixin.qq.com?params=value";
+        String randomString = WxPay.getRandomString(16);
+        String str = "jsapi_ticket=" + ticket + "&noncestr=" + randomString + "&timestamp=" + timestamp + "&url=" + url;
         String signature = SHA1.SHA1(str);
         Map<String, String> map = new HashMap();
         map.put("timestamp", timestamp);
-        map.put("ticket", JsapiTicketUtil.JsapiTicket().get("ticket"));
-        map.put("noncestr", WxPay.getRandomString(16));
+        map.put("ticket", ticket);
+        map.put("noncestr", randomString);
         map.put("signature", signature);
         map.put("appId", JsapiTicketUtil.APP_ID);
         return new Result().success(map);

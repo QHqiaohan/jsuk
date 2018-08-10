@@ -7,14 +7,9 @@ import com.jh.jsuk.entity.UserBank;
 import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.service.UserBankService;
 import com.jh.jsuk.utils.Result;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
@@ -90,11 +85,14 @@ public class UserBankController {
             @ApiImplicitParam(name = "type", value = "用户类型",
                     required = false, paramType = "query", dataType = "integer")
     })
-    @PostMapping("/list")
-    public Result list(Page page, Integer type, Integer userId) {
+   // @PostMapping("/list")
+    @RequestMapping(value="/list",method={RequestMethod.POST,RequestMethod.GET})
+    public Result list(Page page,
+                       Integer type,
+                       @RequestParam  Integer user_id) {
         Page bankPage = bankService.selectPage(page, new EntityWrapper<UserBank>()
-                .eq(UserBank.USER_TYPE, type)
-                .eq(UserBank.USER_ID, userId)
+                .eq(type!=null,UserBank.USER_TYPE, type)
+                .eq(UserBank.USER_ID, user_id)
                 .orderBy(UserBank.CREATE_TIME, false));
         return new Result().success(bankPage);
     }

@@ -210,23 +210,8 @@ public class ShopGoodsController {
         if (goodsSizeVo == null) {
             return result.erro("商品不存在");
         }
-        //通过商品id查询shopId
-        ShopGoods shopGoods=shopGoodsService.selectOne(new EntityWrapper<ShopGoods>()
-                                                       .eq(ShopGoods.ID,id)
-        );
-        if(shopGoods==null){
-            return new Result().erro("商品不存在");
-        }
-        Integer shopId=shopGoods.getShopId();
-        ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-                                                             .eq(ManagerUser.SHOP_ID,shopId)
-        );
-        if(managerUser==null){
-            return new Result().erro("商家不存在");
-        }
 
         map.put("shopGoods", goodsSizeVo);
-        map.put("shop_phone",managerUser.getPhone());
 //        List<ShopGoodsSize> list = goodsSizeVo.getShopGoodsSize();
 //        if(list != null && !list.isEmpty()){
 //            for (ShopGoodsSize goodsSize : list) {
