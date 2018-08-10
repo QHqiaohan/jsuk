@@ -9,6 +9,7 @@ import com.pingplusplus.Pingpp;
 import com.pingplusplus.exception.*;
 import com.pingplusplus.model.Charge;
 import com.pingplusplus.util.WxpubOAuth;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -19,6 +20,7 @@ import java.util.*;
  * Date:2018/8/7 16:09
  * Description: ping++
  */
+@Slf4j
 public class PingPPUtil {
     private final static String appId = "app_HGSirL9a90uHrfvr";
 
@@ -81,7 +83,7 @@ public class PingPPUtil {
             String chargeString = charge.toString();
             System.out.println(chargeString);
         } catch (APIConnectionException | ChannelException | AuthenticationException | RateLimitException | APIException | InvalidRequestException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return charge;
     }
@@ -139,7 +141,7 @@ public class PingPPUtil {
         // extra.put("goods_tag", "YOUR_GOODS_TAG");
 
         // 必须，用户在商户 appid 下的唯一标识。
-        extra.put("open_id",openId);
+        extra.put("open_id", openId);
 
         return extra;
     }

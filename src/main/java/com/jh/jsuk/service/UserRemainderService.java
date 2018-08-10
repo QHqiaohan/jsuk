@@ -2,7 +2,11 @@ package com.jh.jsuk.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.UserRemainder;
+import com.jh.jsuk.entity.vo.UserRechargeVo;
+import com.pingplusplus.exception.ChannelException;
+import com.pingplusplus.model.Charge;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 
 /**
@@ -27,6 +31,7 @@ public interface UserRemainderService extends IService<UserRemainder> {
 
     /**
      * 用户消费了多少
+     *
      * @param userId
      * @return
      */
@@ -52,19 +57,38 @@ public interface UserRemainderService extends IService<UserRemainder> {
 
     /**
      * 用户消费
+     *
      * @param userId
      * @param amount
      * @throws Exception
      */
-    void consume(Integer userId,BigDecimal amount) throws Exception;
+    void consume(Integer userId, BigDecimal amount) throws Exception;
 
     /**
      * 用户充值
+     *
      * @param userId
      * @param amount
      * @throws Exception
      */
     void recharge(Integer userId, BigDecimal amount) throws Exception;
 
+    /**
+     * 会员充值
+     *
+     * @param userId   用户ID
+     * @param memberId 会员配置Id
+     * @param payType  支付方式
+     * @return
+     */
+    UserRechargeVo memberCharge(Integer userId, Integer memberId, Integer payType) throws UnsupportedEncodingException, ChannelException;
 
+    /**
+     * 会员充值完成
+     *
+     * @param remainderId      用户余额Id
+     * @param rechargeRecordId 会员充值记录ID
+     * @param status           支付状态
+     */
+    void chargeComplete(Integer remainderId, Integer rechargeRecordId, Integer status);
 }

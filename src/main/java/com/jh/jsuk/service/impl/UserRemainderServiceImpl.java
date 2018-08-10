@@ -3,10 +3,24 @@ package com.jh.jsuk.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.UserRemainderDao;
+import com.jh.jsuk.entity.Member;
+import com.jh.jsuk.entity.User;
+import com.jh.jsuk.entity.UserRechargeRecord;
 import com.jh.jsuk.entity.UserRemainder;
+import com.jh.jsuk.entity.vo.ChargeParamVo;
+import com.jh.jsuk.entity.vo.UserRechargeVo;
+import com.jh.jsuk.service.MemberService;
+import com.jh.jsuk.service.UserRechargeRecordService;
 import com.jh.jsuk.service.UserRemainderService;
+import com.jh.jsuk.service.UserService;
+import com.jh.jsuk.utils.OrderNumUtil;
+import com.jh.jsuk.utils.PingPPUtil;
+import com.pingplusplus.exception.ChannelException;
+import com.pingplusplus.model.Charge;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -21,11 +35,17 @@ import java.util.List;
  */
 @Service
 public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, UserRemainder> implements UserRemainderService {
+    @Autowired
+    private MemberService memberService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserRechargeRecordService recordService;
 
     @Override
     public BigDecimal getRemainder(Integer userId) {
         List<UserRemainder> list = selectList(new EntityWrapper<UserRemainder>()
-                .eq(UserRemainder.USER_ID, userId));
+            .eq(UserRemainder.USER_ID, userId));
         // 初始化记录总余额
         BigDecimal remain = new BigDecimal("0.00");
         if (list == null || list.isEmpty())
@@ -46,8 +66,8 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
     @Override
     public BigDecimal getConsumption(Integer userId) {
         List<UserRemainder> list = selectList(new EntityWrapper<UserRemainder>()
-                .eq(UserRemainder.USER_ID, userId)
-                .eq(UserRemainder.TYPE, -1));
+            .eq(UserRemainder.USER_ID, userId)
+            .eq(UserRemainder.TYPE, -1));
         // 初始化记录总余额
         BigDecimal remain = new BigDecimal("0.00");
         if (list == null || list.isEmpty())
@@ -87,5 +107,55 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
         e.setCreateTime(new Date());
         e.setRemainder(amount);
         insert(e);
+    }
+
+    @Override
+    public UserRechargeVo memberCharge(Integer userId, Integer memberId, Integer payType) throws UnsupportedEncodingException, ChannelException {
+        User user = userService.selectById(userId);
+        Member member = memberService.selectById(memberId);
+        //用户余额表
+        UserRemainder e = new UserRemainder();
+        e.setType(2);
+        e.setUserId(userId);
+        e.setCreateTime(new Date());
+        e.setMemberId(memberId);
+        e.setRemainder(new BigDecimal(member.getMemberPrice()));
+        e.setOrderNum(OrderNumUtil.getOrderIdByUUId());
+        e.insert();
+
+        //用户充值记录
+        UserRechargeRecord record = new UserRechargeRecord();
+        record.setMemberId(memberId);
+        record.setRechargeMethod(payType);
+        record.setRechargeMoney(member.getMemberPrice());
+        record.insert();
+
+        ChargeParamVo paramVo = new ChargeParamVo();
+        paramVo.setSubject("会员充值");
+        paramVo.setClientIP(user.getLoginIp());
+        paramVo.setOrderNo(e.getOrderNum());
+        paramVo.setOpenId(user.getOpenId());
+        paramVo.setAmount(new BigDecimal(member.getMemberPrice()));
+        paramVo.setBody("会员充值");
+        paramVo.setPayType(payType);
+        Charge charge = PingPPUtil.createCharge(paramVo);
+        UserRechargeVo userRechargeVo = new UserRechargeVo();
+        userRechargeVo.setCharge(charge);
+        userRechargeVo.setRechargeRecordId(record.getId());
+        userRechargeVo.setRemainderId(e.getId());
+        return userRechargeVo;
+    }
+
+    @Override
+    public void chargeComplete(Integer remainderId, Integer rechargeRecordId, Integer status) {
+        //用户余额
+        UserRemainder userRemainder = selectById(remainderId);
+        userRemainder.setIsOk(status == 1 ? 2 : 1);
+        userRemainder.updateById();
+        //用户
+        UserRechargeRecord userRechargeRecord = recordService.selectById(rechargeRecordId);
+        userRechargeRecord.setFinishTime(new Date());
+        userRechargeRecord.setIsOk(status == 1 ? 2 : 1);
+        userRechargeRecord.updateById();
     }
 }
