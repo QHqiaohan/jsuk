@@ -36,10 +36,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.PostConstruct;
@@ -63,7 +60,7 @@ public class PayController {
     private static final Logger logger = LoggerFactory.getLogger(PayController.class);
     @Autowired
     UserOrderService userOrderService;
-//    @Autowired
+    //    @Autowired
 //    MemberConfigService memberConfigService;
     @Autowired
     UserRemainderService userRemainderService;
@@ -653,7 +650,6 @@ public class PayController {
         @ApiImplicitParam(name = "url", value = "生成url"),
     })
     @RequestMapping("/ticket")
-    @ResponseBody
     public Result jsapiTicket(@RequestParam String url) {
         String timestamp = System.currentTimeMillis() / 1000L + "";
         String str = "jsapi_ticket=" + JsapiTicketUtil.JsapiTicket().get("ticket") + "&noncestr=" + WxPay.getRandomString(16) + "&timestamp=" + timestamp + "&url=" + url;
