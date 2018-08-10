@@ -679,4 +679,30 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         return payResult;
     }
 
+    @Override
+    public String payStore(String price, Integer payType, Integer userId, String subject) throws UnsupportedEncodingException, ChannelException {
+        User user = userService.selectById(userId);
+        ChargeParamVo paramVo = new ChargeParamVo();
+        paramVo.setAmount(new BigDecimal(price));
+        paramVo.setBody(subject);
+        paramVo.setClientIP(user.getLoginIp());
+        paramVo.setOpenId(user.getOpenId());
+        paramVo.setOrderNo(OrderNumUtil.getOrderIdByUUId());
+        paramVo.setPayType(payType);
+        paramVo.setSubject(subject);
+        Charge charge = PingPPUtil.createCharge(paramVo);
+        return charge.toString();
+    }
+
+    @Override
+    public void payStoreComplete(Integer shopId, String price) {
+        //商家余额
+        ShopMoney shopMoney = new ShopMoney();
+        shopMoney.setMoney(price);
+        shopMoney.setPublishTime(new Date());
+        shopMoney.setType(1);
+        shopMoney.setShopId(shopId);
+        shopMoney.insert();
+    }
+
 }
