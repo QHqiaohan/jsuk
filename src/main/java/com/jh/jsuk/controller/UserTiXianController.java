@@ -68,23 +68,9 @@ public class UserTiXianController {
                                           @RequestParam(required = false) Integer tixianId,
                                           @RequestParam(required = false) String amountScope,
                                           @RequestParam(required = false) Integer status){
-        String[] scopes=null;
-        Integer begin=null;
-        Integer end=null;
-
-        if(amountScope!=null){
-            try {
-                scopes = amountScope.split("-");    //以-劈开,格式:1000-2000
-            }catch(Exception e){
-                return new Result().erro("金额范围参数错误");
-            }
-            begin=Integer.parseInt(scopes[0]);
-            try{
-                end=Integer.parseInt(scopes[1]);
-            }catch(Exception e){
-                end=null;
-            }
-        }
+        Map<String, Integer> map = setQueryParams(amountScope);
+        Integer begin = map.get("begin");
+        Integer end = map.get("end");
         Page<ShopUserTiXianVo> userTiXianPage=userTiXianService.selectByAdvance(page,tixianId,begin,end,status);
         return new Result().success(userTiXianPage);
     }
@@ -101,23 +87,9 @@ public class UserTiXianController {
                                           @RequestParam(required = false) Integer tixianId,
                                           @RequestParam(required = false) String amountScope,
                                           @RequestParam(required = false) Integer status){
-        String[] scopes=null;
-        Integer begin=null;
-        Integer end=null;
-
-        if(amountScope!=null){
-            try {
-                scopes = amountScope.split("-");    //以-劈开,格式:1000-2000
-            }catch(Exception e){
-                return new Result().erro("金额范围参数错误");
-            }
-            begin=Integer.parseInt(scopes[0]);
-            try{
-                end=Integer.parseInt(scopes[1]);
-            }catch(Exception e){
-                end=null;
-            }
-        }
+        Map<String, Integer> map = setQueryParams(amountScope);
+        Integer begin = map.get("begin");
+        Integer end = map.get("end");
         Page<UserTiXianVo> userTiXianPage=userTiXianService.selectByAdvance2(page,tixianId,begin,end,status);
         return new Result().success(userTiXianPage);
     }
@@ -240,10 +212,17 @@ public class UserTiXianController {
 
     //平台-骑手提现列表
     @RequestMapping(value="searchDistributionUserTiXian",method={RequestMethod.POST,RequestMethod.GET})
-    public Result searchDistributionUserTiXian(Page page){
-           EntityWrapper<DistributionApply> ew=new EntityWrapper<>();
-           Page distributionUserTiXianPage=distributionApplyService.searchDistributionUserTiXian(page,ew);
-           return new Result().success(distributionUserTiXianPage);
+    public Result searchDistributionUserTiXian(Page page,
+                                               @RequestParam(required = false) Integer tixianId,
+                                               @RequestParam(required = false) String amountScope,
+                                               @RequestParam(required = false) Integer status){
+
+        Map<String, Integer> map = setQueryParams(amountScope);
+        Integer begin = map.get("begin");
+        Integer end = map.get("end");
+        EntityWrapper<DistributionApply> ew=new EntityWrapper<>();
+        Page distributionUserTiXianPage=distributionApplyService.searchDistributionUserTiXian(page,ew,tixianId,begin,end,status);
+        return new Result().success(distributionUserTiXianPage);
     }
 
     //平台-骑手提现审核
@@ -277,5 +256,25 @@ public class UserTiXianController {
         return new Result().erro("审核拒绝");
 
     }
+
+    private Map<String,Integer> setQueryParams(String amountScope){
+        Map<String,Integer> map=new HashMap<>();
+        if(amountScope!=null) {
+            String[] scopes=null;
+            Integer begin=null;
+            Integer end=null;
+            scopes = amountScope.split("-");    //以-劈开,格式:1000-2000
+            begin=Integer.parseInt(scopes[0]);
+            try{
+                end=Integer.parseInt(scopes[1]);
+            }catch(Exception e){
+                end=null;
+            }
+            map.put("begin",begin);
+            map.put("end",end);
+        }
+        return map;
+    }
+
 }
 

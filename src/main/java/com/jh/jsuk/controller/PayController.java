@@ -36,12 +36,14 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -61,8 +63,8 @@ public class PayController {
     private static final Logger logger = LoggerFactory.getLogger(PayController.class);
     @Autowired
     UserOrderService userOrderService;
-    @Autowired
-    MemberConfigService memberConfigService;
+//    @Autowired
+//    MemberConfigService memberConfigService;
     @Autowired
     UserRemainderService userRemainderService;
     @Autowired
@@ -171,11 +173,11 @@ public class PayController {
         //会员购买
         if (StrUtil.equals(orderType, "2")) {
             //查询充值配置
-            MemberConfig memberConfig = memberConfigService.selectOne(new MyEntityWrapper<MemberConfig>().eq(MemberConfig.ID, memberConfigId));
+//            MemberConfig memberConfig = memberConfigService.selectOne(new MyEntityWrapper<MemberConfig>().eq(MemberConfig.ID, memberConfigId));
             UserRemainder userRemainder = new UserRemainder();
             userRemainder.setUserId(userId);
             userRemainder.setOrderNum("JSUKVIP" + RandomUtil.randomNumbers(18));
-            userRemainder.setRemainder(new BigDecimal(memberConfig.getMemberPrice()));
+//            userRemainder.setRemainder(new BigDecimal(memberConfig.getMemberPrice()));
             userRemainder.setMemberId(memberConfigId);
             userRemainder.setIsOk(0);
             userRemainder.setType(2);
@@ -470,10 +472,10 @@ public class PayController {
                         try {
                             switch (type) {
                                 case 2:
-                                    MemberConfig memberConfig = memberConfigService.selectOne(new MyEntityWrapper<MemberConfig>().eq(MemberConfig.ID, userRemainder.getMemberId()));
+//                                    MemberConfig memberConfig = memberConfigService.selectOne(new MyEntityWrapper<MemberConfig>().eq(MemberConfig.ID, userRemainder.getMemberId()));
                                     //更新会员状态
                                     User user = userService.selectById(userRemainder.getUserId());
-                                    user.setLevel(memberConfig.getId());
+//                                    user.setLevel(memberConfig.getId());
                                     user.updateById();
                                 case 1:
                                     userRemainder.setIsOk(1);

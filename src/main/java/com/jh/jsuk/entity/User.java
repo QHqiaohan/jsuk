@@ -1,14 +1,17 @@
 package com.jh.jsuk.entity;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jh.jsuk.envm.UserType;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -19,6 +22,9 @@ import java.util.Date;
  * @author lpf
  * @since 2018-06-20
  */
+@Setter
+@Getter
+@ToString
 @TableName("js_user")
 public class User extends ParentUser<User> {
 
@@ -119,13 +125,18 @@ public class User extends ParentUser<User> {
     //生日
     private Date birthday;
 
-    public Date getBirthday() {
-        return birthday;
-    }
+    /**
+     * 用户的余额
+     */
+    private BigDecimal amount;
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
+//    public Date getBirthday() {
+//        return birthday;
+//    }
+//
+//    public void setBirthday(Date birthday) {
+//        this.birthday = birthday;
+//    }
 
     public ParentUserEx toParentUser() {
         ParentUserEx ex = new ParentUserEx();
@@ -140,149 +151,149 @@ public class User extends ParentUser<User> {
     }
 
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public Integer getLevel() {
-        return level;
-    }
-
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
-
-    public Integer getSex() {
-        return sex;
-    }
-
-    public void setSex(Integer sex) {
-        this.sex = sex;
-    }
-
-    public String getHeadImg() {
-        return StrUtil.trim(headImg);
-    }
-
-    public void setHeadImg(String headImg) {
-        this.headImg = headImg;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getLoginIp() {
-        return loginIp;
-    }
-
-    public void setLoginIp(String loginIp) {
-        this.loginIp = loginIp;
-    }
-
-    public String getWxToken() {
-        return wxToken;
-    }
-
-    public void setWxToken(String wxToken) {
-        this.wxToken = wxToken;
-    }
-
-    public String getWeiboToken() {
-        return weiboToken;
-    }
-
-    public void setWeiboToken(String weiboToken) {
-        this.weiboToken = weiboToken;
-    }
-
-    public String getQqToken() {
-        return qqToken;
-    }
-
-    public void setQqToken(String qqToken) {
-        this.qqToken = qqToken;
-    }
-
-    public Integer getCanUse() {
-        return canUse;
-    }
-
-    public void setCanUse(Integer canUse) {
-        this.canUse = canUse;
-    }
-
-    public Integer getIsSecondaryMarket() {
-        return isSecondaryMarket;
-    }
-
-    public void setIsSecondaryMarket(Integer isSecondaryMarket) {
-        this.isSecondaryMarket = isSecondaryMarket;
-    }
-
-    public Integer getIsAvailable() {
-        return isAvailable;
-    }
-
-    public void setIsAvailable(Integer isAvailable) {
-        this.isAvailable = isAvailable;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Date getLastLoginTime() {
-        return lastLoginTime;
-    }
-
-    public void setLastLoginTime(Date lastLoginTime) {
-        this.lastLoginTime = lastLoginTime;
-    }
+//    public Integer getId() {
+//        return id;
+//    }
+//
+//    public void setId(Integer id) {
+//        this.id = id;
+//    }
+//
+//    public String getNickName() {
+//        return nickName;
+//    }
+//
+//    public void setNickName(String nickName) {
+//        this.nickName = nickName;
+//    }
+//
+//    public String getPhone() {
+//        return phone;
+//    }
+//
+//    public void setPhone(String phone) {
+//        this.phone = phone;
+//    }
+//
+//    public Integer getLevel() {
+//        return level;
+//    }
+//
+//    public void setLevel(Integer level) {
+//        this.level = level;
+//    }
+//
+//    public Integer getSex() {
+//        return sex;
+//    }
+//
+//    public void setSex(Integer sex) {
+//        this.sex = sex;
+//    }
+//
+//    public String getHeadImg() {
+//        return StrUtil.trim(headImg);
+//    }
+//
+//    public void setHeadImg(String headImg) {
+//        this.headImg = headImg;
+//    }
+//
+//    public String getPassword() {
+//        return password;
+//    }
+//
+//    public void setPassword(String password) {
+//        this.password = password;
+//    }
+//
+//    public String getLoginIp() {
+//        return loginIp;
+//    }
+//
+//    public void setLoginIp(String loginIp) {
+//        this.loginIp = loginIp;
+//    }
+//
+//    public String getWxToken() {
+//        return wxToken;
+//    }
+//
+//    public void setWxToken(String wxToken) {
+//        this.wxToken = wxToken;
+//    }
+//
+//    public String getWeiboToken() {
+//        return weiboToken;
+//    }
+//
+//    public void setWeiboToken(String weiboToken) {
+//        this.weiboToken = weiboToken;
+//    }
+//
+//    public String getQqToken() {
+//        return qqToken;
+//    }
+//
+//    public void setQqToken(String qqToken) {
+//        this.qqToken = qqToken;
+//    }
+//
+//    public Integer getCanUse() {
+//        return canUse;
+//    }
+//
+//    public void setCanUse(Integer canUse) {
+//        this.canUse = canUse;
+//    }
+//
+//    public Integer getIsSecondaryMarket() {
+//        return isSecondaryMarket;
+//    }
+//
+//    public void setIsSecondaryMarket(Integer isSecondaryMarket) {
+//        this.isSecondaryMarket = isSecondaryMarket;
+//    }
+//
+//    public Integer getIsAvailable() {
+//        return isAvailable;
+//    }
+//
+//    public void setIsAvailable(Integer isAvailable) {
+//        this.isAvailable = isAvailable;
+//    }
+//
+//    public String getAddress() {
+//        return address;
+//    }
+//
+//    public void setAddress(String address) {
+//        this.address = address;
+//    }
+//
+//    public Date getCreateTime() {
+//        return createTime;
+//    }
+//
+//    public void setCreateTime(Date createTime) {
+//        this.createTime = createTime;
+//    }
+//
+//    public Date getUpdateTime() {
+//        return updateTime;
+//    }
+//
+//    public void setUpdateTime(Date updateTime) {
+//        this.updateTime = updateTime;
+//    }
+//
+//    public Date getLastLoginTime() {
+//        return lastLoginTime;
+//    }
+//
+//    public void setLastLoginTime(Date lastLoginTime) {
+//        this.lastLoginTime = lastLoginTime;
+//    }
 
     public static final String ID = "id";
 
@@ -327,37 +338,37 @@ public class User extends ParentUser<User> {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-            "id=" + id +
-            ", nickName='" + nickName + '\'' +
-            ", phone='" + phone + '\'' +
-            ", level=" + level +
-            ", sex=" + sex +
-            ", headImg='" + headImg + '\'' +
-            ", password='" + password + '\'' +
-            ", loginIp='" + loginIp + '\'' +
-            ", wxToken='" + wxToken + '\'' +
-            ", weiboToken='" + weiboToken + '\'' +
-            ", qqToken='" + qqToken + '\'' +
-            ", canUse=" + canUse +
-            ", isSecondaryMarket=" + isSecondaryMarket +
-            ", isAvailable=" + isAvailable +
-            ", address='" + address + '\'' +
-            ", createTime=" + createTime +
-            ", updateTime=" + updateTime +
-            ", lastLoginTime=" + lastLoginTime +
-            ", openId='" + openId + '\'' +
-            ", birthday=" + birthday +
-            '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "User{" +
+//            "id=" + id +
+//            ", nickName='" + nickName + '\'' +
+//            ", phone='" + phone + '\'' +
+//            ", level=" + level +
+//            ", sex=" + sex +
+//            ", headImg='" + headImg + '\'' +
+//            ", password='" + password + '\'' +
+//            ", loginIp='" + loginIp + '\'' +
+//            ", wxToken='" + wxToken + '\'' +
+//            ", weiboToken='" + weiboToken + '\'' +
+//            ", qqToken='" + qqToken + '\'' +
+//            ", canUse=" + canUse +
+//            ", isSecondaryMarket=" + isSecondaryMarket +
+//            ", isAvailable=" + isAvailable +
+//            ", address='" + address + '\'' +
+//            ", createTime=" + createTime +
+//            ", updateTime=" + updateTime +
+//            ", lastLoginTime=" + lastLoginTime +
+//            ", openId='" + openId + '\'' +
+//            ", birthday=" + birthday +
+//            '}';
+//    }
 
-    public String getOpenId() {
-        return openId;
-    }
-
-    public void setOpenId(String openId) {
-        this.openId = openId;
-    }
+//    public String getOpenId() {
+//        return openId;
+//    }
+//
+//    public void setOpenId(String openId) {
+//        this.openId = openId;
+//    }
 }

@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
  * 会员价格配置 前端控制器
  * </p>
  *
- * @author lpf
- * @since 2018-06-24
+ * @author tj
+ * @since 2018-08-10
  */
 @RestController
-@RequestMapping("/memberConfig")
-public class MemberConfigController {
+@RequestMapping("/member")
+public class MemberController {
 
 }
 

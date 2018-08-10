@@ -85,11 +85,11 @@
       <version>3.2.2</version>
     </dependency>
 
-    <dependency>
+<!--     <dependency>
       <groupId>net.sourceforge.nekohtml</groupId>
       <artifactId>nekohtml</artifactId>
       <version>1.9.22</version>
-    </dependency>
+    </dependency> -->
 
     <!-- 短信 -->
     <dependency>
@@ -166,7 +166,7 @@
     <dependency>
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
-      <version>1.1</version>
+      <!-- <version>1.1</version> -->
     </dependency>
 
     <dependency>
@@ -246,11 +246,11 @@
       <artifactId>poi-ooxml</artifactId>
       <version>3.17</version>
     </dependency>
-    <dependency>
+<!--     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
-    </dependency>
+    </dependency> -->
     <!--支付 -->
     <dependency>
       <groupId>com.egzosn</groupId>
@@ -311,9 +311,9 @@
           <addResources>true</addResources>
         </configuration>
       </plugin>
-      <!-- <plugin> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-maven-plugin</artifactId> 
-        <dependencies> &lt;!&ndash; spring热部署&ndash;&gt; <dependency> <groupId>org.springframework</groupId> 
-        <artifactId>springloaded</artifactId> <version>1.2.8.RELEASE</version> </dependency> 
+      <!-- <plugin> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-maven-plugin</artifactId>
+        <dependencies> &lt;!&ndash; spring热部署&ndash;&gt; <dependency> <groupId>org.springframework</groupId>
+        <artifactId>springloaded</artifactId> <version>1.2.8.RELEASE</version> </dependency>
         </dependencies> </plugin> -->
     </plugins>
   </build>
