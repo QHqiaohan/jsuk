@@ -670,7 +670,6 @@ public class ActivityController {
             activityJoinList = activityJoinService.selectList(new EntityWrapper<ActivityJoin>()
                 .eq(ActivityJoin.USER_ID, userId));
         }
-
         if (activityJoinList == null || activityJoinList.size() == 0) {
             return new Result().success();
         }

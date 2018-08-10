@@ -128,6 +128,17 @@ public class Shop extends Model<Shop> {
      */
     private String discountInfo;
 
+    private String shopPhone;
+
+    //店铺手机号码
+    public String getShopPhone() {
+        return shopPhone;
+    }
+
+    public void setShopPhone(String shopPhone) {
+        this.shopPhone = shopPhone;
+    }
+
     public ShopTelPhoneVo toTelPhoneVo(){
         ShopTelPhoneVo vo = new ShopTelPhoneVo();
         vo.setId(id);
