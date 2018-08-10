@@ -128,7 +128,7 @@ public class UserController {
     @Autowired
     ShopUserService shopUserService;
 
-    @ApiOperation(value = "获取用户信息", notes = "")
+    @ApiOperation(value = "获取多类型用户信息", notes = "")
     @PostMapping("/userInfo")
     public Result bindAccount(@ApiParam("usrId 用户id") @RequestParam Integer usrId,
                               @ApiParam("userType 用户类型  SHOP 商家, DISTRIBUTION 骑手, USER 用户, ADMIN 平台") UserType userType) throws Exception {
