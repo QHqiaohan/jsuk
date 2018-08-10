@@ -366,16 +366,16 @@ public class ManagerUserController {
 
     @ApiOperation("后台管理系统-成员管理-是否启用成员")
     @RequestMapping(value="/setCanUse",method={RequestMethod.GET,RequestMethod.POST})
-    public Result setCanUse(Integer userId,
-                            @ApiParam(value = "是否起用 0:否  1:是") Integer can_user){
-        System.out.println("userId:"+userId+"...can_user:"+can_user);
+    public Result setCanUse(@RequestParam(value="user_id") Integer user_id,
+                            @RequestParam(value="canUse") Integer canUse){
+        System.out.println("userId:"+user_id+"...can_user:"+canUse);
         ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-            .eq(ManagerUser.ID,userId)
+            .eq(ManagerUser.ID,user_id)
         );
         if(managerUser==null){
             return new Result().erro("系统错误,请稍后再试");
         }
-        managerUser.setCanUse(can_user);
+        managerUser.setCanUse(canUse);
         managerUser.updateById();
         return new Result().success("更改成功");
     }
