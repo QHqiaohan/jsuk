@@ -31,13 +31,13 @@ public class JPushUtils {
 //    private static final String masterSecret = "514bd7608480bf939a71e722";
 
     private static final String USER_APP_KEY = "75169e06c10509c2e10e9f2f";
-    private static final String USER_MASTER_SECRET = "dcb89d137df28426363163a6 ";
+    private static final String USER_MASTER_SECRET = "dcb89d137df28426363163a6";
 
     private static final String SHOP_APP_KEY = "e25d191e8bbafc2c90e58217";
-    private static final String SHOP_MASTER_SECRET = "2933fe2cf982884d239174c1  ";
+    private static final String SHOP_MASTER_SECRET = "2933fe2cf982884d239174c1";
 
     private static final String DISTB_APP_KEY = "d5bed28b75d78bb787e1268a";
-    private static final String DISTB_MASTER_SECRET = "0c24e7eb470864fa09783fc4  ";
+    private static final String DISTB_MASTER_SECRET = "0c24e7eb470864fa09783fc4";
 
 //    /**
 //     * @param alias

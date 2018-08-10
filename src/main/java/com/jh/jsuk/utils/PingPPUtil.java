@@ -3,6 +3,7 @@ package com.jh.jsuk.utils;
 import com.jh.jsuk.entity.ShopGoods;
 import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.UserOrder;
+import com.jh.jsuk.entity.vo.ChargeParamVo;
 import com.jh.jsuk.envm.PayType;
 import com.pingplusplus.Pingpp;
 import com.pingplusplus.exception.*;
@@ -53,25 +54,25 @@ public class PingPPUtil {
      *
      * @return Charge
      */
-    public static Charge createCharge(UserOrder userOrder, User user, ShopGoods shopGoods, BigDecimal price, String openId) throws UnsupportedEncodingException, ChannelException {
+    public static Charge createCharge(ChargeParamVo paramVo) throws UnsupportedEncodingException, ChannelException {
         init();
         Charge charge = null;
-        String channel = getChannel(userOrder);
+        String channel = getChannel(paramVo);
         Map<String, Object> chargeMap = new HashMap<>();
-//        chargeMap.put("amount", price.multiply(new BigDecimal("100")));//订单总金额, 人民币单位：分（如订单总金额为 1 元，此处请填 100）
+//        chargeMap.put("amount", paramVo.getAmount().multiply(new BigDecimal("100")));//订单总金额, 人民币单位：分（如订单总金额为 1 元，此处请填 100）
         chargeMap.put("amount", 1);
         chargeMap.put("currency", "cny");//人民币
-        chargeMap.put("subject", shopGoods.getGoodsName()); //商品标题
-        chargeMap.put("body", shopGoods.getGoodsName());
-        chargeMap.put("order_no", userOrder.getOrderNum());// 推荐使用 8-20 位，要求数字或字母，不允许其他字符
+        chargeMap.put("subject", paramVo.getSubject()); //商品标题
+        chargeMap.put("body", paramVo.getBody());//商品描述
+        chargeMap.put("order_no", paramVo.getOrderNo());// 推荐使用 8-20 位，要求数字或字母，不允许其他字符
         chargeMap.put("channel", channel);// 支付使用的第三方支付渠道取值，请参考：https://www.pingxx.com/api#api-c-new
-        chargeMap.put("client_ip", user.getLoginIp()); // 发起支付请求客户端的 IP 地址，格式为 IPV4，如: 127.0.0.1
+        chargeMap.put("client_ip", paramVo.getClientIP()); // 发起支付请求客户端的 IP 地址，格式为 IPV4，如: 127.0.0.1
         Map<String, String> app = new HashMap<>();
         app.put("id", appId);
         chargeMap.put("app", app);
 
         // extra 取值请查看相应方法说明
-        chargeMap.put("extra", channelExtra(channel, openId));
+        chargeMap.put("extra", channelExtra(channel, paramVo.getOpenId()));
 
         try {
             //发起交易请求
@@ -149,8 +150,8 @@ public class PingPPUtil {
         return extra;
     }
 
-    private static String getChannel(UserOrder userOrder) {
-        switch (userOrder.getPayType()) {
+    private static String getChannel(ChargeParamVo chargeParamVo) {
+        switch (chargeParamVo.getPayType()) {
             //支付宝
             case 2:
                 return "alipay";
