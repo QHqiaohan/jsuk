@@ -103,4 +103,23 @@ public interface UserOrderService extends IService<UserOrder> {
      * 支付完成
      */
     PayResult payComplete(List<UserOrder> userOrders, Integer status);
+
+    /**
+     * 到店支付
+     *
+     * @param price   支付金额
+     * @param payType 支付类型
+     * @param userId
+     * @param subject
+     * @return charge对象
+     */
+    String payStore(String price, Integer payType, Integer userId, String subject) throws UnsupportedEncodingException, ChannelException;
+
+    /**
+     * 到店支付-支付成功
+     *
+     * @param shopId 商家id
+     * @param price 支付金额
+     */
+    void payStoreComplete(Integer shopId, String price);
 }

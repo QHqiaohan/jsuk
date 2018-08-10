@@ -633,13 +633,31 @@ public class PayController {
         }
     }
 
-    @ApiOperation(value = "用户端-第三方支付-支付完成")
+    @ApiOperation(value = "用户订单-第三方支付-支付完成")
     @RequestMapping(value = "/complete", method = {RequestMethod.POST, RequestMethod.GET})
     public Result complete(@ApiParam(name = "orderId", value = "订单Id") String orderId,
                            @ApiParam(name = "status", value = "支付状态 0失败 1成功") Integer status) {
         String[] ids = orderId.split(",");
         List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
         return new Result().success(userOrderService.payComplete(userOrders, status));
+    }
+
+    @ApiOperation(value = "用户端-其他支付")
+    @PostMapping(value = "/payStore")
+    public Result payStore(@ApiParam(name = "price", value = "支付金额") String price,
+                           @ApiParam(name = "userId", value = "用户Id") Integer userId,
+                           @ApiParam(name = "payType", value = "支付方式-2支付宝-3微信公众号-4微信APP-5银行卡") Integer payType,
+                           @ApiParam(name = "subject", value = "支付标题") String subject) throws UnsupportedEncodingException, ChannelException {
+
+        return new Result().success("", userOrderService.payStore(price, payType, userId,subject));
+    }
+
+    @ApiOperation(value = "用户端-到店支付-支付完成")
+    @RequestMapping(value = "/payStoreComplete", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result payStoreComplete(@ApiParam(name = "shopId", value = "商家Id") Integer shopId,
+                                   @ApiParam(name = "price", value = "支付金额") String price) {
+        userOrderService.payStoreComplete(shopId, price);
+        return new Result().success();
     }
 
     /**
@@ -649,7 +667,7 @@ public class PayController {
     @ApiImplicitParams(value = {
         @ApiImplicitParam(name = "url", value = "生成url"),
     })
-    @RequestMapping("/ticket")
+    @RequestMapping(value = "/ticket", method = {RequestMethod.POST, RequestMethod.GET})
     public Result jsapiTicket(@RequestParam String url) {
         String timestamp = System.currentTimeMillis() / 1000L + "";
         String str = "jsapi_ticket=" + JsapiTicketUtil.JsapiTicket().get("ticket") + "&noncestr=" + WxPay.getRandomString(16) + "&timestamp=" + timestamp + "&url=" + url;
