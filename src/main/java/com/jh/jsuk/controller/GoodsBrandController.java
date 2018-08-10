@@ -32,8 +32,6 @@ import java.util.List;
 public class GoodsBrandController {
 
     @Autowired
-    private ShopGoodsService shopGoodsService;
-    @Autowired
     private GoodsBrandService goodsBrandService;
 
     @GetMapping("/list")
