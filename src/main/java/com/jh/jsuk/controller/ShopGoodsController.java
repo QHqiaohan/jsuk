@@ -212,7 +212,6 @@ public class ShopGoodsController {
         }
 
         map.put("shopGoods", goodsSizeVo);
-       // map.put("shop_phone",managerUser.getPhone());
 //        List<ShopGoodsSize> list = goodsSizeVo.getShopGoodsSize();
 //        if(list != null && !list.isEmpty()){
 //            for (ShopGoodsSize goodsSize : list) {

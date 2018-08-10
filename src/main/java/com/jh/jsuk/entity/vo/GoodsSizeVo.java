@@ -32,7 +32,6 @@ public class GoodsSizeVo extends ShopGoods {
 
     private Integer userType;
 
-    private String phone;
 
     public void addRushBuyInfo(RushBuyVo vo) {
         if (vo == null)
