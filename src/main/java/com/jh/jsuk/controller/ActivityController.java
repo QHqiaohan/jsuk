@@ -423,14 +423,15 @@ public class ActivityController {
                                  // @ApiParam(value="用户id",required=true)
                                  @RequestParam Integer userId,
                                  @ApiParam(value = "1=乡村旅游,2=便捷生活,3=二手市场", required = true) Integer type,
-                                 @RequestParam Integer modularId) {
+                                 @ApiParam Integer modularId,
+                                 @ApiParam(value = "0=代付款，1=进行中，2=已完成") Integer zhuangtai) {
         Page myInfoPage = activityService.selectPage(page, new EntityWrapper<Activity>()
             .eq(Activity.IS_DEL, 0)
-            .eq(Activity.MODULAR_ID, modularId)
+            .eq(modularId!=null,Activity.MODULAR_ID, modularId)
             .eq(type != null, Activity.TYPE, type)
             .eq(Activity.USER_ID, userId)
+            .eq(zhuangtai!=null,Activity.ZHUANG_TAI,zhuangtai)
             .orderBy(Activity.PUBLISH_TIME, false));
-
 
         if (CollectionUtils.isEmpty(myInfoPage.getRecords())) {
             return new Result().success("活动列表为空");

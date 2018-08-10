@@ -137,8 +137,20 @@ public class Activity extends Model<Activity> {
     @ApiModelProperty(value = "门店地址", name = "address")
     private String address;
 
+    //0=代付款，1=进行中，2=已完成
+    @ApiModelProperty(value = "活动状态", name = "zhuangtai")
+    private Integer zhuangtai;
+
     //是否审核通过.1:是，0：否
     private Integer examine;
+
+    public Integer getZhuangtai() {
+        return zhuangtai;
+    }
+
+    public void setZhuangtai(Integer zhuangtai) {
+        this.zhuangtai = zhuangtai;
+    }
 
     public String getAddress() {
         return address;
@@ -375,6 +387,8 @@ public class Activity extends Model<Activity> {
     public static final String TRANSACTION_AREA_ID = "transaction_area_id";
 
     public static final String ACTIVITY_TYPE = "activity_type";
+
+    public static final String ZHUANG_TAI="zhuangtai";
 
     @Override
     protected Serializable pkVal() {
