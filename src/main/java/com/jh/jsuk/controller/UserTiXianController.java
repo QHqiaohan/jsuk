@@ -45,8 +45,6 @@ public class UserTiXianController {
     @Autowired
     private UserRemainderService userRemainderService;
 
-
-
     @ApiOperation("用户端-查询用户可提现余额")
     @RequestMapping(value = "/getRemainderByUid", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getRemainderByUid(@RequestParam Integer userId){
@@ -186,8 +184,6 @@ public class UserTiXianController {
         Result r = getRemainderByUid(userId);
         Map map=(Map)r.getData();
         BigDecimal remainder=(BigDecimal)map.get("remainder");
-
-        System.out.println("可提现金额:"+remainder);
 
         if(remainder.compareTo(new BigDecimal(userTiXian.getPrice()))==-1){
             return new Result().erro("余额不足");
