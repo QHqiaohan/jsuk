@@ -79,6 +79,8 @@ public class PayController {
     private PayService wxservice = null;
     @Resource
     private Environment env;
+    @Autowired
+    private ShopService shopService;
 
     /**
      * 加载支付配置信息
@@ -649,6 +651,13 @@ public class PayController {
                            @ApiParam(name = "subject", value = "支付标题") String subject) throws UnsupportedEncodingException, ChannelException {
 
         return new Result().success("", userOrderService.payStore(price, payType, userId, subject));
+    }
+
+    @ApiOperation(value = "用户端-到店支付-支付完成")
+    @GetMapping(value = "/getShopName")
+    public Result getShopName(String shopId) {
+        return new Result().success("", shopService.selectById(shopId).getShopName());
+
     }
 
     @ApiOperation(value = "用户端-到店支付-支付完成")
