@@ -34,9 +34,9 @@ public class DistributionApplyServiceImpl extends ServiceImpl<DistributionApplyD
     }
 
     @Override
-    public Page searchDistributionUserTiXian(Page page, Wrapper wrapper) {
+    public Page searchDistributionUserTiXian(Page page, Wrapper wrapper,Integer tixianId,Integer begin,Integer end,Integer status) {
         SqlHelper.fillWrapper(page,wrapper);
-        List<DistributionApplyVo> list=baseMapper.searchDistributionUserTiXian(page,wrapper);
+        List<DistributionApplyVo> list=baseMapper.searchDistributionUserTiXian(page,wrapper, tixianId, begin, end, status);
         page.setRecords(list);
         return page;
     }

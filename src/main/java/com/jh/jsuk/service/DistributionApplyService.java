@@ -20,5 +20,5 @@ public interface DistributionApplyService extends IService<DistributionApply> {
 
     Page<UserApplyVo> selectPageByUserInfo(Page page, Wrapper wrapper);
 
-    Page searchDistributionUserTiXian(Page page, Wrapper wrapper);
+    Page searchDistributionUserTiXian(Page page, Wrapper wrapper,Integer tixianId,Integer begin,Integer end,Integer status);
 }

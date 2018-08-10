@@ -42,8 +42,22 @@
 
   <select id="searchDistributionUserTiXian" resultMap="DistributionApplyVo">
     select
-     id, bank_id, money, status, user_id,publish_time, poundage,user_nick_name
+     *
     from js_distribution_apply
+    <where>
+    <if test="tixianId!=null">
+       id=#{tixianId}
+    </if>
+    <if test="begin!=null and end!=null">
+       money between #{begin} and #{end}
+    </if>
+    <if test="begin!=null and end==null">
+       money>=#{begin}
+    </if>
+    <if test="status!=null">
+       status=#{status}
+    </if>
+    </where>
   </select>
 
 </mapper>
