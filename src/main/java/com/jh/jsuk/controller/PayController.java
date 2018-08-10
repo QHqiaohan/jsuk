@@ -24,6 +24,9 @@ import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.*;
+import com.jh.jsuk.utils.wx.JsapiTicketUtil;
+import com.jh.jsuk.utils.wx.SHA1;
+import com.jh.jsuk.utils.wx.WxPay;
 import com.pingplusplus.exception.ChannelException;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -33,10 +36,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.PostConstruct;
@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.security.DigestException;
 import java.util.*;
 import java.util.concurrent.Callable;
 
@@ -59,7 +60,7 @@ public class PayController {
     private static final Logger logger = LoggerFactory.getLogger(PayController.class);
     @Autowired
     UserOrderService userOrderService;
-//    @Autowired
+    //    @Autowired
 //    MemberConfigService memberConfigService;
     @Autowired
     UserRemainderService userRemainderService;
@@ -639,6 +640,27 @@ public class PayController {
         String[] ids = orderId.split(",");
         List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
         return new Result().success(userOrderService.payComplete(userOrders, status));
+    }
+
+    /**
+     * 微信支付获取config
+     */
+    @ApiOperation("微信公众号支付获取config")
+    @ApiImplicitParams(value = {
+        @ApiImplicitParam(name = "url", value = "生成url"),
+    })
+    @RequestMapping("/ticket")
+    public Result jsapiTicket(@RequestParam String url) {
+        String timestamp = System.currentTimeMillis() / 1000L + "";
+        String str = "jsapi_ticket=" + JsapiTicketUtil.JsapiTicket().get("ticket") + "&noncestr=" + WxPay.getRandomString(16) + "&timestamp=" + timestamp + "&url=" + url;
+        String signature = SHA1.SHA1(str);
+        Map<String, String> map = new HashMap();
+        map.put("timestamp", timestamp);
+        map.put("ticket", JsapiTicketUtil.JsapiTicket().get("ticket"));
+        map.put("noncestr", WxPay.getRandomString(16));
+        map.put("signature", signature);
+        map.put("appId", JsapiTicketUtil.APP_ID);
+        return new Result().success(map);
     }
 
     @ApiOperation(value = "获取openId")
