@@ -79,6 +79,8 @@ public class PayController {
     private PayService wxservice = null;
     @Resource
     private Environment env;
+    @Autowired
+    private ShopService shopService;
 
     /**
      * 加载支付配置信息
@@ -648,7 +650,14 @@ public class PayController {
                            @ApiParam(name = "payType", value = "支付方式-2支付宝-3微信公众号-4微信APP-5银行卡") Integer payType,
                            @ApiParam(name = "subject", value = "支付标题") String subject) throws UnsupportedEncodingException, ChannelException {
 
-        return new Result().success("", userOrderService.payStore(price, payType, userId,subject));
+        return new Result().success("", userOrderService.payStore(price, payType, userId, subject));
+    }
+
+    @ApiOperation(value = "用户端-到店支付-支付完成")
+    @GetMapping(value = "/getShopName")
+    public Result getShopName(String shopId) {
+        return new Result().success("", shopService.selectById(shopId).getShopName());
+
     }
 
     @ApiOperation(value = "用户端-到店支付-支付完成")
@@ -656,6 +665,24 @@ public class PayController {
     public Result payStoreComplete(@ApiParam(name = "shopId", value = "商家Id") Integer shopId,
                                    @ApiParam(name = "price", value = "支付金额") String price) {
         userOrderService.payStoreComplete(shopId, price);
+        return new Result().success();
+    }
+
+    @ApiOperation(value = "会员充值")
+    @PostMapping(value = "/memberCharge")
+    public Result memberCharge(@ApiParam(name = "userId", value = "用户Id") Integer userId,
+                               @ApiParam(name = "memberId", value = "会员配置Id") Integer memberId,
+                               @ApiParam(name = "payType", value = "支付方式-2支付宝-3微信公众号-4微信APP-5银行卡") Integer payType) throws UnsupportedEncodingException, ChannelException {
+
+        return new Result().success(userRemainderService.memberCharge(userId, memberId, payType));
+    }
+
+    @ApiOperation(value = "会员充值-支付完成")
+    @PostMapping(value = "/memberChargeComplete")
+    public Result memberChargeComplete(@ApiParam(name = "remainderId", value = "用户余额Id") Integer remainderId,
+                                       @ApiParam(name = "rechargeRecordId", value = "交易记录Id") Integer rechargeRecordId,
+                                       @ApiParam(name = "status", value = "支付状态 0失败 1成功") Integer status) {
+        userRemainderService.chargeComplete(remainderId, rechargeRecordId, status);
         return new Result().success();
     }
 

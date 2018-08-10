@@ -2,7 +2,9 @@ package com.jh.jsuk.controller;
 
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.Shop;
@@ -58,24 +60,24 @@ public class ModularPortalController {
          * 店铺列表
          */
         Page<Shop> shopPage = shopService.selectPage(
-                new Page<>(1, 3),
-                new EntityWrapper<Shop>()
-                        // 是否可用  0不可用 1可用
-                        .eq(Shop.CAN_USE, 1)
-                        // 是否推荐,0=不推荐,1=推荐
-                        .eq(Shop.IS_RECOMMEND, 1)
-                        .eq(Shop.MODULAR_ID, modularId)
-                        .orderBy(Shop.TOTAL_VOLUME, false));
+            new Page<>(1, 3),
+            new EntityWrapper<Shop>()
+                // 是否可用  0不可用 1可用
+                .eq(Shop.CAN_USE, 1)
+                // 是否推荐,0=不推荐,1=推荐
+                .eq(Shop.IS_RECOMMEND, 1)
+                .eq(Shop.MODULAR_ID, modularId)
+                .orderBy(Shop.TOTAL_VOLUME, false));
 
         List<Shop> records = shopPage.getRecords();
-        List<ShopTelPhoneVo> list= new ArrayList<>();
+        List<ShopTelPhoneVo> list = new ArrayList<>();
         for (Shop record : records) {
             ShopTelPhoneVo vo = record.toTelPhoneVo();
             list.add(vo);
             EntityWrapper<ManagerUser> wrapper = new EntityWrapper<>();
-            wrapper.eq(ManagerUser.SHOP_ID,record.getId());
+            wrapper.eq(ManagerUser.SHOP_ID, record.getId());
             ManagerUser user = managerUserService.selectOne(wrapper);
-            if(user!= null){
+            if (user != null) {
                 vo.setTelPhone(user.getPhone());
             }
         }
@@ -91,39 +93,50 @@ public class ModularPortalController {
 
     @ApiOperation(value = "用户端-根据模块ID获取更多店铺", notes = "modularId=0 -->获取首页更多精选商家列表")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "current", value = "当前页码",
-                    paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数",
-                    paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "current", value = "当前页码",
+            paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "size", value = "每页条数",
+            paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "kw", value = "搜索关键字",
+            paramType = "query", dataType = "integer"),
     })
     @RequestMapping(value = "/shopListByModularId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result shopListByModularId(Page page, @ApiParam(value = "模块ID", required = true) Integer modularId) {
+    public Result shopListByModularId(Page page, @ApiParam(value = "模块ID", required = true) Integer modularId, String kw) {
         if (modularId == 0) {
             // 首页更多精选商家
-            Page shopPage = shopService.selectPage(page, new EntityWrapper<Shop>()
-                    // 是否可用  0不可用 1可用
-                    .eq(Shop.CAN_USE, 1)
-                    // 是否推荐,0=不推荐,1=推荐
-                    .eq(Shop.IS_RECOMMEND, 1)
-                    .eq(Shop.MODULAR_ID, modularId)
-                    .orderBy(Shop.TOTAL_VOLUME, false));
+            Wrapper<Shop> wrapper = new EntityWrapper<Shop>()
+                // 是否可用  0不可用 1可用
+                .eq(Shop.CAN_USE, 1)
+                // 是否推荐,0=不推荐,1=推荐
+                .eq(Shop.IS_RECOMMEND, 1)
+                .eq(Shop.MODULAR_ID, modularId)
+                .orderBy(Shop.TOTAL_VOLUME, false);
+            if (StrUtil.isNotBlank(kw)) {
+                wrapper.like(Shop.SHOP_NAME, "%" + kw + "%");
+            }
+            Page shopPage = shopService.selectPage(page, wrapper);
             return new Result().success(shopPage);
         } else {
             // 更多商家列表
-            Page shopPage = shopService.selectPage(page, new EntityWrapper<Shop>()
-                    .eq(Shop.CAN_USE, 1)
-                    .eq(Shop.MODULAR_ID, modularId)
-                    .orderBy(Shop.TOTAL_VOLUME, false));
+            Wrapper<Shop> wrapper = new EntityWrapper<Shop>()
+                .eq(Shop.CAN_USE, 1)
+                .eq(Shop.MODULAR_ID, modularId)
+                .orderBy(Shop.TOTAL_VOLUME, false);
+            if (StrUtil.isNotBlank(kw)) {
+                wrapper.like(Shop.SHOP_NAME, "%" + kw + "%");
+            }
+            Page shopPage = shopService.selectPage(page,
+                wrapper);
             return new Result().success(shopPage);
         }
     }
 
     @ApiOperation(value = "用户端-根据模块ID获取更多商品")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "current", value = "当前页码",
-                    paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数",
-                    paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "current", value = "当前页码",
+            paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "size", value = "每页条数",
+            paramType = "query", dataType = "integer"),
     })
     @RequestMapping(value = "/shopGoodsListByModularId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result shopGoodsListByModularId(Page page, @ApiParam(value = "模块ID", required = true) Integer modularId) {

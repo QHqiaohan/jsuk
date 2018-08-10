@@ -1,5 +1,6 @@
 package com.jh.jsuk.aspect;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -59,7 +60,7 @@ public class WebLogAspect {
     public void doAfterReturning(Object ret) {
         // 处理完请求，返回内容
         try {
-//            log.info("返回内容 : {}", new ObjectMapper().writeValueAsString(ret));
+            log.info("返回内容 : {}", new ObjectMapper().writeValueAsString(ret));
         } catch (Exception e) {
             log.error(e.getMessage());
         }
