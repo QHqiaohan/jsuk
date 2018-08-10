@@ -57,7 +57,11 @@ public class JsapiTicketUtil {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             String response = client.execute(httpget, responseHandler);
             JSONObject OpenidJSONO = JSONObject.fromObject(response);
-            accessToken = String.valueOf(OpenidJSONO.get("access_token"));
+            Object access_token = OpenidJSONO.get("access_token");
+            if(access_token == null){
+                log.error("token 错误 返回数据:{}", response);
+            }
+            accessToken = String.valueOf(access_token);
             result.put("accessToken", accessToken);
         } catch (Exception e) {
             log.error(e.getLocalizedMessage(),e);
