@@ -4,16 +4,10 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.UserTiXianDao;
-import com.jh.jsuk.entity.DistributionUser;
-import com.jh.jsuk.entity.ManagerUser;
-import com.jh.jsuk.entity.ShopMoney;
-import com.jh.jsuk.entity.UserTiXian;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.ShopUserTiXianVo;
 import com.jh.jsuk.entity.vo.UserTiXianVo;
-import com.jh.jsuk.service.DistributionUserService;
-import com.jh.jsuk.service.ManagerUserService;
-import com.jh.jsuk.service.ShopMoneyService;
-import com.jh.jsuk.service.UserTiXianService;
+import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,15 +32,17 @@ public class UserTiXianServiceImpl extends ServiceImpl<UserTiXianDao, UserTiXian
     @Autowired
     private ManagerUserService managerUserService;
     @Autowired
-    private DistributionUserService distributionUserService;
+    private UserService userService;
 
     @Override
-    @Transactional
     public Result tixian(UserTiXian userTiXian, Integer type, Integer userId) {
-
         if (type == 2) {             //2=用户,0=商家,1=骑手
             //用户提现
-            return new Result().success();
+            userTiXian.setUserId(userId);
+            userTiXian.setExamine(0);
+            userTiXian.setIsDel(0);
+            userTiXian.insert();
+            return new Result().success("提现申请成功,等待平台审核");
         } else if (type == 0) {        //商家提现
             ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.ID, userId));
@@ -110,8 +106,4 @@ public class UserTiXianServiceImpl extends ServiceImpl<UserTiXianDao, UserTiXian
         return page.setRecords(list);
     }
 
-/*    @Override
-    public List<UserTiXianVo> selectByAdvance(Integer tixianId, Integer begin, Integer end, Integer status) {
-        return baseMapper.selectByAdvance(tixianId,begin,end,status);
-    }*/
 }

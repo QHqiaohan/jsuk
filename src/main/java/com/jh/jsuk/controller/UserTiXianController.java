@@ -1,6 +1,5 @@
 package com.jh.jsuk.controller;
 
-
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.*;
@@ -44,9 +43,39 @@ public class UserTiXianController {
     @Autowired
     private UserService userService;
     @Autowired
-    private UserRechargeRecordService userRechargeRecordService;
-    @Autowired
-    private UserInviteLogService userInviteLogService;
+    private UserRemainderService userRemainderService;
+
+
+
+    @ApiOperation("用户端-查询用户可提现余额")
+    @RequestMapping(value = "/getRemainderByUid", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getRemainderByUid(@RequestParam Integer userId){
+
+        BigDecimal remainder=new BigDecimal("0.00");
+        Map map=new HashMap();
+
+        List<UserRemainder> userRemainderList=userRemainderService.selectList(new EntityWrapper<UserRemainder>()
+                                                                              .eq(UserRemainder.USER_ID,userId)
+                                                                              .eq(UserRemainder.ID_DEL,0)
+                                                                              .eq(UserRemainder.IS_OK,2)
+        );
+        if(userRemainderList!=null && userRemainderList.size()>0){
+            for(UserRemainder userRemainder:userRemainderList){
+                Integer type = userRemainder.getType();   //类型,1=充值,-1=消费,0=其他 2=购买会员
+                if(userRemainder.getRemainder()==null){
+                    userRemainder.setRemainder(new BigDecimal("0.00"));
+                }
+                if(type==1 || type==0){
+                    remainder=remainder.add(userRemainder.getRemainder());
+                }else if(type==-1){
+                    remainder=remainder.subtract(userRemainder.getRemainder());
+                }
+            }
+        }
+        map.put("remainder",remainder);
+        return new Result().success(map);
+    }
+
 
     @ApiOperation("提现")
     @RequestMapping(value = "/addTiXian", method = {RequestMethod.POST, RequestMethod.GET})
@@ -80,7 +109,7 @@ public class UserTiXianController {
     /**
      * 后台管理系统
      * 财务管理
-     * 用户提现
+     * 用户提现列表
      */
     @GetMapping("advanceSearchUserTiXianPage")
     public Result advanceSearchUserTiXianPage(Page page,
@@ -147,14 +176,39 @@ public class UserTiXianController {
         if(userTiXian==null){
             return new Result().erro("提现记录数据不存在");
         }
-        userTiXian.setExamine(1);  //1.审核通过
         User user=userService.selectOne(new EntityWrapper<User>()
                                         .eq(User.ID,userId)
         );
         if(user==null){
             return new Result().erro("用户不存在");
         }
-        //查询用户红包记录,用户只有红包才能提现
+        //查询用户可提现金额
+        Result r = getRemainderByUid(userId);
+        Map map=(Map)r.getData();
+        BigDecimal remainder=(BigDecimal)map.get("remainder");
+
+        System.out.println("可提现金额:"+remainder);
+
+        if(remainder.compareTo(new BigDecimal(userTiXian.getPrice()))==-1){
+            return new Result().erro("余额不足");
+        }
+        /**
+         * 可提现
+         */
+        userTiXian.setExamine(1);  //1.审核通过
+        userTiXian.updateById();
+
+        UserRemainder userRemainder=new UserRemainder();
+        userRemainder.setUserId(userId);
+        userRemainder.setType(-1);   //-1代表消费
+        userRemainder.setRemainder(new BigDecimal(userTiXian.getPrice()));   //金额
+        userRemainder.setIdDel(0);
+        userRemainder.setCreateTime(new Date());
+        userRemainder.setIsOk(2);
+        userRemainder.insert();
+
+        return new Result().success("提现成功");
+        /*//查询用户红包记录,用户只有红包才能提现
         List<UserInviteLog> userInviteLogList=userInviteLogService.selectList(new EntityWrapper<UserInviteLog>()
                                                                               .eq(UserInviteLog.USER_ID,userId)
                                                                               .eq(UserInviteLog.IS_TIXIAN,0)  //1:已经提现,0未提现
@@ -205,8 +259,7 @@ public class UserTiXianController {
         userTiXian.updateById();
         Map map=new HashMap<>();
         map.put("account",final_account);
-        map.put("msg","success");
-        return new Result().success(map);
+        map.put("msg","success");*/
     }
 
 

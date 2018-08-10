@@ -16,7 +16,7 @@ import java.util.*;
 
 public class MysqlGenerator {
 
-    private static String[] table = new String[]{"js_sys_member"};
+    private static String[] table = new String[]{"js_sys_m33ember"};
     //    private static String[] table = new String[]{"js_shop_rush_buy_activity"};
     //table名字
     private static String[] prefixs = {"js_sys_", "js_"};            //table前缀
