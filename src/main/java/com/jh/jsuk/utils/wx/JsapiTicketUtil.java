@@ -1,5 +1,6 @@
 package com.jh.jsuk.utils.wx;
 
+import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -10,6 +11,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class JsapiTicketUtil {
     // 网页授权接口
     public final static String GetPageAccessTokenUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi";
@@ -34,7 +36,7 @@ public class JsapiTicketUtil {
             result.put("ticket", ticket);
             result.put("expires_in", expires_in);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
         } finally {
             client.getConnectionManager().shutdown();
         }
@@ -42,10 +44,10 @@ public class JsapiTicketUtil {
     }
 
     // 网页授权接口
-    public final static String AccessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=SECRET";
+    public final static String AccessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 
     public static Map<String, String> getAccessToken() {
-        String requestUrl = AccessTokenUrl.replace("APPID", APP_ID).replace("SECRET", APP_SECRET);
+        String requestUrl = AccessTokenUrl.replace("APPID", APP_ID).replace("APPSECRET", APP_SECRET);
         HttpClient client = null;
         Map<String, String> result = new HashMap<>();
         String accessToken = null;
@@ -55,10 +57,14 @@ public class JsapiTicketUtil {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             String response = client.execute(httpget, responseHandler);
             JSONObject OpenidJSONO = JSONObject.fromObject(response);
-            accessToken = String.valueOf(OpenidJSONO.get("access_token"));
+            Object access_token = OpenidJSONO.get("access_token");
+            if(access_token == null){
+                log.error("token 错误 返回数据:{}", response);
+            }
+            accessToken = String.valueOf(access_token);
             result.put("accessToken", accessToken);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getLocalizedMessage(),e);
         } finally {
             client.getConnectionManager().shutdown();
         }

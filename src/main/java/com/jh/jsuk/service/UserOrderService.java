@@ -11,6 +11,7 @@ import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
 import com.jh.jsuk.exception.MessageException;
 import com.pingplusplus.exception.ChannelException;
+import com.pingplusplus.model.Charge;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -92,7 +93,7 @@ public interface UserOrderService extends IService<UserOrder> {
     /**
      * 第三方支付
      */
-    String thirdPay(List<UserOrder> userOrders) throws UnsupportedEncodingException, ChannelException;
+    Charge thirdPay(List<UserOrder> userOrders) throws UnsupportedEncodingException, ChannelException;
 
     /**
      * 售后
@@ -113,7 +114,7 @@ public interface UserOrderService extends IService<UserOrder> {
      * @param subject
      * @return charge对象
      */
-    String payStore(String price, Integer payType, Integer userId, String subject) throws UnsupportedEncodingException, ChannelException;
+    Charge payStore(String price, Integer payType, Integer userId, String subject) throws UnsupportedEncodingException, ChannelException;
 
     /**
      * 到店支付-支付成功

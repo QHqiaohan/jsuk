@@ -622,7 +622,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public String thirdPay(List<UserOrder> userOrders) throws UnsupportedEncodingException, ChannelException {
+    public Charge thirdPay(List<UserOrder> userOrders) throws UnsupportedEncodingException, ChannelException {
         UserOrder userOrder = userOrders.get(0);
         User user = userService.selectById(userOrder.getUserId());
         UserOrderGoods userOrderGoods = userOrderGoodsService.selectList(new EntityWrapper<UserOrderGoods>().eq(UserOrderGoods.ORDER_ID, userOrder.getId())).get(0);
@@ -639,8 +639,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         paramVo.setOrderNo(OrderNumUtil.getOrderIdByUUId());
         paramVo.setPayType(userOrder.getPayType());
         paramVo.setSubject(shopGoods.getGoodsName());
-        Charge charge = PingPPUtil.createCharge(paramVo);
-        return charge.toString();
+        return PingPPUtil.createCharge(paramVo);
     }
 
     @Override
@@ -680,7 +679,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public String payStore(String price, Integer payType, Integer userId, String subject) throws UnsupportedEncodingException, ChannelException {
+    public Charge payStore(String price, Integer payType, Integer userId, String subject) throws UnsupportedEncodingException, ChannelException {
         User user = userService.selectById(userId);
         ChargeParamVo paramVo = new ChargeParamVo();
         paramVo.setAmount(new BigDecimal(price));
@@ -690,8 +689,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         paramVo.setOrderNo(OrderNumUtil.getOrderIdByUUId());
         paramVo.setPayType(payType);
         paramVo.setSubject(subject);
-        Charge charge = PingPPUtil.createCharge(paramVo);
-        return charge.toString();
+        return PingPPUtil.createCharge(paramVo);
     }
 
     @Override
