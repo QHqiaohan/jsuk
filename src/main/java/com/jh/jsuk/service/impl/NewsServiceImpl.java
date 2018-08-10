@@ -167,7 +167,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
         news.setNewsType(NewsType.SH_MKT);
         news.setTitle("二手市场有人留言了");
         news.setContent(marketComment.getComment());
-        news.setMarketCommentId(marketComment.getId());
+        news.setMarketCommentId(activity.getId());
         news.setSendUserId(marketComment.getUserId() == null ? null : String.valueOf(marketComment.getUserId()));
         push(news, activity.getUserId());
     }
