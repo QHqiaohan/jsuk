@@ -42,10 +42,10 @@ public class JsapiTicketUtil {
     }
 
     // 网页授权接口
-    public final static String AccessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=SECRET";
+    public final static String AccessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 
     public static Map<String, String> getAccessToken() {
-        String requestUrl = AccessTokenUrl.replace("APPID", APP_ID).replace("SECRET", APP_SECRET);
+        String requestUrl = AccessTokenUrl.replace("APPID", APP_ID).replace("APPSECRET", APP_SECRET);
         HttpClient client = null;
         Map<String, String> result = new HashMap<>();
         String accessToken = null;
