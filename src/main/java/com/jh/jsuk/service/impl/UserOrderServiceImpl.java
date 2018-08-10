@@ -24,10 +24,7 @@ import com.jh.jsuk.envm.PayType;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
-import com.jh.jsuk.utils.Date2;
-import com.jh.jsuk.utils.EnumUitl;
-import com.jh.jsuk.utils.PingPPUtil;
-import com.jh.jsuk.utils.ShopJPushUtils;
+import com.jh.jsuk.utils.*;
 import com.pingplusplus.exception.ChannelException;
 import com.pingplusplus.model.Charge;
 import lombok.extern.slf4j.Slf4j;
@@ -634,7 +631,15 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         for (UserOrder u : userOrders) {
             price = price.add(u.getOrderRealPrice());
         }
-        Charge charge = PingPPUtil.createCharge(userOrder, user, shopGoods, price,user.getOpenId());
+        ChargeParamVo paramVo = new ChargeParamVo();
+        paramVo.setAmount(price);
+        paramVo.setBody(shopGoods.getGoodsName());
+        paramVo.setClientIP(user.getLoginIp());
+        paramVo.setOpenId(user.getOpenId());
+        paramVo.setOrderNo(OrderNumUtil.getOrderIdByUUId());
+        paramVo.setPayType(userOrder.getPayType());
+        paramVo.setSubject(shopGoods.getGoodsName());
+        Charge charge = PingPPUtil.createCharge(paramVo);
         return charge.toString();
     }
 
