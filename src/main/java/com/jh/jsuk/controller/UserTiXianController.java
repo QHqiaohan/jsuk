@@ -165,18 +165,17 @@ public class UserTiXianController {
 
 
     //平台-用户提现审核
-    //@GetMapping("tiXianExamine")
     @ApiOperation("平台-提现记录-用户提现审核")
     @RequestMapping(value="tiXianExamine",method={RequestMethod.POST,RequestMethod.GET})
-    public Result tiXianExamine(@RequestParam Integer tiXianId,@RequestParam Integer userId){
+    public Result tiXianExamine(@RequestParam(value="tiXianId") Integer tiXianId,
+                                @RequestParam(value="uid") Integer userId){
         UserTiXian userTiXian=userTiXianService.selectOne(new EntityWrapper<UserTiXian>()
                                                               .eq(UserTiXian.ID,tiXianId)
         );
         if(userTiXian==null){
             return new Result().erro("提现记录数据不存在");
         }
-        userTiXian.setExamine(1);
-
+        userTiXian.setExamine(1);  //1.审核通过
         User user=userService.selectOne(new EntityWrapper<User>()
                                         .eq(User.ID,userId)
         );
@@ -193,24 +192,34 @@ public class UserTiXianController {
         }
         //获取提现金额
         BigDecimal price=new BigDecimal(userTiXian.getPrice());
+        if(price==null){
+            return new Result().success("输入提现金额");
+        }
         BigDecimal tixian_account=new BigDecimal("0.00");  //提现红包金额
         for(UserInviteLog inviteLog:userInviteLogList){
+            if(inviteLog.getMoney()==null){
+                inviteLog.setMoney(new BigDecimal(0));
+            }
             tixian_account=tixian_account.add(inviteLog.getMoney());
         }
         if(price.compareTo(tixian_account)==1){   //提现金额大于红包金额
             return new Result().erro("红包金额不足");
         }
+        //price小于等于红包总金额
         //记录最终的提现金额
         BigDecimal final_account=new BigDecimal("0.00");
         for(UserInviteLog inviteLog:userInviteLogList){
-            if(price.compareTo(inviteLog.getMoney())==1 || price.compareTo(inviteLog.getMoney())==0){
+            if(price.compareTo(inviteLog.getMoney())==-1 || price.compareTo(inviteLog.getMoney())==0){
+                inviteLog.setMoney(inviteLog.getMoney().subtract(price));
+                inviteLog.updateById();
+                final_account=final_account.add(price);
+                break;
+            }
+            if(price.compareTo(inviteLog.getMoney())==1){
                 price=price.subtract(inviteLog.getMoney());
                 final_account=final_account.add(inviteLog.getMoney());
                 inviteLog.setIsTixian(1);   //该红包已提现
                 inviteLog.updateById();
-            }
-            if(price.compareTo(inviteLog.getMoney())==-1){
-                break;
             }
         }
         UserRemainder userRemainder=new UserRemainder();
