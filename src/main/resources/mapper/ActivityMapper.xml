@@ -28,12 +28,13 @@
     <result column="activity_type" property="activityType"/>
     <result column="address" property="address" javaType="java.lang.String" jdbcType="VARCHAR"/>
     <result column="examine" property="examine"/>
+    <result column="zhuangtai" property="zhuangtai"/>
   </resultMap>
 
   <!-- 通用查询结果列 -->
   <sql id="Base_Column_List">
     id, phone, name, title, price, fixed_price, content, start_time, end_time, publish_time, is_del, type, user_id, rank, class_id,
-    modular_id, car_id, is_recommend, images, status, transaction_area_id, activity_type, address, examine
+    modular_id, car_id, is_recommend, images, status, transaction_area_id, activity_type, address, examine,zhuangtai
   </sql>
 
   <resultMap id="ActivityVoT" type="com.jh.jsuk.entity.vo.ActivityVoT" extends="BaseResultMap">
