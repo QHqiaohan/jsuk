@@ -147,4 +147,5 @@ public class UserRechargeRecord extends Model<UserRechargeRecord> implements Ser
     protected Serializable pkVal() {
         return null;
     }
+
 }

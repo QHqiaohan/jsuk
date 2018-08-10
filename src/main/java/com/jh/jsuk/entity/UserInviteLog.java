@@ -41,6 +41,65 @@ public class UserInviteLog extends Model<UserInviteLog> {
 
     private Date createTime;
 
+    //是否提现,1:是，0：否
+    private Integer isTixian;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getLog() {
+        return log;
+    }
+
+    public void setLog(String log) {
+        this.log = log;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getInviteUserId() {
+        return inviteUserId;
+    }
+
+    public void setInviteUserId(Integer inviteUserId) {
+        this.inviteUserId = inviteUserId;
+    }
+
+    public BigDecimal getMoney() {
+        return money;
+    }
+
+    public void setMoney(BigDecimal money) {
+        this.money = money;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Integer getIsTixian() {
+        return isTixian;
+    }
+
+    public void setIsTixian(Integer isTixian) {
+        this.isTixian = isTixian;
+    }
+
     public static final String ID = "id";
 
     public static final String LOG = "log";
@@ -52,6 +111,8 @@ public class UserInviteLog extends Model<UserInviteLog> {
     public static final String MONEY = "money";
 
     public static final String CREATE_TIME = "create_time";
+
+    public static final String IS_TIXIAN = "is_tixian";
 
     @Override
     protected Serializable pkVal() {

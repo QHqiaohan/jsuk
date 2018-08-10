@@ -8,6 +8,7 @@ import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.ShopMoney;
 import com.jh.jsuk.entity.UserTiXian;
+import com.jh.jsuk.entity.vo.ShopUserTiXianVo;
 import com.jh.jsuk.entity.vo.UserTiXianVo;
 import com.jh.jsuk.service.DistributionUserService;
 import com.jh.jsuk.service.ManagerUserService;
@@ -98,8 +99,14 @@ public class UserTiXianServiceImpl extends ServiceImpl<UserTiXianDao, UserTiXian
     }
 
     @Override
-    public Page<UserTiXianVo> selectByAdvance(Page page, Integer tixianId, Integer begin, Integer end, Integer status) {
-        List<UserTiXianVo> list=baseMapper.selectByAdvance(page,tixianId,begin,end,status);
+    public Page<ShopUserTiXianVo> selectByAdvance(Page page, Integer tixianId, Integer begin, Integer end, Integer status) {
+        List<ShopUserTiXianVo> list=baseMapper.selectByAdvance(page,tixianId,begin,end,status);
+        return page.setRecords(list);
+    }
+
+    @Override
+    public Page<UserTiXianVo> selectByAdvance2(Page page, Integer tixianId, Integer begin, Integer end, Integer status) {
+        List<UserTiXianVo> list=baseMapper.selectByAdvance2(page,tixianId,begin,end,status);
         return page.setRecords(list);
     }
 

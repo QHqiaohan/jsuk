@@ -585,7 +585,7 @@ public class PayController {
         return null;
     }
 
-    @ApiOperation(value = "用户端-支付")
+    @ApiOperation(value = "用户端-订单支付")
     @RequestMapping(value = "/balancePay", method = {RequestMethod.POST, RequestMethod.GET})
     public Result balancePay(@ApiParam(name = "orderId", value = "订单Id") String orderId,
                              @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信公众号-4微信APP-5银行卡") Integer payType) throws MessageException, UnsupportedEncodingException, ChannelException {
@@ -603,24 +603,28 @@ public class PayController {
             case 2:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.ALI_PAY.getKey());
+                    u.updateById();
                 }
                 return new Result().success(userOrderService.thirdPay(userOrders));
             //微信公众号
             case 3:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.WECHAT_PUB_PAY.getKey());
+                    u.updateById();
                 }
                 return new Result().success(userOrderService.thirdPay(userOrders));
             //微信APP
             case 4:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.WECHAT_APP_PAY.getKey());
+                    u.updateById();
                 }
                 return new Result().success(userOrderService.thirdPay(userOrders));
             //银行卡
             case 5:
                 for (UserOrder u : userOrders) {
                     u.setPayType(PayType.BANK_PAY.getKey());
+                    u.updateById();
                 }
                 return new Result().success(userOrderService.thirdPay(userOrders));
             default:

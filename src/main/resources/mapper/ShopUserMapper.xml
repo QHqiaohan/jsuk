@@ -64,4 +64,13 @@
     LEFT JOIN js_modular_portal mp on mp.id=s.modular_id
     where su.id = #{id}
   </select>
+
+  <select id="selectShopUserByMid" resultMap="BaseResultMap">
+    select
+     id, shop_id, manager_user_id, is_waiting, is_check, legal_person_name, id_card_no, card_front, card_back
+     from
+     js_shop_user
+     where
+     manager_user_id=#{manager_id}
+  </select>
 </mapper>
