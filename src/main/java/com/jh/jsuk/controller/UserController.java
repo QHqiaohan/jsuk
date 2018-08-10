@@ -14,6 +14,7 @@ import com.jh.jsuk.entity.Dictionary;
 import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
 import com.jh.jsuk.entity.vo.PlatformUserVo;
+import com.jh.jsuk.entity.vo.UserInfo;
 import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
@@ -70,7 +71,7 @@ public class UserController {
     UserInviteLogService userInviteLogService;
 
     @PostMapping("/update")
-    public R update(User user){
+    public R update(User user) {
         user.setPassword(null);
         user.setQqToken(null);
         user.setWeiboToken(null);
@@ -89,8 +90,8 @@ public class UserController {
     }
 
     @GetMapping("/order")
-    public R userORder(Page page,Integer id) {
-        return R.succ(userOrderService.userOrder(page,id));
+    public R userORder(Page page, Integer id) {
+        return R.succ(userOrderService.userOrder(page, id));
     }
 
     @GetMapping("/info")
@@ -107,18 +108,63 @@ public class UserController {
         user.setWxToken(null);
         map.put("base", user);
         Wrapper<UserAddress> wrapper = new EntityWrapper<>();
-        wrapper.ne(UserAddress.IS_DEL,1)
-                .eq(UserAddress.USER_ID,id);
-        Map<String,Object> statInfo = new HashMap<>();
+        wrapper.ne(UserAddress.IS_DEL, 1)
+            .eq(UserAddress.USER_ID, id);
+        Map<String, Object> statInfo = new HashMap<>();
 
-        statInfo.put("consumption",userRemainderService.getConsumption(id));
-        statInfo.put("orderCount",userOrderService.orderCount(id));
-        statInfo.put("integral",userIntegralService.getIntegral(id));
+        statInfo.put("consumption", userRemainderService.getConsumption(id));
+        statInfo.put("orderCount", userOrderService.orderCount(id));
+        statInfo.put("integral", userIntegralService.getIntegral(id));
 
-        map.put("stat",statInfo);
-        map.put("recvAddress",userAddressService.selectList(wrapper));
+        map.put("stat", statInfo);
+        map.put("recvAddress", userAddressService.selectList(wrapper));
         r.success(map);
         return r;
+    }
+
+    @Autowired
+    DistributionUserService distributionUserService;
+
+    @Autowired
+    ShopUserService shopUserService;
+
+    @ApiOperation(value = "获取用户信息", notes = "")
+    @PostMapping("/userInfo")
+    public Result bindAccount(@ApiParam("usrId 用户id") @RequestParam Integer usrId,
+                              @ApiParam("userType 用户类型  SHOP 商家, DISTRIBUTION 骑手, USER 用户, ADMIN 平台") UserType userType) throws Exception {
+        if (userType == null || usrId == null) {
+            return R.err("参数错误");
+        }
+        UserInfo info = new UserInfo();
+        switch (userType) {
+            case DISTRIBUTION:
+                DistributionUser distributionUser = distributionUserService.selectById(usrId);
+                if (distributionUser == null)
+                    break;
+                info.setHeadImage(distributionUser.getHeadImg());
+                info.setNickName(distributionUser.getName());
+                info.setHeadImage(distributionUser.getPhone());
+                break;
+            case USER:
+                User user = userService.selectById(usrId);
+                if (user == null)
+                    break;
+                info.setHeadImage(user.getHeadImg());
+                info.setNickName(user.getNickName());
+                info.setHeadImage(user.getNickName());
+                break;
+            case SHOP:
+            case ADMIN:
+                ManagerUser managerUser = managerUserService.selectById(usrId);
+                if (managerUser == null) {
+                    break;
+                }
+                info.setHeadImage(managerUser.getHeadImg());
+                info.setNickName(managerUser.getNickName());
+                info.setPhone(managerUser.getPhone());
+                break;
+        }
+        return R.succ(info);
     }
 
     @ApiOperation(value = "绑定账户", notes = "")
@@ -220,13 +266,13 @@ public class UserController {
         User user = null;
         if (tokenType == 0) {
             user = userService.selectOne(new EntityWrapper<User>()
-                    .eq(User.QQ_TOKEN, token));
+                .eq(User.QQ_TOKEN, token));
         } else if (tokenType == 1) {
             user = userService.selectOne(new EntityWrapper<User>()
-                    .eq(User.WX_TOKEN, token));
+                .eq(User.WX_TOKEN, token));
         } else if (tokenType == 2) {
             user = userService.selectOne(new EntityWrapper<User>()
-                    .eq(User.WEIBO_TOKEN, token));
+                .eq(User.WEIBO_TOKEN, token));
         }
         if (user != null) {
             //是否可用,0=不可用,1=可用
@@ -269,7 +315,7 @@ public class UserController {
                         HttpServletRequest request) throws Exception {
         Result result = new Result();
         User user = userService.selectOne(new EntityWrapper<User>()
-                .eq(User.PHONE, phone));
+            .eq(User.PHONE, phone));
         if (user != null) {
             if (user.getCanUse() == 0) {
                 result.setCode((long) -1);
@@ -313,7 +359,7 @@ public class UserController {
         if (verificationCode != null) {
             if (code.equals(verificationCode)) {
                 User user = userService.selectOne(new EntityWrapper<User>()
-                        .eq(User.PHONE, phone));
+                    .eq(User.PHONE, phone));
                 if (user != null) {
                     if (user.getCanUse() == 0) {
                         result.setCode((long) 2002);
@@ -351,23 +397,23 @@ public class UserController {
 
     @ApiOperation("用户注册")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "phone", value = "手机号",
-                    required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "password", value = "密码",
-                    required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "code", value = "验证码",
-                    required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "inviteUserId", value = "邀请人 id",
-                    required = false, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "token", value = "第三方登陆唯一标识符",
-                    required = false, paramType = "query", dataType = "string")
+        @ApiImplicitParam(name = "phone", value = "手机号",
+            required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "password", value = "密码",
+            required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "code", value = "验证码",
+            required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "inviteUserId", value = "邀请人 id",
+            required = false, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "token", value = "第三方登陆唯一标识符",
+            required = false, paramType = "query", dataType = "string")
     })
     @PostMapping("/register")
-    public Result register(@ModelAttribute User user, @RequestParam String code,@RequestParam(required = false) Integer inviteUserId, HttpSession session) throws Exception {
+    public Result register(@ModelAttribute User user, @RequestParam String code, @RequestParam(required = false) Integer inviteUserId, HttpSession session) throws Exception {
         try {
             // 效验手机验证码
             String verificationCode = (String) session.getAttribute(user.getPhone() + "register0");
-            if(verificationCode == null) {
+            if (verificationCode == null) {
                 throw new MessageException("验证码错误");
             }
             if (!code.equals(verificationCode)) {
@@ -378,15 +424,15 @@ public class UserController {
             user.setCanUse(1);
             //获取默认头像
             Dictionary dictionaryImg = dictionaryService.selectOne(new EntityWrapper<Dictionary>().
-                    eq("code", "user_default_img"));
+                eq("code", "user_default_img"));
             user.setHeadImg(dictionaryImg.getValue());
             //获取默认昵称
             Dictionary dictionaryName = dictionaryService.selectOne(new EntityWrapper<Dictionary>().
-                    eq("code", "user_default_name"));
+                eq("code", "user_default_name"));
             user.setNickName(dictionaryName.getValue());
             user.insert();
-            if(inviteUserId != null){
-                userInviteLogService.addInvite(user.getId(),inviteUserId);
+            if (inviteUserId != null) {
+                userInviteLogService.addInvite(user.getId(), inviteUserId);
             }
             return new Result().success();
         } catch (MybatisPlusException e) {
@@ -396,14 +442,14 @@ public class UserController {
 
     @ApiOperation("客户邀请注册")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "phone", value = "手机号",
-                    required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "password", value = "密码",
-                    required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "code", value = "验证码",
-                    required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "token", value = "第三方登陆唯一标识符",
-                    required = false, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "phone", value = "手机号",
+            required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "password", value = "密码",
+            required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "code", value = "验证码",
+            required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "token", value = "第三方登陆唯一标识符",
+            required = false, paramType = "query", dataType = "string"),
     })
     @PostMapping("/invitationRegister")
     public Result uiInvitationRegister(@ModelAttribute User user, @RequestParam String code, @RequestParam Integer inviteById, HttpSession session) {
@@ -435,9 +481,9 @@ public class UserController {
 
     @ApiOperation("用户信息修改")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "headImg", value = "头像", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "nickName", value = "昵称", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "gender", value = "性别", paramType = "query", dataType = "int")
+        @ApiImplicitParam(name = "headImg", value = "头像", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "nickName", value = "昵称", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "gender", value = "性别", paramType = "query", dataType = "int")
     })
     @PostMapping("/edit")
     public Result edit(@ModelAttribute User user, Integer userId) throws Exception {
@@ -464,9 +510,9 @@ public class UserController {
 
     @ApiOperation("根据手机验证码修改密码")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "password", value = "新密码", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "password", value = "新密码", required = true, paramType = "query", dataType = "string"),
     })
     @PostMapping("/editPasswordByCode")
     public Result editPassword(@RequestParam String phone, @RequestParam String code, @RequestParam String password, HttpSession session) {
@@ -491,7 +537,7 @@ public class UserController {
                                     @ApiParam(value = "旧密码", required = true) String oldPassword,
                                     @ApiParam(value = "新密码", required = true) String newPassword) {
         User user = userService.selectOne(new EntityWrapper<User>().
-                eq(User.ID, userId));
+            eq(User.ID, userId));
         if (user != null) {
             if (user.getPassword().equals(oldPassword)) {
                 user.setPassword(newPassword);
@@ -524,7 +570,7 @@ public class UserController {
          * 获取用户总积分
          */
         List<UserIntegral> userIntegrals = userIntegralService.selectList(new EntityWrapper<UserIntegral>()
-                .eq(UserIntegral.USER_ID, userId));
+            .eq(UserIntegral.USER_ID, userId));
         // 如果余额表没有该用户信息
         if (userIntegrals.size() == 0) {
             map.put("sum_jiFen", 0);
@@ -568,14 +614,14 @@ public class UserController {
          * 获取用户优惠券总数
          */
         int yhCount = userCouponService.selectCount(new EntityWrapper<UserCoupon>()
-                .eq(UserCoupon.USER_ID, userId)
-                .ne(UserCoupon.IS_USED, 1));
+            .eq(UserCoupon.USER_ID, userId)
+            .ne(UserCoupon.IS_USED, 1));
         map.put("sum_youHuiJuan", yhCount);
         /**
          * 获取收藏总数
          */
         int scCount = collectGoodsService.selectCount(new EntityWrapper<CollectGoods>()
-                .eq(CollectGoods.USER_ID, userId));
+            .eq(CollectGoods.USER_ID, userId));
         map.put("sum_shouCang", scCount);
         /**
          * 获取用户信息
@@ -588,7 +634,7 @@ public class UserController {
     @RequestMapping("/ui/getUserList")
     public Result getUserList(Page page, @RequestParam(required = false) String phone) {
         Page userPage = userService.selectPage(page, new MyEntityWrapper<User>().like(User.PHONE, phone).orderDesc(Collections.singleton(User
-                .CREATE_TIME)));
+            .CREATE_TIME)));
         return new Result().success(userPage);
     }
 
@@ -601,7 +647,7 @@ public class UserController {
         Integer userId = Integer.parseInt(session.getAttribute("adminId").toString());
         String opw = SecureUtil.md5(oldPassword);
         ManagerUser user = managerUserService.selectOne((new MyEntityWrapper<ManagerUser>().eq(ManagerUser.ID, userId)
-                .eq(ManagerUser.PASSWORD, opw)));
+            .eq(ManagerUser.PASSWORD, opw)));
         if (user != null) {
             user.setPassword(SecureUtil.md5(newPassword));
             user.updateById();
@@ -617,7 +663,7 @@ public class UserController {
     @RequestMapping(value = "/ui/getAdminList", method = {RequestMethod.GET, RequestMethod.POST})
     public Result getAdminList(HttpSession session, Page page) {
         Page userPage = managerUserService.selectPage(page, new MyEntityWrapper<ManagerUser>().orderDesc(Collections.singleton(ManagerUser
-                .CREATE_TIME)));
+            .CREATE_TIME)));
         return new Result().success(userPage);
     }
 
@@ -650,7 +696,7 @@ public class UserController {
     }
 
     @PostMapping("/ui/edit")
-        public Result uiEdit(HttpSession session, @ModelAttribute User user, Integer userId) {
+    public Result uiEdit(HttpSession session, @ModelAttribute User user, Integer userId) {
         if (userId != null) {
             user.setId(userId);
         }
@@ -672,48 +718,48 @@ public class UserController {
 
 
     @ApiOperation("平台管理系统-用户管理-用户列表")
-    @RequestMapping(value="/getUserPage",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getUserPage(Page page,String searchKeywords){
-        Page<User> userPage=userService.selectPage(page,
-                                                   new EntityWrapper<User>()
-                                                       .like(searchKeywords!=null,"nick_name",searchKeywords)
-                                                       .eq(User.CAN_USE,1)
-            );
-        List<User> userList=userPage.getRecords();
+    @RequestMapping(value = "/getUserPage", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result getUserPage(Page page, String searchKeywords) {
+        Page<User> userPage = userService.selectPage(page,
+            new EntityWrapper<User>()
+                .like(searchKeywords != null, "nick_name", searchKeywords)
+                .eq(User.CAN_USE, 1)
+        );
+        List<User> userList = userPage.getRecords();
 
-       // Page plateformUserVoPage=new Page(page.getCurrent(),page.getSize());
-        List<PlatformUserVo> plateformUserVoList=new ArrayList<>();
+        // Page plateformUserVoPage=new Page(page.getCurrent(),page.getSize());
+        List<PlatformUserVo> plateformUserVoList = new ArrayList<>();
 
-        for(User user:userList){
-            PlatformUserVo platformUserVo=new PlatformUserVo();
+        for (User user : userList) {
+            PlatformUserVo platformUserVo = new PlatformUserVo();
             platformUserVo.setUser(user);
-            Integer userId=user.getId();
-            List<UserOrder> userOrderList=userOrderService.selectList(new EntityWrapper<UserOrder>()
-                                                                          .eq(UserOrder.USER_ID,userId)
+            Integer userId = user.getId();
+            List<UserOrder> userOrderList = userOrderService.selectList(new EntityWrapper<UserOrder>()
+                .eq(UserOrder.USER_ID, userId)
             );
             //该用户的消费金额
             BigDecimal consumeCount = new BigDecimal(0.00);
-            if(userOrderList!=null && userOrderList.size()>0) {
+            if (userOrderList != null && userOrderList.size() > 0) {
                 //该用户的订单数量
                 platformUserVo.setOrderCount(userOrderList.size());
                 for (UserOrder userOrder : userOrderList) {
                     BigDecimal orderRealPrice = userOrder.getOrderRealPrice();
-                    if(orderRealPrice==null){
-                        orderRealPrice=new BigDecimal("0.00");
+                    if (orderRealPrice == null) {
+                        orderRealPrice = new BigDecimal("0.00");
                     }
-                    consumeCount=consumeCount.add(orderRealPrice);
+                    consumeCount = consumeCount.add(orderRealPrice);
                 }
-            }else{
+            } else {
                 platformUserVo.setOrderCount(0);
             }
             platformUserVo.setConsumeCount(consumeCount);
             //该用户可用积分
-            UserIntegral userIntegral=userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
-                                                                              .eq(UserIntegral.USER_ID,userId)
+            UserIntegral userIntegral = userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
+                .eq(UserIntegral.USER_ID, userId)
             );
-            if(userIntegral!=null){
+            if (userIntegral != null) {
                 platformUserVo.setIntegralCount(userIntegral.getIntegralNumber());
-            }else{
+            } else {
                 platformUserVo.setIntegralCount(0);
             }
             plateformUserVoList.add(platformUserVo);
@@ -722,32 +768,32 @@ public class UserController {
     }
 
     @ApiOperation("后台管理系统-用户列表-用户详情")
-    @RequestMapping(value="/getUserInfo",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getUserInfo(@RequestParam Integer detailUserId,Page page){
-        System.out.println("userId:"+detailUserId);
-        PlatformUserVo platformUserVo=new PlatformUserVo();
-        User user=userService.selectOne(new EntityWrapper<User>()
-                                            .eq(User.ID,detailUserId)
-                                            .eq(User.CAN_USE,1)
+    @RequestMapping(value = "/getUserInfo", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result getUserInfo(@RequestParam Integer detailUserId, Page page) {
+        System.out.println("userId:" + detailUserId);
+        PlatformUserVo platformUserVo = new PlatformUserVo();
+        User user = userService.selectOne(new EntityWrapper<User>()
+            .eq(User.ID, detailUserId)
+            .eq(User.CAN_USE, 1)
         );
-        if(user==null){
+        if (user == null) {
             return new Result().erro("该用户不可用");
         }
         platformUserVo.setUser(user);
         //查询用户地址列表
-        List<UserAddress> userAddressList=userAddressService.selectList(new EntityWrapper<UserAddress>()
-            .eq(UserAddress.USER_ID,detailUserId)
-            .eq(UserAddress.IS_DEL,0)
+        List<UserAddress> userAddressList = userAddressService.selectList(new EntityWrapper<UserAddress>()
+            .eq(UserAddress.USER_ID, detailUserId)
+            .eq(UserAddress.IS_DEL, 0)
         );
         platformUserVo.setUserAddressList(userAddressList);
         //查询订单列表
-        Page<UserOrder> userOrderPage=userOrderService.selectPage(page,
-                                                                  new EntityWrapper<UserOrder>()
-                                                                      .eq(UserOrder.USER_ID,detailUserId)
-                                                                      .ne(UserOrder.IS_SHOP_DEL,1)
-                                                                      .ne(UserOrder.IS_USER_DEL,1)
-            );
-        if(userOrderPage!=null && userOrderPage.getRecords().size()>0) {
+        Page<UserOrder> userOrderPage = userOrderService.selectPage(page,
+            new EntityWrapper<UserOrder>()
+                .eq(UserOrder.USER_ID, detailUserId)
+                .ne(UserOrder.IS_SHOP_DEL, 1)
+                .ne(UserOrder.IS_USER_DEL, 1)
+        );
+        if (userOrderPage != null && userOrderPage.getRecords().size() > 0) {
             platformUserVo.setUserOrderList(userOrderPage.getRecords());
         }
         return new Result().success(platformUserVo);
@@ -755,12 +801,12 @@ public class UserController {
 
 
     @ApiOperation("后台管理系统-用户管理-编辑用户信息")
-    @RequestMapping(value="/editUser",method={RequestMethod.POST})
-    public Result editUser(@ModelAttribute User user){
-        if(user==null){
+    @RequestMapping(value = "/editUser", method = {RequestMethod.POST})
+    public Result editUser(@ModelAttribute User user) {
+        if (user == null) {
             return new Result().erro("参数错误");
         }
-        if(user.getPassword()==null || "".equals(user.getPassword())){
+        if (user.getPassword() == null || "".equals(user.getPassword())) {
             return new Result().erro("请设置密码");
         }
         user.setPassword(MD5Util.getMD5(user.getPassword()));
@@ -769,10 +815,10 @@ public class UserController {
     }
 
     //@ApiOperation("后台管理系统-用户管理-删除用户")
-    @RequestMapping(value="/deleteUserById",method={RequestMethod.GET,RequestMethod.POST})
-    public Result deleteUserById(@RequestParam Integer delUserId){
-        User user=userService.selectOne(new EntityWrapper<User>().eq(User.ID,delUserId));
-        if(user==null){
+    @RequestMapping(value = "/deleteUserById", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result deleteUserById(@RequestParam Integer delUserId) {
+        User user = userService.selectOne(new EntityWrapper<User>().eq(User.ID, delUserId));
+        if (user == null) {
             return new Result().erro("系统错误");
         }
         user.setCanUse(0);
@@ -782,26 +828,25 @@ public class UserController {
 
 
     @ApiOperation("后台管理系统-用户管理-用户详情-查看订单详情")
-    @RequestMapping(value="/getUserOrderInfo",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getUserOrderInfo(@RequestParam Integer userId,@RequestParam Integer userOrderId){
-        UserOrder userOrder=userOrderService.selectOne(new EntityWrapper<UserOrder>()
-                                                           .eq(UserOrder.ID,userOrderId)
-                                                           .eq(UserOrder.USER_ID,userId)
+    @RequestMapping(value = "/getUserOrderInfo", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result getUserOrderInfo(@RequestParam Integer userId, @RequestParam Integer userOrderId) {
+        UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>()
+            .eq(UserOrder.ID, userOrderId)
+            .eq(UserOrder.USER_ID, userId)
         );
         return new Result().success(userOrder);
     }
 
 
     @ApiOperation("平台-获取用户")
-    @RequestMapping(value="/getUserInfoById",method = {RequestMethod.POST,RequestMethod.GET})
-    public Result getUserInfoById(@RequestParam Integer userBianjiId){
-        User user=userService.selectOne(new EntityWrapper<User>().eq(User.ID,userBianjiId));
-        if(user==null){
+    @RequestMapping(value = "/getUserInfoById", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getUserInfoById(@RequestParam Integer userBianjiId) {
+        User user = userService.selectOne(new EntityWrapper<User>().eq(User.ID, userBianjiId));
+        if (user == null) {
             return new Result().erro("系统错误");
         }
         return new Result().success(user);
     }
-
 
 
 }
