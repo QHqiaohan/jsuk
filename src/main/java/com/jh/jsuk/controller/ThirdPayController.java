@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,8 +39,7 @@ public class ThirdPayController {
 
     @ApiOperation(value = "第三方支付接口")
     @PostMapping
-    public Result thirdPay(@RequestBody ThirdPayVo payVo) throws UnsupportedEncodingException, ChannelException, MessageException {
-
+    public Result thirdPay(ThirdPayVo payVo) throws UnsupportedEncodingException, ChannelException, MessageException {
         return new Result().success(thirdPayService.thirdPay(payVo));
     }
 
@@ -64,7 +62,7 @@ public class ThirdPayController {
         BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
         String str;
         while ((str = reader.readLine()) != null) {//一行一行的读取body体里面的内容；
-            eventJson=eventJson.append(str);
+            eventJson = eventJson.append(str);
         }
         reader.close();
         log.info(eventJson.toString());
