@@ -121,6 +121,32 @@ public class ExpressController {
 
     }
 
+    @Autowired
+    RunningFeeService runningFeeService;
+
+    @ApiOperation("用户端-跑腿订单价格")
+    @ApiImplicitParams(value = {
+        @ApiImplicitParam(name = "startLng", value = "起始 lng",
+            paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "startLat", value = "起始 lat",
+            paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "endLng", value = "结束 lng",
+            paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "endLat", value = "结束 lat",
+            paramType = "query", dataType = "integer"),
+    })
+    @RequestMapping(value = "/expressPrice", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result expressPrice(String startLng,String startLat,String endLng,String endLat) {
+        if(StrUtil.isBlank(startLng) ||
+            StrUtil.isBlank(startLat) ||
+            StrUtil.isBlank(endLng) ||
+            StrUtil.isBlank(endLat)){
+            return R.err("数据为空");
+        }
+        long distance = GetDistance.getDistance(startLng + "," + startLat, endLng + "," + endLat);
+        return R.succ(runningFeeService.caleRunningFee(distance));
+    }
+
     @ApiOperation("用户端-跑腿订单列表-不传表示查所有")
     @ApiImplicitParams(value = {
         @ApiImplicitParam(name = "current", value = "当前页码",
