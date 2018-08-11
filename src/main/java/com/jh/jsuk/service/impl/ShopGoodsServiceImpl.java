@@ -141,9 +141,9 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     }
 
     @Override
-    public Page findShopGoodsAndGoodsSizeByShopId(Page page, Wrapper wrapper, Integer shopId) {
+    public Page findShopGoodsAndGoodsSizeByShopId(Page page, Wrapper wrapper, Integer shopId,String goodsName) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
-        page.setRecords(baseMapper.findShopGoodsAndGoodsSizeByShopId(page, wrapper, shopId));
+        page.setRecords(baseMapper.findShopGoodsAndGoodsSizeByShopId(page, wrapper, shopId,goodsName));
         return page;
     }
 

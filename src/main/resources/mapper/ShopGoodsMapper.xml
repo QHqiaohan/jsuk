@@ -363,6 +363,9 @@
     shop_id = #{shopId}
     AND is_del=0
     <where>
+      <if test="goodsName!=null">
+        goods_name like concat('%',#{goodsName},'%')
+      </if>
       ${ew.sqlSegment}
     </where>
   </select>
