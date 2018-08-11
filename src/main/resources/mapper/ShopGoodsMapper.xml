@@ -362,12 +362,13 @@
     WHERE
     shop_id = #{shopId}
     AND is_del=0
+    <if test="goodsName!=null and goodsName!=''">
+     and goods_name like concat('%',#{goodsName},'%')
+    </if>
     <where>
-      <if test="goodsName!=null">
-        goods_name like concat('%',#{goodsName},'%')
-      </if>
       ${ew.sqlSegment}
     </where>
+    order by update_time desc
   </select>
 
   <resultMap id="shopGoodsVo2" type="com.jh.jsuk.entity.vo.ShopGoodsVo2" extends="BaseResultMap">

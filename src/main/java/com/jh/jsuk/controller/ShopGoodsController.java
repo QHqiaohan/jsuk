@@ -467,8 +467,8 @@ public class ShopGoodsController {
     }
 
     @ApiOperation("商家端-添加商品")
-   // @RequestMapping(value = "/addShopGoods", method = {RequestMethod.POST})
-    @PostMapping("/addShopGoods")
+    @RequestMapping(value = "/addShopGoods", method = {RequestMethod.POST})
+   // @PostMapping("/addShopGoods")
     public Result addShopGoods(@RequestBody AddGoodsVo addGoodsVo, Integer userId) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
             .eq(ManagerUser.ID, userId));
