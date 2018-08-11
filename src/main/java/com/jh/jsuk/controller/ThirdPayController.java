@@ -45,10 +45,8 @@ public class ThirdPayController {
         return new Result().success(thirdPayService.thirdPay(payVo));
     }
 
-    /**
-     * 支付成功回调
-     */
-    @RequestMapping(value = "/webhooks")
+    @ApiOperation(value = "支付成功回调(不用管)")
+    @PostMapping(value = "/webhooks")
     public void webhooks(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request.setCharacterEncoding("UTF-8");
         //获取头部所有信息
