@@ -50,7 +50,6 @@ public class ThirdPayController {
      */
     @RequestMapping(value = "/webhooks")
     public void webhooks(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        /*System.out.println("ping++　webhooks");*/
         request.setCharacterEncoding("UTF-8");
         //获取头部所有信息
         Enumeration headerNames = request.getHeaderNames();
@@ -62,7 +61,6 @@ public class ThirdPayController {
                 break;
             }
         }
-        log.info("ping++ 签名 signature" + signature);
         // 获得 http body 内容
         StringBuffer eventJson = new StringBuffer();
         BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
@@ -73,17 +71,19 @@ public class ThirdPayController {
         reader.close();
         JSONObject event = JSONObject.fromObject(eventJson);//转化成json对象
         PublicKey publicKey = WebhooksVerifyService.getPubKey();
-        log.info("publicKey === " + publicKey);
         boolean verifyRS = WebhooksVerifyService.verifyData(eventJson.toString(), signature, publicKey);
         if (verifyRS) {
-            /*System.out.println("签名验证成功");*/
             log.info("ping++回调 签名验证成功");
-            if ("charge.succeeded".equals(event.get("type"))) {
+            log.info("event对象---" + event);
+            log.info("type --- " + event.get("type"));
+            if ("charge.succeeded".equals(event.get("type").toString())) {
                 log.info("charge -- 支付成功---");
                 JSONObject data = JSONObject.fromObject(event.get("data"));
                 JSONObject object = JSONObject.fromObject(data.get("object"));
                 JSONObject body = JSONObject.fromObject(object.get("body"));
+                log.info("body -- " + body.toString());
                 ThirdPayVoChild payVoChild = (ThirdPayVoChild) JSONObject.toBean(body);
+                log.info(payVoChild.toString());
                 thirdPayService.chargeBack(payVoChild);
             } else {
                 log.error("支付失败...");

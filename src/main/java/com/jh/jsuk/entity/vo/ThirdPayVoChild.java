@@ -1,7 +1,6 @@
 package com.jh.jsuk.entity.vo;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -10,11 +9,13 @@ import java.io.Serializable;
  * Date:2018/8/11 14:04
  * Description:
  */
-@Getter
-@Setter
+@Data
 public class ThirdPayVoChild implements Serializable {
+
     private ThirdPayVo payVo;
+
     private Integer userRemainderId;
+    
     private Integer userRechargeRecordId;
 
 }
