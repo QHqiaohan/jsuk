@@ -74,8 +74,15 @@ public class WebhooksVerifyService {
      * @throws Exception
      */
     public static PublicKey getPubKey() throws Exception {
-        String pubKeyString = getStringFromFile(pubKeyPath);
-        pubKeyString = pubKeyString.replaceAll("(-+BEGIN PUBLIC KEY-+\\r?\\n|-+END PUBLIC KEY-+\\r?\\n?)", "");
+//        String pubKeyString = getStringFromFile(pubKeyPath);
+//        pubKeyString = pubKeyString.replaceAll("(-+BEGIN PUBLIC KEY-+\\r?\\n|-+END PUBLIC KEY-+\\r?\\n?)", "");
+        String pubKeyString = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0AmdRdCNIrrMc1v8Z6wX\n" +
+            "ozLzfDQThW0S/Rj03yYSuRxZDPHBdmYHtjNlAAzxbpZfeYBySrr2Q90zdEbscBUV\n" +
+            "lvW0Hs0QOW91xhnaEj7xneehbkJ1+gwr7yl6qoN+GDubpULZUZDSqPLSz+8WGhqy\n" +
+            "lg4iT3+JzcHSD2YN6TAq3msEoB7NH0QVmzDGOjY48+v9UKVfCWtTriFaGxcnUnyE\n" +
+            "3ckFG4/aNNCFgZPT+D0s2R9JmNjSxcN/nt/BGJZ1Q1bUStIPKhtvw9tx8cDToUSK\n" +
+            "B0O+LYlRQAQscpGRMM9za3+ebcOe8U587rstB4DfHDwGXvvB7KIS8qRzWTFquR6u\n" +
+            "8wIDAQAB";
         byte[] keyBytes = Base64.decodeBase64(pubKeyString);
 
         // generate public key

@@ -1,7 +1,5 @@
 package com.jh.jsuk.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.jh.jsuk.entity.vo.ThirdPayVo;
 import com.jh.jsuk.entity.vo.ThirdPayVoChild;
 import com.jh.jsuk.exception.MessageException;
@@ -12,6 +10,7 @@ import com.pingplusplus.exception.ChannelException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.security.PublicKey;
 import java.util.Enumeration;
@@ -50,50 +49,41 @@ public class ThirdPayController {
      * 支付成功回调
      */
     @RequestMapping(value = "/webhooks")
-    public void webhooks(HttpServletRequest request, HttpServletResponse response) throws IOException, MessageException {
+    public void webhooks(HttpServletRequest request, HttpServletResponse response) throws Exception {
         /*System.out.println("ping++　webhooks");*/
-        request.setCharacterEncoding("UTF8");
+        request.setCharacterEncoding("UTF-8");
         //获取头部所有信息
         Enumeration headerNames = request.getHeaderNames();
         String signature = null;
         while (headerNames.hasMoreElements()) {
             String key = (String) headerNames.nextElement();
-            String value = request.getHeader(key);
             if ("x-pingplusplus-signature".equals(key)) {
-                signature = value;
+                signature = request.getHeader(key);
+                break;
             }
         }
-        /*System.out.println("signature"+signature);*/
+        log.info("ping++ 签名 signature" + signature);
         // 获得 http body 内容
         StringBuffer eventJson = new StringBuffer();
-        BufferedReader reader = null;
-        try {
-            reader = request.getReader();
-            do {
-                eventJson.append(reader.readLine());
-            } while (reader.read() != -1);
-        } catch (IOException e) {
-            log.error(e.getMessage());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+        String str;
+        while ((str = reader.readLine()) != null) {//一行一行的读取body体里面的内容；
+            eventJson.append(str);
         }
         reader.close();
-        JSONObject event = JSON.parseObject(eventJson.toString());
-        boolean verifyRS = false;
-        try {
-            PublicKey publicKey = WebhooksVerifyService.getPubKey();
-            /*  System.out.println(publicKey);*/
-            verifyRS = WebhooksVerifyService.verifyData(eventJson.toString(), signature, publicKey);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
+        JSONObject event = JSONObject.fromObject(eventJson);//转化成json对象
+        PublicKey publicKey = WebhooksVerifyService.getPubKey();
+        log.info("publicKey === " + publicKey);
+        boolean verifyRS = WebhooksVerifyService.verifyData(eventJson.toString(), signature, publicKey);
         if (verifyRS) {
             /*System.out.println("签名验证成功");*/
             log.info("ping++回调 签名验证成功");
             if ("charge.succeeded".equals(event.get("type"))) {
                 log.info("charge -- 支付成功---");
-                JSONObject data = JSON.parseObject(event.get("data").toString());
-                JSONObject object = JSON.parseObject(data.get("object").toString());
-                String body = (String) object.get("body");
-                ThirdPayVoChild payVoChild = (ThirdPayVoChild) net.sf.json.JSONObject.toBean(net.sf.json.JSONObject.fromObject(body), ThirdPayVoChild.class);
+                JSONObject data = JSONObject.fromObject(event.get("data"));
+                JSONObject object = JSONObject.fromObject(data.get("object"));
+                JSONObject body = JSONObject.fromObject(object.get("body"));
+                ThirdPayVoChild payVoChild = (ThirdPayVoChild) JSONObject.toBean(body);
                 thirdPayService.chargeBack(payVoChild);
             } else {
                 log.error("支付失败...");
