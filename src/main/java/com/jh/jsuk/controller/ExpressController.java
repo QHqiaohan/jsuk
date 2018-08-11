@@ -108,18 +108,17 @@ public class ExpressController {
 //    })
     @RequestMapping(value = "/addExpress", method = {RequestMethod.POST, RequestMethod.GET})
     public Result addExpress(@ModelAttribute Express express) {
+        Map<String, Object> map = new HashMap<>();
         if (express.getUserId() == null) {
             return new Result().erro("用户信息过期");
-        } else {
-            express.setOrderNo(OrderNumUtil.getOrderIdByUUId());
-            boolean res = express.insert();
-            distributionUserService.notifyRobbing();
-            if (res) {
-                return new Result().success("您的快递订单已提交");
-            } else {
-                return new Result().erro("服务器繁忙,请稍后再试");
-            }
         }
+        express.setOrderNo(OrderNumUtil.getOrderIdByUUId());
+        express.insert();
+        map.put("expressId", express.getId());
+        map.put("orderNo", express.getOrderNo());
+        distributionUserService.notifyRobbing();
+        return new Result().success(map);
+
     }
 
     @ApiOperation("用户端-跑腿订单列表-不传表示查所有")
