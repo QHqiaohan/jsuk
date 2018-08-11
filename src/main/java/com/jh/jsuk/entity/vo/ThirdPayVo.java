@@ -2,7 +2,6 @@ package com.jh.jsuk.entity.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
 import java.io.Serializable;
 
 /**
