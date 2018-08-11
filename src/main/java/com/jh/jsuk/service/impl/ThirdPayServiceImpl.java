@@ -4,6 +4,7 @@ import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.ChargeParamVo;
 import com.jh.jsuk.entity.vo.ThirdPayVo;
 import com.jh.jsuk.entity.vo.ThirdPayVoChild;
+import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
@@ -26,7 +27,7 @@ import java.util.List;
 /**
  * Author:xyl
  * Date:2018/8/11 11:25
- * Description:第三方支付
+ * Description:第三方支付-服务类
  */
 @Slf4j
 @Service
@@ -39,6 +40,10 @@ public class ThirdPayServiceImpl implements ThirdPayService {
     private MemberService memberService;
     @Autowired
     private ExpressService expressService;
+    @Autowired
+    private UserRemainderService userRemainderService;
+    @Autowired
+    private UserRechargeRecordService userRechargeRecordService;
 
     @Override
     public Charge thirdPay(ThirdPayVo payVo) throws MessageException, UnsupportedEncodingException, ChannelException {
@@ -84,23 +89,87 @@ public class ThirdPayServiceImpl implements ThirdPayService {
             //用户订单支付
             case 1:
                 log.info("用户订单支付成功");
+                userOrderComplete(payVo);
                 break;
             //到店支付
             case 2:
                 log.info("到店支付成功");
+                payStore(payVo);
                 break;
             //会员充值
             case 3:
                 log.info("会员充值成功");
+                userRechargeComplete(payVoChild);
                 break;
             //快递跑腿
             case 4:
                 log.info("快递跑腿支付成功");
-                Express express = expressService.selectById(payVo.getParam());
+                expressComplete(payVo);
                 break;
             default:
                 throw new MessageException("付款类型有误。。");
         }
+    }
+
+    /**
+     * 快递跑腿用户支付成功
+     */
+    private void expressComplete(ThirdPayVo payVo) {
+        Express express = expressService.selectById(payVo.getParam());
+        express.setStatus(2);
+        express.updateById();
+    }
+
+    /**
+     * 会员充值成功
+     */
+    private void userRechargeComplete(ThirdPayVoChild payVoChild) {
+        //用户余额
+        UserRemainder userRemainder = userRemainderService.selectById(payVoChild.getUserRemainderId());
+        userRemainder.setIsOk(2);
+        userRemainder.updateById();
+        //用户充值记录
+        UserRechargeRecord userRechargeRecord = userRechargeRecordService.selectById(payVoChild.getUserRechargeRecordId());
+        userRechargeRecord.setFinishTime(new Date());
+        userRechargeRecord.setIsOk(2);
+        userRechargeRecord.updateById();
+    }
+
+    /**
+     * 到店支付成功
+     */
+    private void payStore(ThirdPayVo payVo) {
+        //商家余额
+        ShopMoney shopMoney = new ShopMoney();
+        shopMoney.setMoney(payVo.getPrice());
+        shopMoney.setPublishTime(new Date());
+        shopMoney.setType(1);
+        shopMoney.setShopId(Integer.valueOf(payVo.getParam()));
+        shopMoney.insert();
+    }
+
+    /**
+     * 用户订单支付成功
+     */
+    private void userOrderComplete(ThirdPayVo payVo) {
+        String[] ids = payVo.getParam().split(",");
+        List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
+        BigDecimal price = new BigDecimal("0.00");
+        for (UserOrder userOrder : userOrders) {
+            //修改订单信息
+            userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
+            userOrder.setPayTime(new Date());
+            userOrder.updateById();
+            //订单总价格
+            price = price.add(userOrder.getOrderRealPrice());
+        }
+        //商家余额
+        ShopMoney shopMoney = new ShopMoney();
+        shopMoney.setMoney(price.toString());
+        shopMoney.setPublishTime(new Date());
+        shopMoney.setType(1);
+        shopMoney.setShopId(userOrders.get(0).getShopId());
+        shopMoney.insert();
     }
 
     /**

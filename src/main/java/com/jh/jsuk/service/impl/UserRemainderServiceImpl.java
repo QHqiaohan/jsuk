@@ -152,7 +152,7 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
         UserRemainder userRemainder = selectById(remainderId);
         userRemainder.setIsOk(status == 1 ? 2 : 1);
         userRemainder.updateById();
-        //用户
+        //用户充值记录
         UserRechargeRecord userRechargeRecord = recordService.selectById(rechargeRecordId);
         userRechargeRecord.setFinishTime(new Date());
         userRechargeRecord.setIsOk(status == 1 ? 2 : 1);

@@ -659,22 +659,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         }
         payResult.setPrice(price);
         payResult.setReceiver(userAddressService.selectById(userOrders.get(0).getAddressId()).getName());
-        if (status == 1) {
-            //支付成功
-            for (UserOrder userOrder : userOrders) {
-                //修改订单信息
-                userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
-                userOrder.setPayTime(new Date());
-                userOrder.updateById();
-            }
-            //商家余额
-            ShopMoney shopMoney = new ShopMoney();
-            shopMoney.setMoney(price.toString());
-            shopMoney.setPublishTime(new Date());
-            shopMoney.setType(1);
-            shopMoney.setShopId(userOrders.get(0).getShopId());
-            shopMoney.insert();
-        }
         return payResult;
     }
 
