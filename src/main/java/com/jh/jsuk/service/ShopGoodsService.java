@@ -51,7 +51,7 @@ public interface ShopGoodsService extends IService<ShopGoods> {
 
     void returnStock(Integer goodsId, Integer num);
 
-    Page findShopGoodsAndGoodsSizeByShopId(Page page, Wrapper wrapper, Integer shopId);
+    Page findShopGoodsAndGoodsSizeByShopId(Page page, Wrapper wrapper, Integer shopId,String goodsName);
 
     Page list(Page page, ShopGoodsStatus status, String categoryId, String keyWord, String brandId, Integer shopId, Integer userType);
 

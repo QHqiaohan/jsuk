@@ -112,6 +112,7 @@ public class JwtFilter implements Filter {
             || servletPath.indexOf("uiGetInfo") != -1
             || servletPath.indexOf("/dict/") != -1
             || servletPath.indexOf("/sys/") != -1
+            || servletPath.indexOf("/webhooks") != -1
 
             ////////////////////////////////////////////////
             // 以下是方便测试,可能会出现效验bug

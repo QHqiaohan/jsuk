@@ -416,7 +416,10 @@ public class ShopGoodsController {
         @ApiImplicitParam(name = "userId", value = "商家id", paramType = "query", dataType = "integer")
     })
     @RequestMapping(value = "/addShopGoodsList", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addShopGoodsList(@RequestParam Integer userId, Integer current, Integer size) {
+    public Result addShopGoodsList(@RequestParam Integer userId,
+                                   Integer current,
+                                   Integer size,
+                                   String goodsName) {
         current = current == null ? 1 : current;
         size = size == null ? 10 : size;
         Page page = new Page(current, size);
@@ -428,7 +431,7 @@ public class ShopGoodsController {
 
         Integer shopId = managerUser.getShopId();
         MyEntityWrapper<ShopGoods> ew = new MyEntityWrapper<>();
-        Page shopGoodsPage = shopGoodsService.findShopGoodsAndGoodsSizeByShopId(page, ew, shopId);
+        Page shopGoodsPage = shopGoodsService.findShopGoodsAndGoodsSizeByShopId(page, ew, shopId,goodsName);
         return new Result().success(shopGoodsPage);
     }
 
@@ -464,14 +467,28 @@ public class ShopGoodsController {
     }
 
     @ApiOperation("商家端-添加商品")
-    @RequestMapping(value = "/addShopGoods", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addShopGoods(@ModelAttribute AddGoodsVo addGoodsVo, Integer userId) {
+   // @RequestMapping(value = "/addShopGoods", method = {RequestMethod.POST})
+    @PostMapping("/addShopGoods")
+    public Result addShopGoods(@RequestBody AddGoodsVo addGoodsVo, Integer userId) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
             .eq(ManagerUser.ID, userId));
         if (managerUser == null) {
             return new Result().erro("该商家不存在");
         }
-        Integer shopId = managerUser.getShopId();
+        Integer shopId=managerUser.getShopId();
+
+        if(addGoodsVo.getGoodsName()==null){
+            return new Result().erro("必填字段为空");
+        }
+        if(addGoodsVo.getBrandId()==null){
+            return new Result().erro("必填字段为空");
+        }
+        if(addGoodsVo.getShopGoodsSizeList()==null){
+            return new Result().erro("必填字段为空");
+        }
+        if(addGoodsVo.getCategoryId()==null){
+            return new Result().erro("必填字段为空");
+        }
 
         ShopGoods shopGoods = new ShopGoods();
         shopGoods.setShopId(shopId);
@@ -498,13 +515,6 @@ public class ShopGoodsController {
             shopGoods.insert();
             // 商品ID
             Integer id = shopGoods.getId();
-/*            System.out.println("goodsId:"+id);
-
-            String goodsSizeListJSON=addGoodsVo.getShopGoodsSizeList().toString();
-            List<ShopGoodsSize> sizeList = JSON.parseArray(goodsSizeListJSON, ShopGoodsSize.class);
-            for (ShopGoodsSize shopGoodsSize : sizeList) {
-                System.out.println(shopGoodsSize.toString());
-            }*/
 
             if (addGoodsVo.getShopGoodsSizeList() != null && addGoodsVo.getShopGoodsSizeList().size() > 0) {
                 for (ShopGoodsSize shopGoodsSize : addGoodsVo.getShopGoodsSizeList()) {

@@ -1,6 +1,7 @@
 package com.jh.jsuk.entity;
 
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.Date;
 /**
  * 用户充值记录
  */
+@TableName(value = "js_user_recharge_record")
 public class UserRechargeRecord extends Model<UserRechargeRecord> implements Serializable{
 
     //充值id
