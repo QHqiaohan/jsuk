@@ -11,6 +11,7 @@ import com.jh.jsuk.utils.OrderNumUtil;
 import com.jh.jsuk.utils.PingPPUtil;
 import com.pingplusplus.exception.ChannelException;
 import com.pingplusplus.model.Charge;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import java.util.List;
  * Date:2018/8/11 11:25
  * Description:第三方支付
  */
+@Slf4j
 @Service
 public class ThirdPayServiceImpl implements ThirdPayService {
     @Autowired
@@ -40,9 +42,11 @@ public class ThirdPayServiceImpl implements ThirdPayService {
 
     @Override
     public Charge thirdPay(ThirdPayVo payVo) throws MessageException, UnsupportedEncodingException, ChannelException {
+        ThirdPayVoChild child = new ThirdPayVoChild();
+        child.setPayVo(payVo);
         ChargeParamVo paramVo = new ChargeParamVo();
         User user = userService.selectById(payVo.getUserId());
-        paramVo.setBody(JSONObject.fromObject(payVo).toString());
+        paramVo.setBody(JSONObject.fromObject(child).toString());
         paramVo.setClientIP(user.getLoginIp());
         paramVo.setOpenId(user.getOpenId());
         paramVo.setOrderNo(OrderNumUtil.getOrderIdByUUId());
@@ -71,6 +75,32 @@ public class ThirdPayServiceImpl implements ThirdPayService {
                 throw new MessageException("付款类型不存在。。");
         }
         return PingPPUtil.createCharge(paramVo);
+    }
+
+    @Override
+    public void chargeBack(ThirdPayVoChild payVoChild) throws MessageException {
+        ThirdPayVo payVo = payVoChild.getPayVo();
+        switch (payVo.getType()) {
+            //用户订单支付
+            case 1:
+                log.info("用户订单支付成功");
+                break;
+            //到店支付
+            case 2:
+                log.info("到店支付成功");
+                break;
+            //会员充值
+            case 3:
+                log.info("会员充值成功");
+                break;
+            //快递跑腿
+            case 4:
+                log.info("快递跑腿支付成功");
+                Express express = expressService.selectById(payVo.getParam());
+                break;
+            default:
+                throw new MessageException("付款类型有误。。");
+        }
     }
 
     /**
