@@ -471,6 +471,24 @@ public class ShopGoodsController {
         if (managerUser == null) {
             return new Result().erro("该商家不存在");
         }
+
+        if(addGoodsVo.getGoodsName()==null){
+            return new Result().erro("必填字段为空");
+        }
+        if(addGoodsVo.getShopId()==null){
+            return new Result().erro("必填字段为空");
+        }
+        if(addGoodsVo.getBrandId()==null){
+            return new Result().erro("必填字段为空");
+        }
+        if(addGoodsVo.getShopGoodsSizeList()==null){
+            return new Result().erro("必填字段为空");
+        }
+        if(addGoodsVo.getCategoryId()==null){
+            return new Result().erro("必填字段为空");
+        }
+
+
         Integer shopId = managerUser.getShopId();
 
         ShopGoods shopGoods = new ShopGoods();
@@ -498,13 +516,6 @@ public class ShopGoodsController {
             shopGoods.insert();
             // 商品ID
             Integer id = shopGoods.getId();
-/*            System.out.println("goodsId:"+id);
-
-            String goodsSizeListJSON=addGoodsVo.getShopGoodsSizeList().toString();
-            List<ShopGoodsSize> sizeList = JSON.parseArray(goodsSizeListJSON, ShopGoodsSize.class);
-            for (ShopGoodsSize shopGoodsSize : sizeList) {
-                System.out.println(shopGoodsSize.toString());
-            }*/
 
             if (addGoodsVo.getShopGoodsSizeList() != null && addGoodsVo.getShopGoodsSizeList().size() > 0) {
                 for (ShopGoodsSize shopGoodsSize : addGoodsVo.getShopGoodsSizeList()) {
