@@ -1,9 +1,6 @@
 package com.jh.jsuk.entity.vo;
 
-import com.jh.jsuk.envm.PayType;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
