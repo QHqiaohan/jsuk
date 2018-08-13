@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.vo.UserInfoVo;
+import com.jh.jsuk.entity.vo.UserInfoVo2;
 import com.jh.jsuk.entity.vo.UserListVo;
 import com.jh.jsuk.entity.vo.UserVo2;
 import org.apache.ibatis.annotations.Param;
@@ -36,4 +37,5 @@ public interface UserDao extends BaseMapper<User> {
     @Select("select nick_name,head_img,phone from js_user where id = #{id}")
     UserVo2 userVo2(Integer id);
 
+    UserInfoVo2 selectUserInfoById(@Param("id")Integer id);
 }

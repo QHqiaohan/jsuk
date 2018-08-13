@@ -85,5 +85,17 @@
     WHERE
     id = #{user_id}
   </select>
-
+  <resultMap id="UserInfoVo2" type="com.jh.jsuk.entity.vo.UserInfoVo2" extends="BaseResultMap">
+    <result property="memberName" column="member_name"/>
+  </resultMap>
+  <select id="selectUserInfoById" resultMap="UserInfoVo2">
+    select
+      js_user.*,
+      js_sys_member.member_name as member_name
+    FROM js_user
+      left join js_sys_member
+        on js_user.level = js_sys_member.id
+    WHERE
+      js_user.id = #{id}
+  </select>
 </mapper>
