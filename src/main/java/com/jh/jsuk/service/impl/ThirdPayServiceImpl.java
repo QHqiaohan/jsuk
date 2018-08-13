@@ -123,6 +123,10 @@ public class ThirdPayServiceImpl implements ThirdPayService {
      * 会员充值成功
      */
     private void userRechargeComplete(ThirdPayVoChild payVoChild) {
+        //用户
+        User user = userService.selectById(payVoChild.getPayVo().getUserId());
+        user.setLevel(Integer.valueOf(payVoChild.getPayVo().getParam()));
+        user.updateById();
         //用户余额
         UserRemainder userRemainder = userRemainderService.selectById(payVoChild.getUserRemainderId());
         userRemainder.setIsOk(2);

@@ -96,99 +96,92 @@
 
   <select id="getShopGoodsBy" resultMap="GoodsSalesPriceVoT">
     SELECT
-    sg.*,sgs.sales_price
+    sg.*,GROUP_CONCAT(sgs.sales_price) sales_price
     FROM
     js_shop_goods sg
     LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
     WHERE
     sg.status = 1
-    and sg.is_del = 0
-    <!-- and sg.shop_id = #{shopId}-->
+    and not sg.is_del
+    and sg.shop_id = #{shopId}
     <if test="type == 2">
+      group by sg.id
       ORDER BY
       sg.sale_amont DESC
     </if>
     <if test="type == 3">
-      and sg.goods_type = 3
+      group by sg.id
       ORDER BY
       sg.create_time DESC
     </if>
     <if test="type == null">
+      group by sg.id
       ORDER BY
       sg.create_time
     </if>
-    <where>
-      ${ew.sqlSegment}
-    </where>
   </select>
 
   <select id="getShopGoodsOrderBySalesPrice" resultMap="GoodsSalesPriceVoT">
     SELECT
-    sg.*,sgs.sales_price
+    sg.*,GROUP_CONCAT(sgs.sales_price) sales_price
     FROM
     js_shop_goods sg
     LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
     WHERE
     sg.status = 1
-    and sg.is_del = 0
-    <!--and sg.shop_id = #{shopId}-->
+    and not sg.is_del
+    and sg.shop_id = #{shopId}
+    group by sg.id
     <if test="type == 1">
       ORDER BY
-      sgs.sales_price + 0 DESC
+      avg(sgs.sales_price) DESC
     </if>
     <if test="type == -1">
       ORDER BY
-      sgs.sales_price + 0
+      avg(sgs.sales_price)
     </if>
-    <where>
-      ${ew.sqlSegment}
-    </where>
   </select>
 
   <select id="getShopGoodsOnCategoryBy" resultMap="GoodsSalesPriceVoT">
     SELECT
-    sg.*,sgs.sales_price
+    sg.*,GROUP_CONCAT(sgs.sales_price) sales_price
     FROM
     js_shop_goods sg
     LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
     WHERE sg.category_id = #{categoryId}
     and sg.status = 1
     and not sg.is_del
+    group by sg.id
     <if test="type == 1">
       ORDER BY
-      sgs.sales_price + 0 DESC
+      avg(sgs.sales_price) DESC
     </if>
     <if test="type == -1">
       ORDER BY
-      sgs.sales_price + 0
+      avg(sgs.sales_price)
     </if>
     <if test="type == 2">
       ORDER BY
       sg.sale_amont DESC
     </if>
-    <where>
-      ${ew.sqlSegment}
-    </where>
   </select>
 
   <select id="getShopGoodsByCategoryId" resultMap="GoodsSalesPriceVoT">
     SELECT
-    sg.*,sgs.sales_price
+    sg.*,GROUP_CONCAT(sgs.sales_price) sales_price
     FROM
     js_shop_goods sg
     LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
     WHERE sg.category_id = #{categoryId}
     and sg.status = 1
     and not sg.is_del
+    group by sg.id
     ORDER BY sg.sale_amont DESC
-    <where>
-      ${ew.sqlSegment}
-    </where>
   </select>
 
   <select id="getShopGoodsByServiceOrPrice" resultMap="GoodsSalesPriceVoT">
     SELECT
-    sg.*,sgs.sales_price
+    sg.*,GROUP_CONCAT(sgs.sales_price) sales_price
     FROM
     js_shop_goods sg
     LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
@@ -201,16 +194,14 @@
         AND (sgs.sales_price BETWEEN #{lowPrice} AND #{highPrice})
       </if>
     </if>
+    group by sg.id
     ORDER BY sg.sale_amont DESC
-    <where>
-      ${ew.sqlSegment}
-    </where>
   </select>
 
 
   <select id="getShopList" resultMap="GoodsSalesPriceVoT">
     SELECT
-    sg.*,sgs.sales_price
+    sg.*,GROUP_CONCAT(sgs.sales_price) sales_price
     FROM
     js_shop_goods sg
     LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
@@ -247,21 +238,19 @@
     <if test="address != null">
       AND sg.address LIKE CONCAT('%', #{address}, '%')
     </if>
+    group by sg.id
     <if test="type == 1">
       ORDER BY
-      sgs.sales_price + 0 DESC
+      avg(sgs.sales_price) DESC
     </if>
     <if test="type == 0">
       ORDER BY
-      sgs.sales_price + 0
+      avg(sgs.sales_price)
     </if>
     <if test="type == 2">
       ORDER BY
       sg.sale_amont DESC
     </if>
-    <where>
-      ${ew.sqlSegment}
-    </where>
   </select>
 
   <resultMap id="GoodsSizeVo" type="com.jh.jsuk.entity.vo.GoodsSizeVo" extends="BaseResultMap">
@@ -295,7 +284,7 @@
       avg(jsgs.sales_price) as price
     from js_shop_goods jsg
       left join js_shop_goods_size jsgs on jsgs.shop_goods_id = jsg.id
-    where jsg.is_del = 0 and jsg.status = 1
+    where not jsg.is_del and jsg.status = 1
     group by jsg.id
     order by rand()
     limit 4
@@ -337,8 +326,7 @@
     SELECT
     <include refid="Base_Column_List"/>
     FROM js_shop_goods
-    WHERE
-    is_recommend = 1
+    WHERE is_recommend and not is_del
     ORDER BY sale_amont DESC
     <where>
       ${ew.sqlSegment}
@@ -377,10 +365,11 @@
     <association property="brandInfo" column="brand_id" select="com.jh.jsuk.dao.GoodsBrandDao.selectById"/>
     <association property="categoryInfo" column="category_id" select="com.jh.jsuk.dao.GoodsCategoryDao.selectById"/>
   </resultMap>
+
   <select id="shopGoodsList" resultMap="GoodsSizeVo">
     select sg.*
     from js_shop_goods sg
-    where sg.is_del != 1
+    where not sg.is_del
     <if test="shopId != null">
       and sg.shop_id = #{shopId}
     </if>

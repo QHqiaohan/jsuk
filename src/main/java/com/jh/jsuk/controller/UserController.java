@@ -15,6 +15,7 @@ import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
 import com.jh.jsuk.entity.vo.PlatformUserVo;
 import com.jh.jsuk.entity.vo.UserInfo;
+import com.jh.jsuk.entity.vo.UserInfoVo2;
 import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
@@ -66,6 +67,8 @@ public class UserController {
     UserAddressService userAddressService;
     @Autowired
     UserOrderService userOrderService;
+    @Autowired
+    private MemberService memberService;
 
     @Autowired
     UserInviteLogService userInviteLogService;
@@ -626,8 +629,8 @@ public class UserController {
         /**
          * 获取用户信息
          */
-        User user = userService.selectById(userId);
-        map.put("user", user);
+        UserInfoVo2 userInfoVo2 = userService.selectUserInfoById(userId);
+        map.put("user", userInfoVo2);
         return new Result().success(map);
     }
 
