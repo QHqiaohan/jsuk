@@ -38,6 +38,8 @@ public class UserTiXianController {
     @Autowired
     private DistributionUserService distributionUserService;
     @Autowired
+    private DistributionDetailService distributionDetailService;
+    @Autowired
     private ManagerUserService managerUserService;
     @Autowired
     private ShopService shopService;
@@ -151,6 +153,7 @@ public class UserTiXianController {
          * 查询商家可提现余额
          */
         BigDecimal reminder = queryShopReminder(shopId);
+        System.out.println("商家可提现余额:"+reminder);
         if(reminder.compareTo(new BigDecimal(userTiXian.getPrice()))==-1){
             return new Result().erro("可提现余额不足");
         }
@@ -219,58 +222,7 @@ public class UserTiXianController {
         userRemainder.insert();
 
         return new Result().success("提现成功");
-        /*//查询用户红包记录,用户只有红包才能提现
-        List<UserInviteLog> userInviteLogList=userInviteLogService.selectList(new EntityWrapper<UserInviteLog>()
-                                                                              .eq(UserInviteLog.USER_ID,userId)
-                                                                              .eq(UserInviteLog.IS_TIXIAN,0)  //1:已经提现,0未提现
-        );
-        if(userInviteLogList==null || userInviteLogList.size()==0){
-            return new Result().erro("没有可以提现的金额");
-        }
-        //获取提现金额
-        BigDecimal price=new BigDecimal(userTiXian.getPrice());
-        if(price==null){
-            return new Result().success("输入提现金额");
-        }
-        BigDecimal tixian_account=new BigDecimal("0.00");  //提现红包金额
-        for(UserInviteLog inviteLog:userInviteLogList){
-            if(inviteLog.getMoney()==null){
-                inviteLog.setMoney(new BigDecimal(0));
-            }
-            tixian_account=tixian_account.add(inviteLog.getMoney());
-        }
-        if(price.compareTo(tixian_account)==1){   //提现金额大于红包金额
-            return new Result().erro("红包金额不足");
-        }
-        //price小于等于红包总金额
-        //记录最终的提现金额
-        BigDecimal final_account=new BigDecimal("0.00");
-        for(UserInviteLog inviteLog:userInviteLogList){
-            if(price.compareTo(inviteLog.getMoney())==-1 || price.compareTo(inviteLog.getMoney())==0){
-                inviteLog.setMoney(inviteLog.getMoney().subtract(price));
-                inviteLog.updateById();
-                final_account=final_account.add(price);
-                break;
-            }
-            if(price.compareTo(inviteLog.getMoney())==1){
-                price=price.subtract(inviteLog.getMoney());
-                final_account=final_account.add(inviteLog.getMoney());
-                inviteLog.setIsTixian(1);   //该红包已提现
-                inviteLog.updateById();
-            }
-        }
-        UserRemainder userRemainder=new UserRemainder();
-        userRemainder.setUserId(userId);
-        userRemainder.setType(-1);   //-1代表消费
-        userRemainder.setRemainder(final_account);   //金额
-        userRemainder.setIdDel(0);
-        userRemainder.setCreateTime(new Date());
-        userRemainder.insert();
 
-        userTiXian.updateById();
-        Map map=new HashMap<>();
-        map.put("account",final_account);
-        map.put("msg","success");*/
     }
 
 
@@ -293,16 +245,19 @@ public class UserTiXianController {
     @RequestMapping(value="distributionTiXianExamine",method={RequestMethod.POST})
     public Result distributionTiXianExamine(@RequestParam Integer distributionApplyId,
                                             @RequestParam Integer status){
+        /**
+         * status 0待审核  1通过  2拒绝
+         */
         DistributionApply distributionApply = distributionApplyService.selectById(distributionApplyId);
         if(distributionApply==null){
             return new Result().erro("系统错误");
         }
-        distributionApply.setStatus(status);
-        distributionApply.updateById();
+
         if(status==1){
-            //审核通过
+            //通过审核
             Integer distributionUserId=distributionApply.getUserId();   //骑手Id
             DistributionUser distributionUser=distributionUserService.selectById(distributionUserId);
+
             if(distributionUser==null){
                 return new Result().erro("系统错误");
             }
@@ -312,11 +267,20 @@ public class UserTiXianController {
             if(distributionApply.getMoney()==null){
                 distributionApply.setMoney(new BigDecimal(0));
             }
+            //判断骑手可提现余额
+            if(distributionUser.getAccount().compareTo(distributionApply.getMoney().add(distributionApply.getPoundage()))==-1){
+                return new Result().erro("提现余额不足");
+            }
+            distributionApply.setStatus(status);
+            distributionApply.updateById();
+
             BigDecimal account = distributionUser.getAccount().subtract(distributionApply.getMoney()).subtract(distributionApply.getPoundage());
             distributionUser.setAccount(account);
             distributionUser.updateById();
             return new Result().success("审核通过");
         }
+        distributionApply.setStatus(status);
+        distributionApply.updateById();
         return new Result().erro("审核拒绝");
 
     }
@@ -360,7 +324,8 @@ public class UserTiXianController {
                 if (xfType == 0) {
                     // 消费
                     sum = sum.subtract(money);
-                } else if (xfType == 1) {
+                }
+                if (xfType == 1) {
                     // 收入
                     sum = sum.add(money);
                 }
@@ -368,6 +333,21 @@ public class UserTiXianController {
             return sum;
         }
     }
+
+/*    //查询骑手可提现余额
+    private BigDecimal queryDistributorReminder(Integer distributionUserId){
+        BigDecimal reminder=new BigDecimal("0.00");
+        List<DistributionDetail> distributionDetailList=distributionDetailService.selectList(new EntityWrapper<DistributionDetail>()
+                                                            .eq(DistributionDetail.USER_ID,distributionUserId)
+        );
+        if(!CollectionUtils.isEmpty(distributionDetailList)){
+            for(DistributionDetail detail:distributionDetailList){
+                reminder=reminder.add(detail.getMoney());
+            }
+        }
+
+        return reminder;
+    }*/
 
 }
 

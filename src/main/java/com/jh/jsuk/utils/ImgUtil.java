@@ -148,7 +148,7 @@ public class ImgUtil {
         return fileList;
     }
 
-    public static String    Uploads(MultipartFile file) {
+    public static String Uploads(MultipartFile file) {
         List<String> fileList = new ArrayList<>();
         String key = System.currentTimeMillis() + RandomUtil.randomNumbers(6) + ".png";
         try {

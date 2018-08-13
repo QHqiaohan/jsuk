@@ -477,6 +477,9 @@ public class ShopGoodsController {
         }
         Integer shopId=managerUser.getShopId();
 
+        if(addGoodsVo.getGoodsImg()==null){
+            return new Result().erro("请上传商品图片");
+        }
         if(addGoodsVo.getGoodsName()==null){
             return new Result().erro("必填字段为空");
         }
@@ -518,6 +521,9 @@ public class ShopGoodsController {
 
             if (addGoodsVo.getShopGoodsSizeList() != null && addGoodsVo.getShopGoodsSizeList().size() > 0) {
                 for (ShopGoodsSize shopGoodsSize : addGoodsVo.getShopGoodsSizeList()) {
+                    if(shopGoodsSize.getStock()==null){
+                        return new Result().erro("请输入商品规格数量");
+                    }
                     shopGoodsSize.setShopGoodsId(id);
                     shopGoodsSize.setIsDel(0);
                     shopGoodsSize.insert();
