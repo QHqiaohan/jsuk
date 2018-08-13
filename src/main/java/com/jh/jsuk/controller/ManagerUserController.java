@@ -31,6 +31,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -89,7 +90,7 @@ public class ManagerUserController {
 
     @ApiOperation("商家端-商家注册-返回验证码")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string")
+        @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "/resultCode", method = {RequestMethod.POST, RequestMethod.GET})
     public Result resultCode(String phone, HttpSession session) {
@@ -100,14 +101,14 @@ public class ManagerUserController {
 
     @ApiOperation("商家端-商家注册,保存商家信息")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "headImg", value = "店铺头像,不传使用默认头像", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "shopName", value = "店铺名称", required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "address", value = "地址", required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "modularId", value = "模块ID", required = true, paramType = "query", dataType = "Integer"),
-            @ApiImplicitParam(name = "legalPersonName", value = "法人姓名", required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "cardNum", value = "身份证", required = true, paramType = "query", dataType = "string")
+        @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "headImg", value = "店铺头像,不传使用默认头像", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "shopName", value = "店铺名称", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "address", value = "地址", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "modularId", value = "模块ID", required = true, paramType = "query", dataType = "Integer"),
+        @ApiImplicitParam(name = "legalPersonName", value = "法人姓名", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "cardNum", value = "身份证", required = true, paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "/register", method = {RequestMethod.POST, RequestMethod.GET})
     public Result register(String phone, String password, String headImg,
@@ -119,7 +120,7 @@ public class ManagerUserController {
         } else {
             // 默认头像
             Dictionary defaultImg = dictionaryService.selectOne(new EntityWrapper<Dictionary>()
-                    .eq(Dictionary.CODE, "shop_default_img"));
+                .eq(Dictionary.CODE, "shop_default_img"));
             shop.setHeadImg(defaultImg.getValue());
         }
         shop.setShopName(shopName);
@@ -154,13 +155,13 @@ public class ManagerUserController {
                         HttpServletRequest request) throws Exception {
         Result result = new Result();
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-                .eq(ManagerUser.PHONE, phone));
+            .eq(ManagerUser.PHONE, phone));
         if (managerUser != null) {
             if (managerUser.getCanUse() == 0) {
                 return new Result().erro("账号已被禁用,请联系客服!");
             } else {
                 ShopUser shopUser = shopUserService.selectOne(new EntityWrapper<ShopUser>()
-                        .eq(ShopUser.MANAGER_USER_ID, managerUser.getId()));
+                    .eq(ShopUser.MANAGER_USER_ID, managerUser.getId()));
                 if (shopUser.getIsCheck() == 0) {
                     return new Result().erro("店铺审核中");
                 } else if (shopUser.getIsCheck() == 1) {
@@ -194,9 +195,9 @@ public class ManagerUserController {
 
     @ApiOperation("商家端-根据手机验证码修改密码")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "password", value = "新密码", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "password", value = "新密码", required = true, paramType = "query", dataType = "string"),
     })
     @RequestMapping(value = "/editPassword", method = {RequestMethod.POST, RequestMethod.GET})
     public Result editPassword(String phone, String code, String password, HttpSession session) {
@@ -204,7 +205,7 @@ public class ManagerUserController {
         if (verificationCode != null) {
             if (code.equals(verificationCode)) {
                 ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-                        .eq(ManagerUser.PHONE, phone));
+                    .eq(ManagerUser.PHONE, phone));
                 managerUser.setPassword(password);
                 managerUser.updateById();
             } else {
@@ -220,7 +221,7 @@ public class ManagerUserController {
     @RequestMapping(value = "/shopInfo", method = {RequestMethod.POST, RequestMethod.GET})
     public Result shopInfo(Integer userId) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-                .eq(ManagerUser.ID, userId));
+            .eq(ManagerUser.ID, userId));
         Integer shopId = managerUser.getShopId();
         // 封装结果map
         Map<String, Object> map = new HashMap<>();
@@ -228,39 +229,45 @@ public class ManagerUserController {
          * 店铺信息
          */
         Shop shop = shopService.selectOne(new EntityWrapper<Shop>()
-                .eq(Shop.ID, shopId));
+            .eq(Shop.ID, shopId));
         map.put("shop", shop);
         /**
          * 店铺余额
          */
         List<ShopMoney> shopMoneyList = shopMoneyService.selectList(new EntityWrapper<ShopMoney>()
-                .eq(ShopMoney.SHOP_ID, shopId));
+            .eq(ShopMoney.SHOP_ID, shopId));
         if (CollectionUtils.isEmpty(shopMoneyList)) {
             map.put("money", 0);
         } else {
             // 初始化余额
-            int sum = 0;
+//            int sum = 0;
+            BigDecimal bigDecimal = new BigDecimal("0");
             for (ShopMoney shopMoney : shopMoneyList) {
                 // 金额
                 String money = shopMoney.getMoney();
-                Integer m = Integer.parseInt(money);
+                if (StrUtil.isBlank(money)) {
+                    continue;
+                }
+//                Integer m = Integer.parseInt(money);
                 // 消费类型,计算
                 Integer type = shopMoney.getType();
-                if (type == 0) {
+                if (type != null && type.equals(0)) {
                     // 消费
-                    sum -= m;
-                } else if (type == 1) {
+//                    sum -= m;
+                    bigDecimal = bigDecimal.subtract(new BigDecimal(money));
+                } else if (type != null && type.equals(1)) {
                     // 收入
-                    sum += m;
+//                    sum += m;
+                    bigDecimal = bigDecimal.add(new BigDecimal(money));
                 }
             }
-            map.put("money", sum);
+            map.put("money", bigDecimal);
         }
         /**
          * 访客/订单/交易额
          */
         ShopTodayStatistics todayStatistics = shopTodayStatisticsService.selectOne(new EntityWrapper<ShopTodayStatistics>()
-                .eq(ShopTodayStatistics.SHOP_ID, shopId));
+            .eq(ShopTodayStatistics.SHOP_ID, shopId));
         if (todayStatistics == null) {
             // 日访客
             map.put("todayVisitor", 0);
@@ -272,7 +279,7 @@ public class ManagerUserController {
         }
         // 月订单
         ShopMonthStatistics monthStatistics = shopMonthStatisticsService.selectOne(new EntityWrapper<ShopMonthStatistics>()
-                .eq(ShopMonthStatistics.SHOP_ID, shop));
+            .eq(ShopMonthStatistics.SHOP_ID, shop));
         if (monthStatistics == null) {
             map.put("monthOrder", 0);
         } else {
@@ -283,14 +290,14 @@ public class ManagerUserController {
 
 
     @ApiOperation("后台管理系统-账户设置")
-    @RequestMapping(value="/accountInfoSetting",method={RequestMethod.POST,RequestMethod.GET})
-    @ApiImplicitParams(value={
-        @ApiImplicitParam(name="headImg",value="头像",dataType = "String"),
-        @ApiImplicitParam(name="newPassword",value="新密码",dataType = "String")
+    @RequestMapping(value = "/accountInfoSetting", method = {RequestMethod.POST, RequestMethod.GET})
+    @ApiImplicitParams(value = {
+        @ApiImplicitParam(name = "headImg", value = "头像", dataType = "String"),
+        @ApiImplicitParam(name = "newPassword", value = "新密码", dataType = "String")
     })
-    public Result accountInfoSetting(@ModelAttribute ManagerUser managerUser,String newPassword){
-        System.out.println("旧密码:"+managerUser.getPassword());
-        System.out.println("新密码:"+newPassword);
+    public Result accountInfoSetting(@ModelAttribute ManagerUser managerUser, String newPassword) {
+        System.out.println("旧密码:" + managerUser.getPassword());
+        System.out.println("新密码:" + newPassword);
 
         managerUser.setPassword(MD5Util.getMD5(newPassword));
         managerUser.updateById();
@@ -299,17 +306,17 @@ public class ManagerUserController {
     }
 
     @ApiOperation("后台-账户设置-查询账户详情")
-    @RequestMapping(value="/getAdmin",method={RequestMethod.POST,RequestMethod.GET})
-    public Result getAdmin(){
+    @RequestMapping(value = "/getAdmin", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getAdmin() {
         //获取登录用户id
         Integer userId = session.getUserId();
         //System.out.println(userId);
-        ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-                                                                  .eq(ManagerUser.ID,userId)
-                                                                  .eq(ManagerUser.IS_DEL,0)
-                                                                  .eq(ManagerUser.CAN_USE,1)
+        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+            .eq(ManagerUser.ID, userId)
+            .eq(ManagerUser.IS_DEL, 0)
+            .eq(ManagerUser.CAN_USE, 1)
         );
-        if(managerUser==null){
+        if (managerUser == null) {
             return new Result().erro("系统错误");
         }
         return new Result().success(managerUser);
@@ -317,20 +324,20 @@ public class ManagerUserController {
 
 
     @ApiOperation("后台管理系统-成员管理-成员列表&根据用户名或姓名搜索成员")
-    @RequestMapping(value="/getManagerUserList",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getManagerUserList(Page page,String username){
-        Page managerUserPage=managerUserService.selectPage(page,
+    @RequestMapping(value = "/getManagerUserList", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result getManagerUserList(Page page, String username) {
+        Page managerUserPage = managerUserService.selectPage(page,
             new EntityWrapper<ManagerUser>()
-                .eq(ManagerUser.IS_DEL,0)
-                .like(username!=null,ManagerUser.NAME,username, SqlLike.DEFAULT)
+                .eq(ManagerUser.IS_DEL, 0)
+                .like(username != null, ManagerUser.NAME, username, SqlLike.DEFAULT)
         );
         return new Result().success(managerUserPage);
     }
 
     @ApiOperation("后台管理系统-成员管理-添加成员")
-    @RequestMapping(value="/addManagerUser",method={RequestMethod.POST})
-    public Result addManagerUser(@ModelAttribute ManagerUser managerUser){
-        String password=managerUser.getPassword();
+    @RequestMapping(value = "/addManagerUser", method = {RequestMethod.POST})
+    public Result addManagerUser(@ModelAttribute ManagerUser managerUser) {
+        String password = managerUser.getPassword();
         managerUser.setPassword(MD5Util.getMD5(password));
         managerUser.setUserType(1);    //用户类型 1:平台 2:商家
         managerUser.setCanUse(1);      //是否可用 0:否  1:是
@@ -341,8 +348,8 @@ public class ManagerUserController {
         /**
          * 判断注册手机号是否存在
          */
-        String phone=managerUser.getPhone();
-        if(phone!=null && !"".equals(phone)) {
+        String phone = managerUser.getPhone();
+        if (phone != null && !"".equals(phone)) {
             List<ManagerUser> list = managerUserService.selectList(new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.IS_DEL, 0)
             );
@@ -357,24 +364,24 @@ public class ManagerUserController {
         Dictionary dictionaryImg = dictionaryService.selectOne(new EntityWrapper<Dictionary>().
             eq("code", "user_default_img"));
         managerUser.setHeadImg(dictionaryImg.getValue());
-        try{
+        try {
             managerUser.insert();
             return new Result().success("添加成员成功");
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new Result().erro("添加成员失败");
         }
     }
 
     @ApiOperation("后台管理系统-成员管理-是否启用成员")
-    @RequestMapping(value="/setCanUse",method={RequestMethod.GET,RequestMethod.POST})
-    public Result setCanUse(@RequestParam(value="user_id") Integer user_id,
-                            @RequestParam(value="canUse") Integer canUse){
-        System.out.println("userId:"+user_id+"...can_user:"+canUse);
-        ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-            .eq(ManagerUser.ID,user_id)
+    @RequestMapping(value = "/setCanUse", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result setCanUse(@RequestParam(value = "user_id") Integer user_id,
+                            @RequestParam(value = "canUse") Integer canUse) {
+        System.out.println("userId:" + user_id + "...can_user:" + canUse);
+        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+            .eq(ManagerUser.ID, user_id)
         );
-        if(managerUser==null){
+        if (managerUser == null) {
             return new Result().erro("系统错误,请稍后再试");
         }
         managerUser.setCanUse(canUse);
@@ -384,35 +391,35 @@ public class ManagerUserController {
 
 
     @ApiOperation("根据id查询managerUser")
-    @RequestMapping(value="/selectManagerUserById",method={RequestMethod.POST,RequestMethod.GET})
-    public Result selectManagerUserById(Integer managerUserId){
-        ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-            .eq(ManagerUser.ID,managerUserId)
+    @RequestMapping(value = "/selectManagerUserById", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result selectManagerUserById(Integer managerUserId) {
+        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+            .eq(ManagerUser.ID, managerUserId)
         );
-        if(managerUser==null){
+        if (managerUser == null) {
             return new Result().erro("系统错误,请稍后再试");
         }
         return new Result().success(managerUser);
     }
 
     @ApiOperation("后台管理系统-成员管理-编辑成员")
-    @RequestMapping(value="/editManagerUser",method={RequestMethod.POST})
-    public Result editManagerUser(@ModelAttribute ManagerUser managerUser){
-        if(managerUser!=null) {
+    @RequestMapping(value = "/editManagerUser", method = {RequestMethod.POST})
+    public Result editManagerUser(@ModelAttribute ManagerUser managerUser) {
+        if (managerUser != null) {
             managerUser.updateById();
             return new Result().success("编辑成功");
-        }else{
+        } else {
             return new Result().erro("参数错误");
         }
     }
 
     @ApiOperation("后台管理系统-成员管理-删除成员")
-    @RequestMapping(value="/deleteManagerUserById",method={RequestMethod.GET,RequestMethod.POST})
-    public Result deleteManagerUserById(@RequestParam Integer managerUserId){
-        ManagerUser managerUser=managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-            .eq(ManagerUser.ID,managerUserId)
+    @RequestMapping(value = "/deleteManagerUserById", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result deleteManagerUserById(@RequestParam Integer managerUserId) {
+        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+            .eq(ManagerUser.ID, managerUserId)
         );
-        if(managerUser==null){
+        if (managerUser == null) {
             return new Result().erro("系统错误，请稍后再试");
         }
         managerUser.setCanUse(0);
