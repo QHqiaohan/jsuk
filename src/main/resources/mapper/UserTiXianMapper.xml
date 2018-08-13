@@ -24,34 +24,40 @@
     </sql>
 
   <resultMap id="ShopUserTiXianVo" type="com.jh.jsuk.entity.vo.ShopUserTiXianVo" extends="BaseResultMap">
-    <association property="shopUser" column="manager_id" select="com.jh.jsuk.dao.ShopUserDao.selectShopUserByMid"></association>
+    <association property="shopUser" column="user_id" select="com.jh.jsuk.dao.ShopUserDao.selectShopUserByMid"></association>
   </resultMap>
 
   <resultMap id="UserTiXianVo" type="com.jh.jsuk.entity.vo.UserTiXianVo" extends="BaseResultMap">
     <association property="user" column="user_id" select="com.jh.jsuk.dao.UserDao.findTiXianUser"></association>
   </resultMap>
 
+  <!--查询用户提现列表-->
   <select id="selectByAdvance2" resultMap="UserTiXianVo">
     select
-    <include refid="Base_Column_List"></include>
+    tixian.*
     from
     js_user_ti_xian tixian
+    join js_user user
+    on tixian.user_id=user.id
+    and tixian.manager_id is null
     where
     tixian.is_del=0
       <if test="tixianId!=null">
-        and id=#{tixianId}
+        and tixian.id=#{tixianId}
       </if>
       <if test="begin!=null and end!=null">
-       and price between #{begin} and #{end}
+       and tixian.price between #{begin} and #{end}
       </if>
       <if test="begin!=null and end==null">
-       and price>=#{begin}
+       and tixian.price>=#{begin}
       </if>
       <if test="status!=null">
-       and status=#{status}
+       and tixian.status=#{status}
       </if>
   </select>
 
+
+  <!--查询商家提现列表-->
   <select id="selectByAdvance" resultMap="ShopUserTiXianVo">
     select
     tixian.*
@@ -59,7 +65,16 @@
     js_user_ti_xian tixian
     join
     js_manager_user manager
-    on tixian.manager_id=manager.id
+    join
+    js_shop shop
+    join
+    js_shop_user shopUser
+    on
+    tixian.user_id=shopUser.manager_user_id
+    and
+    shop.id=manager.shop_id
+    and
+    shopUser.manager_user_id=manager.id
     where
     tixian.is_del=0
     and manager.user_type=2

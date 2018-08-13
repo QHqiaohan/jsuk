@@ -9,6 +9,7 @@ import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -44,6 +45,8 @@ public class UserTiXianController {
     private UserService userService;
     @Autowired
     private UserRemainderService userRemainderService;
+    @Autowired
+    private ShopMoneyService shopMoneyService;
 
     @ApiOperation("用户端-查询用户可提现余额")
     @RequestMapping(value = "/getRemainderByUid", method = {RequestMethod.POST, RequestMethod.GET})
@@ -79,7 +82,7 @@ public class UserTiXianController {
     @RequestMapping(value = "/addTiXian", method = {RequestMethod.POST, RequestMethod.GET})
     public Result addTiXian(@ModelAttribute UserTiXian userTiXian,
                             @ApiParam(value = "2=用户,0=商家,1=骑手", required = true) Integer type,
-                            Integer userId) {
+                            @RequestParam Integer userId) {
         Result result=userTiXianService.tixian(userTiXian,type,userId);
         return result;
     }
@@ -123,7 +126,9 @@ public class UserTiXianController {
 
     //平台-商家端提现审核
     @PostMapping("/shopTiXianExamine")
-    public Result shopTiXianExamine(@RequestParam Integer tiXianId,@RequestParam Integer shopManagerId){
+    public Result shopTiXianExamine(@RequestParam Integer tiXianId,
+                                    @RequestParam Integer shopManagerId){
+        System.out.println("shopManagerId:"+shopManagerId);
         UserTiXian userTiXian=userTiXianService.selectOne(new EntityWrapper<UserTiXian>()
                                                           .eq(UserTiXian.ID,tiXianId)
                                                           .eq(UserTiXian.MANAGER_ID,shopManagerId)
@@ -141,6 +146,14 @@ public class UserTiXianController {
             return new Result().erro("商家不存在");
         }
         Integer shopId=managerUser.getShopId();   //店铺id
+
+        /**
+         * 查询商家可提现余额
+         */
+        BigDecimal reminder = queryShopReminder(shopId);
+        if(reminder.compareTo(new BigDecimal(userTiXian.getPrice()))==-1){
+            return new Result().erro("可提现余额不足");
+        }
 
         //商家交易,通过这张表计算商家余额,type=0表示消费,1表示收入
         ShopMoney shopMoney=new ShopMoney();
@@ -169,7 +182,9 @@ public class UserTiXianController {
     public Result tiXianExamine(@RequestParam(value="tiXianId") Integer tiXianId,
                                 @RequestParam(value="uid") Integer userId){
         UserTiXian userTiXian=userTiXianService.selectOne(new EntityWrapper<UserTiXian>()
-                                                              .eq(UserTiXian.ID,tiXianId)
+                                                               .eq(UserTiXian.ID,tiXianId)
+                                                               .eq("examine",0)
+                                                               .eq(UserTiXian.USER_ID,userId)
         );
         if(userTiXian==null){
             return new Result().erro("提现记录数据不存在");
@@ -323,6 +338,35 @@ public class UserTiXianController {
             map.put("end",end);
         }
         return map;
+    }
+
+    //查询商家可提现余额
+    private BigDecimal queryShopReminder(Integer shopId) {
+        List<ShopMoney> shopMoneyList = shopMoneyService.selectList(new EntityWrapper<ShopMoney>()
+            .eq(ShopMoney.SHOP_ID, shopId));
+        if (CollectionUtils.isEmpty(shopMoneyList)) {
+            return new BigDecimal(0);
+        } else {
+            // 初始化余额
+            BigDecimal sum = new BigDecimal("0.00");
+            for (ShopMoney shopMoney : shopMoneyList) {  //计算商家余额
+                // 金额
+                BigDecimal money = new BigDecimal("0.00");
+                if (shopMoney.getMoney() != null) {
+                    money = new BigDecimal(shopMoney.getMoney());
+                }
+                // 消费类型,计算  类型,0=消费,1=收入
+                Integer xfType = shopMoney.getType();
+                if (xfType == 0) {
+                    // 消费
+                    sum = sum.subtract(money);
+                } else if (xfType == 1) {
+                    // 收入
+                    sum = sum.add(money);
+                }
+            }
+            return sum;
+        }
     }
 
 }

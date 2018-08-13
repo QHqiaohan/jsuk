@@ -66,11 +66,10 @@
   </select>
 
   <select id="selectShopUserByMid" resultMap="BaseResultMap">
-    select
-     id, shop_id, manager_user_id, is_waiting, is_check, legal_person_name, id_card_no, card_front, card_back
+    select *
      from
      js_shop_user
      where
-     manager_user_id=#{manager_id}
+     manager_user_id=#{user_id}
   </select>
 </mapper>

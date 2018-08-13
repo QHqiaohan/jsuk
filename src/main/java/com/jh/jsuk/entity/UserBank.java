@@ -27,6 +27,7 @@ public class UserBank extends Model<UserBank> {
      * 0商家端  1骑手端 2:普通用户
      */
     private Integer userType;
+
     private Integer userId;
     /**
      * 账号
