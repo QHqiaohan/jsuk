@@ -17,6 +17,12 @@ import java.io.Serializable;
 @TableName("js_running_fee")
 public class RunningFee extends Model<RunningFee> {
 
+    private static final int DEFAULT_START_DISTANCE = 5;
+
+    private static final int DEFAULT_START_FEE = 10;
+
+    private static final int DEFAULT_ADD_FEE = 5;
+
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     /**
@@ -35,5 +41,19 @@ public class RunningFee extends Model<RunningFee> {
     @Override
     protected Serializable pkVal() {
         return this.id;
+    }
+
+
+    public RunningFee defaultVal() {
+        if (startFee == null) {
+            startFee = DEFAULT_START_FEE;
+        }
+        if (startDistance == null) {
+            startDistance = DEFAULT_START_DISTANCE;
+        }
+        if (addFee == null) {
+            addFee = DEFAULT_ADD_FEE;
+        }
+        return this;
     }
 }

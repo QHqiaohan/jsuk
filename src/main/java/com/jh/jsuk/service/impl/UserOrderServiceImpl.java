@@ -180,12 +180,16 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             for (UserOrderGoods orderGoods : userOrderGoods) {
                 ShopGoodsVo shopGoodsVo = new ShopGoodsVo();
                 ShopGoods shopGoods = shopGoodsService.selectById(orderGoods.getGoodsId());
-                shopGoodsVo.setGoodsId(shopGoods.getId());
-                shopGoodsVo.setGoodsName(shopGoods.getGoodsName());
+                if (shopGoods != null) {
+                    shopGoodsVo.setGoodsId(shopGoods.getId());
+                    shopGoodsVo.setGoodsName(shopGoods.getGoodsName());
+                    shopGoodsVo.setMainImage(shopGoods.getMainImage());
+                }
                 ShopGoodsSize shopGoodsSize = shopGoodsSizeService.selectById(orderGoods.getGoodsSizeId());
-                shopGoodsVo.setSizeName(shopGoodsSize.getSizeName());
-                shopGoodsVo.setPrice(shopGoodsSize.getSalesPrice());
-                shopGoodsVo.setMainImage(shopGoods.getMainImage());
+                if (shopGoodsSize != null) {
+                    shopGoodsVo.setSizeName(shopGoodsSize.getSizeName());
+                    shopGoodsVo.setPrice(shopGoodsSize.getSalesPrice());
+                }
                 shopGoodsVo.setNum(orderGoods.getNum());
                 shopGoodsVos.add(shopGoodsVo);
             }

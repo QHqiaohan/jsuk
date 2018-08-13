@@ -295,6 +295,7 @@
       avg(jsgs.sales_price) as price
     from js_shop_goods jsg
       left join js_shop_goods_size jsgs on jsgs.shop_goods_id = jsg.id
+    where jsg.is_del = 0 and jsg.status = 1
     group by jsg.id
     order by rand()
     limit 4
@@ -363,7 +364,7 @@
     shop_id = #{shopId}
     AND is_del=0
     <if test="goodsName!=null and goodsName!=''">
-     and goods_name like concat('%',#{goodsName},'%')
+      and goods_name like concat('%',#{goodsName},'%')
     </if>
     <where>
       ${ew.sqlSegment}

@@ -3,14 +3,18 @@ package com.jh.jsuk.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-
+import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.UserBank;
-import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.service.UserBankService;
 import com.jh.jsuk.utils.Result;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.List;
@@ -30,6 +34,9 @@ public class UserBankController {
     @Autowired
     private UserBankService bankService;
 
+    @Autowired
+    Session session;
+
     @ApiOperation("用户-添加银行卡")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(name = "type", value = "0商家端  1骑手端  2用户端",
@@ -43,7 +50,6 @@ public class UserBankController {
     })
     @PostMapping("/add")
     public Result add(UserBank bank) {
-        System.out.println(bank.getUserType()+"..............");
         bank.setCreateTime(new Date());
        // bank.setUserType(UserType.USER.getKey());
         bank.insert();
@@ -59,7 +65,7 @@ public class UserBankController {
             @ApiImplicitParam(name = "bankName", value = "银行名称",
                     required = false, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "name", value = "开户人姓名",
-                    required = false, paramType = "query", dataType = "String"),
+                    required = false, paramType = "query", dataType = "String")
     })
     @PostMapping("/edit")
     public Result edit(UserBank bank) {

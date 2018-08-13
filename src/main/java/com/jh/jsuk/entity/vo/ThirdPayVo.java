@@ -2,9 +2,6 @@ package com.jh.jsuk.entity.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.io.Serializable;
 
 /**
@@ -15,7 +12,7 @@ import java.io.Serializable;
 @Data
 public class ThirdPayVo implements Serializable {
 
-    @ApiModelProperty(name = "1.用户订单支付 2.到店支付 3.会员充值 4.寄快递 5.跑腿", value = "type")
+    @ApiModelProperty(name = "1.用户订单支付 2.到店支付 3.会员充值 4.快递跑腿", value = "type")
     private Integer type;
 
     @ApiModelProperty(name = "其他参数：到店支付-param=商家id 会员充值-param=会员等级Id 其他类型都传订单id,多个订单逗号隔开", value = "param")
