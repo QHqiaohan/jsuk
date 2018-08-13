@@ -103,7 +103,7 @@ public interface UserOrderService extends IService<UserOrder> {
     /**
      * 支付完成
      */
-    PayResult payComplete(List<UserOrder> userOrders, Integer status);
+    PayResult payComplete(List<UserOrder> userOrders);
 
     /**
      * 到店支付
