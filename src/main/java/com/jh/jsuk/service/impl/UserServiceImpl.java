@@ -10,6 +10,7 @@ import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.vo.UserInfoVo;
+import com.jh.jsuk.entity.vo.UserInfoVo2;
 import com.jh.jsuk.entity.vo.UserListVo;
 import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.service.UserIntegralService;
@@ -111,6 +112,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     @Override
     public List<User> selectUserListBy(String keywords) {
         return baseMapper.selectUserListBy(keywords);
+    }
+
+    @Override
+    public UserInfoVo2 selectUserInfoById(Integer id) {
+        return baseMapper.selectUserInfoById(id);
     }
 
 }
