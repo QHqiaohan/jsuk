@@ -19,7 +19,6 @@ import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +49,24 @@ public class GoodsCategoryController {
     private GoodsCategoryService goodsCategoryService;
     @Autowired
     private ShopGoodsService shopGoodsService;
+
+    @PutMapping
+    public R add(GoodsCategory category){
+        goodsCategoryService.insert(category);
+        return R.succ();
+    }
+
+    @PatchMapping
+    public R edit(GoodsCategory category){
+        goodsCategoryService.updateById(category);
+        return R.succ();
+    }
+
+    @DeleteMapping
+    public R delete(Integer id){
+        goodsCategoryService.deleteAll(id);
+        return R.succ();
+    }
 
     @GetMapping("/list")
     public R list() {
