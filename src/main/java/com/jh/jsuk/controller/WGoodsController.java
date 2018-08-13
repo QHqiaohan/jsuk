@@ -163,7 +163,7 @@ public class WGoodsController {
     public R upper(Integer goodsId) {
         ShopGoods shopGoods = new ShopGoods();
         shopGoods.setId(goodsId);
-        shopGoods.setStatus(ShopGoodsStatus.WAIT_CONFIRM.getKey());
+        shopGoods.setStatus(ShopGoodsStatus.UPPER.getKey());
         shopGoods.setUpdateTime(new Date());
         shopGoods.updateById();
         return R.succ();

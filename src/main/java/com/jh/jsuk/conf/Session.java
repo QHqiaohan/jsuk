@@ -42,6 +42,28 @@ public class Session {
     private String shopName;
 
     /**
+     * 获取到数据就登录了
+     * @return
+     * @throws NeedLoginException
+     */
+    public Integer lUserId() throws NeedLoginException {
+        if(userId == null)
+            throw new NeedLoginException();
+        return userId;
+    }
+
+    /**
+     * 获取到数据就登录了
+     * @return
+     * @throws NeedLoginException
+     */
+    public UserType lUserType () throws NeedLoginException {
+        if(userType == null)
+            throw new NeedLoginException();
+        return userType;
+    }
+
+    /**
      * 获取用户位移识别码
      *
      * @return
