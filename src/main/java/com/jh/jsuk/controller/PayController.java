@@ -3,8 +3,6 @@ package com.jh.jsuk.controller;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.egzosn.pay.ali.api.AliPayConfigStorage;
 import com.egzosn.pay.ali.api.AliPayService;
 import com.egzosn.pay.ali.bean.AliTransactionType;
@@ -21,7 +19,6 @@ import com.google.common.collect.Maps;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.GoodsVo;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
-import com.jh.jsuk.envm.PayType;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
@@ -43,14 +40,10 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.security.PublicKey;
 import java.util.*;
 import java.util.concurrent.Callable;
 
@@ -73,6 +66,8 @@ public class PayController {
     UserService userService;
     @Autowired
     ShoppingCartService shoppingCartService;
+    @Autowired
+    private ExpressService expressService;
     @Autowired
     ShopGoodsService shopGoodsService;
     @Autowired
@@ -596,49 +591,23 @@ public class PayController {
     @ApiOperation(value = "用户端-余额支付")
     @RequestMapping(value = "/balancePay", method = {RequestMethod.POST, RequestMethod.GET})
     public Result balancePay(@ApiParam(name = "orderId", value = "订单Id") String orderId,
-                             @ApiParam(name = "payType", value = "支付方式-0余额-1货到付款-2支付宝-3微信公众号-4微信APP-5银行卡") Integer payType) throws MessageException, UnsupportedEncodingException, ChannelException {
+                             @ApiParam(name = "type", value = "类型 1.商品订单 2.快递跑腿") Integer type) throws MessageException {
         String[] ids = orderId.split(",");
         List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
-        switch (payType) {
-            //余额支付
-            case 0:
+        switch (type) {
+            case 1:
+                //商品订单支付
                 userOrderService.balancePay(userOrders);
-                return new Result().success("余额支付成功!");
-            //货到付款
-             /*case 1:
-                break;*/
-            //支付宝
+                break;
             case 2:
-                for (UserOrder u : userOrders) {
-                    u.setPayType(PayType.ALI_PAY.getKey());
-                    u.updateById();
-                }
-                return new Result().success(userOrderService.thirdPay(userOrders));
-            //微信公众号
-            case 3:
-                for (UserOrder u : userOrders) {
-                    u.setPayType(PayType.WECHAT_PUB_PAY.getKey());
-                    u.updateById();
-                }
-                return new Result().success(userOrderService.thirdPay(userOrders));
-            //微信APP
-            case 4:
-                for (UserOrder u : userOrders) {
-                    u.setPayType(PayType.WECHAT_APP_PAY.getKey());
-                    u.updateById();
-                }
-                return new Result().success(userOrderService.thirdPay(userOrders));
-            //银行卡
-            case 5:
-                for (UserOrder u : userOrders) {
-                    u.setPayType(PayType.BANK_PAY.getKey());
-                    u.updateById();
-                }
-                return new Result().success(userOrderService.thirdPay(userOrders));
-            default:
-                return new Result().erro("支付方式不存在");
+                //快递跑腿订单支付
+                expressService.balancePay(orderId);
+                break;
         }
+        //余额支付
+        return new Result().success("余额支付成功!");
     }
+
 
     @ApiOperation(value = "用户订单-第三方支付-支付完成")
     @RequestMapping(value = "/complete", method = {RequestMethod.POST, RequestMethod.GET})
@@ -649,48 +618,48 @@ public class PayController {
         return new Result().success(userOrderService.payComplete(userOrders, status));
     }
 
-    @ApiOperation(value = "用户端-其他支付")
-    @PostMapping(value = "/payStore")
-    public Result payStore(@ApiParam(name = "price", value = "支付金额") String price,
-                           @ApiParam(name = "userId", value = "用户Id") Integer userId,
-                           @ApiParam(name = "payType", value = "支付方式-2支付宝-3微信公众号-4微信APP-5银行卡") Integer payType,
-                           @ApiParam(name = "subject", value = "支付标题") String subject) throws UnsupportedEncodingException, ChannelException {
+    /*   @ApiOperation(value = "用户端-其他支付")
+       @PostMapping(value = "/payStore")
+       public Result payStore(@ApiParam(name = "price", value = "支付金额") String price,
+                              @ApiParam(name = "userId", value = "用户Id") Integer userId,
+                              @ApiParam(name = "payType", value = "支付方式-2支付宝-3微信公众号-4微信APP-5银行卡") Integer payType,
+                              @ApiParam(name = "subject", value = "支付标题") String subject) throws UnsupportedEncodingException, ChannelException {
 
-        return new Result().success("", userOrderService.payStore(price, payType, userId, subject));
-    }
-
-    @ApiOperation(value = "用户端-到店支付-支付完成")
+           return new Result().success("", userOrderService.payStore(price, payType, userId, subject));
+       }
+   */
+    @ApiOperation(value = "用户端-到店支付-获取店铺名字")
     @GetMapping(value = "/getShopName")
     public Result getShopName(String shopId) {
         return new Result().success("", shopService.selectById(shopId).getShopName());
 
     }
 
-    @ApiOperation(value = "用户端-到店支付-支付完成")
+ /*   @ApiOperation(value = "用户端-到店支付-支付完成")
     @RequestMapping(value = "/payStoreComplete", method = {RequestMethod.POST, RequestMethod.GET})
     public Result payStoreComplete(@ApiParam(name = "shopId", value = "商家Id") Integer shopId,
                                    @ApiParam(name = "price", value = "支付金额") String price) {
         userOrderService.payStoreComplete(shopId, price);
         return new Result().success();
-    }
+    }*/
 
-    @ApiOperation(value = "会员充值")
+/*    @ApiOperation(value = "会员充值")
     @PostMapping(value = "/memberCharge")
     public Result memberCharge(@ApiParam(name = "userId", value = "用户Id") Integer userId,
                                @ApiParam(name = "memberId", value = "会员配置Id") Integer memberId,
                                @ApiParam(name = "payType", value = "支付方式-2支付宝-3微信公众号-4微信APP-5银行卡") Integer payType) throws UnsupportedEncodingException, ChannelException {
 
         return new Result().success(userRemainderService.memberCharge(userId, memberId, payType));
-    }
+    }*/
 
-    @ApiOperation(value = "会员充值-支付完成")
+/*    @ApiOperation(value = "会员充值-支付完成")
     @PostMapping(value = "/memberChargeComplete")
     public Result memberChargeComplete(@ApiParam(name = "remainderId", value = "用户余额Id") Integer remainderId,
                                        @ApiParam(name = "rechargeRecordId", value = "交易记录Id") Integer rechargeRecordId,
                                        @ApiParam(name = "status", value = "支付状态 0失败 1成功") Integer status) {
         userRemainderService.chargeComplete(remainderId, rechargeRecordId, status);
         return new Result().success();
-    }
+    }*/
 
     /**
      * 微信支付获取config
