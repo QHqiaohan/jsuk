@@ -88,7 +88,6 @@ public class UserOrderController {
     @Autowired
     private CouponService couponService;
 
-
     @GetMapping("/page")
     public R userOrderPage(Page page, String[] date, String kw, String status) throws Exception {
         OrderStatus orderStatus = null;
@@ -498,9 +497,9 @@ public class UserOrderController {
             @ApiImplicitParam(name = "goodsName", value = "商品名称", paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "/getOrderByUserId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getOrderByUserId(Page page, Integer userId, Integer status, String goodsName) {
+    public Result getOrderByUserId(Page page,Integer status, String goodsName) throws Exception {
         MyEntityWrapper<UserOrderInfoVo> ew = new MyEntityWrapper<>();
-        Page orderPage = userOrderService.getOrderByUserId(page, ew, userId, status, goodsName);
+        Page orderPage = userOrderService.getOrderByUserId(page, ew, session.lUserId(), status, goodsName);
         return new Result().success(orderPage);
     }
 
