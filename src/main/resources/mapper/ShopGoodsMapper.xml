@@ -241,11 +241,11 @@
     group by sg.id
     <if test="type == 1">
       ORDER BY
-      sgs.sales_price + 0 DESC
+      avg(sgs.sales_price) DESC
     </if>
     <if test="type == 0">
       ORDER BY
-      sgs.sales_price + 0
+      avg(sgs.sales_price)
     </if>
     <if test="type == 2">
       ORDER BY
