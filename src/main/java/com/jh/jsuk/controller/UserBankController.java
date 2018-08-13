@@ -3,6 +3,7 @@ package com.jh.jsuk.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+
 import com.jh.jsuk.entity.UserBank;
 import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.service.UserBankService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -41,8 +43,9 @@ public class UserBankController {
     })
     @PostMapping("/add")
     public Result add(UserBank bank) {
+        System.out.println(bank.getUserType()+"..............");
         bank.setCreateTime(new Date());
-        bank.setUserType(UserType.USER.getKey());
+       // bank.setUserType(UserType.USER.getKey());
         bank.insert();
         return new Result().success();
     }
@@ -88,12 +91,18 @@ public class UserBankController {
    // @PostMapping("/list")
     @RequestMapping(value="/list",method={RequestMethod.POST,RequestMethod.GET})
     public Result list(Page page,
-                       Integer type,
+                       @ApiParam(name=" 0商家端  1骑手端 2:普通用户") Integer type,
                        @RequestParam  Integer user_id) {
         Page bankPage = bankService.selectPage(page, new EntityWrapper<UserBank>()
                 .eq(type!=null,UserBank.USER_TYPE, type)
                 .eq(UserBank.USER_ID, user_id)
                 .orderBy(UserBank.CREATE_TIME, false));
+/*        List<UserBank> list = bankService.selectList(new EntityWrapper<UserBank>()
+            .eq(type!=null,UserBank.USER_TYPE, type)
+            .eq(UserBank.USER_ID, user_id)
+            .orderBy(UserBank.CREATE_TIME, false)
+        );*/
+
         return new Result().success(bankPage);
     }
 }
