@@ -23,6 +23,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.security.PublicKey;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Author:xyl
@@ -75,7 +77,9 @@ public class ThirdPayController {
                 JSONObject data = JSONObject.fromObject(event.get("data"));
                 JSONObject object = JSONObject.fromObject(data.get("object"));
                 JSONObject body = JSONObject.fromObject(object.get("body"));
-                ThirdPayVoChild payVoChild = (ThirdPayVoChild) JSONObject.toBean(body);
+                Map map = new HashMap<String, Object>();
+                map.put("payVo", ThirdPayVo.class);
+                ThirdPayVoChild payVoChild = (ThirdPayVoChild) JSONObject.toBean(body, ThirdPayVoChild.class, map);
                 thirdPayService.chargeBack(payVoChild);
             } else {
                 log.error("支付失败...");
