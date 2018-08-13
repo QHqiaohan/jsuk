@@ -157,6 +157,10 @@ public class UserOrder extends Model<UserOrder> {
      */
     private String platformNumber;
     private String goodsName;
+    /**
+     * 订单更新时间
+     */
+    private Date updateTime;
 
 
     public Integer getId() {
@@ -501,6 +505,8 @@ public class UserOrder extends Model<UserOrder> {
 
     public static final String GOODS_NAME = "goods_name";
 
+    public static final String UPDATE_TIME = "update_time";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -553,5 +559,13 @@ public class UserOrder extends Model<UserOrder> {
 
     public void setFreight(BigDecimal freight) {
         this.freight = freight;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }
