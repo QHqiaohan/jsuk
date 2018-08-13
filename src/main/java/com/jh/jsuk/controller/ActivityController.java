@@ -802,7 +802,8 @@ public class ActivityController {
 
     //后台-APP促销管理-发布乡村旅游活动
     @RequestMapping(value = "/addVillageActivity", method = {RequestMethod.POST})
-    public Result addVillageActivity(@ModelAttribute Activity activity) throws UnsupportedEncodingException {
+    public Result addVillageActivity(@ModelAttribute Activity activity) {
+        System.out.println("门店地址:"+activity.getAddress());
         try {
             activity.setPublishTime(new Date());
             activity.setType(1);       // 1=乡村旅游
@@ -810,7 +811,7 @@ public class ActivityController {
             //获取登录用户id
             Integer userId = session.getUserId();
             activity.setUserId(userId);
-            activityService.insert(activity);
+            activity.insert();
         } catch (Exception e) {
             e.printStackTrace();
             return new Result().erro("系统错误");

@@ -89,7 +89,6 @@ public class UserBankController {
             @ApiImplicitParam(name = "type", value = "用户类型",
                     required = false, paramType = "query", dataType = "integer")
     })
-   // @PostMapping("/list")
     @RequestMapping(value="/list",method={RequestMethod.POST,RequestMethod.GET})
     public Result list(Page page,
                        @ApiParam(name=" 0商家端  1骑手端 2:普通用户") Integer type,
@@ -98,11 +97,6 @@ public class UserBankController {
                 .eq(type!=null,UserBank.USER_TYPE, type)
                 .eq(UserBank.USER_ID, user_id)
                 .orderBy(UserBank.CREATE_TIME, false));
-/*        List<UserBank> list = bankService.selectList(new EntityWrapper<UserBank>()
-            .eq(type!=null,UserBank.USER_TYPE, type)
-            .eq(UserBank.USER_ID, user_id)
-            .orderBy(UserBank.CREATE_TIME, false)
-        );*/
 
         return new Result().success(bankPage);
     }
