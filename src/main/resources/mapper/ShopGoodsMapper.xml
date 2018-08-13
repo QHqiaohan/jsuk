@@ -102,7 +102,7 @@
     LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
     WHERE
     sg.status = 1
-    and sg.is_del = 0
+    and not sg.is_del
     and sg.shop_id = #{shopId}
     <if test="type == 2">
       group by sg.id
@@ -129,7 +129,7 @@
     LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id
     WHERE
     sg.status = 1
-    and sg.is_del = 0
+    and not sg.is_del
     and sg.shop_id = #{shopId}
     group by sg.id
     <if test="type == 1">
@@ -284,7 +284,7 @@
       avg(jsgs.sales_price) as price
     from js_shop_goods jsg
       left join js_shop_goods_size jsgs on jsgs.shop_goods_id = jsg.id
-    where jsg.is_del = 0 and jsg.status = 1
+    where not jsg.is_del and jsg.status = 1
     group by jsg.id
     order by rand()
     limit 4
@@ -326,8 +326,7 @@
     SELECT
     <include refid="Base_Column_List"/>
     FROM js_shop_goods
-    WHERE
-    is_recommend = 1
+    WHERE is_recommend and not is_del
     ORDER BY sale_amont DESC
     <where>
       ${ew.sqlSegment}
@@ -366,10 +365,11 @@
     <association property="brandInfo" column="brand_id" select="com.jh.jsuk.dao.GoodsBrandDao.selectById"/>
     <association property="categoryInfo" column="category_id" select="com.jh.jsuk.dao.GoodsCategoryDao.selectById"/>
   </resultMap>
+
   <select id="shopGoodsList" resultMap="GoodsSizeVo">
     select sg.*
     from js_shop_goods sg
-    where sg.is_del != 1
+    where not sg.is_del
     <if test="shopId != null">
       and sg.shop_id = #{shopId}
     </if>
