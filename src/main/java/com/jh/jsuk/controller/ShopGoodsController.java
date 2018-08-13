@@ -531,9 +531,17 @@ public class ShopGoodsController {
     }
 
     @ApiOperation("商家端-修改商品")
-    @RequestMapping(value = "/updateShopGoods", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result updateShopGoods(@ModelAttribute ShopGoods shopGoods, @ModelAttribute ShopGoodsSize shopGoodsSize,
-                                  Integer shopGoodsId, Integer sizeId) {
+    @RequestMapping(value = "/updateShopGoods", method = {RequestMethod.POST})
+    public Result updateShopGoods(@ModelAttribute ShopGoods shopGoods,
+                                  @ModelAttribute ShopGoodsSize shopGoodsSize,
+                                  @RequestParam Integer shopGoodsId,
+                                  @RequestParam Integer sizeId) {
+        if(shopGoods==null){
+            return new Result().erro("商品参数为空");
+        }
+        if(shopGoodsSize==null){
+            return new Result().erro("商品参数为空");
+        }
         shopGoods.setId(shopGoodsId);
         shopGoods.updateById();
         // 规格id

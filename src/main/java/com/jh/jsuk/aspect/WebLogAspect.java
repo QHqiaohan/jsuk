@@ -13,11 +13,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.Map;
 
 /**
  * Web层日志切面
@@ -56,17 +54,6 @@ public class WebLogAspect {
         log.info("IP : {}", request.getRemoteAddr());
         log.info("执行的方法 : {}", joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
         log.info("参数 : {}", Arrays.toString(joinPoint.getArgs()));
-
-        BufferedReader reader = request.getReader();
-        String line;
-        log.info("请求体内容:");
-        while ((line = reader.readLine()) != null) {
-            log.info(line);
-        }
-
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        log.info("参数 {} ", new ObjectMapper().writeValueAsString(parameterMap));
-
     }
 
     @AfterReturning(returning = "ret", pointcut = "webLog()")

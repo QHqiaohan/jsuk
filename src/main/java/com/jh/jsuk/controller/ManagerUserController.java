@@ -110,7 +110,8 @@ public class ManagerUserController {
             @ApiImplicitParam(name = "cardNum", value = "身份证", required = true, paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "/register", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result register(String phone, String password, String headImg, String shopName, String address, Integer modularId,
+    public Result register(String phone, String password, String headImg,
+                           String shopName, String address, Integer modularId,
                            String legalPersonName, String cardNum) {
         Shop shop = new Shop();
         if (headImg != null) {
