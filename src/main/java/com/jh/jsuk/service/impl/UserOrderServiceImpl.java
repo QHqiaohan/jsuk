@@ -652,7 +652,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public PayResult payComplete(List<UserOrder> userOrders, Integer status) {
+    public PayResult payComplete(List<UserOrder> userOrders) {
         PayResult payResult = new PayResult();
         payResult.setOrderNum(userOrders.get(0).getOrderNum());
         payResult.setPayType(userOrders.get(0).getPayType());

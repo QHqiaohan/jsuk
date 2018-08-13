@@ -609,13 +609,12 @@ public class PayController {
     }
 
 
-    @ApiOperation(value = "用户订单-第三方支付-支付完成")
+    @ApiOperation(value = "用户订单-支付完成")
     @RequestMapping(value = "/complete", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result complete(@ApiParam(name = "orderId", value = "订单Id") String orderId,
-                           @ApiParam(name = "status", value = "支付状态 0失败 1成功") Integer status) {
+    public Result complete(@ApiParam(name = "orderId", value = "订单Id") String orderId) {
         String[] ids = orderId.split(",");
         List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
-        return new Result().success(userOrderService.payComplete(userOrders, status));
+        return new Result().success(userOrderService.payComplete(userOrders));
     }
 
     /*   @ApiOperation(value = "用户端-其他支付")
