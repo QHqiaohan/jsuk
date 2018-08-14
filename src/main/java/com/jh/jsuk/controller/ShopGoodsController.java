@@ -145,18 +145,18 @@ public class ShopGoodsController {
     })
     @RequestMapping(value = "/getShopGoodsByCategoryId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopGoodsByCategoryId(Page page, Integer categoryId) {
-/*        MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
-        Page goodsPage = shopGoodsService.getShopGoodsByCategoryId(page, ew, categoryId);*/
+        MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
+        Page goodsPage = shopGoodsService.getShopGoodsByCategoryId(page, ew, categoryId);
 
-        List<GoodsSalesPriceVo2> categoryGoodsList=new ArrayList<>();
-        /**
+/*        List<GoodsSalesPriceVo2> categoryGoodsList=new ArrayList<>();
+        *//**
          * 根据categoryId查询2级分类商品，然后再查询该categoryId对应的3级分类商品
-         */
+         *//*
         List<GoodsSalesPriceVo2> level2GoodsList=shopGoodsService.selectLevel2Goods(categoryId);
         categoryGoodsList.addAll(level2GoodsList);
-        /**
+        *//**
          * 查询categoryId的子级分类
-         */
+         *//*
         List<GoodsCategory> categoryList=goodsCategoryService.selectList(new EntityWrapper<GoodsCategory>()
                                                                    .eq(GoodsCategory.PARENT_ID,categoryId)
                                                                    .eq(GoodsCategory.STATUS,1)
@@ -167,9 +167,8 @@ public class ShopGoodsController {
                 List<GoodsSalesPriceVo2> level3GoodsList=shopGoodsService.selectLevel2Goods(category_id);
                 categoryGoodsList.addAll(level3GoodsList);
             }
-        }
-
-        return new Result().success(page.setRecords(categoryGoodsList));
+        }*/
+        return new Result().success(goodsPage);
     }
 
    /* @ApiOperation(value = "用户端-商品类型里的-根据综合/价格/销量查询商品")
