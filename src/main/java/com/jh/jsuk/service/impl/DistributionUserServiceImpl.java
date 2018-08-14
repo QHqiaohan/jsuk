@@ -94,7 +94,7 @@ public class DistributionUserServiceImpl extends ServiceImpl<DistributionUserDao
     }
 
     @Override
-    public Page list(Page page, String account, String name) {
-        return page.setRecords(baseMapper.list(page,account,name));
+    public Page list(Page page, String account, Integer status,String name) {
+        return page.setRecords(baseMapper.list(page,account,status,name));
     }
 }

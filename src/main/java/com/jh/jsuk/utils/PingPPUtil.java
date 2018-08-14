@@ -1,19 +1,14 @@
 package com.jh.jsuk.utils;
 
-import com.jh.jsuk.entity.ShopGoods;
-import com.jh.jsuk.entity.User;
-import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.vo.ChargeParamVo;
-import com.jh.jsuk.envm.PayType;
 import com.pingplusplus.Pingpp;
 import com.pingplusplus.exception.*;
 import com.pingplusplus.model.Charge;
-import com.pingplusplus.util.WxpubOAuth;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Author: xyl
