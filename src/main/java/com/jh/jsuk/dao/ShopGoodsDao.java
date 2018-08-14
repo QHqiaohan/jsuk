@@ -22,12 +22,12 @@ import java.util.List;
  */
 public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
 
-    List<GoodsSalesPriceVo> findShopGoodsByModularId(Integer modularId);
+    List<GoodsSalesPriceVo> findShopGoodsByModularId( @Param("modularId")Integer modularId,  @Param("cityId")Integer cityId);
 
     List<GoodsSizeVo> shopGoodsListByModularId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("modularId") Integer modularId);
 
     List<GoodsSalesPriceVo> shopGoodsListByAttributeId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("attributeId") Integer attributeId
-            , @Param("shopId") Integer shopId);
+        , @Param("shopId") Integer shopId);
 
     List<GoodsSalesPriceVo> getShopGoodsBy(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("type") Integer type,
                                            @Param("shopId") Integer shopId);
@@ -58,10 +58,10 @@ public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
                      @Param("name") String name, @Param("goodsType") Integer goodsType, @Param("lowPrice") String lowPrice,
                      @Param("highPrice") String highPrice, @Param("type") Integer type, @Param("shopId") Integer shopId);
 
-    List<GoodsSizeVo> findShopGoodsAndGoodsSizeByShopId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("shopId") Integer shopId,@Param("goodsName") String goodsName);
+    List<GoodsSizeVo> findShopGoodsAndGoodsSizeByShopId(RowBounds rowBounds, @Param("ew") Wrapper wrapper, @Param("shopId") Integer shopId, @Param("goodsName") String goodsName);
 
     List<GoodsSizeVo> shopGoodsList(Page page, @Param("status") Integer status, @Param("categoryId") String categoryId,
-                                     @Param("keyWord") String keyWord, @Param("brandId") String brandId, @Param("shopId") Integer shopId);
+                                    @Param("keyWord") String keyWord, @Param("brandId") String brandId, @Param("shopId") Integer shopId);
 
     List<ShopGoodsVo2> shopGoodsRecycleList(Page page, @Param("categoryId") String categoryId,
                                             @Param("keyWord") String keyWord, @Param("brandId") String brandId, @Param("shopId") Integer shopId);
@@ -71,7 +71,7 @@ public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
     @Select("select goods_name name from js_shop_goods where id = #{goodsId}")
     SGoodsVo shortVo(Integer goodsId);
 
-    List<GoodsVo2> guessYourLike();
+    List<GoodsVo2> guessYourLike(@Param("cityId")Integer cityId);
 
     List<GoodsSalesPriceVo2> selectLevel2Goods(@Param("categoryId") Integer categoryId);
 

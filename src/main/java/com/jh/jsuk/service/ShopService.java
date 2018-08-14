@@ -44,5 +44,5 @@ public interface ShopService extends IService<Shop> {
      * 获取当地的商家列表
      * @return
      */
-    List<Shop> findShopsByUserArea(User user);
+    List<Shop> findShopsByUserArea(Integer cityId);
 }

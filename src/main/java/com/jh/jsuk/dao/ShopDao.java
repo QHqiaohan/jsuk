@@ -26,7 +26,7 @@ public interface ShopDao extends BaseMapper<Shop> {
 
     ShopPhoneVo selectShopPhoneById(Integer id);
 
-    List<Shop> findShopsByUserArea(User user);
+    List<Shop> findShopsByUserArea(Integer cityId);
 
     @Select("SELECT shop_name name FROM js_shop where id = #{id}")
     SShopVo shortVo(Integer id);

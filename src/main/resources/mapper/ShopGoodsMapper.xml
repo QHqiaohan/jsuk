@@ -41,23 +41,25 @@
 
   <select id="findShopGoodsByModularId" resultMap="GoodsSalesPriceVo">
     SELECT
-    <include refid="Base_Column_List"/>
+   *
     FROM
-    js_shop_goods
+    js_shop_goods jsg
+    LEFT JOIN js_sys_citys jsc
+    ON jsg.city_id = jsc.id
     WHERE
-    is_recommend = '1'
-    AND `status` = '1'
-    AND not is_del
-    AND shop_modular_id = #{modularId}
+    jsg.is_recommend = '1'
+    AND jsg.`status` = '1'
+    AND jsg.is_del = 0
+    AND jsg.shop_modular_id = #{modularId}
+    AND jsg.city_id = #{cityId}
     ORDER BY
-    sale_amont DESC
-    LIMIT 0,
-    4
+    jsg.sale_amont DESC
+    LIMIT 0,4
   </select>
 
   <select id="shopGoodsListByAttributeId" resultMap="GoodsSalesPriceVo">
     SELECT
-    <include refid="Base_Column_List"/>
+   *
     FROM
     js_shop_goods
     WHERE
@@ -76,7 +78,7 @@
 
   <select id="getShopGoodsByLikeName" resultMap="GoodsSalesPriceVo">
     SELECT
-    <include refid="Base_Column_List"/>
+   *
     FROM
     js_shop_goods
     WHERE
@@ -290,7 +292,7 @@
   <!--首页-分类-点击三级分类-商品搜索-->
   <select id="getShopGoodsByKeywords" parameterType="java.lang.String" resultMap="GoodsSizeVo">
     SELECT
-    <include refid="Base_Column_List"/>
+   *
     FROM js_shop_goods
     WHERE
     goods_name like concat('%',#{keywords},'%')
@@ -311,7 +313,8 @@
       avg(jsgs.sales_price) as price
     from js_shop_goods jsg
       left join js_shop_goods_size jsgs on jsgs.shop_goods_id = jsg.id
-    where not jsg.is_del and jsg.status = 1
+      left join js_sys_citys jsc on jsg.city_id = jsc.id
+    where not jsg.is_del and jsg.status = 1 and jsg.city_id = #{cityId}
     group by jsg.id
     order by rand()
     limit 4
@@ -320,7 +323,7 @@
 
   <select id="shopGoodsListByModularId" resultMap="GoodsSizeVo">
     SELECT
-    <include refid="Base_Column_List"/>
+   *
     FROM js_shop_goods
     WHERE
     shop_modular_id = #{modularId}
@@ -331,7 +334,7 @@
 
   <select id="getShopGoodsById" resultMap="GoodsSizeVo">
     SELECT
-    <include refid="Base_Column_List"/>
+   *
     FROM js_shop_goods
     WHERE
     id = #{id}
@@ -339,7 +342,7 @@
 
   <select id="getShopGoodsByBrandId" resultMap="GoodsSalesPriceVo">
     SELECT
-    <include refid="Base_Column_List"/>
+   *
     FROM js_shop_goods
     WHERE
     brand_id = #{brandId}
@@ -351,7 +354,7 @@
 
   <select id="getIsRecommend" resultMap="GoodsSalesPriceVo">
     SELECT
-    <include refid="Base_Column_List"/>
+   *
     FROM js_shop_goods
     WHERE is_recommend and not is_del
     ORDER BY sale_amont DESC
@@ -373,7 +376,7 @@
 
   <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="ShopGoodsVoT">
     SELECT
-    <include refid="Base_Column_List"/>
+   *
     FROM js_shop_goods
     WHERE
     shop_id = #{shopId}

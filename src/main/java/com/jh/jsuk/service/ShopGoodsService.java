@@ -19,7 +19,7 @@ import java.util.List;
  */
 public interface ShopGoodsService extends IService<ShopGoods> {
 
-    List<GoodsSalesPriceVo> findShopGoodsByModularId(Integer modularId);
+    List<GoodsSalesPriceVo> findShopGoodsByModularId(Integer modularId,Integer cityId);
 
     Page shopGoodsListByModularId(Page page, Wrapper wrapper, Integer modularId);
 
@@ -56,7 +56,7 @@ public interface ShopGoodsService extends IService<ShopGoods> {
 
     List<GoodsSizeVo> getShopGoodsByKeywords(String keywords);
 
-    List<GoodsVo2> guessYourLike();
+    List<GoodsVo2> guessYourLike(Integer cityId);
 
     List<GoodsSalesPriceVo2> selectLevel2Goods(Integer categoryId);
 
