@@ -41,24 +41,28 @@ public class Session {
 
     private String shopName;
 
+    private Integer cityId = 510100;
+
     /**
      * 获取到数据就登录了
+     *
      * @return
      * @throws NeedLoginException
      */
     public Integer lUserId() throws NeedLoginException {
-        if(userId == null)
+        if (userId == null)
             throw new NeedLoginException();
         return userId;
     }
 
     /**
      * 获取到数据就登录了
+     *
      * @return
      * @throws NeedLoginException
      */
-    public UserType lUserType () throws NeedLoginException {
-        if(userType == null)
+    public UserType lUserType() throws NeedLoginException {
+        if (userType == null)
             throw new NeedLoginException();
         return userType;
     }
@@ -75,11 +79,11 @@ public class Session {
         return String.valueOf(userType) + userId;
     }
 
-    public boolean isShop(){
+    public boolean isShop() {
         return UserType.SHOP.equals(this.userType);
     }
 
-    public boolean isAdmin(){
+    public boolean isAdmin() {
         return UserType.ADMIN.equals(this.userType);
     }
 

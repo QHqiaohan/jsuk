@@ -33,8 +33,8 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     ShopRushBuyActivityDao shopRushBuyActivityDao;
 
     @Override
-    public List<GoodsSalesPriceVo> findShopGoodsByModularId(Integer modularId) {
-        return baseMapper.findShopGoodsByModularId(modularId);
+    public List<GoodsSalesPriceVo> findShopGoodsByModularId(Integer modularId,Integer cityId) {
+        return baseMapper.findShopGoodsByModularId(modularId,cityId);
     }
 
     @Override
@@ -169,8 +169,8 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     }
 
     @Override
-    public List<GoodsVo2> guessYourLike() {
-        return baseMapper.guessYourLike();
+    public List<GoodsVo2> guessYourLike(Integer cityId) {
+        return baseMapper.guessYourLike(cityId);
     }
 
 

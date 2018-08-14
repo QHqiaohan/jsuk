@@ -128,7 +128,7 @@ public class ActivityController {
         /**
          * 商品推荐
          */
-        List<GoodsSalesPriceVo> goodsSalesPriceVos = shopGoodsService.findShopGoodsByModularId(0);
+        List<GoodsSalesPriceVo> goodsSalesPriceVos = shopGoodsService.findShopGoodsByModularId(0,session.getCityId());
         map.put("shopGoods", goodsSalesPriceVos);
         /**
          * 精选商家
@@ -283,7 +283,7 @@ public class ActivityController {
             /**
              * 店铺列表
              */
-            List<Shop> shopList = shopService.findShopsByUserArea(null);
+            List<Shop> shopList = shopService.findShopsByUserArea(session.getCityId());
             map.put("shops", shopList);
         } else if (modularId == 8) {
             /**
@@ -308,13 +308,13 @@ public class ActivityController {
             /**
              * 店铺列表
              */
-            List<Shop> shopList = shopService.findShopsByUserArea(null);
+            List<Shop> shopList = shopService.findShopsByUserArea(session.getCityId());
             map.put("shops", shopList);
         }
         /**
          * 商品列表
          */
-        List<GoodsSalesPriceVo> shopGoodsByModularId = shopGoodsService.findShopGoodsByModularId(modularId);
+        List<GoodsSalesPriceVo> shopGoodsByModularId = shopGoodsService.findShopGoodsByModularId(modularId,session.getCityId());
         map.put("shopGoods", shopGoodsByModularId);
         return new Result().success(map);
     }
@@ -346,12 +346,12 @@ public class ActivityController {
         /**
          * 店铺列表
          */
-        List<Shop> shopList = shopService.findShopsByUserArea(null);
+        List<Shop> shopList = shopService.findShopsByUserArea(session.getCityId());
         map.put("shops", shopList);
         /**
          * 商品列表
          */
-        List<GoodsSalesPriceVo> shopGoodsByModularId = shopGoodsService.findShopGoodsByModularId(modularId);
+        List<GoodsSalesPriceVo> shopGoodsByModularId = shopGoodsService.findShopGoodsByModularId(modularId,session.getCityId());
         map.put("shopGoods", shopGoodsByModularId);
         return new Result().success(map);
     }

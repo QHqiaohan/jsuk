@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.*;
 import com.jh.jsuk.envm.ShopGoodsStatus;
@@ -56,6 +57,8 @@ public class ShopGoodsController {
     @Autowired
     private GoodsCategoryService goodsCategoryService;
 
+    @Autowired
+    private Session session;
 //    @Autowired
 //    ShopRushBuySizeService shopRushBuySizeService;
 
@@ -661,6 +664,6 @@ public class ShopGoodsController {
     @ApiOperation("用户端 - 猜你喜欢")
     @GetMapping(value = "/guessYourLike")
     public Result guessYourLike() {
-        return new Result().success(shopGoodsService.guessYourLike());
+        return new Result().success(shopGoodsService.guessYourLike(session.getCityId()));
     }
 }

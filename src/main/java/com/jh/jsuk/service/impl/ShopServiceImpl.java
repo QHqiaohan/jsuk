@@ -66,8 +66,8 @@ public class ShopServiceImpl extends ServiceImpl<ShopDao, Shop> implements ShopS
     }
 
     @Override
-    public List<Shop> findShopsByUserArea(User user) {
-        return baseMapper.findShopsByUserArea(user);
+    public List<Shop> findShopsByUserArea(Integer cityId) {
+        return baseMapper.findShopsByUserArea(cityId);
     }
 
 }

@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.Shop;
 import com.jh.jsuk.entity.ShopGoodsSize;
@@ -49,6 +50,8 @@ public class ModularPortalController {
     private ShopService shopService;
     @Autowired
     ManagerUserService managerUserService;
+    @Autowired
+    private Session session;
 
     @ApiOperation(value = "用户端-根据模块ID获取店铺/商品列表")
     @RequestMapping(value = "/getShopAndGoodsByModular", method = {RequestMethod.POST, RequestMethod.GET})
@@ -86,7 +89,7 @@ public class ModularPortalController {
          * 商品列表
          */
         // 商品数据
-        List<GoodsSalesPriceVo> goodsSalesPriceVos = shopGoodsService.findShopGoodsByModularId(modularId);
+        List<GoodsSalesPriceVo> goodsSalesPriceVos = shopGoodsService.findShopGoodsByModularId(modularId,session.getCityId() );
         map.put("shopGoods", goodsSalesPriceVos);
         return new Result().success(map);
     }
