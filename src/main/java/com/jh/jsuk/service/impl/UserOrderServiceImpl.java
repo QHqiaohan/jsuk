@@ -155,10 +155,10 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             if (goodsName != null) {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
                     .like(UserOrder.GOODS_NAME, goodsName).orderBy(true, UserOrder.UPDATE_TIME, false)
-                    .where("is_user_del=0 and is_shop_del=0"));
+                    .where("is_user_del=0"));
             } else {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
-                    .orderBy(true, UserOrder.UPDATE_TIME, false).where("is_user_del=0 and is_shop_del=0"));
+                    .orderBy(true, UserOrder.UPDATE_TIME, false).where("is_user_del=0 "));
             }
         } else {
             if (goodsName != null) {
