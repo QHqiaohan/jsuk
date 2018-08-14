@@ -592,11 +592,19 @@ public class ShopGoodsController {
    @ApiOperation("商家端-修改商品")
    @RequestMapping(value = "/updateShopGoods", method = {RequestMethod.POST})
    public Result updateShopGoods(@RequestBody AddGoodsVo addGoodsVo,
-                                 @RequestParam Integer goodsId){
+                                 @RequestParam Integer goodsId,
+                                 @RequestParam Integer userId){
        List<ShopGoodsSize> sizeList = addGoodsVo.getShopGoodsSizeList();
        if(sizeList==null || sizeList.size()==0){
            return new Result().erro("商品规格不能为空");
        }
+       ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+           .eq(ManagerUser.ID, userId));
+       if (managerUser == null) {
+           return new Result().erro("该商家不存在");
+       }
+       Integer shopId=managerUser.getShopId();
+
        if(addGoodsVo.getGoodsImg()==null){
            return new Result().erro("请上传商品图片");
        }
@@ -608,6 +616,7 @@ public class ShopGoodsController {
        }
        ShopGoods shopGoods = new ShopGoods();
        shopGoods.setId(goodsId);
+       shopGoods.setShopId(shopId);
        shopGoods.setAttributeId(addGoodsVo.getAttributeId());
        shopGoods.setBrandId(addGoodsVo.getBrandId());
        shopGoods.setShopModularId(addGoodsVo.getShopModularId());
