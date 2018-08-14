@@ -90,4 +90,9 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityDao, Activity> impl
         return page;
     }
 
+    @Override
+    public ActivityVo selectMerryageCar(Integer id) {
+        return baseMapper.selectMerryageCar(id);
+    }
+
 }

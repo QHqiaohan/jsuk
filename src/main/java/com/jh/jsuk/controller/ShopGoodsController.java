@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.AddGoodsVo;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
+import com.jh.jsuk.entity.vo.GoodsSalesPriceVo2;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
 import com.jh.jsuk.envm.ShopGoodsStatus;
 import com.jh.jsuk.service.*;
@@ -17,6 +18,7 @@ import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -54,6 +56,8 @@ public class ShopGoodsController {
     private CouponService couponService;
     @Autowired
     private ShopGoodsSizeService shopGoodsSizeService;
+    @Autowired
+    private GoodsCategoryService goodsCategoryService;
 
 //    @Autowired
 //    ShopRushBuySizeService shopRushBuySizeService;
@@ -141,9 +145,31 @@ public class ShopGoodsController {
     })
     @RequestMapping(value = "/getShopGoodsByCategoryId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopGoodsByCategoryId(Page page, Integer categoryId) {
-        MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
-        Page goodsPage = shopGoodsService.getShopGoodsByCategoryId(page, ew, categoryId);
-        return new Result().success(goodsPage);
+/*        MyEntityWrapper<GoodsSalesPriceVo> ew = new MyEntityWrapper<>();
+        Page goodsPage = shopGoodsService.getShopGoodsByCategoryId(page, ew, categoryId);*/
+
+        List<GoodsSalesPriceVo2> categoryGoodsList=new ArrayList<>();
+        /**
+         * 根据categoryId查询2级分类商品，然后再查询该categoryId对应的3级分类商品
+         */
+        List<GoodsSalesPriceVo2> level2GoodsList=shopGoodsService.selectLevel2Goods(categoryId);
+        categoryGoodsList.addAll(level2GoodsList);
+        /**
+         * 查询categoryId的子级分类
+         */
+        List<GoodsCategory> categoryList=goodsCategoryService.selectList(new EntityWrapper<GoodsCategory>()
+                                                                   .eq(GoodsCategory.PARENT_ID,categoryId)
+                                                                   .eq(GoodsCategory.STATUS,1)
+        );
+        if(!CollectionUtils.isEmpty(categoryList)){
+            for(GoodsCategory category:categoryList){
+                Integer category_id=category.getId();
+                List<GoodsSalesPriceVo2> level3GoodsList=shopGoodsService.selectLevel2Goods(category_id);
+                categoryGoodsList.addAll(level3GoodsList);
+            }
+        }
+
+        return new Result().success(page.setRecords(categoryGoodsList));
     }
 
    /* @ApiOperation(value = "用户端-商品类型里的-根据综合/价格/销量查询商品")
@@ -481,17 +507,17 @@ public class ShopGoodsController {
             return new Result().erro("请上传商品图片");
         }
         if(addGoodsVo.getGoodsName()==null){
-            return new Result().erro("必填字段为空");
-        }
-        if(addGoodsVo.getBrandId()==null){
-            return new Result().erro("必填字段为空");
+            return new Result().erro("请输入商品名称");
         }
         if(addGoodsVo.getShopGoodsSizeList()==null){
-            return new Result().erro("必填字段为空");
+            return new Result().erro("请输入规格信息");
         }
         if(addGoodsVo.getCategoryId()==null){
-            return new Result().erro("必填字段为空");
+            return new Result().erro("请选择分类");
         }
+/*        if(addGoodsVo.getMainImage()==null){
+            return new Result().erro("请上传商品头图");
+        }*/
 
         ShopGoods shopGoods = new ShopGoods();
         shopGoods.setShopId(shopId);
@@ -542,11 +568,23 @@ public class ShopGoodsController {
                                   @ModelAttribute ShopGoodsSize shopGoodsSize,
                                   @RequestParam Integer shopGoodsId,
                                   @RequestParam Integer sizeId) {
-        if(shopGoods==null){
-            return new Result().erro("商品参数为空");
+        if(shopGoods.getGoodsName()==null){
+            return new Result().erro("商品名称为空");
         }
-        if(shopGoodsSize==null){
-            return new Result().erro("商品参数为空");
+        if(shopGoods.getCategoryId()==null){
+            return new Result().erro("商品类别为空");
+        }
+        if(shopGoods.getGoodsImg()==null){
+            return new Result().erro("请上传商品详情图片");
+        }
+        if(shopGoods.getMainImage()==null){
+            return new Result().erro("请上传商品头图");
+        }
+        if(shopGoodsSize.getStock()==null){
+            return new Result().erro("请输入规格数量");
+        }
+        if(shopGoodsSize.getSalesPrice()==null){
+            return new Result().erro("请输入商品价格");
         }
         shopGoods.setId(shopGoodsId);
         shopGoods.updateById();

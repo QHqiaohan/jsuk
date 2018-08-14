@@ -11,8 +11,8 @@ public class UserOrderDetailVo extends UserOrder {
     private ShopPhoneVo shop;
     private DistributionUser distributionUser;
     private Coupon coupon;
-    private UserAddress address;
-    private List<UserOrderGoodsDetailVo> goodsList;
+    private UserAddress addressInfo;
+    private List<UserOrderGoodsDetailVo> shopGoodsList;
     private Double distance;
 
 
@@ -51,20 +51,20 @@ public class UserOrderDetailVo extends UserOrder {
         this.coupon = coupon;
     }
 
-    public UserAddress getAddress() {
-        return address;
+    public UserAddress getAddressInfo() {
+        return addressInfo;
     }
 
-    public void setAddress(UserAddress address) {
-        this.address = address;
+    public void setAddressInfo(UserAddress addressInfo) {
+        this.addressInfo = addressInfo;
     }
 
-    public List<UserOrderGoodsDetailVo> getGoodsList() {
-        return goodsList;
+    public List<UserOrderGoodsDetailVo> getShopGoodsList() {
+        return shopGoodsList;
     }
 
-    public void setGoodsList(List<UserOrderGoodsDetailVo> goodsList) {
-        this.goodsList = goodsList;
+    public void setShopGoodsList(List<UserOrderGoodsDetailVo> shopGoodsList) {
+        this.shopGoodsList = shopGoodsList;
     }
 
     public Double getDistance() {

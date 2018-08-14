@@ -397,6 +397,8 @@ public class Shop extends Model<Shop> {
 
     public static final String DISCOUNT_INFO = "discount_info";
 
+    public static final String SHOP_PHONE="shop_phone";
+
     @Override
     protected Serializable pkVal() {
         return this.id;

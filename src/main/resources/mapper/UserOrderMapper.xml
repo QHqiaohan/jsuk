@@ -148,9 +148,9 @@
     <association property="distributionUser" column="distribution_user_id"
                  select="com.jh.jsuk.dao.DistributionUserDao.selectById"></association>
     <association property="coupon" column="coupon_id" select="com.jh.jsuk.dao.CouponDao.selectById"></association>
-    <association property="address" column="address_id"
+    <association property="addressInfo" column="address_id"
                  select="com.jh.jsuk.dao.UserAddressDao.selectById"></association>
-    <collection property="goodsList" column="id" ofType="com.jh.jsuk.entity.vo.UserOrderDetailVo"
+    <collection property="shopGoodsList" column="id" ofType="com.jh.jsuk.entity.vo.UserOrderDetailVo"
                 select="com.jh.jsuk.dao.UserOrderGoodsDao.orderGoodsDetail"></collection>
   </resultMap>
 

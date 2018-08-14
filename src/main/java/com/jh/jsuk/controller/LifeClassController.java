@@ -158,7 +158,19 @@ public class LifeClassController {
     @ApiOperation("用户-便捷生活-根据商品ID查询商品详细信息")
     @RequestMapping(value = "/getActivityById", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getActivityById(@RequestParam Integer id) {
-        ActivityVo activityVo = activityService.findActivityById(id);
+        Activity activity=activityService.selectById(id);
+        /**
+         * 判断活动是普通活动还是共享婚车活动
+         * 共享婚车活动需要查出活动的车辆信息
+         */
+        Integer activity_type=activity.getActivityType();
+        ActivityVo activityVo=null;
+        if(activity_type==0) {    //普通活动
+             activityVo = activityService.findActivityById(id);
+        }
+        if(activity_type==1){   //共享婚车活动
+            activityVo=activityService.selectMerryageCar(id);
+        }
         return new Result().success(activityVo);
     }
 

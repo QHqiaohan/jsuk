@@ -8,10 +8,7 @@ import com.jh.jsuk.dao.ShopGoodsDao;
 import com.jh.jsuk.dao.ShopRushBuyActivityDao;
 import com.jh.jsuk.entity.Shop;
 import com.jh.jsuk.entity.ShopGoods;
-import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
-import com.jh.jsuk.entity.vo.GoodsSizeVo;
-import com.jh.jsuk.entity.vo.GoodsVo2;
-import com.jh.jsuk.entity.vo.ShopGoodsVo2;
+import com.jh.jsuk.entity.vo.*;
 import com.jh.jsuk.envm.ShopGoodsStatus;
 import com.jh.jsuk.service.ShopGoodsService;
 import com.jh.jsuk.service.ShopService;
@@ -184,6 +181,11 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
         page.setRecords(baseMapper.getShopList(page, wrapper, address, attributeId, shopModularId, categoryId, brandId, name, goodsType,
             lowPrice, highPrice, type, shopId));
         return page;
+    }
+
+    @Override
+    public List<GoodsSalesPriceVo2> selectLevel2Goods(Integer categoryId) {
+        return baseMapper.selectLevel2Goods(categoryId);
     }
 
 }

@@ -5,7 +5,7 @@
   <!-- 通用查询映射结果 -->
   <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.UserRechargeRecord">
     <id column="id" property="id"/>
-    <result column="userId" property="userId"/>
+    <result column="user_id" property="userId"/>
     <result column="recharge_type" property="rechargeType"/>
     <result column="recharge_money" property="rechargeMoney"/>
     <result column="id_del" property="isDel"/>
@@ -20,7 +20,7 @@
 
   <!-- 通用查询结果列 -->
   <sql id="Base_Column_List">
-    id, userId, recharge_type, recharge_money, id_del, create_time, is_ok, member_id,send_money,recharge_method,finish_time，status
+    id, user_id, recharge_type, recharge_money, id_del, create_time, is_ok, member_id,send_money,recharge_method,finish_time,status
   </sql>
 
   <resultMap id="UserRechargeRecordVo" type="com.jh.jsuk.entity.vo.UserRechargeRecordVo">
@@ -34,7 +34,7 @@
     js_user_recharge_record recharge
     join
     js_user u
-    on recharge.userId=u.id
+    on recharge.user_id=u.id
     where recharge.id_del=0
     <if test="rechargeId!=null and rechargeId!=''">
       and recharge.id=#{rechargeId}

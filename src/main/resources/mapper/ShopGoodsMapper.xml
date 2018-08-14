@@ -94,6 +94,32 @@
     <result column="original_price" property="originalPrice"/>
   </resultMap>
 
+  <resultMap id="GoodsSalesPriceVoT2" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo2" extends="BaseResultMap">
+    <result column="sizeName" property="sizeName"/>
+    <result column="stock" property="stock"/>
+    <result column="salesPrice" property="salesPrice"/>
+    <result column="originalPrice" property="originalPrice"/>
+  </resultMap>
+
+  <!--二级分类商品-->
+  <select id="selectLevel2Goods" resultMap="GoodsSalesPriceVoT2">
+    select
+    goods.*,
+    sizes.size_name as sizeName,
+    sizes.stock as stock,
+    sizes.original_price as originalPrice,
+    sizes.sales_price as salesPrice
+    from js_shop_goods goods
+    left join js_shop_goods_size sizes
+    on
+    goods.id=sizes.shop_goods_id
+    where
+    goods.category_id=#{categoryId}
+    and goods.is_del=0
+    order by
+    goods.update_time desc
+  </select>
+
   <select id="getShopGoodsBy" resultMap="GoodsSalesPriceVoT">
     SELECT
     sg.*,GROUP_CONCAT(sgs.sales_price) sales_price

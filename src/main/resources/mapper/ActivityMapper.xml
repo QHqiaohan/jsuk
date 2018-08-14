@@ -88,8 +88,18 @@
       js_activity
       WHERE
       id = #{id}
-
     </select>
+
+  <select id="selectMerryageCar" parameterType="java.lang.Integer" resultMap="ActivityVo">
+    select
+   activity.*,car.car_name as carName
+    from
+    js_activity activity
+    join js_car car
+    on activity.car_id=car.id
+    WHERE
+    activity.id = #{id}
+  </select>
 
   <!--
   根据活动id查询亲子、户外拓展、采摘活动、酒店住宿、特产购买活动详情

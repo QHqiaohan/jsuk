@@ -44,4 +44,6 @@ public interface ActivityService extends IService<Activity> {
     Page<ActivitySecondVo> getSecondaryMarketList(Page page, String keywords);
 
     Page<ActivitySecondVo> listSecondGoods(Page page, String kw);
+
+    ActivityVo selectMerryageCar(Integer id);
 }

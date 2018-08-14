@@ -113,6 +113,15 @@ public class ManagerUserController {
     public Result register(String phone, String password, String headImg,
                            String shopName, String address, Integer modularId,
                            String legalPersonName, String cardNum) {
+        /**
+         * 判断该手机号是否已经注册
+         */
+        Shop judgeShop=shopService.selectOne(new EntityWrapper<Shop>()
+                                             .eq(Shop.SHOP_PHONE,phone)
+        );
+        if(judgeShop!=null){
+            return new Result().erro("该手机号已经注册");
+        }
         Shop shop = new Shop();
         if (headImg != null) {
             shop.setHeadImg(headImg);
