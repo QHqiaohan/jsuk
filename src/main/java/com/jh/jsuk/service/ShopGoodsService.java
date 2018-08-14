@@ -59,4 +59,6 @@ public interface ShopGoodsService extends IService<ShopGoods> {
     List<GoodsVo2> guessYourLike();
 
     List<GoodsSalesPriceVo2> selectLevel2Goods(Integer categoryId);
+
+    GoodsInfoVo queryGoodsInfoVoBy(Integer goodsId);
 }

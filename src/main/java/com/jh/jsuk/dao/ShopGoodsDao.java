@@ -74,4 +74,6 @@ public interface ShopGoodsDao extends BaseMapper<ShopGoods> {
     List<GoodsVo2> guessYourLike();
 
     List<GoodsSalesPriceVo2> selectLevel2Goods(@Param("categoryId") Integer categoryId);
+
+    GoodsInfoVo queryGoodsInfoVoBy(@Param("goodsId") Integer goodsId);
 }
