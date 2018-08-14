@@ -10,10 +10,7 @@ import com.jh.jsuk.entity.vo.*;
 import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.OrderType;
 import com.jh.jsuk.exception.MessageException;
-import com.pingplusplus.exception.ChannelException;
-import com.pingplusplus.model.Charge;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -38,6 +35,15 @@ public interface UserOrderService extends IService<UserOrder> {
 
     void remindingOrderTaking();
 
+    /**
+     * 用户端
+     * @param page
+     * @param wrapper
+     * @param userId
+     * @param status
+     * @param goodsName
+     * @return
+     */
     Page getOrderByUserId(Page page, Wrapper wrapper, Integer userId, Integer status, String goodsName);
 
     Page getShopOrderByUserId(Page page, Wrapper wrapper, Integer shopId, Integer status, String goodsName);
