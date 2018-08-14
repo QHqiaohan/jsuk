@@ -24,6 +24,7 @@
     <result column="goods_type" property="goodsType"/>
     <result column="category_id" property="categoryId"/>
     <result column="address" property="address"/>
+    <result column="city_id" property="cityId"/>
 
   </resultMap>
 

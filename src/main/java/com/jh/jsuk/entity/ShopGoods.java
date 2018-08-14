@@ -124,6 +124,12 @@ public class ShopGoods extends Model<ShopGoods> {
     @ApiModelProperty(value = "地址", name = "address")
     private String address;
 
+    /**
+     * 地址
+     */
+    @ApiModelProperty(value = "城市id", name = "cityId")
+    private Integer cityId;
+
     public static final String ID = "id";
 
     public static final String SHOP_ID = "shop_id";
@@ -164,34 +170,11 @@ public class ShopGoods extends Model<ShopGoods> {
 
     public static final String ADDRESS = "address";
 
+    public static final String CITY_ID = "address";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "ShopGoods{" +
-                "id=" + id +
-                ", shopId=" + shopId +
-                ", attributeId=" + attributeId +
-                ", brandId=" + brandId +
-                ", shopModularId=" + shopModularId +
-                ", isRecommend=" + isRecommend +
-                ", goodsLabelId=" + goodsLabelId +
-                ", goodsName='" + goodsName + '\'' +
-                ", goodsImg='" + goodsImg + '\'' +
-                ", goodsDesc='" + goodsDesc + '\'' +
-                ", status=" + status +
-                ", isDel=" + isDel +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", mainImage='" + mainImage + '\'' +
-                ", goodsBreak='" + goodsBreak + '\'' +
-                ", saleAmont=" + saleAmont +
-                ", goodsType=" + goodsType +
-                ", categoryId=" + categoryId +
-                ", address='" + address + '\'' +
-                '}';
-    }
 }
