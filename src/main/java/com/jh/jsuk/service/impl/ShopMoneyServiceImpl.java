@@ -30,13 +30,12 @@ public class ShopMoneyServiceImpl extends ServiceImpl<ShopMoneyDao, ShopMoney> i
          * 店铺余额
          */
         List<ShopMoney> list = selectList(new EntityWrapper<ShopMoney>()
-                .eq(ShopMoney.SHOP_ID, shopId));
+            .eq(ShopMoney.SHOP_ID, shopId));
         BigDecimal bigDecimal = new BigDecimal("0.00");
         if (CollectionUtils.isEmpty(list)) {
             return bigDecimal;
         } else {
             // 初始化余额
-            int sum = 0;
             for (ShopMoney shopMoney : list) {
                 // 金额
                 String money = shopMoney.getMoney();
@@ -44,10 +43,10 @@ public class ShopMoneyServiceImpl extends ServiceImpl<ShopMoneyDao, ShopMoney> i
                 Integer type = shopMoney.getType();
                 if (type == 0) {
                     // 消费
-                    bigDecimal.subtract(new BigDecimal(money));
+                    bigDecimal = bigDecimal.subtract(new BigDecimal(money));
                 } else if (type == 1) {
                     // 收入
-                    bigDecimal.add(new BigDecimal(money));
+                    bigDecimal = bigDecimal.add(new BigDecimal(money));
                 }
             }
             return bigDecimal;

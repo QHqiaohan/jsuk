@@ -90,10 +90,6 @@ public interface UserOrderService extends IService<UserOrder> {
      */
     void balancePay(List<UserOrder> userOrders) throws MessageException;
 
-    /**
-     * 第三方支付
-     */
-    Charge thirdPay(List<UserOrder> userOrders) throws UnsupportedEncodingException, ChannelException;
 
     /**
      * 售后
@@ -106,21 +102,9 @@ public interface UserOrderService extends IService<UserOrder> {
     PayResult payComplete(List<UserOrder> userOrders);
 
     /**
-     * 到店支付
-     *
-     * @param price   支付金额
-     * @param payType 支付类型
-     * @param userId
-     * @param subject
-     * @return charge对象
+     * 商家端 确认退款
+     * @param id
+     * @param price
      */
-    Charge payStore(String price, Integer payType, Integer userId, String subject) throws UnsupportedEncodingException, ChannelException;
-
-    /**
-     * 到店支付-支付成功
-     *
-     * @param shopId 商家id
-     * @param price 支付金额
-     */
-    void payStoreComplete(Integer shopId, String price);
+    void refund(Integer id, String price) throws MessageException;
 }

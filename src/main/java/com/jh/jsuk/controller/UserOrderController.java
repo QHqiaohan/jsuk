@@ -13,6 +13,7 @@ import com.jh.jsuk.entity.rules.AccountRule;
 import com.jh.jsuk.entity.vo.AfterSaleVo;
 import com.jh.jsuk.entity.vo.UserOrderInfoVo;
 import com.jh.jsuk.envm.OrderStatus;
+import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
@@ -95,19 +96,19 @@ public class UserOrderController {
             orderStatus = EnumUitl.toEnum(OrderStatus.class, status, "getShortKey");
         }
         Integer shopId = null;
-        if(session.isShop()){
+        if (session.isShop()) {
             shopId = session.getShopId();
         }
-        return R.succ(userOrderService.listPage(page, date == null ? null : Arrays.asList(date), kw, orderStatus,shopId));
+        return R.succ(userOrderService.listPage(page, date == null ? null : Arrays.asList(date), kw, orderStatus, shopId));
     }
 
     @GetMapping("/get")
-    public R orderDetail(Integer id){
+    public R orderDetail(Integer id) {
         return R.succ(userOrderService.selectById(id));
     }
 
     @PatchMapping
-    public R orderDetail(UserOrder userOrder){
+    public R orderDetail(UserOrder userOrder) {
         return R.succ(userOrderService.updateById(userOrder));
     }
 
@@ -141,7 +142,7 @@ public class UserOrderController {
         OrderStatus[] statuses = OrderStatus.values();
         int all = 0;
         Integer shopId = null;
-        if(session.isShop()){
+        if (session.isShop()) {
             shopId = session.getShopId();
         }
         for (OrderStatus status : statuses) {
@@ -490,14 +491,14 @@ public class UserOrderController {
 
     @ApiOperation(value = "用户端-订单列表&订单关键字模糊搜索", notes = "不传=该用户全部订单")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "status", value = "0待付款,1待发货,2=待收货 3=售后,4=退款,5=退货,6=拒绝,7=取消",
-                    paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "goodsName", value = "商品名称", paramType = "query", dataType = "string")
+        @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "status", value = "0待付款,1待发货,2=待收货 3=售后,4=退款,5=退货,6=拒绝,7=取消",
+            paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "goodsName", value = "商品名称", paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "/getOrderByUserId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getOrderByUserId(Page page,Integer status, String goodsName) throws Exception {
+    public Result getOrderByUserId(Page page, Integer status, String goodsName) throws Exception {
         MyEntityWrapper<UserOrderInfoVo> ew = new MyEntityWrapper<>();
         Page orderPage = userOrderService.getOrderByUserId(page, ew, session.lUserId(), status, goodsName);
         return new Result().success(orderPage);
@@ -525,17 +526,17 @@ public class UserOrderController {
 
     @ApiOperation(value = "商家端-订单列表", notes = "不传=全部订单")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "status", value = "0待付款,1待发货,3=完成,7=售后",
-                    paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "goodsName", value = "商品名称", paramType = "query", dataType = "string")
+        @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "status", value = "0待付款,1待发货,3=完成,7=售后",
+            paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "goodsName", value = "商品名称", paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "/getShopOrderByUserId", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getShopOrderByUserId(Page page, Integer userId, Integer status, String goodsName) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-                .eq(ManagerUser.ID, userId));
-        if(managerUser == null)
+            .eq(ManagerUser.ID, userId));
+        if (managerUser == null)
             return R.err("用户不存在");
         Integer shopId = managerUser.getShopId();
         MyEntityWrapper<UserOrderInfoVo> ew = new MyEntityWrapper<>();
@@ -576,27 +577,29 @@ public class UserOrderController {
     @RequestMapping(value = "/addOrderService", method = {RequestMethod.POST, RequestMethod.GET})
     public Result addOrderService(@ModelAttribute com.jh.jsuk.entity.UserOrderService userOrderService1) {
         UserOrder userOrder = userOrderService.selectById(userOrderService1.getOrderId());
-        if (userOrderService1.getType()!=3){
+        if (userOrderService1.getType() != 3) {
             userOrder.setStatus(OrderStatus.REFUND_MONEY.getKey());
-        }else {
+        } else {
             userOrder.setStatus(OrderStatus.REFUND_GOODS.getKey());
         }
         userOrder.updateById();
         userOrderService1.insert();
         return new Result().success("操作成功!");
     }
+
     @ApiOperation(value = "用户端-申请售后-用户地址")
     @RequestMapping(value = "/userAddress", method = {RequestMethod.POST, RequestMethod.GET})
     public Result userAddress(Integer orderId) {
-        AfterSaleVo saleVo=userOrderService.getAddressAndPhone(orderId);
+        AfterSaleVo saleVo = userOrderService.getAddressAndPhone(orderId);
         return new Result().success(saleVo);
     }
+
     @ApiOperation(value = "用户端-更换商品-选择商品型号")
     @RequestMapping(value = "/changeGoods", method = {RequestMethod.POST, RequestMethod.GET})
     public Result changeGoods(@ApiParam(value = "商品ID", required = true) Integer shopGoodsId) {
         List<ShopGoodsSize> goodsSizeList = shopGoodsSizeService.selectList(new EntityWrapper<ShopGoodsSize>()
-                .eq(ShopGoodsSize.SHOP_GOODS_ID, shopGoodsId)
-                .eq(ShopGoodsSize.IS_DEL, 0));
+            .eq(ShopGoodsSize.SHOP_GOODS_ID, shopGoodsId)
+            .eq(ShopGoodsSize.IS_DEL, 0));
         return new Result().success(goodsSizeList);
     }
 
@@ -618,7 +621,7 @@ public class UserOrderController {
     @RequestMapping(value = "/enterChangeGoods", method = {RequestMethod.POST, RequestMethod.GET})
     public Result enterChangeGoods(@ApiParam(value = "订单ID", required = true) Integer id) {
         UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>()
-                .eq(UserOrder.ID, id));
+            .eq(UserOrder.ID, id));
         if (userOrder == null) {
             return new Result().success("没有该订单", null);
         } else {
@@ -631,40 +634,16 @@ public class UserOrderController {
     @ApiOperation(value = "商家端-确认退款")
     @RequestMapping(value = "/enterTuiKuan", method = {RequestMethod.POST, RequestMethod.GET})
     public Result enterTuiKuan(@ApiParam(value = "订单ID", required = true) Integer id,
-                               @ApiParam(value = "退款金额", required = true) String price) {
+                               @ApiParam(value = "退款金额", required = true) String price) throws MessageException {
         UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>()
-                .eq(UserOrder.ID, id));
+            .eq(UserOrder.ID, id));
         if (userOrder == null) {
             return new Result().erro("订单信息为空");
         } else {
-            try {
-                // 微信退款
-                MSGUtil msgUtil = WxPay.wxPayRefund(Double.parseDouble(price), userOrder.getOrderNum());
-                if (msgUtil.getState() == 500) {
-                    return new Result().erro(msgUtil.getMsg(), msgUtil.getData());
-                } else {
-                    List<UserOrderGoods> userOrderGoods = userOrderGoodsService.selectList(new EntityWrapper<UserOrderGoods>()
-                            .eq(UserOrderGoods.ORDER_ID, userOrder.getId()));
-                    for (UserOrderGoods orderGoods : userOrderGoods) {
-                        // 规格ID
-                        Integer sizeId = orderGoods.getGoodsSizeId();
-                        // 购买的数量
-                        Integer num = orderGoods.getNum();
-                        // 返还库存
-                        ShopGoodsSize goodsSize = shopGoodsSizeService.selectOne(new EntityWrapper<ShopGoodsSize>()
-                                .eq(ShopGoodsSize.ID, sizeId));
-                        Integer stock = goodsSize.getStock();
-                        stock = stock + num;
-                        goodsSize.setStock(stock);
-                        goodsSize.updateById();
-                        return new Result().success("退款成功");
-                    }
-                }
-            } catch (Exception e) {
-                return new Result().erro("退款失败", e);
-            }
+            //余额退款
+            userOrderService.refund(id,price);
+            return new Result().success("退款成功");
         }
-        return new Result().erro("退款失败");
     }
 
     @ApiOperation(value = "用户端-催一催")
@@ -679,7 +658,7 @@ public class UserOrderController {
         @ApiImplicitParam(name = "orderId", value = "订单id", paramType = "query", dataType = "integer"),
     })
     @GetMapping("/disInfo")
-    public R disInfo(Integer orderId) throws Exception{
+    public R disInfo(Integer orderId) throws Exception {
         String val = LogisticsUtil.queryData("yuantong", "800848347680428412");
         LogisticsResponse logisticsResponse = new ObjectMapper().readValue(val, LogisticsResponse.class);
         logisticsResponse.parseCom();
@@ -754,10 +733,9 @@ public class UserOrderController {
     }*/
 
     //平台-查看订单详情
-    @RequestMapping(value="/getUserOrderById",method={RequestMethod.POST,RequestMethod.GET})
-    public Result getUserOrderById(@RequestParam Integer orderId){
-        System.out.println("orderId:"+orderId);
-        UserOrder userOrder=userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID,orderId));
+    @RequestMapping(value = "/getUserOrderById", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getUserOrderById(@RequestParam Integer orderId) {
+        UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, orderId));
         return new Result().success(userOrder);
     }
 }

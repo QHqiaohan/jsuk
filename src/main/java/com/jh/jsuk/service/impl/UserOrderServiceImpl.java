@@ -85,6 +85,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     @Autowired
     private ShopService shopService;
 
+    @Autowired
+    private ShopMoneyService shopMoneyService;
+
     @Override
     public int statusCount(OrderStatus orderStatus, Integer shopId) {
         EntityWrapper<UserOrder> wrapper = new EntityWrapper<>();
@@ -626,26 +629,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         shopMoney.insert();
     }
 
-    @Override
-    public Charge thirdPay(List<UserOrder> userOrders) throws UnsupportedEncodingException, ChannelException {
-        UserOrder userOrder = userOrders.get(0);
-        User user = userService.selectById(userOrder.getUserId());
-        UserOrderGoods userOrderGoods = userOrderGoodsService.selectList(new EntityWrapper<UserOrderGoods>().eq(UserOrderGoods.ORDER_ID, userOrder.getId())).get(0);
-        ShopGoods shopGoods = shopGoodsService.selectById(userOrderGoods.getGoodsId());
-        BigDecimal price = new BigDecimal("0.00");
-        for (UserOrder u : userOrders) {
-            price = price.add(u.getOrderRealPrice());
-        }
-        ChargeParamVo paramVo = new ChargeParamVo();
-        paramVo.setAmount(price);
-        paramVo.setBody(shopGoods.getGoodsName());
-        paramVo.setClientIP(user.getLoginIp());
-        paramVo.setOpenId(user.getOpenId());
-        paramVo.setOrderNo(OrderNumUtil.getOrderIdByUUId());
-        paramVo.setPayType(userOrder.getPayType());
-        paramVo.setSubject(shopGoods.getGoodsName());
-        return PingPPUtil.createCharge(paramVo);
-    }
 
     @Override
     public AfterSaleVo getAddressAndPhone(Integer orderId) {
@@ -668,28 +651,32 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public Charge payStore(String price, Integer payType, Integer userId, String subject) throws UnsupportedEncodingException, ChannelException {
-        User user = userService.selectById(userId);
-        ChargeParamVo paramVo = new ChargeParamVo();
-        paramVo.setAmount(new BigDecimal(price));
-        paramVo.setBody(subject);
-        paramVo.setClientIP(user.getLoginIp());
-        paramVo.setOpenId(user.getOpenId());
-        paramVo.setOrderNo(OrderNumUtil.getOrderIdByUUId());
-        paramVo.setPayType(payType);
-        paramVo.setSubject(subject);
-        return PingPPUtil.createCharge(paramVo);
-    }
+    public void refund(Integer id, String price) throws MessageException {
+        UserOrder order = userOrderService.selectById(id);
+        //商家余额
+        if (shopMoneyService.getShopMoney(order.getShopId()).compareTo(new BigDecimal(price)) < 0) {
+            throw new MessageException("余额不足");
+        }
+        //用户交易记录
+        UserRemainder userRemainder = new UserRemainder();
+        userRemainder.setCreateTime(new Date());
+        userRemainder.setRemainder(new BigDecimal(price));
+        userRemainder.setType(0);
+        userRemainder.setUserId(order.getUserId());
+        userRemainder.setOrderNum(order.getOrderNum());
+        userRemainder.setIsOk(2);
+        userRemainder.setPlatformNumber(order.getPlatformNumber());
+        userRemainder.insert();
 
-    @Override
-    public void payStoreComplete(Integer shopId, String price) {
+
         //商家余额
         ShopMoney shopMoney = new ShopMoney();
         shopMoney.setMoney(price);
         shopMoney.setPublishTime(new Date());
-        shopMoney.setType(1);
-        shopMoney.setShopId(shopId);
+        shopMoney.setType(0);
+        shopMoney.setShopId(order.getShopId());
         shopMoney.insert();
     }
+
 
 }
