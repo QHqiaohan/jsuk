@@ -7,10 +7,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.*;
-import com.jh.jsuk.entity.vo.AddGoodsVo;
-import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
-import com.jh.jsuk.entity.vo.GoodsSalesPriceVo2;
-import com.jh.jsuk.entity.vo.GoodsSizeVo;
+import com.jh.jsuk.entity.vo.*;
 import com.jh.jsuk.envm.ShopGoodsStatus;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
@@ -561,7 +558,7 @@ public class ShopGoodsController {
         return new Result().success("添加成功");
     }
 
-    @ApiOperation("商家端-修改商品")
+/*    @ApiOperation("商家端-修改商品")
     @RequestMapping(value = "/updateShopGoods", method = {RequestMethod.POST})
     public Result updateShopGoods(@ModelAttribute ShopGoods shopGoods,
                                   @ModelAttribute ShopGoodsSize shopGoodsSize,
@@ -591,6 +588,66 @@ public class ShopGoodsController {
         shopGoodsSize.setId(sizeId);
         shopGoodsSize.updateById();
         return new Result().success();
+    }*/
+   @ApiOperation("商家端-修改商品")
+   @RequestMapping(value = "/updateShopGoods", method = {RequestMethod.POST})
+   public Result updateShopGoods(@RequestBody AddGoodsVo addGoodsVo,
+                                 @RequestParam Integer goodsId){
+       List<ShopGoodsSize> sizeList = addGoodsVo.getShopGoodsSizeList();
+       if(sizeList==null || sizeList.size()==0){
+           return new Result().erro("商品规格不能为空");
+       }
+       if(addGoodsVo.getGoodsImg()==null){
+           return new Result().erro("请上传商品图片");
+       }
+       if(addGoodsVo.getGoodsName()==null){
+           return new Result().erro("请输入商品名称");
+       }
+       if(addGoodsVo.getCategoryId()==null){
+           return new Result().erro("请选择分类");
+       }
+       ShopGoods shopGoods = new ShopGoods();
+       shopGoods.setId(goodsId);
+       shopGoods.setAttributeId(addGoodsVo.getAttributeId());
+       shopGoods.setBrandId(addGoodsVo.getBrandId());
+       shopGoods.setShopModularId(addGoodsVo.getShopModularId());
+       shopGoods.setIsRecommend(addGoodsVo.getIsRecommend());
+       shopGoods.setGoodsLabelId(addGoodsVo.getGoodsLabelId());
+       shopGoods.setGoodsName(addGoodsVo.getGoodsName());
+       shopGoods.setGoodsImg(addGoodsVo.getGoodsImg());
+       shopGoods.setGoodsDesc(addGoodsVo.getGoodsDesc());
+       shopGoods.setStatus(0);
+       shopGoods.setIsDel(0);
+       shopGoods.setCreateTime(new Date());
+       shopGoods.setUpdateTime(new Date());
+       shopGoods.setMainImage(addGoodsVo.getMainImage());
+       shopGoods.setGoodsBreak(addGoodsVo.getGoodsBreak());
+       shopGoods.setSaleAmont(addGoodsVo.getSaleAmont());
+       shopGoods.setGoodsType(addGoodsVo.getGoodsType());
+       shopGoods.setCategoryId(addGoodsVo.getCategoryId());
+       shopGoods.setAddress(addGoodsVo.getAddress());
+
+       shopGoods.updateById();
+       //先删除全部规格再重新添加
+       boolean r = shopGoodsSizeService.delete(new EntityWrapper<ShopGoodsSize>()
+           .eq(ShopGoodsSize.SHOP_GOODS_ID, goodsId)
+       );
+       if(r) {
+           for (ShopGoodsSize shopGoodsSize : sizeList) {
+               shopGoodsSize.setShopGoodsId(goodsId);
+               shopGoodsSize.setIsDel(0);
+               shopGoodsSize.insert();
+           }
+       }
+       return new Result().success("修改成功");
+  }
+
+
+    @ApiOperation("商家端-修改商品-查看商品详情")
+    @RequestMapping(value = "/getGoodsInfo", method = {RequestMethod.POST,RequestMethod.GET})
+    public Result getGoodsInfo(@RequestParam Integer goodsId){
+        GoodsInfoVo goodsInfoVo=shopGoodsService.queryGoodsInfoVoBy(goodsId);
+        return new Result().success(goodsInfoVo);
     }
 
     @ApiOperation("用户端 - 猜你喜欢")

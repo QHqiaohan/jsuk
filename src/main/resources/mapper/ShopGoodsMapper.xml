@@ -426,5 +426,25 @@
     </if>
   </select>
 
+  <resultMap id="GoodsInfoVo" type="com.jh.jsuk.entity.vo.GoodsInfoVo" extends="BaseResultMap">
+    <result column="brand" property="brand"/>
+    <result column="category" property="category"/>
+    <collection property="sizeList" column="id" select="com.jh.jsuk.dao.ShopGoodsSizeDao.getGoodsSizeByGoodsId">
+    </collection>
+  </resultMap>
+
+  <select id="queryGoodsInfoVoBy" resultMap="GoodsInfoVo">
+    select
+    goods.*,
+    gbrand.name as brand,
+    category.name as category
+    from js_shop_goods goods
+    join js_goods_brand gbrand
+    join js_goods_category category
+    on goods.brand_id=gbrand.id
+    and goods.category_id=category.id
+    where goods.id=#{goodsId}
+  </select>
+
 
 </mapper>

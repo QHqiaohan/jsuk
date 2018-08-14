@@ -188,4 +188,9 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
         return baseMapper.selectLevel2Goods(categoryId);
     }
 
+    @Override
+    public GoodsInfoVo queryGoodsInfoVoBy(Integer goodsId) {
+        return baseMapper.queryGoodsInfoVoBy(goodsId);
+    }
+
 }

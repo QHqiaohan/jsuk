@@ -71,7 +71,7 @@
 
         FROM
         js_shopping_cart jsc
-        LEFT JOIN js_manager_user jmu ON jsc.shop_id = jmu.id
+        LEFT JOIN js_manager_user jmu ON jsc.shop_id = jmu.shop_id  <!--jmu.id-->
         LEFT JOIN js_shop_goods jsg ON jsc.goods_id = jsg.id
         LEFT JOIN js_shop_goods_size jsgs ON jsgs.id = jsc.size_id
         <where>
