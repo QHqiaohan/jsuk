@@ -4,7 +4,6 @@ package com.jh.jsuk.controller;
 import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.enums.SqlLike;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
@@ -23,7 +22,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -151,7 +149,9 @@ public class ActivityController {
             new EntityWrapper<SpecialTheme>()
                 .eq(SpecialTheme.IS_DEL, 0)
                 .orderBy(SpecialTheme.RANK, false));
-        map.put("specialTheme", themePage.getRecords().size() > 0 ? themePage.getRecords().get(0) : null);
+        Page isRecommend = shopGoodsService.getIsRecommend(new Page(1, 1), new EntityWrapper());
+        List list = isRecommend.getRecords();
+        map.put("specialTheme", list != null && !list.isEmpty()? list.get(0) : null);
         return new Result().success(map);
     }
 
