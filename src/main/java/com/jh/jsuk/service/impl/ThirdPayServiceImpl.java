@@ -162,6 +162,7 @@ public class ThirdPayServiceImpl implements ThirdPayService {
             //修改订单信息
             userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
             userOrder.setPayTime(new Date());
+            userOrder.setUpdateTime(new Date());
             userOrder.updateById();
             //订单总价格
             price = price.add(userOrder.getOrderRealPrice());

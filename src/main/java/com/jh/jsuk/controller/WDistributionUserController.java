@@ -1,5 +1,6 @@
 package com.jh.jsuk.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.service.DistributionUserService;
@@ -8,6 +9,9 @@ import com.jh.jsuk.utils.MD5Util;
 import com.jh.jsuk.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Author:xyl
@@ -23,8 +27,16 @@ public class WDistributionUserController {
     private ExpressService expressService;
 
     @GetMapping("/list")
-    public R list(Page page, String account, String name) {
-        return R.succ(distributionUserService.list(page, account, name));
+    public R list(Page page, String account, Integer status, String name) {
+        return R.succ(distributionUserService.list(page, account, status, name));
+    }
+
+    @PostMapping("/review")
+    public R review(Integer id) {
+        DistributionUser distributionUser = distributionUserService.selectById(id);
+        distributionUser.setStatus(1);
+        distributionUser.updateById();
+        return R.succ();
     }
 
     @PostMapping("/del")
@@ -52,5 +64,28 @@ public class WDistributionUserController {
     @GetMapping("/orderDetails")
     public R orderDetails(Page page, Integer id) {
         return R.succ(expressService.listOrderByDistributionId(page, id));
+    }
+
+    @GetMapping("/allCount")
+    public R allCount() {
+        Map<String, Object> map = new HashMap<>();
+        EntityWrapper<DistributionUser> wrapper = new EntityWrapper<>();
+        wrapper.ne(DistributionUser.CAN_USE, 0)
+            .eq(DistributionUser.STATUS, 0);
+        int waitConfirm = distributionUserService.selectCount(wrapper);
+
+        EntityWrapper<DistributionUser> wrapper1 = new EntityWrapper<>();
+        wrapper.ne(DistributionUser.CAN_USE, 0)
+            .eq(DistributionUser.STATUS, 1);
+        int confirmPass = distributionUserService.selectCount(wrapper1);
+
+        EntityWrapper<DistributionUser> wrapper2 = new EntityWrapper<>();
+        wrapper.ne(DistributionUser.CAN_USE, 0);
+        int all = distributionUserService.selectCount(wrapper2);
+
+        map.put("wcm", waitConfirm);
+        map.put("all", all);
+        map.put("cmp", confirmPass);
+        return R.succ(map);
     }
 }

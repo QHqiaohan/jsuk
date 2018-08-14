@@ -47,7 +47,7 @@ public class ShopRushBuyActivityController {
         return R.succ(shopRushBuyActivityService.page(page, shopId));
     }
 
-    private void update(List<RushBuySizeVo> sizes){
+    private void update(List<RushBuySizeVo> sizes) {
         if (sizes != null && !sizes.isEmpty()) {
             for (RushBuySizeVo size : sizes) {
                 ShopGoodsSize sz = new ShopGoodsSize();
@@ -61,19 +61,23 @@ public class ShopRushBuyActivityController {
 
     @PutMapping
     public R add(@RequestBody RushBuyActivityVO ent) {
-        try{
+        try {
             shopRushBuyActivityService.insert(ent);
             update(ent.getSizes());
             return R.succ();
-        }catch (Exception e){
+        } catch (Exception e) {
             return R.err("商品重复");
         }
     }
 
     @PatchMapping
     public R edit(@RequestBody RushBuyActivityVO ent) {
-        shopRushBuyActivityService.updateById(ent);
-        update(ent.getSizes());
+        try {
+            shopRushBuyActivityService.updateById(ent);
+            update(ent.getSizes());
+        } catch (Exception e) {
+            return R.err("商品重复");
+        }
         return R.succ();
     }
 

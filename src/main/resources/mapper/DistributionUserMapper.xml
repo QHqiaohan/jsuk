@@ -50,6 +50,9 @@
     <if test="name!=null">
       and du.name like concat('%',#{name},'%')
     </if>
+    <if test="status!=null">
+      and du.status = #{status}
+    </if>
     group by du.id
   </select>
   <!--<resultMap id="orderAmount" type="java.lang.Integer">

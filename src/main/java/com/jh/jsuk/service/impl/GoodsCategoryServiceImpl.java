@@ -1,5 +1,6 @@
 package com.jh.jsuk.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -92,6 +93,23 @@ public class GoodsCategoryServiceImpl extends ServiceImpl<GoodsCategoryDao, Good
             }
         }
         return new Result().success(categoryIdList);
+    }
+
+    List<GoodsCategory> selectByParentId(Integer parendId) {
+        EntityWrapper<GoodsCategory> wrapper = new EntityWrapper<>();
+        wrapper.eq(GoodsCategory.PARENT_ID, parendId);
+        return selectList(wrapper);
+    }
+
+    @Override
+    public void deleteAll(Integer id) {
+        deleteById(id);
+        List<GoodsCategory> goodsCategories = selectByParentId(id);
+        if (goodsCategories == null || goodsCategories.isEmpty())
+            return;
+        for (GoodsCategory goodsCategory : goodsCategories) {
+            deleteAll(goodsCategory.getId());
+        }
     }
 
     //递归算法,算出子节点

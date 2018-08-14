@@ -21,4 +21,10 @@ public interface GoodsCategoryService extends IService<GoodsCategory> {
     Result updateCategoryName(Integer categoryId, String categoryName, Integer stas);
 
     Result selectCategoryAndChildrenById(Integer categoryId);
+
+    /**
+     * 删除自己以及下级所有数据
+     * @param id
+     */
+    void deleteAll(Integer id);
 }

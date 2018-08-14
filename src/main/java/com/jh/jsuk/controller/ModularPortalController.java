@@ -65,7 +65,7 @@ public class ModularPortalController {
                 // 是否可用  0不可用 1可用
                 .eq(Shop.CAN_USE, 1)
                 // 是否推荐,0=不推荐,1=推荐
-                .eq(Shop.IS_RECOMMEND, 1)
+//                .eq(Shop.IS_RECOMMEND, 1)
                 .eq(Shop.MODULAR_ID, modularId)
                 .orderBy(Shop.TOTAL_VOLUME, false));
 
