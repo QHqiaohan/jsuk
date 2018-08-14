@@ -578,6 +578,8 @@ public class UserOrderController {
         UserOrder userOrder = userOrderService.selectById(userOrderService1.getOrderId());
         if (userOrderService1.getType()!=3){
             userOrder.setStatus(OrderStatus.REFUND_MONEY.getKey());
+        }else {
+            userOrder.setStatus(OrderStatus.REFUND_GOODS.getKey());
         }
         userOrder.updateById();
         userOrderService1.insert();

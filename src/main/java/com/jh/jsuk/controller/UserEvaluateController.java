@@ -4,10 +4,10 @@ package com.jh.jsuk.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.jh.jsuk.entity.*;
+import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.Dictionary;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.EvaluateVo;
-import com.jh.jsuk.entity.vo.EvaluateVoT;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.DictionaryService;
 import com.jh.jsuk.service.ShopService;
@@ -44,6 +44,9 @@ public class UserEvaluateController {
     @Autowired
     private ShopService shopService;
 
+    @Autowired
+    Session session;
+
     @ApiOperation("添加评价")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "orderId", required = true, value = "订单id", paramType = "query", dataType = "int"),
@@ -57,6 +60,7 @@ public class UserEvaluateController {
     @PostMapping("/add")
     @Transactional(rollbackFor = {Exception.class, MessageException.class})
     public Result add(@ModelAttribute UserEvaluate evaluate) throws Exception {
+        evaluate.setUserId(session.lUserId());
         //获取敏感词
         Dictionary dictionary = dictionaryService.selectOne(new EntityWrapper<Dictionary>().eq("code", "sensitive_words"));
         String sensitiveWord = dictionary.getValue();
@@ -66,11 +70,11 @@ public class UserEvaluateController {
         String content = SensitiveWordUtil.replaceSensitiveWord(evaluate.getContent(), '*');
         evaluate.setContent(content);
         evaluate.setCreateTime(new Date());
-        evaluate.insert();
         UserOrder order = orderService.selectById(evaluate.getOrderId());
         if (order == null) {
             return new Result().erro("订单不存在！");
         }
+        evaluate.insert();
         order.setIsEvaluate(1);
         order.updateById();
 //        Integer shopId = order.getShopId();
@@ -140,27 +144,27 @@ public class UserEvaluateController {
         return new Result().success(evaluate);
     }
 
-    @ApiOperation("后台列表显示评价")
-    @RequestMapping("/ui/selectListAllForAdmin")
-    public Result uiSelectListAllForAdmin(Page page, Integer shopId) {
-        EntityWrapper ew = new EntityWrapper();
-        if (shopId != null) {
-            ew.eq("t2.shop_id", shopId);
-        }
-        ew.eq("t1.is_del", 0);
-        Page<EvaluateVoT> evaluateList = evaluateService.selectListAllForAdmin(page, ew);
-        return new Result().success(evaluateList);
-    }
+//    @ApiOperation("后台列表显示评价")
+//    @RequestMapping("/ui/selectListAllForAdmin")
+//    public Result uiSelectListAllForAdmin(Page page, Integer shopId) {
+//        EntityWrapper ew = new EntityWrapper();
+//        if (shopId != null) {
+//            ew.eq("t2.shop_id", shopId);
+//        }
+//        ew.eq("t1.is_del", 0);
+//        Page<EvaluateVoT> evaluateList = evaluateService.selectListAllForAdmin(page, ew);
+//        return new Result().success(evaluateList);
+//    }
 
-    @ApiOperation("删除评价")
-    @RequestMapping("/ui/deleteEvaluate")
-    public Result uiDeleteEvaluate(Integer id) {
-        UserEvaluate el = new UserEvaluate();
-        el.setId(id);
-        el.setIsDel(1);
-        el.updateById();
-        return new Result().success();
-    }
+//    @ApiOperation("删除评价")
+//    @RequestMapping("/ui/deleteEvaluate")
+//    public Result uiDeleteEvaluate(Integer id) {
+//        UserEvaluate el = new UserEvaluate();
+//        el.setId(id);
+//        el.setIsDel(1);
+//        el.updateById();
+//        return new Result().success();
+//    }
 
     @ApiOperation("显示用户的历史评价")
     @ApiImplicitParams({
@@ -170,10 +174,10 @@ public class UserEvaluateController {
                     required = false, paramType = "query", dataType = "integer")
     })
     @RequestMapping("/list/user")
-    public Result userEvaluate(Integer userId, Page page) {
+    public Result userEvaluate(Page page) throws Exception {
         Result<Page> result = new Result<>();
         Wrapper wrapper = new EntityWrapper();
-        Page pg = evaluateService.listUser(userId, page, wrapper);
+        Page pg = evaluateService.listUser(session.lUserId(), page, wrapper);
         return result.success(pg);
     }
 
