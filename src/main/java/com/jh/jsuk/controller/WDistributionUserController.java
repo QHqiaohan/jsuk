@@ -75,7 +75,7 @@ public class WDistributionUserController {
         int waitConfirm = distributionUserService.selectCount(wrapper);
 
         EntityWrapper<DistributionUser> wrapper1 = new EntityWrapper<>();
-        wrapper.ne(DistributionUser.CAN_USE, 0)
+        wrapper.eq(DistributionUser.CAN_USE, 1)
             .eq(DistributionUser.STATUS, 1);
         int confirmPass = distributionUserService.selectCount(wrapper1);
 
