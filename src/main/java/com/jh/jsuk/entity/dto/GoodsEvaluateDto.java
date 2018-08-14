@@ -20,4 +20,7 @@ public class GoodsEvaluateDto extends GoodsEvaluate {
     @ApiModelProperty(name = "客服服务星数", value = "serviceStar")
     private Integer serviceStar;
 
+    @ApiModelProperty(name = "订单id", value = "orderId")
+    private Integer orderId;
+
 }
