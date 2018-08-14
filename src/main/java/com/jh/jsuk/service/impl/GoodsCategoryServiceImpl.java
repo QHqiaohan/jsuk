@@ -103,14 +103,13 @@ public class GoodsCategoryServiceImpl extends ServiceImpl<GoodsCategoryDao, Good
 
     @Override
     public void deleteAll(Integer id) {
+        deleteById(id);
         List<GoodsCategory> goodsCategories = selectByParentId(id);
         if (goodsCategories == null || goodsCategories.isEmpty())
             return;
         for (GoodsCategory goodsCategory : goodsCategories) {
             deleteAll(goodsCategory.getId());
-            deleteById(goodsCategory.getId());
         }
-        deleteById(id);
     }
 
     //递归算法,算出子节点
