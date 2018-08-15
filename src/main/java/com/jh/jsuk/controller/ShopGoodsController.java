@@ -10,6 +10,7 @@ import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.*;
 import com.jh.jsuk.envm.ShopGoodsStatus;
+import com.jh.jsuk.exception.NeedLoginException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.R;
@@ -595,17 +596,18 @@ public class ShopGoodsController {
     @RequestMapping(value = "/updateShopGoods", method = {RequestMethod.POST})
     public Result updateShopGoods(@RequestBody AddGoodsVo addGoodsVo,
                                   @RequestParam Integer goodsId,
-                                  @RequestParam Integer userId) {
-        List<ShopGoodsSize> sizeList = addGoodsVo.getShopGoodsSizeList();
-        if (sizeList == null || sizeList.size() == 0) {
-            return new Result().erro("商品规格不能为空");
-        }
+                                  @RequestParam Integer userId){
+        /*Integer userId=session.lUserId();*/
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
             .eq(ManagerUser.ID, userId));
         if (managerUser == null) {
             return new Result().erro("该商家不存在");
         }
         Integer shopId = managerUser.getShopId();
+        List<ShopGoodsSize> sizeList = addGoodsVo.getShopGoodsSizeList();
+        if (sizeList == null || sizeList.size() == 0) {
+            return new Result().erro("商品规格不能为空");
+        }
 
         if (addGoodsVo.getGoodsImg() == null) {
             return new Result().erro("请上传商品图片");
@@ -617,6 +619,7 @@ public class ShopGoodsController {
             return new Result().erro("请选择分类");
         }
         ShopGoods shopGoods = new ShopGoods();
+
         shopGoods.setId(goodsId);
         shopGoods.setShopId(shopId);
         shopGoods.setAttributeId(addGoodsVo.getAttributeId());

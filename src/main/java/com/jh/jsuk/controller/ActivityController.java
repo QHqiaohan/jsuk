@@ -640,13 +640,21 @@ public class ActivityController {
                 .eq(Activity.IS_DEL, 0)
                 .eq(Activity.IS_RECOMMEND, 1)
                 .eq(Activity.MODULAR_ID, ModularId)
-                .orderBy(Activity.PUBLISH_TIME, false
-                )
+                .orderBy(Activity.PUBLISH_TIME, false)
         );
-        if (activityPage.getRecords() == null || activityPage.getRecords().size() == 0) {
-            return result.erro("亲，暂时没有热门活动哦...");
-        }
         return result.success(activityPage);
+    }
+
+    @ApiOperation("用户-模块-获取更多活动列表")
+    @RequestMapping(value = "/getMoreActivity", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getMoreActivity(Page page,@RequestParam Integer ModularId){
+        Page<Activity> activityPage = activityService.selectPage(page,
+            new EntityWrapper<Activity>()
+                .eq(Activity.IS_DEL, 0)
+                .eq(Activity.MODULAR_ID, ModularId)
+                .orderBy(Activity.PUBLISH_TIME, false)
+        );
+        return new Result().success(activityPage);
     }
 
 

@@ -19,6 +19,7 @@
     <sql id="Base_Column_List">
         id, user_id, shop_id, goods_id, num, create_time, checked, is_past, size_id
     </sql>
+
     <resultMap id="ShoppingCartVo" type="com.jh.jsuk.entity.vo.ShoppingCartVo">
         <id column="shop_id" property="shopId"/>
         <result column="shop_name" property="shopName"/>
@@ -60,7 +61,6 @@
         jsg.main_image,
         jsgs.sales_price,
         jsgs.kill_price,
-
         jsgs.id as goodsSizeId,
         jsgs.stock as stock,
         jsgs.size_name as goodsSizeName,
@@ -68,7 +68,6 @@
         jsgs.brand as brand,
         jsgs.send_jf as sendJf,
         jsgs.deductible_jf as deductibleJf
-
         FROM
         js_shopping_cart jsc
         LEFT JOIN js_manager_user jmu ON jsc.shop_id = jmu.shop_id  <!--jmu.id-->

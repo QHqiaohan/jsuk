@@ -113,7 +113,7 @@ public class ManagerUserController {
     @RequestMapping(value = "/register", method = {RequestMethod.POST, RequestMethod.GET})
     public Result register(String phone, String password, String headImg,
                            String shopName, String address, Integer modularId,
-                           String legalPersonName, String cardNum,Integer cityId) {
+                           String legalPersonName, String cardNum,@RequestParam Integer cityId) {
         /**
          * 判断该手机号是否已经注册
          */
