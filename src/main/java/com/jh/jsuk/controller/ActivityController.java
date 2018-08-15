@@ -377,13 +377,11 @@ public class ActivityController {
             paramType = "query", dataType = "integer"),
     })
     @RequestMapping(value = "/getToMarket", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getToMarket(Page page, Integer userId) {
+    public Result getToMarket(Page page, Integer userId) throws Exception {
         /**
          * 用户登录区域id
          */
-        Integer cityId = session.getUserId();
-
-        System.out.println("用户登陆区域id:"+cityId);
+        Integer cityId = session.getCityId();
         // 封装结果map
         Map<String, Object> map = new HashMap<>();
         // 查询该用户是否开启二手市场  1:开启  0:禁用
