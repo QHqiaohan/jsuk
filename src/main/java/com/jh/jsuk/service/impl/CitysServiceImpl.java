@@ -1,10 +1,14 @@
 package com.jh.jsuk.service.impl;
 
-import com.jh.jsuk.entity.Citys;
-import com.jh.jsuk.dao.CitysDao;
-import com.jh.jsuk.service.CitysService;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.jh.jsuk.dao.CitysDao;
+import com.jh.jsuk.entity.Citys;
+import com.jh.jsuk.service.CitysService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -17,4 +21,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class CitysServiceImpl extends ServiceImpl<CitysDao, Citys> implements CitysService {
 
+    @Override
+    public Page page(Page page, String kw) {
+        List<Map<String, Object>> list = baseMapper.page(page, kw);
+        return page.setRecords(list);
+    }
 }

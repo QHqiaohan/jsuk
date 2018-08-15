@@ -8,7 +8,10 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
-import com.jh.jsuk.entity.vo.*;
+import com.jh.jsuk.entity.vo.AddGoodsVo;
+import com.jh.jsuk.entity.vo.GoodsInfoVo;
+import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
+import com.jh.jsuk.entity.vo.GoodsSizeVo;
 import com.jh.jsuk.envm.ShopGoodsStatus;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
@@ -16,7 +19,6 @@ import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -663,7 +665,7 @@ public class ShopGoodsController {
 
     @ApiOperation("用户端 - 猜你喜欢")
     @GetMapping(value = "/guessYourLike")
-    public Result guessYourLike() {
+    public Result guessYourLike() throws Exception {
         return new Result().success(shopGoodsService.guessYourLike(session.getCityId()));
     }
 }

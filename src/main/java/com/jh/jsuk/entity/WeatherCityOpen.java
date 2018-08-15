@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,6 +19,9 @@ import java.util.Date;
  * @author lpf
  * @since 2018-06-26
  */
+@Setter
+@Getter
+@ToString
 @TableName("js_sys_weather_city_open")
 public class WeatherCityOpen extends Model<WeatherCityOpen> {
 
@@ -29,6 +35,8 @@ public class WeatherCityOpen extends Model<WeatherCityOpen> {
      */
     private Integer status;
     private Date createTime;
+
+    private Integer cityId;
 
 
     public Integer getId() {

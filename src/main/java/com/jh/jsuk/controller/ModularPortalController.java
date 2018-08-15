@@ -55,7 +55,7 @@ public class ModularPortalController {
 
     @ApiOperation(value = "用户端-根据模块ID获取店铺/商品列表")
     @RequestMapping(value = "/getShopAndGoodsByModular", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getShopAndGoodsByModular(@ApiParam(value = "模块ID", required = true) Integer modularId) {
+    public Result getShopAndGoodsByModular(@ApiParam(value = "模块ID", required = true) Integer modularId) throws Exception {
         // 封装数据map
         Map<String, Object> map = MapUtil.newHashMap();
 
