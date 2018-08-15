@@ -130,6 +130,9 @@ public class ShopGoods extends Model<ShopGoods> {
     @ApiModelProperty(value = "城市id", name = "cityId")
     private Integer cityId;
 
+    @ApiModelProperty(value = "品牌名称", name = "brandName")
+    private String brandName;
+
     public static final String ID = "id";
 
     public static final String SHOP_ID = "shop_id";

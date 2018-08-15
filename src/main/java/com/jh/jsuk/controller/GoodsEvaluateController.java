@@ -125,6 +125,11 @@ public class GoodsEvaluateController {
             if (order == null) {
                 return new Result().erro("订单不存在！");
             }
+            User user = userService.selectById(session.lUserId());
+            if (user != null) {
+                dto.setUserHeadImg(user.getHeadImg());
+                dto.setUserName(user.getNickName());
+            }
             goodsEvaluateService.insert(dto);
             order.setIsEvaluate(1);
             order.updateById();
@@ -137,12 +142,6 @@ public class GoodsEvaluateController {
 //            shop.setStarNum(userEvaluateService.calulateStar(UserEvaluate.SHOP_STAR_NUM, new EntityWrapper()
 //                .eq(UserOrder.SHOP_ID, managerId)));
 //            shop.updateById();
-
-            User user = userService.selectById(session.lUserId());
-            if (user != null) {
-                dto.setUserHeadImg(user.getHeadImg());
-                dto.setUserName(user.getNickName());
-            }
 
         }
         return new Result().success("添加成功");

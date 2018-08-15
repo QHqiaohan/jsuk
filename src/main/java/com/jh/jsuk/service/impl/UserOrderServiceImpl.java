@@ -149,25 +149,37 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         }
     }
 
+    /**
+     * 用户端
+     * @param page
+     * @param wrapper
+     * @param userId
+     * @param status
+     * @param goodsName
+     * @return
+     */
     @Override
     public Page getOrderByUserId(Page page, Wrapper wrapper, Integer userId, Integer status, String goodsName) {
         if (null == status) {
             if (goodsName != null) {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
                     .like(UserOrder.GOODS_NAME, goodsName).orderBy(true, UserOrder.UPDATE_TIME, false)
-                    .where("is_user_del=0"));
+                    .where("not is_user_del"));
             } else {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
-                    .orderBy(true, UserOrder.UPDATE_TIME, false).where("is_user_del=0 "));
+                    .orderBy(true, UserOrder.UPDATE_TIME, false)
+                    .where("not is_user_del"));
             }
         } else {
             if (goodsName != null) {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
                     .eq(UserOrder.STATUS, status).like(UserOrder.GOODS_NAME, goodsName)
-                    .orderBy(true, UserOrder.UPDATE_TIME, false).where("is_user_del=0 and is_shop_del=0"));
+                    .orderBy(true, UserOrder.UPDATE_TIME, false)
+                    .where("not is_user_del"));
             } else {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
-                    .eq(UserOrder.STATUS, status).orderBy(true, UserOrder.UPDATE_TIME, false).where("is_user_del=0 and is_shop_del=0"));
+                    .eq(UserOrder.STATUS, status).orderBy(true, UserOrder.UPDATE_TIME, false)
+                    .where("not is_user_del"));
             }
 
         }

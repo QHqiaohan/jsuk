@@ -25,13 +25,14 @@
     <result column="category_id" property="categoryId"/>
     <result column="address" property="address"/>
     <result column="city_id" property="cityId"/>
+    <result column="brand_name" property="brandName"/>
 
   </resultMap>
 
   <!-- 通用查询结果列 -->
   <sql id="Base_Column_List">
     id, shop_id, attribute_id, shop_modular_id, is_recommend, goods_label_id, goods_name, goods_img, goods_desc, status, is_del, create_time,
-    update_time, main_image, goods_break, sale_amont, goods_type, category_id, brand_id, address
+    update_time, main_image, goods_break, sale_amont, goods_type, category_id, brand_id, address,brand_name
   </sql>
 
   <resultMap id="GoodsSalesPriceVo" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">

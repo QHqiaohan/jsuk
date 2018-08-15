@@ -1,5 +1,6 @@
 package com.jh.jsuk.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -83,5 +84,18 @@ public class GoodsEvaluateServiceImpl extends ServiceImpl<GoodsEvaluateDao, Good
             nickName = "%" + nickName.trim() + "%";
         List<GoodsEvaluateVo> list = baseMapper.listEvaluate(page, categoryId, keyWord, brandId,shopId,nickName);
         return page.setRecords(list);
+    }
+
+    @Override
+    public Page listUser(Integer userId, Page page, Wrapper wrapper) {
+        List<Map<String, Object>> list = baseMapper.listUserEvaluate(page, userId, wrapper);
+        for (Map<String, Object> map : list) {
+            Object goodsName = map.get("goodsName");
+            map.put("goodsName", goodsName == null ? "" : goodsName);
+            String goodsImg = (String) map.get("goodsImg");
+            map.put("goodsImg", StrUtil.isBlank(goodsImg) ? new Integer[]{} : goodsImg.split(","));
+        }
+        page.setRecords(list);
+        return page;
     }
 }

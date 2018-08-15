@@ -8,6 +8,7 @@ import com.jh.jsuk.entity.vo.GoodsEvaluateVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -23,4 +24,6 @@ public interface GoodsEvaluateDao extends BaseMapper<GoodsEvaluate> {
 
     List<GoodsEvaluateVo> listEvaluate(Page page, @Param("categoryId") String categoryId, @Param("keyWord") String keyWord,
                                        @Param("brandId") String brandId, @Param("shopId") Integer shopId,@Param("nickName") String nickName);
+
+    List<Map<String, Object>> listUserEvaluate(Page page,@Param("userId") Integer userId,@Param("ew") Wrapper wrapper);
 }
