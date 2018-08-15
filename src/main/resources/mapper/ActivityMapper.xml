@@ -50,6 +50,7 @@
     WHERE
     is_del = 0
     AND type = 3
+    /*AND transaction_area_id=#{cityId}*/
     ORDER BY
     publish_time DESC
   </select>

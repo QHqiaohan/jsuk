@@ -630,7 +630,7 @@ public class ShopGoodsController {
         shopGoods.setGoodsName(addGoodsVo.getGoodsName());
         shopGoods.setGoodsImg(addGoodsVo.getGoodsImg());
         shopGoods.setGoodsDesc(addGoodsVo.getGoodsDesc());
-        shopGoods.setStatus(0);
+        shopGoods.setStatus(1);
         shopGoods.setIsDel(0);
         shopGoods.setCreateTime(new Date());
         shopGoods.setUpdateTime(new Date());
@@ -642,17 +642,15 @@ public class ShopGoodsController {
         shopGoods.setAddress(addGoodsVo.getAddress());
 
         shopGoods.updateById();
-        //先删除全部规格再重新添加
-        boolean r = shopGoodsSizeService.delete(new EntityWrapper<ShopGoodsSize>()
-            .eq(ShopGoodsSize.SHOP_GOODS_ID, goodsId)
-        );
-        if (r) {
-            for (ShopGoodsSize shopGoodsSize : sizeList) {
-                shopGoodsSize.setShopGoodsId(goodsId);
+        for (ShopGoodsSize shopGoodsSize : sizeList) {
+            shopGoodsSize.setShopGoodsId(goodsId);
+            if(shopGoodsSize.getId()!=null){
+                shopGoodsSize.updateById();
+            }else{
                 shopGoodsSize.setIsDel(0);
                 shopGoodsSize.insert();
+                }
             }
-        }
         return new Result().success("修改成功");
     }
 
