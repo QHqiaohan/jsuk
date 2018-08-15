@@ -113,7 +113,7 @@ public class ManagerUserController {
     @RequestMapping(value = "/register", method = {RequestMethod.POST, RequestMethod.GET})
     public Result register(String phone, String password, String headImg,
                            String shopName, String address, Integer modularId,
-                           String legalPersonName, String cardNum) {
+                           String legalPersonName, String cardNum,Integer cityId) {
         /**
          * 判断该手机号是否已经注册
          */
@@ -132,6 +132,7 @@ public class ManagerUserController {
                 .eq(Dictionary.CODE, "shop_default_img"));
             shop.setHeadImg(defaultImg.getValue());
         }
+        shop.setCityId(cityId);
         shop.setShopName(shopName);
         shop.setModularId(modularId);
         shop.setAddress(address);
