@@ -137,6 +137,7 @@ public class ActivityController {
             new Page<>(1, 8),
             new EntityWrapper<Shop>()
                 .eq(Shop.CAN_USE, 1)
+                .eq(Shop.CITY_ID,session.getCityId())
                 .eq(Shop.IS_RECOMMEND, 1)
                 .eq(Shop.MODULAR_ID, 0)
                 .orderBy(Shop.TOTAL_VOLUME, false));
@@ -157,7 +158,7 @@ public class ActivityController {
 
     @ApiOperation("用户-城乡优购&本地商城&聚鲜U客-获取banner/分类/快报")
     @RequestMapping(value = "/getNiceChoose", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getNiceChoose(@ApiParam(value = "模块ID", required = true) Integer modularId) {
+    public Result getNiceChoose(@ApiParam(value = "模块ID", required = true) Integer modularId) throws Exception {
         // 封装结果map
         Map<String, Object> map = new HashMap<>();
         if (modularId == 2) {
@@ -377,7 +378,11 @@ public class ActivityController {
             paramType = "query", dataType = "integer"),
     })
     @RequestMapping(value = "/getToMarket", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getToMarket(Page page, Integer userId) {
+    public Result getToMarket(Page page, Integer userId) throws Exception {
+        /**
+         * 用户登录区域id
+         */
+        Integer cityId = session.getCityId();
         // 封装结果map
         Map<String, Object> map = new HashMap<>();
         // 查询该用户是否开启二手市场  1:开启  0:禁用
@@ -397,7 +402,7 @@ public class ActivityController {
          * 获取二手市场商品列表
          */
         MyEntityWrapper<User> ew = new MyEntityWrapper<>();
-        Page activityList = activityService.getActivityList(page, ew, userId);
+        Page activityList = activityService.getActivityList(page, ew, userId,cityId);
         map.put("activity", activityList);
         return new Result().success(map);
     }
@@ -568,9 +573,10 @@ public class ActivityController {
             notes = "type按类型必填!!! 1=乡村旅游,2=便捷生活,3=二手市场',如果是便捷生活,classId必填!!如果是乡村旅游,modularId必填!!二手市场不用填.")
     @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.GET})
     public Result add(@ModelAttribute Activity activity,
-                      @RequestParam Integer modularId) {
+                      @RequestParam Integer modularId) throws Exception {
 
         activity.setModularId(modularId);
+        activity.setTransactionAreaId(session.getCityId());
         boolean res = activity.insert();
         if (res) {
             return new Result().success("发布成功!");
@@ -598,13 +604,14 @@ public class ActivityController {
     //用户-乡村旅游-关键字搜索
     @ApiOperation("用户-乡村旅游-关键字搜索")
     @RequestMapping(value = "/searchActivityByKeywords", method = {RequestMethod.GET, RequestMethod.POST})
-    public Result searchActivityByKeywords(@RequestParam String keywords) {
+    public Result searchActivityByKeywords(@RequestParam String keywords) throws Exception {
         Result result = new Result();
         if (keywords != null && !keywords.equals("")) {
             keywords.trim();
         }
         EntityWrapper ew = new EntityWrapper();
         ew.setEntity(new Activity());
+        ew.eq(Activity.TRANSACTION_AREA_ID,session.getCityId());
         ew.like("title", keywords, SqlLike.DEFAULT);
         List<Activity> searchList = activityService.selectList(ew);
 
@@ -631,12 +638,13 @@ public class ActivityController {
     //用户-乡村旅游-热门推荐
     @ApiOperation("用户-乡村旅游-热门推荐")
     @RequestMapping(value = "/getHotActivityList", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getHotActivityList(Integer current, Integer size, @RequestParam Integer ModularId) {
+    public Result getHotActivityList(Integer current, Integer size, @RequestParam Integer ModularId) throws Exception {
         current = current == null ? 1 : current;
         size = size == null ? 10 : size;
         Result result = new Result();
         Page<Activity> activityPage = activityService.selectPage(new Page<Activity>(current, size),
             new EntityWrapper<Activity>()
+                .eq(Activity.TRANSACTION_AREA_ID,session.getCityId())
                 .eq(Activity.IS_DEL, 0)
                 .eq(Activity.IS_RECOMMEND, 1)
                 .eq(Activity.MODULAR_ID, ModularId)
@@ -647,10 +655,11 @@ public class ActivityController {
 
     @ApiOperation("用户-模块-获取更多活动列表")
     @RequestMapping(value = "/getMoreActivity", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getMoreActivity(Page page,@RequestParam Integer ModularId){
+    public Result getMoreActivity(Page page,@RequestParam Integer ModularId) throws Exception {
         Page<Activity> activityPage = activityService.selectPage(page,
             new EntityWrapper<Activity>()
                 .eq(Activity.IS_DEL, 0)
+                .eq(Activity.TRANSACTION_AREA_ID,session.getCityId())
                 .eq(Activity.MODULAR_ID, ModularId)
                 .orderBy(Activity.PUBLISH_TIME, false)
         );
@@ -732,12 +741,13 @@ public class ActivityController {
      */
     @ApiOperation("用户-乡村旅游-查询亲子、户外拓展、采摘活动、酒店住宿、特产购买对应活动")
     @RequestMapping(value = "/getActivityListByModularId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getActivityListByModularId(@RequestParam Integer modularId, Integer current, Integer size) {
+    public Result getActivityListByModularId(@RequestParam Integer modularId, Integer current, Integer size) throws Exception {
         current = current == null ? 1 : current;
         size = size == null ? 10 : size;
 
         Page activityPage = activityService.selectPage(new Page(current, size),
             new EntityWrapper<Activity>()
+                .eq(Activity.TRANSACTION_AREA_ID,session.getCityId())
                 .eq(Activity.MODULAR_ID, modularId)
         );
         return new Result().success(activityPage);
@@ -785,13 +795,14 @@ public class ActivityController {
         @ApiImplicitParam(name = "status", value = "状态，0=待付款,1=进行中,2=完成", paramType = "query", dataType = "integer")
     })
     @RequestMapping(value = "/getActivityJoinByStatus", method = {RequestMethod.GET, RequestMethod.POST})
-    public Result getActivityJoinByStatus(Integer current, Integer size, Integer status) {
+    public Result getActivityJoinByStatus(Integer current, Integer size, Integer status) throws Exception {
         current = current == null ? 1 : current;
         size = size == null ? 10 : size;
         Page<ActivityJoin> activityJoinPage = activityJoinService.selectPage(new Page(current, size),
             new EntityWrapper<ActivityJoin>()
                 .eq(status != null, ActivityJoin.STATUS, status)
                 .eq(ActivityJoin.IS_DEL, 0)
+                .eq(Activity.TRANSACTION_AREA_ID,session.getCityId())
         );
         return new Result().success(activityJoinPage);
     }
@@ -814,6 +825,7 @@ public class ActivityController {
         System.out.println("门店地址:"+activity.getAddress());
         try {
             activity.setPublishTime(new Date());
+            activity.setTransactionAreaId(session.getCityId());
             activity.setType(1);       // 1=乡村旅游
             activity.setActivityType(0);    //0:普通活动，1：共享婚车活动
             //获取登录用户id

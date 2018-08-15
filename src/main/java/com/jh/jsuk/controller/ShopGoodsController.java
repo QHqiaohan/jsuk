@@ -597,7 +597,7 @@ public class ShopGoodsController {
     @ApiOperation("商家端-修改商品")
     @RequestMapping(value = "/updateShopGoods", method = {RequestMethod.POST})
     public Result updateShopGoods(@RequestBody AddGoodsVo addGoodsVo,
-                                  @RequestParam Integer goodsId,
+                                  Integer goodsId,
                                   @RequestParam Integer userId){
         /*Integer userId=session.lUserId();*/
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
@@ -622,7 +622,12 @@ public class ShopGoodsController {
         }
         ShopGoods shopGoods = new ShopGoods();
 
-        shopGoods.setId(goodsId);
+        System.out.println("商品id:"+addGoodsVo.getId());
+        if(goodsId!=null){
+            shopGoods.setId(goodsId);
+        }else{
+            shopGoods.setId(addGoodsVo.getId());
+        }
         shopGoods.setShopId(shopId);
         shopGoods.setAttributeId(addGoodsVo.getAttributeId());
         shopGoods.setBrandName(addGoodsVo.getBrandName());
@@ -632,7 +637,7 @@ public class ShopGoodsController {
         shopGoods.setGoodsName(addGoodsVo.getGoodsName());
         shopGoods.setGoodsImg(addGoodsVo.getGoodsImg());
         shopGoods.setGoodsDesc(addGoodsVo.getGoodsDesc());
-        shopGoods.setStatus(0);
+        shopGoods.setStatus(1);
         shopGoods.setIsDel(0);
         shopGoods.setCreateTime(new Date());
         shopGoods.setUpdateTime(new Date());
@@ -643,18 +648,16 @@ public class ShopGoodsController {
         shopGoods.setCategoryId(addGoodsVo.getCategoryId());
         shopGoods.setAddress(addGoodsVo.getAddress());
 
-        shopGoods.updateById();
-        //先删除全部规格再重新添加
-        boolean r = shopGoodsSizeService.delete(new EntityWrapper<ShopGoodsSize>()
-            .eq(ShopGoodsSize.SHOP_GOODS_ID, goodsId)
-        );
-        if (r) {
-            for (ShopGoodsSize shopGoodsSize : sizeList) {
-                shopGoodsSize.setShopGoodsId(goodsId);
+         shopGoods.updateById();
+        for (ShopGoodsSize shopGoodsSize : sizeList) {
+            shopGoodsSize.setShopGoodsId(goodsId);
+            if(shopGoodsSize.getId()!=null){
+                shopGoodsSize.updateById();
+            }else{
                 shopGoodsSize.setIsDel(0);
                 shopGoodsSize.insert();
+                }
             }
-        }
         return new Result().success("修改成功");
     }
 

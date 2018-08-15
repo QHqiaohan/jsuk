@@ -2,82 +2,84 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jh.jsuk.dao.ShoppingCartDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShoppingCart">
-        <id column="id" property="id"/>
-        <result column="user_id" property="userId"/>
-        <result column="shop_id" property="shopId"/>
-        <result column="goods_id" property="goodsId"/>
-        <result column="num" property="num"/>
-        <result column="create_time" property="createTime"/>
-        <result column="checked" property="checked"/>
-        <result column="is_past" property="isPast"/>
-        <result column="size_id" property="sizeId"/>
-    </resultMap>
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShoppingCart">
+    <id column="id" property="id"/>
+    <result column="user_id" property="userId"/>
+    <result column="shop_id" property="shopId"/>
+    <result column="goods_id" property="goodsId"/>
+    <result column="num" property="num"/>
+    <result column="create_time" property="createTime"/>
+    <result column="checked" property="checked"/>
+    <result column="is_past" property="isPast"/>
+    <result column="size_id" property="sizeId"/>
+  </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
         id, user_id, shop_id, goods_id, num, create_time, checked, is_past, size_id
     </sql>
 
-    <resultMap id="ShoppingCartVo" type="com.jh.jsuk.entity.vo.ShoppingCartVo">
-        <id column="shop_id" property="shopId"/>
-        <result column="shop_name" property="shopName"/>
-        <result column="user_id" property="userId"/>
-        <collection property="goods" ofType="com.jh.jsuk.entity.vo.GoodsVo">
-            <id column="goods_id" property="goodsId"/>
-            <result column="jsc_id" property="jscId"/>
-            <result column="sales_price" property="salesPrice"/>
-            <result column="kill_price" property="killPrice"/>
-            <result column="is_past" property="isPast"/>
-            <result column="checked" property="checked"/>
-            <result column="create_time" property="createTime"/>
-            <result column="goods_name" property="goodsName"/>
-            <result column="main_image" property="mainImage"/>
-            <result column="num" property="num"/>
+  <resultMap id="ShoppingCartVo" type="com.jh.jsuk.entity.vo.ShoppingCartVo">
+    <id column="shop_id" property="shopId"/>
+    <result column="shop_name" property="shopName"/>
+    <result column="user_id" property="userId"/>
+    <collection property="goods" ofType="com.jh.jsuk.entity.vo.GoodsVo">
+      <id column="jsc_id" property="jscId"/>
+      <result column="goods_id" property="goodsId"/>
+      <result column="sales_price" property="salesPrice"/>
+      <result column="kill_price" property="killPrice"/>
+      <result column="is_past" property="isPast"/>
+      <result column="checked" property="checked"/>
+      <result column="create_time" property="createTime"/>
+      <result column="goods_name" property="goodsName"/>
+      <result column="main_image" property="mainImage"/>
+      <result column="num" property="num"/>
 
-            <result column="goodsSizeId" property="goodsSizeId"/>
-            <result column="stock" property="stock"/>
-            <result column="goodsSizeName" property="goodsSizeName"/>
-            <result column="killStock" property="killStock"/>
-            <result column="brand" property="brand"/>
-            <result column="sendJf" property="sendJf"/>
-            <result column="deductibleJf" property="deductibleJf"/>
-        </collection>
-    </resultMap>
+      <result column="goodsSizeId" property="goodsSizeId"/>
+      <result column="stock" property="stock"/>
+      <result column="goodsSizeName" property="goodsSizeName"/>
+      <result column="killStock" property="killStock"/>
+      <result column="brand" property="brand"/>
+      <result column="sendJf" property="sendJf"/>
+      <result column="deductibleJf" property="deductibleJf"/>
+    </collection>
+  </resultMap>
 
-    <select id="selectVoList" resultMap="ShoppingCartVo">
-        SELECT
-        jsc.id AS jsc_id,
-        jsc.user_id AS user_id,
-        jsc.num,
-        jsc.create_time,
-        jsc.checked,
-        jsc.is_past,
+  <select id="selectVoList" resultMap="ShoppingCartVo">
+       SELECT
+				ct.id AS jsc_id,
+        ct.user_id AS user_id,
+        ct.num,
+        ct.create_time,
+        ct.checked,
+        ct.is_past,
         jmu.`name` as shop_name,
-        jsc.shop_id as shop_id,
-        jsc.goods_id as goods_id,
-        jsg.goods_name,
-        jsg.main_image,
-        jsgs.sales_price,
-        jsgs.kill_price,
-        jsgs.id as goodsSizeId,
-        jsgs.stock as stock,
-        jsgs.size_name as goodsSizeName,
-        jsgs.kill_stock as killStock,
-        jsgs.brand as brand,
-        jsgs.send_jf as sendJf,
-        jsgs.deductible_jf as deductibleJf
-        FROM
-        js_shopping_cart jsc
-        LEFT JOIN js_manager_user jmu ON jsc.shop_id = jmu.shop_id  <!--jmu.id-->
-        LEFT JOIN js_shop_goods jsg ON jsc.goods_id = jsg.id
-        LEFT JOIN js_shop_goods_size jsgs ON jsgs.id = jsc.size_id
-        <where>
-            jsc.user_id = #{userId}
-            <if test="goodsName !=null and goodsName!=''">
-                and jsg.goods_name like CONCAT('%', #{goodsName}, '%')
-            </if>
-        </where>
+        ct.shop_id as shop_id,
+        ct.goods_id as goods_id,
+        gs.goods_name,
+        gs.main_image,
+        se.sales_price,
+        se.kill_price,
+        se.id as goodsSizeId,
+        se.stock as stock,
+        se.size_name as goodsSizeName,
+        se.kill_stock as killStock,
+        se.brand as brand,
+        se.send_jf as sendJf,
+        se.deductible_jf as deductibleJf
+ from
+	js_shopping_cart ct,
+	js_shop_goods gs,
+	js_shop_goods_size se,
+	js_manager_user jmu
+where
+ct.shop_id=jmu.shop_id
+AND
+ct.user_id=#{userId}
+and
+	gs.id=ct.goods_id
+AND
+	se.id=ct.size_id
     </select>
 </mapper>

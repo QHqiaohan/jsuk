@@ -28,9 +28,9 @@ import java.util.List;
 public class ActivityServiceImpl extends ServiceImpl<ActivityDao, Activity> implements ActivityService {
 
     @Override
-    public Page getActivityList(Page page, Wrapper wrapper, Integer userId) {
+    public Page getActivityList(Page page, Wrapper wrapper, Integer userId,Integer cityId) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
-        page.setRecords(baseMapper.getActivityList(page, wrapper, userId));
+        page.setRecords(baseMapper.getActivityList(page, wrapper, userId,cityId));
         return page;
     }
 
