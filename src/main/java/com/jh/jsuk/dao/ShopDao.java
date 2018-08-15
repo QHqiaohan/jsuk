@@ -6,6 +6,7 @@ import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.vo.ShopPhoneVo;
 import com.jh.jsuk.entity.vo.ShopTelPhoneVo;
 import com.jh.jsuk.entity.vo.rushbuy.SShopVo;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public interface ShopDao extends BaseMapper<Shop> {
 
     ShopPhoneVo selectShopPhoneById(Integer id);
 
-    List<Shop> findShopsByUserArea(Integer cityId);
+    List<Shop> findShopsByUserArea(@Param("cityId") Integer cityId);
 
     @Select("SELECT shop_name name FROM js_shop where id = #{id}")
     SShopVo shortVo(Integer id);

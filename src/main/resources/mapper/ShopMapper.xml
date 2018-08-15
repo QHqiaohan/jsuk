@@ -81,9 +81,11 @@
     select *
     from js_shop js
     left join js_sys_citys jsc on js.city_id=jsc.id
-    <if test="cityId != null and cityId != ''">
-      js.city_id = #{cityId}
-    </if>
+    <where>
+      <if test="cityId != null and cityId != ''">
+        js.city_id = #{cityId}
+      </if>
+    </where>
   </select>
 
 </mapper>
