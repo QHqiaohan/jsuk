@@ -4,7 +4,9 @@ public enum ManageUserType {
 
     SHOP(2, "商家"),
 
-    PLATFORM(1, "平台");
+    CITY(3, "城市管理员"),
+
+    PLATFORM(1, "平台管理员");
 
     private final Integer key;
 

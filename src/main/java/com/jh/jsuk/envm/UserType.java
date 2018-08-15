@@ -8,7 +8,10 @@ public enum UserType {
 
     USER(3, "用户", null, "usr"),
 
-    ADMIN(4, "平台", ManageUserType.PLATFORM, "adm");
+    ADMIN(4, "平台", ManageUserType.PLATFORM, "adm"),
+
+    CITY_ADMIN(5, "城市管理员", ManageUserType.CITY, "ctadm");
+
 
 //    ROOT(4, "运维", ManageUserType.PLATFORM, "rot");
 

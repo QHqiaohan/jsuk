@@ -126,7 +126,7 @@
 
   <select id="getShopGoodsBy" resultMap="GoodsSalesPriceVoT">
     SELECT
-    sg.*,GROUP_CONCAT(sgs.sales_price) sales_price
+    sg.*,GROUP_CONCAT(sgs.sales_price) sales_price,sgs.original_price originalPrice
     FROM
     js_shop_goods sg
     LEFT JOIN js_shop_goods_size sgs ON sg.id = sgs.shop_goods_id

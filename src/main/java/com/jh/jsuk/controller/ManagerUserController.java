@@ -1,6 +1,7 @@
 package com.jh.jsuk.controller;
 
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.json.JSONUtil;
@@ -11,11 +12,13 @@ import com.google.common.collect.Maps;
 import com.jh.jsuk.conf.Constant;
 import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
+import com.jh.jsuk.entity.Dictionary;
 import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.IpUtil;
 import com.jh.jsuk.utils.JwtHelper;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import com.jh.jsuk.utils.wx.MD5Util;
 import io.swagger.annotations.*;
@@ -32,10 +35,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -71,6 +71,12 @@ public class ManagerUserController {
 
     @Autowired
     Session session;
+
+    @PatchMapping
+    public R edit(ManagerUser user){
+        user.updateById();
+        return R.succ();
+    }
 
     @ApiOperation(value = "商家端-收款码")
     @RequestMapping(value = "getQrCode", method = {RequestMethod.POST, RequestMethod.GET})
@@ -113,14 +119,14 @@ public class ManagerUserController {
     @RequestMapping(value = "/register", method = {RequestMethod.POST, RequestMethod.GET})
     public Result register(String phone, String password, String headImg,
                            String shopName, String address, Integer modularId,
-                           String legalPersonName, String cardNum,@RequestParam Integer cityId) {
+                           String legalPersonName, String cardNum, @RequestParam Integer cityId) {
         /**
          * 判断该手机号是否已经注册
          */
-        Shop judgeShop=shopService.selectOne(new EntityWrapper<Shop>()
-                                             .eq(Shop.SHOP_PHONE,phone)
+        Shop judgeShop = shopService.selectOne(new EntityWrapper<Shop>()
+            .eq(Shop.SHOP_PHONE, phone)
         );
-        if(judgeShop!=null){
+        if (judgeShop != null) {
             return new Result().erro("该手机号已经注册");
         }
         Shop shop = new Shop();
@@ -332,16 +338,30 @@ public class ManagerUserController {
         return new Result().success(managerUser);
     }
 
+    @Autowired
+    CitysService citysService;
 
     @ApiOperation("后台管理系统-成员管理-成员列表&根据用户名或姓名搜索成员")
     @RequestMapping(value = "/getManagerUserList", method = {RequestMethod.GET, RequestMethod.POST})
     public Result getManagerUserList(Page page, String username) {
-        Page managerUserPage = managerUserService.selectPage(page,
+        Page pg = managerUserService.selectPage(page,
             new EntityWrapper<ManagerUser>()
                 .eq(ManagerUser.IS_DEL, 0)
                 .like(username != null, ManagerUser.NAME, username, SqlLike.DEFAULT)
         );
-        return new Result().success(managerUserPage);
+        List records = pg.getRecords();
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (Object record : records) {
+            Map<String, Object> map = BeanUtil.beanToMap(record);
+            Object ct = map.get("city");
+            Integer city = ct == null ? null : Integer.parseInt(String.valueOf(ct));
+            if (city != null) {
+                Citys citys = citysService.selectById(city);
+                map.put("cityName", citys.getCityName());
+            }
+            list.add(map);
+        }
+        return new Result().success(pg.setRecords(list));
     }
 
     @ApiOperation("后台管理系统-成员管理-添加成员")
