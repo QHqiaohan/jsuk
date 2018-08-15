@@ -2,51 +2,51 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jh.jsuk.dao.ShoppingCartDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShoppingCart">
-        <id column="id" property="id"/>
-        <result column="user_id" property="userId"/>
-        <result column="shop_id" property="shopId"/>
-        <result column="goods_id" property="goodsId"/>
-        <result column="num" property="num"/>
-        <result column="create_time" property="createTime"/>
-        <result column="checked" property="checked"/>
-        <result column="is_past" property="isPast"/>
-        <result column="size_id" property="sizeId"/>
-    </resultMap>
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.ShoppingCart">
+    <id column="id" property="id"/>
+    <result column="user_id" property="userId"/>
+    <result column="shop_id" property="shopId"/>
+    <result column="goods_id" property="goodsId"/>
+    <result column="num" property="num"/>
+    <result column="create_time" property="createTime"/>
+    <result column="checked" property="checked"/>
+    <result column="is_past" property="isPast"/>
+    <result column="size_id" property="sizeId"/>
+  </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
         id, user_id, shop_id, goods_id, num, create_time, checked, is_past, size_id
     </sql>
 
-    <resultMap id="ShoppingCartVo" type="com.jh.jsuk.entity.vo.ShoppingCartVo">
-        <id column="shop_id" property="shopId"/>
-        <result column="shop_name" property="shopName"/>
-        <result column="user_id" property="userId"/>
-        <collection property="goods" ofType="com.jh.jsuk.entity.vo.GoodsVo">
-            <id column="goods_id" property="goodsId"/>
-            <result column="jsc_id" property="jscId"/>
-            <result column="sales_price" property="salesPrice"/>
-            <result column="kill_price" property="killPrice"/>
-            <result column="is_past" property="isPast"/>
-            <result column="checked" property="checked"/>
-            <result column="create_time" property="createTime"/>
-            <result column="goods_name" property="goodsName"/>
-            <result column="main_image" property="mainImage"/>
-            <result column="num" property="num"/>
+  <resultMap id="ShoppingCartVo" type="com.jh.jsuk.entity.vo.ShoppingCartVo">
+    <id column="shop_id" property="shopId"/>
+    <result column="shop_name" property="shopName"/>
+    <result column="user_id" property="userId"/>
+    <collection property="goods" ofType="com.jh.jsuk.entity.vo.GoodsVo">
+      <id column="jsc_id" property="jscId"/>
+      <result column="goods_id" property="goodsId"/>
+      <result column="sales_price" property="salesPrice"/>
+      <result column="kill_price" property="killPrice"/>
+      <result column="is_past" property="isPast"/>
+      <result column="checked" property="checked"/>
+      <result column="create_time" property="createTime"/>
+      <result column="goods_name" property="goodsName"/>
+      <result column="main_image" property="mainImage"/>
+      <result column="num" property="num"/>
 
-            <result column="goodsSizeId" property="goodsSizeId"/>
-            <result column="stock" property="stock"/>
-            <result column="goodsSizeName" property="goodsSizeName"/>
-            <result column="killStock" property="killStock"/>
-            <result column="brand" property="brand"/>
-            <result column="sendJf" property="sendJf"/>
-            <result column="deductibleJf" property="deductibleJf"/>
-        </collection>
-    </resultMap>
+      <result column="goodsSizeId" property="goodsSizeId"/>
+      <result column="stock" property="stock"/>
+      <result column="goodsSizeName" property="goodsSizeName"/>
+      <result column="killStock" property="killStock"/>
+      <result column="brand" property="brand"/>
+      <result column="sendJf" property="sendJf"/>
+      <result column="deductibleJf" property="deductibleJf"/>
+    </collection>
+  </resultMap>
 
-    <select id="selectVoList" resultMap="ShoppingCartVo">
+  <select id="selectVoList" resultMap="ShoppingCartVo">
        SELECT
 				ct.id AS jsc_id,
         ct.user_id AS user_id,
