@@ -9,9 +9,7 @@ import com.jh.jsuk.entity.Dictionary;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.EvaluateVo;
 import com.jh.jsuk.exception.MessageException;
-import com.jh.jsuk.service.DictionaryService;
-import com.jh.jsuk.service.ShopService;
-import com.jh.jsuk.service.UserEvaluateService;
+import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.Result;
 import com.jh.jsuk.utils.SensitiveWordUtil;
@@ -166,6 +164,9 @@ public class UserEvaluateController {
 //        return new Result().success();
 //    }
 
+    @Autowired
+    GoodsEvaluateService goodsEvaluateService;
+
     @ApiOperation("显示用户的历史评价")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "current", value = "当前页码",
@@ -177,7 +178,7 @@ public class UserEvaluateController {
     public Result userEvaluate(Page page) throws Exception {
         Result<Page> result = new Result<>();
         Wrapper wrapper = new EntityWrapper();
-        Page pg = evaluateService.listUser(session.lUserId(), page, wrapper);
+        Page pg = goodsEvaluateService.listUser(session.lUserId(), page, wrapper);
         return result.success(pg);
     }
 

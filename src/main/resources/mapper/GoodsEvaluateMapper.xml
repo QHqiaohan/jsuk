@@ -63,4 +63,10 @@
     </if>
   </select>
 
+  <select id="listUserEvaluate" resultType="java.util.Map">
+    select e.content,e.create_time createTime,e.goods_id ,g.goods_img goodsImg,g.goods_name goodsName
+    from js_goods_evaluate e
+    left join js_shop_goods g on g.id = e.goods_id where e.user_id = #{userId}
+  </select>
+
 </mapper>
