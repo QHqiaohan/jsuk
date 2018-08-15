@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Api(tags = "城市相关")
 @RestController
-@RequestMapping("/citys")
-public class CitysController {
+@RequestMapping("/cities")
+public class CitiesController {
 
     @Autowired
     CitysService citysService;
