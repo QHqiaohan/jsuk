@@ -2,6 +2,10 @@ package com.jh.jsuk.entity;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +16,9 @@ import java.io.Serializable;
  * @author lpf
  * @since 2018-06-20
  */
+@Setter
+@Getter
+@ToString
 @TableName("js_sys_weather_city")
 public class WeatherCity extends Model<WeatherCity> {
 
@@ -26,23 +33,6 @@ public class WeatherCity extends Model<WeatherCity> {
      */
     private String countyName;
 
-
-    public Integer getAreaId() {
-        return areaId;
-    }
-
-    public void setAreaId(Integer areaId) {
-        this.areaId = areaId;
-    }
-
-    public String getCountyName() {
-        return countyName;
-    }
-
-    public void setCountyName(String countyName) {
-        this.countyName = countyName;
-    }
-
     public static final String AREA_ID = "area_id";
 
     public static final String COUNTY_NAME = "county_name";
@@ -52,11 +42,4 @@ public class WeatherCity extends Model<WeatherCity> {
         return this.areaId;
     }
 
-    @Override
-    public String toString() {
-        return "WeatherCity{" +
-        "areaId=" + areaId +
-        ", countyName=" + countyName +
-        "}";
-    }
 }

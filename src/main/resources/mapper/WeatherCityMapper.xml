@@ -19,6 +19,7 @@
         FROM
             js_sys_weather_city_open swco
         LEFT JOIN js_sys_weather_city swc ON swco.weather_city_id = swc.area_id
+        where swco.status
     </select>
 
 </mapper>

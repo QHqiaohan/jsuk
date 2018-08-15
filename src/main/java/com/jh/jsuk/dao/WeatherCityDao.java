@@ -16,4 +16,5 @@ import java.util.List;
 public interface WeatherCityDao extends BaseMapper<WeatherCity> {
 
     List<WeatherCity> getOpenCityList();
+
 }

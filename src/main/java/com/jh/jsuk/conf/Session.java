@@ -9,7 +9,6 @@ import com.jh.jsuk.exception.NeedLoginException;
 import com.jh.jsuk.service.ShopService;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
@@ -18,7 +17,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-@ToString
+//@ToString
 @Component
 @SessionScope
 public class Session {
@@ -41,7 +40,16 @@ public class Session {
 
     private String shopName;
 
-    private Integer cityId = 510100;
+    private Integer cityId;
+
+    private Integer provinceId;
+
+    public Integer getCityId() throws Exception{
+        if(cityId == null){
+            throw  new MessageException("请选择城市");
+        }
+        return this.cityId;
+    }
 
     /**
      * 获取到数据就登录了
