@@ -2,17 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jh.jsuk.dao.FeedbackDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Feedback">
-        <id column="id" property="id" />
-        <result column="user_id" property="userId" />
-        <result column="content" property="content" />
-        <result column="publish_time" property="publishTime" />
-    </resultMap>
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.Feedback">
+    <id column="id" property="id"/>
+    <result column="user_id" property="userId"/>
+    <result column="content" property="content"/>
+    <result column="publish_time" property="publishTime"/>
+  </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
         id, user_id, content, publish_time
     </sql>
+  <resultMap id="feedBackVo" type="com.jh.jsuk.entity.vo.FeedBackVo">
+    <result column="id" property="id"/>
+    <result column="phone" property="phone"/>
+    <result column="content" property="content"/>
+    <result column="user_name" property="username"/>
+    <result column="publishTime" property="publishTime"/>
+  </resultMap>
+  <select id="list" resultMap="feedBackVo">
+    select
+    jsf.id ,
+    jsf.content,
+    jsf.publish_time,
+    ju.phone as phone,
+    ju.nick_name as user_name
+    from js_sys_feedback jsf
+    left join js_user ju on jsf.user_id = ju.id
+    where jsf.is_del = 0
+    <if test="kw != null">
+      and (ju.nick_name like concat('%',#{kw},'%') or jsf.content like concat('%',#{kw},'%'))
+    </if>
+    order by jsf.publish_time desc
+  </select>
 
 </mapper>

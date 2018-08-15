@@ -47,6 +47,9 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartDao, Shoppi
                 vo.setShopName(shop.getShopName());
             }
             List<GoodsVo> goods = vo.getGoods();
+            for(GoodsVo g:goods){
+                System.out.println(g.getGoodsId()+"  "+g.getGoodsSizeId()+"  "+g.getGoodsSizeName());
+            }
             if (goods == null) {
                 continue;
             }
