@@ -23,7 +23,10 @@ import java.util.List;
  */
 public interface ActivityDao extends BaseMapper<Activity> {
 
-    List getActivityList(RowBounds page, @Param("ew") Wrapper wrapper, @Param("userId") Integer userId);
+    List getActivityList(RowBounds page,
+                         @Param("ew") Wrapper wrapper,
+                         @Param("userId") Integer userId,
+                         @Param("cityId") Integer cityId);
 
     ActivityVo findActivity(Integer id);
 

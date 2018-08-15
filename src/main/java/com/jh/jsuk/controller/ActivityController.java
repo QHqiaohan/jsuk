@@ -378,6 +378,12 @@ public class ActivityController {
     })
     @RequestMapping(value = "/getToMarket", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getToMarket(Page page, Integer userId) {
+        /**
+         * 用户登录区域id
+         */
+        Integer cityId = session.getUserId();
+
+        System.out.println("用户登陆区域id:"+cityId);
         // 封装结果map
         Map<String, Object> map = new HashMap<>();
         // 查询该用户是否开启二手市场  1:开启  0:禁用
@@ -397,7 +403,7 @@ public class ActivityController {
          * 获取二手市场商品列表
          */
         MyEntityWrapper<User> ew = new MyEntityWrapper<>();
-        Page activityList = activityService.getActivityList(page, ew, userId);
+        Page activityList = activityService.getActivityList(page, ew, userId,cityId);
         map.put("activity", activityList);
         return new Result().success(map);
     }

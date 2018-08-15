@@ -22,7 +22,7 @@ import java.util.List;
  */
 public interface ActivityService extends IService<Activity> {
 
-    Page getActivityList(Page page, Wrapper wrapper, Integer userId);
+    Page getActivityList(Page page, Wrapper wrapper, Integer userId,Integer cityId);
 
     ActivityVo findActivity(Integer id);
 
