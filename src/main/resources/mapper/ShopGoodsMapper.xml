@@ -439,15 +439,11 @@
   </resultMap>
 
   <select id="queryGoodsInfoVoBy" resultMap="GoodsInfoVo">
-    select
-    goods.*,
-    gbrand.name as brand,
-    category.name as category
+   select
+    goods.*, category.name as category
     from js_shop_goods goods
-    join js_goods_brand gbrand
     join js_goods_category category
-    on goods.brand_id=gbrand.id
-    and goods.category_id=category.id
+    on  goods.category_id=category.id
     where goods.id=#{goodsId}
   </select>
 
