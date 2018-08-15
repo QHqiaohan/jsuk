@@ -381,7 +381,8 @@ public class ActivityController {
         /**
          * 用户登录区域id
          */
-        Integer cityId = session.getCityId();
+        Integer cityId = session.getUserId();
+
         System.out.println("用户登陆区域id:"+cityId);
         // 封装结果map
         Map<String, Object> map = new HashMap<>();

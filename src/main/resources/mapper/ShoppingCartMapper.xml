@@ -76,7 +76,7 @@
 where
 ct.shop_id=jmu.shop_id
 AND
-ct.user_id=255
+ct.user_id=#{userId}
 and
 	gs.id=ct.goods_id
 AND
