@@ -6,11 +6,16 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.google.common.collect.Maps;
 import com.jh.jsuk.conf.Constant;
+import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.WeatherCity;
+import com.jh.jsuk.entity.WeatherCityOpen;
+import com.jh.jsuk.service.WeatherCityOpenService;
 import com.jh.jsuk.service.WeatherCityService;
 import com.jh.jsuk.utils.MyEntityWrapper;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,6 +46,12 @@ public class WeatherCityController {
     @Autowired
     WeatherCityService weatherCityService;
 
+    @Autowired
+    WeatherCityOpenService weatherCityOpenService;
+
+    @Autowired
+    Session session;
+
     @ApiOperation("查询天气信息信息")
     @RequestMapping("weather/query")
     public Result queryWeather(@ApiParam(value = "城市名称 eg:成都", required = true) @RequestParam String countyName) {
@@ -52,6 +63,13 @@ public class WeatherCityController {
             if (weatherCity == null) {
                 return new Result().erro("暂无城市数据");
             }
+            EntityWrapper<WeatherCityOpen> wrapper = new EntityWrapper<>();
+            wrapper.eq(WeatherCityOpen.WEATHER_CITY_ID,weatherCity.getAreaId());
+            WeatherCityOpen weatherCityOpen = weatherCityOpenService.selectOne(wrapper);
+            if(weatherCityOpen == null){
+                return R.err("暂无城市数据");
+            }
+            session.setCityId(weatherCityOpen.getCityId());
             Integer areaId = weatherCity.getAreaId();
             String data = HttpUtil.post(Constant.MEIZU_WEATHER_URL, "cityIds=" + areaId);
             Map map = JSONUtil.toBean(data, Map.class);

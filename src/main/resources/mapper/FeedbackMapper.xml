@@ -19,7 +19,7 @@
     <result column="phone" property="phone"/>
     <result column="content" property="content"/>
     <result column="user_name" property="username"/>
-    <result column="publishTime" property="publishTime"/>
+    <result column="publish_time" property="publishTime"/>
   </resultMap>
   <select id="list" resultMap="feedBackVo">
     select

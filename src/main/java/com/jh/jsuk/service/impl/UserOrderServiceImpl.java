@@ -170,6 +170,18 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     .orderBy(true, UserOrder.UPDATE_TIME, false)
                     .where("not is_user_del"));
             }
+        }else if(status == 8){
+            //待评价
+            if (goodsName != null) {
+                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
+                    .eq(UserOrder.STATUS, 3).like(UserOrder.GOODS_NAME, goodsName)
+                    .orderBy(true, UserOrder.UPDATE_TIME, false)
+                    .where("not is_user_del and is_evaluate = 0"));
+            } else {
+                page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
+                    .eq(UserOrder.STATUS, 3).orderBy(true, UserOrder.UPDATE_TIME, false)
+                    .where("not is_user_del and is_evaluate = 0"));
+            }
         } else {
             if (goodsName != null) {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)

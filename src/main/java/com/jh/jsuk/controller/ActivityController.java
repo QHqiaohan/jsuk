@@ -122,7 +122,7 @@ public class ActivityController {
 
     @ApiOperation(value = "用户-获取首页相关信息-下部分")
     @RequestMapping(value = "/getAllBelow", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getAllBelow() {
+    public Result getAllBelow() throws Exception {
         // 封装结果map
         Map<String, Object> map = MapUtil.newHashMap();
         /**
@@ -257,7 +257,7 @@ public class ActivityController {
 
     @ApiOperation("用户-特色家乡&直销平台-banner/分类/店铺列表/商品列表")
     @RequestMapping(value = "/getMoreInfo", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getMoreInfo(@ApiParam(value = "模块ID", required = true) Integer modularId) {
+    public Result getMoreInfo(@ApiParam(value = "模块ID", required = true) Integer modularId) throws Exception {
         // 封装结果map
         Map<String, Object> map = new HashMap<>();
         if (modularId == 3) {
@@ -321,7 +321,7 @@ public class ActivityController {
 
     @ApiOperation("用户-会员商城-获取banner-店铺列表/分类/商品列表")
     @RequestMapping(value = "/getVipShop", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getVipShop(@ApiParam(value = "模块ID", required = true) Integer modularId) {
+    public Result getVipShop(@ApiParam(value = "模块ID", required = true) Integer modularId) throws Exception {
         // 封装结果map
         Map<String, Object> map = new HashMap<>();
         /**
