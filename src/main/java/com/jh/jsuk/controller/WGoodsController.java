@@ -56,7 +56,7 @@ public class WGoodsController {
     @GetMapping("/listRecycle")
     public R listRecycle(Page page, @RequestParam(required = false) String categoryId,
                          @RequestParam(required = false) String kw, @RequestParam(required = false)
-                             String brandId) throws Exception {
+                             String brandId) {
         return R.succ(shopGoodsService.listRecycle(page, categoryId, kw, brandId, session.getShopId()));
     }
 
