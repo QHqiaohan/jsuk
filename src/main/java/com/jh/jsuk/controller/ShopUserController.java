@@ -3,7 +3,9 @@ package com.jh.jsuk.controller;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Session;
+import com.jh.jsuk.entity.Shop;
 import com.jh.jsuk.entity.ShopUser;
+import com.jh.jsuk.service.ShopService;
 import com.jh.jsuk.service.ShopUserService;
 import com.jh.jsuk.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,8 @@ import java.text.ParseException;
 public class ShopUserController {
     @Autowired
     private ShopUserService shopUserService;
+    @Autowired
+    private ShopService shopService;
     @Autowired
     private Session session;
 
@@ -60,6 +64,7 @@ public class ShopUserController {
         shopUser.updateById();
         return R.succ();
     }
+
     @ResponseBody
     @PostMapping("/review")
     public R review(Integer id, Integer flag) {
@@ -70,6 +75,9 @@ public class ShopUserController {
             if (shopUser.getIsCheck() == 0) {
                 shopUser.setIsCheck(flag == 1 ? 1 : -1);
                 shopUser.updateById();
+                Shop shop = shopService.selectById(shopUser.getShopId());
+                shop.setCanUse(1);
+                shop.updateById();
                 return R.succ("操作成功");
             }
             return R.err("该商户已经审核过了");
