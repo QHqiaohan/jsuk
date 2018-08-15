@@ -1,10 +1,13 @@
 package com.jh.jsuk.entity;
 
 import com.baomidou.mybatisplus.enums.IdType;
+
 import java.util.Date;
+
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+
 import java.io.Serializable;
 
 /**
@@ -35,6 +38,7 @@ public class Feedback extends Model<Feedback> {
      */
     private Date publishTime;
 
+    private Integer isDel;
 
     public Integer getId() {
         return id;
@@ -84,10 +88,18 @@ public class Feedback extends Model<Feedback> {
     @Override
     public String toString() {
         return "Feedback{" +
-        "id=" + id +
-        ", userId=" + userId +
-        ", content=" + content +
-        ", publishTime=" + publishTime +
-        "}";
+            "id=" + id +
+            ", userId=" + userId +
+            ", content=" + content +
+            ", publishTime=" + publishTime +
+            "}";
+    }
+
+    public Integer getIsDel() {
+        return isDel;
+    }
+
+    public void setIsDel(Integer isDel) {
+        this.isDel = isDel;
     }
 }

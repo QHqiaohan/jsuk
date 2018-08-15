@@ -1,5 +1,6 @@
 package com.jh.jsuk.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.Feedback;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface FeedbackService extends IService<Feedback> {
 
+    Page list(Page page, String kw);
 }
