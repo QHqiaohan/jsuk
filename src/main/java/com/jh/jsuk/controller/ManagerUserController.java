@@ -7,6 +7,7 @@ import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.enums.SqlLike;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.common.collect.Maps;
 import com.jh.jsuk.conf.Constant;
@@ -15,6 +16,7 @@ import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.Dictionary;
 import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
+import com.jh.jsuk.envm.ManageUserType;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.IpUtil;
 import com.jh.jsuk.utils.JwtHelper;
@@ -73,7 +75,7 @@ public class ManagerUserController {
     Session session;
 
     @PatchMapping
-    public R edit(ManagerUser user){
+    public R edit(ManagerUser user) {
         user.updateById();
         return R.succ();
     }
@@ -344,11 +346,11 @@ public class ManagerUserController {
     @ApiOperation("后台管理系统-成员管理-成员列表&根据用户名或姓名搜索成员")
     @RequestMapping(value = "/getManagerUserList", method = {RequestMethod.GET, RequestMethod.POST})
     public Result getManagerUserList(Page page, String username) {
-        Page pg = managerUserService.selectPage(page,
-            new EntityWrapper<ManagerUser>()
-                .eq(ManagerUser.IS_DEL, 0)
-                .like(username != null, ManagerUser.NAME, username, SqlLike.DEFAULT)
-        );
+        Wrapper<ManagerUser> like = new EntityWrapper<ManagerUser>()
+            .eq(ManagerUser.IS_DEL, 0)
+            .like(username != null, ManagerUser.NAME, username, SqlLike.DEFAULT)
+            .ne(ManagerUser.USER_TYPE, ManageUserType.SHOP.getKey());
+        Page pg = managerUserService.selectPage(page, like);
         List records = pg.getRecords();
         List<Map<String, Object>> list = new ArrayList<>();
         for (Object record : records) {
