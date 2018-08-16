@@ -20,6 +20,7 @@ import com.jh.jsuk.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -116,7 +117,16 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Override
     public UserInfoVo2 selectUserInfoById(Integer id) {
-        return baseMapper.selectUserInfoById(id);
+        UserInfoVo2 vo = baseMapper.selectUserInfoById(id);
+        if(StrUtil.isBlank(vo.getMemberName())){
+         vo.setMemberName("普通会员");
+        }
+        return vo;
+    }
+
+    @Override
+    public BigDecimal discount(Integer lUserId) {
+        return baseMapper.discount(lUserId);
     }
 
 }

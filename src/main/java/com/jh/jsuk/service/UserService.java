@@ -7,6 +7,7 @@ import com.jh.jsuk.entity.vo.UserInfoVo;
 import com.jh.jsuk.entity.vo.UserInfoVo2;
 import com.jh.jsuk.envm.UserType;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -37,4 +38,6 @@ public interface UserService extends IService<User> {
     List<User> selectUserListBy(String keywords);
 
     UserInfoVo2 selectUserInfoById(Integer id);
+
+    BigDecimal discount(Integer lUserId);
 }
