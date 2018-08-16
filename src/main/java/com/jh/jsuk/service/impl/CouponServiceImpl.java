@@ -25,6 +25,22 @@ import java.util.List;
 public class CouponServiceImpl extends ServiceImpl<CouponDao, Coupon> implements CouponService {
 
     @Override
+    public void deleteCouponByShopId(Integer shopId) {
+        baseMapper.deleteCouponByShopId(shopId);
+    }
+
+    @Override
+    public void postCoupon(Integer shopId, double man, double jia) {
+         baseMapper.postCoupon(shopId, man, jia);
+
+    }
+
+    @Override
+    public List<Coupon> getListByShopId(Integer shopId) {
+        return baseMapper.getListByShopId(shopId);
+    }
+
+    @Override
     public List<CouponVo> findByUserId(Integer userId) {
         return baseMapper.findByUserId(userId);
     }

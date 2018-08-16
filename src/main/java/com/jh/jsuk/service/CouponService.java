@@ -17,6 +17,11 @@ import java.util.List;
  * @since 2018-06-20
  */
 public interface CouponService extends IService<Coupon> {
+    void  deleteCouponByShopId(Integer shopId);
+    //商家修改满减列表
+    void postCoupon(Integer shopId,double man,double jia);
+    //获取商家满减列表
+    List<Coupon> getListByShopId(Integer shopId);
 
     List<CouponVo> findByUserId(Integer userId);
 

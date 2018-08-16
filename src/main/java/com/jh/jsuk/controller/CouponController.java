@@ -44,6 +44,40 @@ public class CouponController {
         return null;
     }
 
+    @ApiOperation("商家修改满减列表")
+    @RequestMapping(value = "/postCoupon", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result  postCoupon(String coupon,Integer shopId){
+        try{
+            couponService.deleteCouponByShopId(shopId);
+
+            //coupon 格式：  13-2,15-3
+            String[] cu =coupon.split(",");
+            for(int i=0;i<cu.length;i++){
+                String aa = cu[i];//获取单条数据
+                String[] bb = aa.split("-");
+                String man = bb[0];
+                String jia = bb[1];
+               double m = Double.parseDouble(man);//满多少
+               double ji =Double.parseDouble(jia);//减多少
+                couponService.postCoupon(shopId,m,ji);
+            }
+
+            return new Result().success("成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Result().erro("网络异常");
+        }
+    }
+    /**
+     * 商家获取满减列表
+     * @return
+     */
+    @ApiOperation("商家获取满减列表")
+    @RequestMapping(value = "/getListByShopId", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getListByShopId(Integer shopId){
+        List<Coupon> list = couponService.getListByShopId(shopId);
+        return new Result().success(list);
+    }
 
     //用户-我的-优惠券-查询用户优惠卷列表
     @ApiOperation("用户-查询用户优惠卷列表")

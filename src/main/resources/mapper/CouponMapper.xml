@@ -19,6 +19,7 @@
         <result column="coupon_platform" property="couponPlatform" />
     </resultMap>
 
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, shop_id, full_price, discount, start_time, end_time, num, is_del, publish_time, coupon_type, limiting_num, coupon_name, coupon_platform
@@ -28,6 +29,20 @@
     <resultMap id="CouponVo" type="com.jh.jsuk.entity.vo.CouponVo" extends="BaseResultMap">
         <association property="userCoupon" column="{couponId=id,userId=user_id}" select="com.jh.jsuk.dao.UserCouponDao.selectByCouponId"></association>
     </resultMap>
+  <!--根据商家ID删除满减信息-->
+  <delete id="deleteCouponByShopId">
+    delete from js_coupon where shop_id=#{shopId}
+  </delete>
+  <!--商家添加满减信息-->
+  <insert id="postCoupon">
+    insert into js_coupon(shop_id,full_price,discount) values(#{shopId},#{man},#{jia})
+  </insert>
+<!--获取商家满减列表-->
+  <select id="getListByShopId" resultMap="BaseResultMap">
+    select *
+    from js_coupon
+    where shop_id=#{shopId}
+  </select>
 
 
     <select id="selectCouponList" resultMap="BaseResultMap">
