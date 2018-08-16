@@ -42,6 +42,7 @@
                  select="com.jh.jsuk.dao.ShopGoodsSizeDao.getOriginalPriceByGoodsId"/>
   </resultMap>
 
+
   <select id="findShopGoodsByModularId" resultMap="GoodsSalesPriceVo">
     SELECT
    *
