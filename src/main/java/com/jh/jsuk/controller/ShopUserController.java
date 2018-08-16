@@ -46,7 +46,7 @@ public class ShopUserController {
     @ResponseBody
     @GetMapping("/list")
     public R list(Page page, String userName, String name, String[] sectionTime) throws ParseException {
-        return R.succ(shopUserService.list(page, userName, name, sectionTime));
+        return R.succ(shopUserService.list(page, userName, name, sectionTime,session.getCityId()));
     }
 
     /**

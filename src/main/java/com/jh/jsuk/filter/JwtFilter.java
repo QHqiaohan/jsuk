@@ -1,15 +1,13 @@
 package com.jh.jsuk.filter;
 
 
+import com.jh.jsuk.common.SessionListener;
 import com.jh.jsuk.conf.Session;
-import com.jh.jsuk.entity.*;
+import com.jh.jsuk.entity.Log;
 import com.jh.jsuk.entity.jwt.JwtParam;
 import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.exception.OverdueException;
-import com.jh.jsuk.service.DistributionUserService;
-import com.jh.jsuk.service.LogService;
-import com.jh.jsuk.service.ManagerUserService;
-import com.jh.jsuk.service.UserService;
+import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.FastJsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -26,14 +24,20 @@ import java.util.HashMap;
 @Order(2)
 public class JwtFilter implements Filter {
 
+//    @Autowired
+//    private ManagerUserService managerUserService;
+//    @Autowired
+//    private DistributionUserService distributionUserService;
+//    @Autowired
+//    private UserService userService;
+//    @Autowired
+//    private LogService adminLogService;
+
+//    @Autowired
+//    Session session;
+
     @Autowired
-    private ManagerUserService managerUserService;
-    @Autowired
-    private DistributionUserService distributionUserService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private LogService adminLogService;
+    SessionListener sessionListener;
 
     @Autowired
     Session session;
@@ -179,66 +183,35 @@ public class JwtFilter implements Filter {
                 JwtParam jwtParam = request.getJwtParam();
                 if (null != jwtParam) {
                     try {
-                        ParentUser user = null;
-                        ParentUserEx userEx = null;
-                        if (!session.isLogin()) {
-                            Integer loginType = jwtParam.getLoginType();
-                            if (UserType.ADMIN.getKey().equals(loginType) ||
-                                UserType.CITY_ADMIN.getKey().equals(loginType) ||
-                                UserType.SHOP.getKey().equals(loginType)) {
-                                ManagerUser managerUser = managerUserService.selectById(jwtParam.getUserId());
-                                if (managerUser != null) {
-                                    userEx = managerUser.toParentUser();
-                                    Integer userType = managerUser.getUserType();
-                                    session.setUserType(userType != null && userType.equals(2) ? UserType.SHOP : UserType.ADMIN);
-                                }
-                                user = managerUser;
-                            } else if (UserType.DISTRIBUTION.getKey().equals(loginType)) {
-                                DistributionUser user1 = distributionUserService.selectById(jwtParam.getUserId());
-                                if (user1 != null) {
-                                    userEx = user1.toParentUser();
-                                }
-                                user = user1;
-                                session.setUserType(UserType.DISTRIBUTION);
-                            } else if (UserType.USER.getKey().equals(loginType)) {
-                                User user2 = userService.selectById(jwtParam.getUserId());
-                                if (user2 != null) {
-                                    userEx = user2.toParentUser();
-                                }
-                                user = user2;
-                                session.setUserType(UserType.USER);
-                            }
-                            if (userEx != null) {
-                                session.fromParentUserEx(userEx);
-                                session.setLogin(true);
-                            }
-
-                        } else {
-                            user = session.toParentUser();
+                        Integer userId = jwtParam.getUserId();
+                        UserType userType = EnumUitl.toEnum(UserType.class, jwtParam.getLoginType());
+                        if (!session.isValid()) {
+                            sessionListener.updateSession(userId, userType);
                         }
-                        if (user.getCanUse() == 0) {
-                            RequestDispatcher dispatcher = request.getRequestDispatcher("/noLogin");
-                            dispatcher.forward(request, response);
-                            response.setStatus(2002);
-                        }
-                        if (user != null) {
-                            System.out.println(user.getLastLoginTime().getTime() + "===========" + Math.round((double) jwtParam.getLoginTime().getTime
-                                () / 1000) * 1000);
-                            if (user.getLastLoginTime().getTime() == Math.round((double) jwtParam.getLoginTime().getTime() / 1000) * 1000) {
-                                System.out.println("认证成功");
-                                filterChain.doFilter(request, response);
-                            } else {
-                                System.out.println("认证过期");
-//                                RequestDispatcher dispatcher = request.getRequestDispatcher("/overdue");
-//                                dispatcher.forward(request, response);
-                                filterChain.doFilter(request, response);
-                            }
-                        } else {
-                            //没有找到该用户
-                            System.out.println("没有找到该用户");
-                            RequestDispatcher dispatcher = request.getRequestDispatcher("/noFound");
-                            dispatcher.forward(request, response);
-                        }
+                        filterChain.doFilter(request, response);
+//                        if (!session.canUse()) {
+//                            RequestDispatcher dispatcher = request.getRequestDispatcher("/noLogin");
+//                            dispatcher.forward(request, response);
+//                            response.setStatus(2002);
+//                        }
+////                        if (user != null) {
+//                            System.out.println(.getLastLoginTime().getTime() + "===========" + Math.round((double) jwtParam.getLoginTime().getTime
+//                                () / 1000) * 1000);
+//                            if (user.getLastLoginTime().getTime() == Math.round((double) jwtParam.getLoginTime().getTime() / 1000) * 1000) {
+//                                System.out.println("认证成功");
+//                                filterChain.doFilter(request, response);
+//                            } else {
+//                                System.out.println("认证过期");
+////                                RequestDispatcher dispatcher = request.getRequestDispatcher("/overdue");
+////                                dispatcher.forward(request, response);
+//                                filterChain.doFilter(request, response);
+//                            }
+//                        } else {
+//                            //没有找到该用户
+//                            System.out.println("没有找到该用户");
+//                            RequestDispatcher dispatcher = request.getRequestDispatcher("/noFound");
+//                            dispatcher.forward(request, response);
+//                        }
                     } catch (Exception e) {
                         //认证过期  这里当作认证未知错误处理
                         System.out.println("认证过期2");

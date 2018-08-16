@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface ShopUserService extends IService<ShopUser> {
 
-    Page list(Page page, String userName, String name, String[] sectionTime) throws ParseException;
+    Page list(Page page, String userName, String name, String[] sectionTime, Integer cityId) throws ParseException;
 
     List<ShopUserVo> excelData(Integer[] ids);
 }

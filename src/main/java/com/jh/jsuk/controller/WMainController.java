@@ -3,6 +3,7 @@ package com.jh.jsuk.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.jh.jsuk.common.SessionListener;
 import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.entity.ManagerUser;
@@ -52,6 +53,9 @@ public class WMainController {
     @Autowired
     JwtHelper jwtHelper;
 
+    @Autowired
+    SessionListener sessionListener;
+
     @ApiOperation("后台-登录")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "phone", required = true, value = "手机号", paramType = "query", dataType = "string"),
@@ -66,28 +70,20 @@ public class WMainController {
             userType = EnumUitl.toEnum(UserType.class, type, "getShortKey");
         }
         ParentUserEx user = null;
-        if (userType == null) {
-            ManagerUser us = managerUserService.selectOne(new EntityWrapper<ManagerUser>().eq(ManagerUser.PHONE, phone));
-            if (us != null) {
-                user = us.toParentUser();
-                userType = user.getUserType();
-            }
-        } else if (UserType.USER.equals(userType)) {
+        if (UserType.USER.equals(userType)) {
             User us = userService.selectOne(new EntityWrapper<User>().eq(User.PHONE, phone));
-            if (us != null)
-                user = us.toParentUser();
-        } else if (UserType.SHOP.equals(userType)) {
-            ManagerUser us = managerUserService.selectOne(new EntityWrapper<ManagerUser>().eq(ManagerUser.PHONE, phone));
             if (us != null)
                 user = us.toParentUser();
         } else if (UserType.DISTRIBUTION.equals(userType)) {
             DistributionUser us = distributionUserService.selectOne(new EntityWrapper<DistributionUser>().eq(DistributionUser.PHONE, phone));
             if (us != null)
                 user = us.toParentUser();
-        } else if (userType.hasManageUserType()) {
+        } else {
             ManagerUser us = managerUserService.selectOne(new EntityWrapper<ManagerUser>().eq(ManagerUser.PHONE, phone));
-            if (us != null)
+            if (us != null) {
                 user = us.toParentUser();
+                userType = user.getUserType();
+            }
         }
         if (user == null) {
             return R.err(-11, "用户名或密码错误");
@@ -98,14 +94,11 @@ public class WMainController {
         if (!user.canUse()) {
             return R.err(-11, "该账号已被禁用");
         }
-        session.setUserType(userType);
-        session.fromParentUserEx(user);
-        session.setLogin(true);
         Date login = new Date();
         long date = Math.round((double) new Date().getTime() / 1000) * 1000;
         login.setTime(date);
         userService.updateLoginStatus(user.getUserId(), userType, IpUtil.getIpAddr(requeset), login);
-        session.setLastLogin(login);
+        sessionListener.updateSession(user.getUserId(), userType);
         map.put("token", jwtHelper.createAccessToken(user.getUserId(), userType.getKey()));
         return R.succ(map);
     }
@@ -128,6 +121,7 @@ public class WMainController {
         map.put("lastLogin", session.getLastLogin());
         map.put("shopName", session.getShopName());
         map.put("shopId", session.getShopId());
+        map.put("headImage", session.getHeadImage());
         return R.succ(map);
     }
 

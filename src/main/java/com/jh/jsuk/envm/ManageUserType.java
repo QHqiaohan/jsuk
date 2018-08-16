@@ -25,11 +25,13 @@ public enum ManageUserType {
         return value;
     }
 
-    public UserType toUserType(){
-        if(ManageUserType.SHOP.equals(this)){
+    public UserType toUserType() {
+        if (ManageUserType.SHOP.equals(this)) {
             return UserType.SHOP;
-        }else if(ManageUserType.PLATFORM.equals(this)){
+        } else if (ManageUserType.PLATFORM.equals(this)) {
             return UserType.ADMIN;
+        } else if (ManageUserType.CITY.equals(this)) {
+            return UserType.CITY_ADMIN;
         }
         return null;
     }

@@ -22,7 +22,7 @@ import java.util.List;
 public class ShopUserServiceImpl extends ServiceImpl<ShopUserDao, ShopUser> implements ShopUserService {
 
     @Override
-    public Page list(Page page, String userName, String name, String[] sectionTime) throws ParseException {
+    public Page list(Page page, String userName, String name, String[] sectionTime, Integer cityId) throws ParseException {
         String startTime = sectionTime == null ? null : DatecConvertUtils.dateFormat(sectionTime[0]);
         String endTime = sectionTime == null ? null : DatecConvertUtils.dateFormat(sectionTime[1]);
         List<ShopUserVo> shopUserVos = baseMapper.listShopUser(page, userName, name, startTime, endTime);
