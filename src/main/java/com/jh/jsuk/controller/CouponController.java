@@ -142,6 +142,8 @@ public class CouponController {
         }
         EntityWrapper<Coupon> wrapper = new EntityWrapper<>();
         wrapper.in(Coupon.SHOP_ID, allSps);
+        wrapper.orderBy(Coupon.SHOP_ID);
+        wrapper.orderBy(Coupon.FULL_PRICE, false);
         List<Coupon> list = couponService.selectList(wrapper);
         List<CouponShop> ss = new ArrayList<>();
         for (Coupon coupon : list) {
