@@ -597,7 +597,7 @@ public class ShopGoodsController {
     @ApiOperation("商家端-修改商品")
     @RequestMapping(value = "/updateShopGoods", method = {RequestMethod.POST})
     public Result updateShopGoods(@RequestBody AddGoodsVo addGoodsVo,
-                                  @RequestParam Integer goodsId,
+                                  Integer goodsId,
                                   @RequestParam Integer userId){
         /*Integer userId=session.lUserId();*/
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
@@ -622,7 +622,12 @@ public class ShopGoodsController {
         }
         ShopGoods shopGoods = new ShopGoods();
 
-        shopGoods.setId(goodsId);
+        System.out.println("商品id:"+addGoodsVo.getId());
+        if(goodsId!=null){
+            shopGoods.setId(goodsId);
+        }else{
+            shopGoods.setId(addGoodsVo.getId());
+        }
         shopGoods.setShopId(shopId);
         shopGoods.setAttributeId(addGoodsVo.getAttributeId());
         shopGoods.setBrandName(addGoodsVo.getBrandName());
@@ -643,7 +648,7 @@ public class ShopGoodsController {
         shopGoods.setCategoryId(addGoodsVo.getCategoryId());
         shopGoods.setAddress(addGoodsVo.getAddress());
 
-        shopGoods.updateById();
+         shopGoods.updateById();
         for (ShopGoodsSize shopGoodsSize : sizeList) {
             shopGoodsSize.setShopGoodsId(goodsId);
             if(shopGoodsSize.getId()!=null){

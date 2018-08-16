@@ -165,10 +165,7 @@ public class JwtFilter implements Filter {
             //|| servletPath.indexOf("/shopGoods") != -1
             //|| servletPath.indexOf("/wish") != -1
             ///////////////////////////////////////////////
-            )
-
-
-        {
+        ) {
 
             filterChain.doFilter(servletRequest, servletResponse);
 
@@ -186,7 +183,9 @@ public class JwtFilter implements Filter {
                         ParentUserEx userEx = null;
                         if (!session.isLogin()) {
                             Integer loginType = jwtParam.getLoginType();
-                            if (UserType.ADMIN.getKey().equals(loginType) || UserType.SHOP.getKey().equals(loginType)) {
+                            if (UserType.ADMIN.getKey().equals(loginType) ||
+                                UserType.CITY_ADMIN.getKey().equals(loginType) ||
+                                UserType.SHOP.getKey().equals(loginType)) {
                                 ManagerUser managerUser = managerUserService.selectById(jwtParam.getUserId());
                                 if (managerUser != null) {
                                     userEx = managerUser.toParentUser();
