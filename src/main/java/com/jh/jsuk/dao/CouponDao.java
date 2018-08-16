@@ -3,6 +3,7 @@ package com.jh.jsuk.dao;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.jh.jsuk.entity.Coupon;
+import com.jh.jsuk.entity.ShopSets;
 import com.jh.jsuk.entity.vo.CoupQueryParam;
 import com.jh.jsuk.entity.vo.CouponVo;
 import org.apache.ibatis.annotations.Param;
@@ -35,4 +36,6 @@ public interface CouponDao extends BaseMapper<Coupon> {
     List<Coupon> selectCouponList(@Param("goodsId") Integer goodsId,@Param("shopId") Integer shopId);
 
     List<Coupon> listUser(@Param("shopId") Integer shopId, @Param("userId") Integer userId,@Param("date") Date date);
+
+
 }

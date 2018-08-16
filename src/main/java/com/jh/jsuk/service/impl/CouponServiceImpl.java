@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.CouponDao;
 import com.jh.jsuk.entity.Coupon;
+import com.jh.jsuk.entity.ShopSets;
 import com.jh.jsuk.entity.vo.CoupQueryParam;
 import com.jh.jsuk.entity.vo.CouponVo;
 import com.jh.jsuk.service.CouponService;
@@ -23,6 +24,8 @@ import java.util.List;
  */
 @Service
 public class CouponServiceImpl extends ServiceImpl<CouponDao, Coupon> implements CouponService {
+
+
 
     @Override
     public void deleteCouponByShopId(Integer shopId) {

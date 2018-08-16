@@ -5,10 +5,12 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.Coupon;
+import com.jh.jsuk.entity.ShopSets;
 import com.jh.jsuk.entity.UserCoupon;
 import com.jh.jsuk.entity.vo.CouponVo;
 import com.jh.jsuk.entity.vo.UserCouponVo;
 import com.jh.jsuk.service.CouponService;
+import com.jh.jsuk.service.ShopSetService;
 import com.jh.jsuk.service.UserCouponService;
 import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
@@ -37,6 +39,8 @@ public class CouponController {
 
     @Autowired
     private CouponService couponService;
+    @Autowired
+    private ShopSetService shopsetService;
     @Autowired
     private UserCouponService userCouponService;
 
@@ -155,6 +159,7 @@ public class CouponController {
     @Getter
     private static class CouponShop implements Serializable {
 
+        private Double money;
         private Integer shopId;
 
         private List<Coupon> coupon;
@@ -169,6 +174,8 @@ public class CouponController {
         }
         String[] sps = shopId.split(",");
         List<String> allSps = new ArrayList<>();
+        ShopSets sss = shopsetService.getShopSet(Integer.parseInt(shopId));
+
         for (String sp : sps) {
             if (StrUtil.isNotBlank(sp)) {
                 allSps.add(sp);
@@ -180,6 +187,8 @@ public class CouponController {
         wrapper.orderBy(Coupon.FULL_PRICE, false);
         List<Coupon> list = couponService.selectList(wrapper);
         List<CouponShop> ss = new ArrayList<>();
+
+
         for (Coupon coupon : list) {
             Integer sid = coupon.getShopId();
             if (sid == null) {
@@ -195,6 +204,13 @@ public class CouponController {
             if (couponShop == null) {
                 couponShop = new CouponShop();
                 couponShop.setShopId(sid);
+                if(sss==null){
+                    couponShop.setMoney(0.0);
+
+                }else{
+                    couponShop.setMoney(sss.getMoney());
+
+                }
                 ss.add(couponShop);
             }
             List<Coupon> couponList = couponShop.getCoupon();
