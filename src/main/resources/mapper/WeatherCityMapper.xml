@@ -22,4 +22,8 @@
         where swco.status
     </select>
 
+  <select id="getOpenCityList2" resultType="com.jh.jsuk.entity.WeatherCity">
+    SELECT city_id area_id,city_name county_name from js_sys_weather_city_open o left join js_sys_citys c on o.city_id = c.id
+  </select>
+
 </mapper>

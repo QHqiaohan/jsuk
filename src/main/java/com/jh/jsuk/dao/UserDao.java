@@ -11,8 +11,8 @@ import com.jh.jsuk.entity.vo.UserVo2;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -40,6 +40,6 @@ public interface UserDao extends BaseMapper<User> {
 
     UserInfoVo2 selectUserInfoById(@Param("id")Integer id);
 
-    BigDecimal discount(Integer userId);
+    Map<String,Object> discount(Integer userId);
 
 }

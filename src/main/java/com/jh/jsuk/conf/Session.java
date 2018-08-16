@@ -44,11 +44,15 @@ public class Session {
 
     private Integer provinceId;
 
-    public Integer getCityId() throws Exception{
-        if(cityId == null){
-            throw  new MessageException("请选择城市");
+    public Integer getCityId() throws Exception {
+        if (cityId == null) {
+            throw new MessageException("请选择城市");
         }
         return this.cityId;
+    }
+
+    public boolean isValid() {
+        return this.userId != null && this.userType != null;
     }
 
     /**

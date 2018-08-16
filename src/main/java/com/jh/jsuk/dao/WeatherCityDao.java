@@ -17,4 +17,5 @@ public interface WeatherCityDao extends BaseMapper<WeatherCity> {
 
     List<WeatherCity> getOpenCityList();
 
+    List<WeatherCity> getOpenCityList2();
 }

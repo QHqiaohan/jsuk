@@ -16,4 +16,7 @@ import java.util.List;
 public interface WeatherCityService extends IService<WeatherCity> {
 
     List<WeatherCity> getOpenCityList();
+
+    List<WeatherCity> getOpenCityList2();
+
 }

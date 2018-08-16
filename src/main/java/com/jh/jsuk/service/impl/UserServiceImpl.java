@@ -20,9 +20,9 @@ import com.jh.jsuk.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -125,7 +125,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     }
 
     @Override
-    public BigDecimal discount(Integer lUserId) {
+    public Map<String,Object> discount(Integer lUserId) {
         return baseMapper.discount(lUserId);
     }
 

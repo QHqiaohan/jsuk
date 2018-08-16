@@ -37,6 +37,13 @@ public class WeatherCityOpenController {
         return new Result().success(weatherCityVoList);
     }
 
+    @ApiOperation("用户端-获取已开通城市列表")
+    @RequestMapping(value = "/getOpenCityList2", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getOpenCityList2() {
+        List<WeatherCity> weatherCityVoList = weatherCityService.getOpenCityList2();
+        return new Result().success(weatherCityVoList);
+    }
+
 //    /**
 //     * 新增开通城市
 //     *
