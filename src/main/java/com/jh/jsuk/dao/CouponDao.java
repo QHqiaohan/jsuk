@@ -20,6 +20,12 @@ import java.util.List;
  */
 public interface CouponDao extends BaseMapper<Coupon> {
 
+    void deleteCouponByShopId(Integer shopId);
+    //更新商家满减列表
+    void  postCoupon(@Param("shopId")Integer shopId,@Param("man")double man,@Param("jia")double jia);
+    //获取商家满减列表
+    List<Coupon> getListByShopId(Integer shopId);
+
     List<CouponVo> findByUserId(Integer userId);
 
     List<CouponVo> selectVoList(@Param("ew") Wrapper wrapper);
