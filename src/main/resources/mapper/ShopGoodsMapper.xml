@@ -38,6 +38,8 @@
   <resultMap id="GoodsSalesPriceVo" type="com.jh.jsuk.entity.vo.GoodsSalesPriceVo" extends="BaseResultMap">
     <association property="salesPrice" column="id"
                  select="com.jh.jsuk.dao.ShopGoodsSizeDao.getSalesPriceByGoodsId"/>
+    <association property="originalPrice" column="column"
+                 select="com.jh.jsuk.dao.ShopGoodsSizeDao.getOriginalPriceByGoodsId"/>
   </resultMap>
 
   <select id="findShopGoodsByModularId" resultMap="GoodsSalesPriceVo">

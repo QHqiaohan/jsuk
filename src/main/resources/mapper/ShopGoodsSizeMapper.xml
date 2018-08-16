@@ -43,6 +43,15 @@
             shop_goods_id = #{goodsId}
         limit 0,1
     </select>
+    <select id="getOriginalPriceByGoodsId" resultType="String">
+        SELECT
+            original_price
+        FROM
+            js_shop_goods_size
+        WHERE
+            shop_goods_id = #{goodsId}
+        limit 0,1
+    </select>
 
     <select id="getGoodsSizeByGoodsId" resultMap="BaseResultMap">
         SELECT
