@@ -51,6 +51,7 @@
     is_del = 0
     AND type = 3
     AND transaction_area_id=#{cityId}
+    AND examine = 1
     ORDER BY
     publish_time DESC
   </select>
