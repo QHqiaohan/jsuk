@@ -23,4 +23,9 @@ public class WeatherCityServiceImpl extends ServiceImpl<WeatherCityDao, WeatherC
     public List<WeatherCity> getOpenCityList() {
         return baseMapper.getOpenCityList();
     }
+
+    @Override
+    public List<WeatherCity> getOpenCityList2() {
+        return baseMapper.getOpenCityList2();
+    }
 }

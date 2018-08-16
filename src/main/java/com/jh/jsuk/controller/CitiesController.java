@@ -12,6 +12,7 @@ import com.jh.jsuk.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ import java.util.List;
  * @author lpf
  * @since 2018-06-20
  */
+@Slf4j
 @Api(tags = "城市相关")
 @RestController
 @RequestMapping("/cities")
@@ -44,13 +46,19 @@ public class CitiesController {
     }
 
     @PutMapping
-    public R add(WeatherCityOpen weatherCityOpen){
-        weatherCityOpenService.insert(weatherCityOpen);
+    public R add(WeatherCityOpen weatherCityOpen) {
+        try {
+            weatherCityOpenService.insert(weatherCityOpen);
+        } catch (Exception e) {
+            log.error("城市重复", e);
+            return R.err("城市重复");
+        }
+
         return R.succ();
     }
 
     @PatchMapping
-    public R edit(WeatherCityOpen weatherCityOpen){
+    public R edit(WeatherCityOpen weatherCityOpen) {
         weatherCityOpenService.updateById(weatherCityOpen);
         return R.succ();
     }
@@ -70,7 +78,7 @@ public class CitiesController {
     WeatherCityOpenService weatherCityOpenService;
 
     @DeleteMapping
-    public R delete(Integer id){
+    public R delete(Integer id) {
         weatherCityOpenService.deleteById(id);
         return R.succ();
     }

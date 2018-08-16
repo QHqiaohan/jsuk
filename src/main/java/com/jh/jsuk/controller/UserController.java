@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Constant;
+import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.Dictionary;
 import com.jh.jsuk.entity.jwt.AccessToken;
@@ -131,6 +132,15 @@ public class UserController {
     @Autowired
     ShopUserService shopUserService;
 
+    @Autowired
+    Session session;
+
+    @ApiOperation(value = "获取用户折扣信息", notes = "")
+    @PostMapping("/discount")
+    public R discount() throws Exception{
+        return R.succ(userService.discount(session.lUserId()));
+    }
+
     @ApiOperation(value = "获取多类型用户信息", notes = "")
     @PostMapping("/userInfo")
     public Result bindAccount(@ApiParam("usrId 用户id") @RequestParam Integer usrId,
@@ -158,6 +168,7 @@ public class UserController {
                 break;
             case SHOP:
             case ADMIN:
+            case CITY_ADMIN:
                 ManagerUser managerUser = managerUserService.selectById(usrId);
                 if (managerUser == null) {
                     break;

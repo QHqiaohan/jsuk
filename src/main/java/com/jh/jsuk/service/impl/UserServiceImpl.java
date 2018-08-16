@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -116,7 +117,16 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Override
     public UserInfoVo2 selectUserInfoById(Integer id) {
-        return baseMapper.selectUserInfoById(id);
+        UserInfoVo2 vo = baseMapper.selectUserInfoById(id);
+        if(StrUtil.isBlank(vo.getMemberName())){
+         vo.setMemberName("普通会员");
+        }
+        return vo;
+    }
+
+    @Override
+    public Map<String,Object> discount(Integer lUserId) {
+        return baseMapper.discount(lUserId);
     }
 
 }

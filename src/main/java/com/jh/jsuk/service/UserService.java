@@ -9,6 +9,7 @@ import com.jh.jsuk.envm.UserType;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -37,4 +38,6 @@ public interface UserService extends IService<User> {
     List<User> selectUserListBy(String keywords);
 
     UserInfoVo2 selectUserInfoById(Integer id);
+
+    Map<String,Object> discount(Integer lUserId);
 }
