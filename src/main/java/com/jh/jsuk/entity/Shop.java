@@ -32,6 +32,10 @@ public class Shop extends Model<Shop> {
      */
     private Integer modularId;
     /**
+     * 营业执照
+     */
+    private String license;
+    /**
      * 店铺头像
      */
     @ApiModelProperty(value = "店铺头像", name = "headImg")
@@ -167,6 +171,8 @@ public class Shop extends Model<Shop> {
         return vo;
     }
 
+    public String getLicense(){return license;}
+    public void setLicense(String license){this.license=license;}
     public Integer getId() {
         return id;
     }

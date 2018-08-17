@@ -122,6 +122,7 @@ public class ManagerUserController {
         @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string"),
         @ApiImplicitParam(name = "password", value = "密码", required = true, paramType = "query", dataType = "string"),
         @ApiImplicitParam(name = "headImg", value = "店铺头像,不传使用默认头像", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "license", value = "营业执照,必传", paramType = "query", dataType = "string"),
         @ApiImplicitParam(name = "shopName", value = "店铺名称", required = true, paramType = "query", dataType = "string"),
         @ApiImplicitParam(name = "address", value = "地址", required = true, paramType = "query", dataType = "string"),
         @ApiImplicitParam(name = "modularId", value = "模块ID", required = true, paramType = "query", dataType = "Integer"),
@@ -129,7 +130,7 @@ public class ManagerUserController {
         @ApiImplicitParam(name = "cardNum", value = "身份证", required = true, paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "/register", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result register(String phone, String password, String headImg,
+    public Result register(String phone, String password, String headImg,String license,
                            String shopName, String address, Integer modularId,
                            String legalPersonName, String cardNum, @RequestParam Integer cityId) {
         /**
@@ -150,6 +151,7 @@ public class ManagerUserController {
                 .eq(Dictionary.CODE, "shop_default_img"));
             shop.setHeadImg(defaultImg.getValue());
         }
+        shop.setLicense(license);
         shop.setCityId(cityId);
         shop.setShopName(shopName);
         shop.setModularId(modularId);
