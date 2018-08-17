@@ -34,8 +34,8 @@
       <result column="create_time" property="createTime"/>
       <result column="goods_name" property="goodsName"/>
       <result column="main_image" property="mainImage"/>
+      <result column="freight" property="freight"/>
       <result column="num" property="num"/>
-
       <result column="goodsSizeId" property="goodsSizeId"/>
       <result column="stock" property="stock"/>
       <result column="goodsSizeName" property="goodsSizeName"/>
@@ -67,7 +67,8 @@
         se.kill_stock as killStock,
         se.brand as brand,
         se.send_jf as sendJf,
-        se.deductible_jf as deductibleJf
+        se.deductible_jf as deductibleJf,
+        se.freight as freight
  from
 	js_shopping_cart ct,
 	js_shop_goods gs,

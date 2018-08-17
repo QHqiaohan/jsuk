@@ -14,12 +14,18 @@ public class GoodsVo implements Serializable {
     private Integer num;
     private String createTime;
     private String mainImage;
-
+    private Double freight;
     private String goodsSizeId;     //规格id
     private Integer stock;       //  sku库存
     private String goodsSizeName;    //规格名称
     private Integer killStock;     //秒杀库存
 
+    public void setFreight(Double freight){
+        this.freight=freight;
+    }
+    public Double getFreight(){
+        return freight;
+    }
     public String getSendJf() {
         return sendJf;
     }
