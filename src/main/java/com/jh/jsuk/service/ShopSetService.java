@@ -14,4 +14,5 @@ import com.jh.jsuk.entity.ShopSets;
  */
 public interface ShopSetService extends IService<ShopSets> {
     ShopSets getShopSet(Integer shopId);
+    ShopSets getShopSetByShopId(Integer shopId);
 }
