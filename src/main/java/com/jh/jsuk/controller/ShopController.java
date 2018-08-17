@@ -50,6 +50,12 @@ public class ShopController {
     @Autowired
     private ManagerUserService managerUserService;
 
+    @PatchMapping
+    public R edit(Shop shop){
+        shop.updateById();
+        return R.succ();
+    }
+
     @PostMapping(value = "/setShopSet")
     public  Result setShopSet(ShopSets se){
         boolean b = se.updateById();

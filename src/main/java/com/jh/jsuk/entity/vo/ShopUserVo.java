@@ -34,4 +34,6 @@ public class ShopUserVo extends ShopUser {
 
     private Boolean isRecommend;
 
+    private String city;
+
 }

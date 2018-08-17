@@ -27,6 +27,8 @@
     <result property="shopName" column="shop_name"/>
     <result property="isRecommend" column="is_recommend"/>
     <result property="license" column="license"/>
+    <association property="city" column="city_id"
+                 select="com.jh.jsuk.dao.CitysDao.cityName"/>
     <collection property="modularPortals" column="modular_id" select="com.jh.jsuk.dao.ModularPortalDao.selectById"/>
   </resultMap>
   <select id="listShopUser" resultMap="shopUserVo">
@@ -36,6 +38,7 @@
     mu.head_img,
     s.shop_name,
     s.is_recommend,
+    s.city_id,
     s.license,
     mp.id as modular_id
     FROM
