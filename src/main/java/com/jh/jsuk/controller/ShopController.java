@@ -70,16 +70,17 @@ public class ShopController {
             return new Result().erro("数据为空");
         }
 
-        ShopSets sd = shopSetService.getShopSetByShopId(shopId);
+        ShopSets sd = shopSetService.getShopSetByShopId(shopId);//根据店铺id查询一条信息
+        //如果为空则添加一条新数据，否则就将查询的数据返回前台
         if(sd==null){
             ShopSets ss = new ShopSets();
-            ss.setIntegral(1);
-            ss.setMoney(0.0);
-            ss.setPackagemail(1);
+            ss.setIntegral(1);//设置使用积分为否
+            ss.setMoney(0.0);//设置包邮金额为0；
+            ss.setPackagemail(1);//设置是否包邮为0 ；
             ss.setShopid(shopId);
-            ss.insert();
+            ss.insert();//添加新数据
 
-            ShopSets shopid=shopSetService.getShopSetByShopId(shopId);
+            ShopSets shopid=shopSetService.getShopSetByShopId(shopId);//根据店铺id查询一条信息
 
             return new Result().success(shopid);
         }
