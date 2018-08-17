@@ -16,5 +16,7 @@ import com.jh.jsuk.entity.ShopSets;
 public interface ShopsetsDao extends BaseMapper<ShopSets> {
 
     ShopSets getshopset(Integer shopid);
+    ShopSets getShopSetByShopId(Integer shopId);
+
 
 }

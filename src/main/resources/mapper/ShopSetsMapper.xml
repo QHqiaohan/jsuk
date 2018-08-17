@@ -23,4 +23,8 @@
 
   </select>
 
+  <select id="getShopSetByShopId" resultType="com.jh.jsuk.entity.ShopSets">
+    select * from js_sets where shopid=#{shopId}
+  </select>
+
 </mapper>

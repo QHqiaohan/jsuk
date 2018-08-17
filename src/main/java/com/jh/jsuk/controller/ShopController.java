@@ -38,6 +38,8 @@ public class ShopController {
     @Autowired
     private ShopService shopService;
     @Autowired
+    private ShopSetService shopSetService;//商家设置是否包邮
+    @Autowired
     private ShopAttributeGoodsService shopAttributeGoodsService;
     @Autowired
     private ShopTodayStatisticsService shopTodayStatisticsService;
@@ -47,6 +49,42 @@ public class ShopController {
     private UserRemainderService userRemainderService;
     @Autowired
     private ManagerUserService managerUserService;
+
+    @PostMapping(value = "/setShopSet")
+    public  Result setShopSet(ShopSets se){
+        boolean b = se.updateById();
+        if (b){
+            return new Result().success("修改成功");
+        }
+        return new Result().success("修改失败");
+    }
+
+    /**
+     * 商家获取是否包邮
+     * @param shopId
+     * @return
+     */
+    @GetMapping("/getShopSetByShopId")
+    public Result getShopSetByShopId(Integer shopId){
+        if(shopId==null){
+            return new Result().erro("数据为空");
+        }
+
+        ShopSets sd = shopSetService.getShopSetByShopId(shopId);
+        if(sd==null){
+            ShopSets ss = new ShopSets();
+            ss.setIntegral(1);
+            ss.setMoney(0.0);
+            ss.setPackagemail(1);
+            ss.setShopid(shopId);
+            ss.insert();
+
+            ShopSets shopid=shopSetService.getShopSetByShopId(shopId);
+
+            return new Result().success(shopid);
+        }
+        return new Result().success(sd);
+    }
 
     @GetMapping("/list")
     public R list(){

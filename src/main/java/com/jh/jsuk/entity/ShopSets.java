@@ -22,7 +22,7 @@ import java.io.Serializable;
 @Setter
 @Getter
 @ToString
-@TableName("js_stes")
+@TableName("js_sets")
 public class ShopSets extends Model<ShopSets> {
 
     private static final long serialVersionUID = 1L;

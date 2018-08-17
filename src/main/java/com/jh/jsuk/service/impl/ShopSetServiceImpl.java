@@ -26,5 +26,10 @@ public class ShopSetServiceImpl extends ServiceImpl<ShopsetsDao, ShopSets> imple
         return baseMapper.getshopset(shopId);
     }
 
+    @Override
+    public ShopSets getShopSetByShopId(Integer shopId) {
+        return baseMapper.getShopSetByShopId(shopId);
+    }
+
 
 }
