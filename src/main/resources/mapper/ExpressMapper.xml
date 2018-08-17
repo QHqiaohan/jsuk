@@ -62,8 +62,12 @@
       `type` = #{type}
     </if>
     <if test="status != null">
-      AND
-      status = #{status}
+      <if test="status == 3 or status == 4">
+        and status in (3,4)
+      </if>
+      <if test="status != 3 and status != 4">
+        AND status = #{status}
+      </if>
     </if>
     ORDER BY publish_time DESC
     <where>

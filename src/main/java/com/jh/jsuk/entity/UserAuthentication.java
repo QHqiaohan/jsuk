@@ -1,9 +1,13 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.io.Serializable;
 
 /**
@@ -14,6 +18,9 @@ import java.io.Serializable;
  * @author lpf
  * @since 2018-06-20
  */
+@Getter
+@Setter
+@ToString
 @TableName("js_user_authentication")
 public class UserAuthentication extends Model<UserAuthentication> {
 
@@ -48,84 +55,12 @@ public class UserAuthentication extends Model<UserAuthentication> {
     /**
      * 审核状态 1=通过 0=审核中 -1=未通过 -2=未认证
      */
+//    private UserAuthenticationStatus status;
     private Integer status;
     /**
      * 审核原因
      */
     private String desc;
-
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getRealName() {
-        return realName;
-    }
-
-    public void setRealName(String realName) {
-        this.realName = realName;
-    }
-
-    public String getIdCard() {
-        return idCard;
-    }
-
-    public void setIdCard(String idCard) {
-        this.idCard = idCard;
-    }
-
-    public String getIdCardImg() {
-        return idCardImg;
-    }
-
-    public void setIdCardImg(String idCardImg) {
-        this.idCardImg = idCardImg;
-    }
-
-    public String getIdCardImgZ() {
-        return idCardImgZ;
-    }
-
-    public void setIdCardImgZ(String idCardImgZ) {
-        this.idCardImgZ = idCardImgZ;
-    }
-
-    public String getIdCardImgF() {
-        return idCardImgF;
-    }
-
-    public void setIdCardImgF(String idCardImgF) {
-        this.idCardImgF = idCardImgF;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
 
     public static final String ID = "id";
 
@@ -150,18 +85,4 @@ public class UserAuthentication extends Model<UserAuthentication> {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "UserAuthentication{" +
-        "id=" + id +
-        ", realName=" + realName +
-        ", idCard=" + idCard +
-        ", idCardImg=" + idCardImg +
-        ", idCardImgZ=" + idCardImgZ +
-        ", idCardImgF=" + idCardImgF +
-        ", userId=" + userId +
-        ", status=" + status +
-        ", desc=" + desc +
-        "}";
-    }
 }
