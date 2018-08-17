@@ -339,17 +339,17 @@ public class ManagerUserController {
     @RequestMapping(value = "/getAdmin", method = {RequestMethod.POST, RequestMethod.GET})
     public Result getAdmin() {
         //获取登录用户id
-        Integer userId = session.getUserId();
-        //System.out.println(userId);
-        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-            .eq(ManagerUser.ID, userId)
-            .eq(ManagerUser.IS_DEL, 0)
-            .eq(ManagerUser.CAN_USE, 1)
-        );
-        if (managerUser == null) {
-            return new Result().erro("系统错误");
-        }
-        return new Result().success(managerUser);
+//        Integer userId = session.getUserId();
+//        //System.out.println(userId);
+//        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+//            .eq(ManagerUser.ID, userId)
+//            .eq(ManagerUser.IS_DEL, 0)
+//            .eq(ManagerUser.CAN_USE, 1)
+//        );
+//        if (managerUser == null) {
+//            return new Result().erro("系统错误");
+//        }
+        return new Result().success(managerUserService.selectById(session.getUserId()));
     }
 
     @Autowired
