@@ -216,6 +216,20 @@ public class CouponController {
             }
             couponList.add(coupon);
         }
+        for (String sp : allSps) {
+            Integer spId = Integer.parseInt(sp);
+            CouponShop cs = null;
+            for (CouponShop s : ss) {
+                if(spId.equals(s.getShopId())){
+                    cs = s;
+                }
+            }
+            if(cs == null){
+                cs = new CouponShop();
+                cs.setShopId(spId);
+                ss.add(cs);
+            }
+        }
         for (CouponShop couponShop : ss) {
             ShopSets sss = shopsetService.getShopSet(couponShop.getShopId());
             if (sss != null)
