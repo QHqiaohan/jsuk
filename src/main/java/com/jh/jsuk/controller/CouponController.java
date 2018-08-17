@@ -56,6 +56,9 @@ public class CouponController {
         try{
             couponService.deleteCouponByShopId(shopId);
 
+            if(coupon==null || "".equals(coupon)){
+
+            }else{
             //coupon 格式：  13-2,15-3
             String[] cu =coupon.split(",");
             for(int i=0;i<cu.length;i++){
@@ -66,6 +69,7 @@ public class CouponController {
                double m = Double.parseDouble(man);//满多少
                double ji =Double.parseDouble(jia);//减多少
                 couponService.postCoupon(shopId,m,ji);
+            }
             }
 
             return new Result().success("成功");
