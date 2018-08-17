@@ -52,39 +52,41 @@ public class CouponController {
 
     @ApiOperation("商家修改满减列表")
     @RequestMapping(value = "/postCoupon", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result  postCoupon(String coupon,Integer shopId){
-        try{
+    public Result postCoupon(String coupon, Integer shopId) {
+        try {
             couponService.deleteCouponByShopId(shopId);
 
-            if(coupon==null || "".equals(coupon)){
+            if (coupon == null || "".equals(coupon)) {
 
-            }else{
-            //coupon 格式：  13-2,15-3
-            String[] cu =coupon.split(",");
-            for(int i=0;i<cu.length;i++){
-                String aa = cu[i];//获取单条数据
-                String[] bb = aa.split("-");
-                String man = bb[0];
-                String jia = bb[1];
-               double m = Double.parseDouble(man);//满多少
-               double ji =Double.parseDouble(jia);//减多少
-                couponService.postCoupon(shopId,m,ji);
-            }
+            } else {
+                //coupon 格式：  13-2,15-3
+                String[] cu = coupon.split(",");
+                for (int i = 0; i < cu.length; i++) {
+                    String aa = cu[i];//获取单条数据
+                    String[] bb = aa.split("-");
+                    String man = bb[0];
+                    String jia = bb[1];
+                    double m = Double.parseDouble(man);//满多少
+                    double ji = Double.parseDouble(jia);//减多少
+                    couponService.postCoupon(shopId, m, ji);
+                }
             }
 
             return new Result().success("成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new Result().erro("网络异常");
         }
     }
+
     /**
      * 商家获取满减列表
+     *
      * @return
      */
     @ApiOperation("商家获取满减列表")
     @RequestMapping(value = "/getListByShopId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getListByShopId(Integer shopId){
+    public Result getListByShopId(Integer shopId) {
         List<Coupon> list = couponService.getListByShopId(shopId);
         return new Result().success(list);
     }
@@ -167,7 +169,6 @@ public class CouponController {
 
         private Double money;
         private Integer shopId;
-
         private List<Coupon> coupon;
 
     }
@@ -180,8 +181,6 @@ public class CouponController {
         }
         String[] sps = shopId.split(",");
         List<String> allSps = new ArrayList<>();
-        ShopSets sss = shopsetService.getShopSet(Integer.parseInt(shopId));
-
         for (String sp : sps) {
             if (StrUtil.isNotBlank(sp)) {
                 allSps.add(sp);
@@ -193,8 +192,6 @@ public class CouponController {
         wrapper.orderBy(Coupon.FULL_PRICE, false);
         List<Coupon> list = couponService.selectList(wrapper);
         List<CouponShop> ss = new ArrayList<>();
-
-
         for (Coupon coupon : list) {
             Integer sid = coupon.getShopId();
             if (sid == null) {
@@ -210,13 +207,6 @@ public class CouponController {
             if (couponShop == null) {
                 couponShop = new CouponShop();
                 couponShop.setShopId(sid);
-                if(sss==null){
-                    couponShop.setMoney(0.0);
-
-                }else{
-                    couponShop.setMoney(sss.getMoney());
-
-                }
                 ss.add(couponShop);
             }
             List<Coupon> couponList = couponShop.getCoupon();
@@ -225,6 +215,11 @@ public class CouponController {
                 couponShop.setCoupon(couponList);
             }
             couponList.add(coupon);
+        }
+        for (CouponShop couponShop : ss) {
+            ShopSets sss = shopsetService.getShopSet(couponShop.getShopId());
+            if (sss != null)
+                couponShop.setMoney(sss.getMoney());
         }
         return R.succ(ss);
     }
