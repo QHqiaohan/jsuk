@@ -42,7 +42,7 @@ public class Session {
     private Integer provinceId;
 
     public Integer getCityId() {
-        if (cityId == null) {
+        if (cityId == null && UserType.USER.equals(userType)) {
             throw new RuntimeMessageException("请选择城市");
         }
         return this.cityId;
