@@ -25,14 +25,14 @@ public class ShopUserServiceImpl extends ServiceImpl<ShopUserDao, ShopUser> impl
     public Page list(Page page, String userName, String name, String[] sectionTime, Integer cityId) throws ParseException {
         String startTime = sectionTime == null ? null : DatecConvertUtils.dateFormat(sectionTime[0]);
         String endTime = sectionTime == null ? null : DatecConvertUtils.dateFormat(sectionTime[1]);
-        List<ShopUserVo> shopUserVos = baseMapper.listShopUser(page, userName, name, startTime, endTime);
+        List<ShopUserVo> shopUserVos = baseMapper.listShopUser(page, userName, name, startTime, endTime, cityId);
         return page.setRecords(shopUserVos);
     }
 
     @Override
     public List<ShopUserVo> excelData(Integer[] ids) {
-        List<ShopUserVo> vos=new ArrayList<>();
-        for (Integer id:ids){
+        List<ShopUserVo> vos = new ArrayList<>();
+        for (Integer id : ids) {
             vos.add(baseMapper.getShopUserById(id));
         }
         return vos;

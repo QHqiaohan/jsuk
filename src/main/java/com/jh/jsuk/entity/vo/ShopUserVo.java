@@ -29,4 +29,9 @@ public class ShopUserVo extends ShopUser {
     private List<ModularPortal> modularPortals;
 
     private String modularNames;
+
+    private String license;
+
+    private Boolean isRecommend;
+
 }

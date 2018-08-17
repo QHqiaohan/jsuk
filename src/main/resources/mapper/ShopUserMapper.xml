@@ -25,6 +25,8 @@
     <result property="phone" column="phone"/>
     <result property="headImg" column="head_img"/>
     <result property="shopName" column="shop_name"/>
+    <result property="isRecommend" column="is_recommend"/>
+    <result property="license" column="license"/>
     <collection property="modularPortals" column="modular_id" select="com.jh.jsuk.dao.ModularPortalDao.selectById"/>
   </resultMap>
   <select id="listShopUser" resultMap="shopUserVo">
@@ -33,13 +35,15 @@
     mu.phone,
     mu.head_img,
     s.shop_name,
+    s.is_recommend,
+    s.license,
     mp.id as modular_id
     FROM
     js_shop_user su
-    LEFT JOIN js_manager_user mu ON su.manager_user_id = mu.id
-    LEFT JOIN js_shop s ON s.id = su.shop_id
+    JOIN js_manager_user mu ON su.manager_user_id = mu.id
+    JOIN js_shop s ON s.id = su.shop_id
     LEFT JOIN js_modular_portal mp on mp.id=s.modular_id
-    where su.is_del = 0
+    where not su.is_del
     <if test="userName != null">
       and mu.user_name like concat('%',#{userName},'%')
     </if>
@@ -48,6 +52,9 @@
     </if>
     <if test="startTime != null and endTime != null">
       and mu.create_time between #{startTime} and #{endTime}
+    </if>
+    <if test="cityId != null">
+      and s.city_id = #{cityId}
     </if>
   </select>
   <select id="getShopUserById" resultMap="shopUserVo">

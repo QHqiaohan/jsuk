@@ -16,19 +16,21 @@ import java.util.List;
 public interface ShopUserDao extends BaseMapper<ShopUser> {
 
     /**
-     *通过关键字以及注册时间查询
+     * 通过关键字以及注册时间查询
+     *
      * @param page
-     * @param userName 商户账号
-     * @param name 商户昵称
+     * @param userName  商户账号
+     * @param name      商户昵称
      * @param startTime 注册时间区间开始
-     * @param endTime 注册时间区间结束
+     * @param endTime   注册时间区间结束
      * @return
      */
     List<ShopUserVo> listShopUser(Page page, @Param("userName") String userName, @Param("name") String name,
-                                  @Param("startTime") String startTime, @Param("endTime") String endTime);
+                                  @Param("startTime") String startTime, @Param("endTime") String endTime, @Param("cityId") Integer cityId);
 
     /**
      * 通过商户id查询
+     *
      * @param id
      * @return
      */

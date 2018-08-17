@@ -229,6 +229,7 @@ public class ExpressController {
                               @ApiParam("订单类型 1=快递,2=跑腿") @RequestParam(required = false) Integer type,
                               @RequestParam(required = false) String lng, @RequestParam(required = false) String lat) throws Exception {
         Wrapper<Express> ew = new MyEntityWrapper<>();
+//        type = null;
         Page expressList = expressService.getDeliverList(page, ew, status, type, userId, lng, lat);
         return new Result().success(expressList);
     }

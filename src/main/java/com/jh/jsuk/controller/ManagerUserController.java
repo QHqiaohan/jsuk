@@ -17,6 +17,7 @@ import com.jh.jsuk.entity.Dictionary;
 import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
 import com.jh.jsuk.envm.ManageUserType;
+import com.jh.jsuk.exception.RuntimeMessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.IpUtil;
 import com.jh.jsuk.utils.JwtHelper;
@@ -83,8 +84,17 @@ public class ManagerUserController {
     @ApiOperation(value = "商家端-收款码")
     @RequestMapping(value = "getQrCode", method = {RequestMethod.POST, RequestMethod.GET})
     public void getQrCode(Integer userId, HttpServletResponse response) throws IOException {
+        if (userId == null) {
+            throw new RuntimeMessageException("userId为空");
+        }
+        EntityWrapper<ManagerUser> wrapper = new EntityWrapper<>();
+        wrapper.eq(ManagerUser.ID, userId);
+        ManagerUser managerUser = managerUserService.selectOne(wrapper);
+        if (managerUser == null) {
+            throw new RuntimeMessageException("用户不存在");
+        }
         Map map = Maps.newHashMap();
-        map.put("key", userId);
+        map.put("key", managerUser.getShopId());
         BufferedImage generate = QrCodeUtil.generate(JSONUtil.toJsonStr(map), 300, 300);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ImageIO.write(generate, "png", out);
