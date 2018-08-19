@@ -13,13 +13,13 @@ import com.jh.jsuk.entity.vo.GoodsInfoVo;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.entity.vo.GoodsSizeVo;
 import com.jh.jsuk.envm.ShopGoodsStatus;
-import com.jh.jsuk.exception.NeedLoginException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -596,9 +596,10 @@ public class ShopGoodsController {
         }*/
     @ApiOperation("商家端-修改商品")
     @RequestMapping(value = "/updateShopGoods", method = {RequestMethod.POST})
+    @Transactional
     public Result updateShopGoods(@RequestBody AddGoodsVo addGoodsVo,
                                   Integer goodsId,
-                                  @RequestParam Integer userId){
+                                  @RequestParam Integer userId) {
         /*Integer userId=session.lUserId();*/
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
             .eq(ManagerUser.ID, userId));
@@ -622,10 +623,10 @@ public class ShopGoodsController {
         }
         ShopGoods shopGoods = new ShopGoods();
 
-        System.out.println("商品id:"+addGoodsVo.getId());
-        if(goodsId!=null){
+//        System.out.println("商品id:" + addGoodsVo.getId());
+        if (goodsId != null) {
             shopGoods.setId(goodsId);
-        }else{
+        } else {
             shopGoods.setId(addGoodsVo.getId());
         }
         shopGoods.setShopId(shopId);
@@ -648,16 +649,18 @@ public class ShopGoodsController {
         shopGoods.setCategoryId(addGoodsVo.getCategoryId());
         shopGoods.setAddress(addGoodsVo.getAddress());
 
-         shopGoods.updateById();
-        for (ShopGoodsSize shopGoodsSize : sizeList) {
-            shopGoodsSize.setShopGoodsId(goodsId);
-            if(shopGoodsSize.getId()!=null){
-                shopGoodsSize.updateById();
-            }else{
-                shopGoodsSize.setIsDel(0);
-                shopGoodsSize.insert();
-                }
-            }
+        shopGoods.updateById();
+
+        shopGoodsService.updateGoods(shopGoods.getId(), sizeList);
+//        for (ShopGoodsSize shopGoodsSize : sizeList) {
+//            shopGoodsSize.setShopGoodsId(goodsId);
+//            if (shopGoodsSize.getId() != null) {
+//                shopGoodsSize.updateById();
+//            } else {
+//                shopGoodsSize.setIsDel(0);
+//                shopGoodsSize.insert();
+//            }
+//        }
         return new Result().success("修改成功");
     }
 

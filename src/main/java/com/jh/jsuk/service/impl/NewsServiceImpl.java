@@ -171,4 +171,9 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
         news.setSendUserId(marketComment.getUserId() == null ? null : String.valueOf(marketComment.getUserId()));
         push(news, activity.getUserId());
     }
+
+    @Override
+    public void urgeDistribution(Integer expressId) {
+
+    }
 }

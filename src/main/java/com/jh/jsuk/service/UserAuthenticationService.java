@@ -2,6 +2,7 @@ package com.jh.jsuk.service;
 
 import com.jh.jsuk.entity.UserAuthentication;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.envm.UserAuthenticationStatus;
 
 /**
  * <p>
@@ -12,5 +13,7 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-06-20
  */
 public interface UserAuthenticationService extends IService<UserAuthentication> {
+
+    UserAuthenticationStatus getStatus(Integer userId);
 
 }

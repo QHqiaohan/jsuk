@@ -74,4 +74,11 @@ public interface NewsService extends IService<News> {
     Page listSecondHandMarket(Integer userId, Page page) throws Exception;
 
     void pushComment(MarketComment marketComment, Activity activity) throws Exception;
+
+    /**
+     * 催一催配送源
+     * @param expressId
+     */
+    void urgeDistribution(Integer expressId);
+
 }

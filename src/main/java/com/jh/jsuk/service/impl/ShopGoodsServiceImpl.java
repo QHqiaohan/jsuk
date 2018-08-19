@@ -1,5 +1,6 @@
 package com.jh.jsuk.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.SqlHelper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -8,13 +9,16 @@ import com.jh.jsuk.dao.ShopGoodsDao;
 import com.jh.jsuk.dao.ShopRushBuyActivityDao;
 import com.jh.jsuk.entity.Shop;
 import com.jh.jsuk.entity.ShopGoods;
+import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.vo.*;
 import com.jh.jsuk.envm.ShopGoodsStatus;
 import com.jh.jsuk.service.ShopGoodsService;
+import com.jh.jsuk.service.ShopGoodsSizeService;
 import com.jh.jsuk.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -33,8 +37,8 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     ShopRushBuyActivityDao shopRushBuyActivityDao;
 
     @Override
-    public List<GoodsSalesPriceVo> findShopGoodsByModularId(Integer modularId,Integer cityId) {
-        return baseMapper.findShopGoodsByModularId(modularId,cityId);
+    public List<GoodsSalesPriceVo> findShopGoodsByModularId(Integer modularId, Integer cityId) {
+        return baseMapper.findShopGoodsByModularId(modularId, cityId);
     }
 
     @Override
@@ -138,9 +142,9 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     }
 
     @Override
-    public Page findShopGoodsAndGoodsSizeByShopId(Page page, Wrapper wrapper, Integer shopId,String goodsName) {
+    public Page findShopGoodsAndGoodsSizeByShopId(Page page, Wrapper wrapper, Integer shopId, String goodsName) {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
-        page.setRecords(baseMapper.findShopGoodsAndGoodsSizeByShopId(page, wrapper, shopId,goodsName));
+        page.setRecords(baseMapper.findShopGoodsAndGoodsSizeByShopId(page, wrapper, shopId, goodsName));
         return page;
     }
 
@@ -191,6 +195,83 @@ public class ShopGoodsServiceImpl extends ServiceImpl<ShopGoodsDao, ShopGoods> i
     @Override
     public GoodsInfoVo queryGoodsInfoVoBy(Integer goodsId) {
         return baseMapper.queryGoodsInfoVoBy(goodsId);
+    }
+
+    @Autowired
+    ShopGoodsSizeService shopGoodsSizeService;
+
+    @Override
+    public void updateGoods(Integer id,List<ShopGoodsSize> submitList) {
+        for (ShopGoodsSize size : submitList) {
+            size.setShopGoodsId(id);
+            size.setStatus(null);
+            size.setIsDel(0);
+            size.setKillPrice(null);
+            size.setKillStock(null);
+            size.setType(null);
+        }
+        EntityWrapper<ShopGoodsSize> wrapper = new EntityWrapper<>();
+        wrapper.eq(ShopGoodsSize.SHOP_GOODS_ID, id);
+        List<ShopGoodsSize> localList = shopGoodsSizeService.selectList(wrapper);
+        if (submitList.isEmpty()) {
+            shopGoodsSizeService.delete(wrapper);
+        }
+        Iterator<ShopGoodsSize> localIt = localList.iterator();
+        while (localIt.hasNext()) {
+            ShopGoodsSize loc = localIt.next();
+            Iterator<ShopGoodsSize> subIt = submitList.iterator();
+            while (subIt.hasNext()) {
+                ShopGoodsSize sub = subIt.next();
+                if (loc.isShopEq(sub)) {
+                    localIt.remove();
+                    subIt.remove();
+                }
+            }
+        }
+//        for (Iterator<ShopGoodsSize> iterator = localList.iterator(); iterator.hasNext(); ) {
+//            ShopGoodsSize next = iterator.next();
+//            Iterator<ShopGoodsSize> it = submitList.iterator();
+//            while (it.hasNext()) {
+//                ShopGoodsSize nxt = it.next();
+//                if(next.isShopEq(nxt)){
+//                    iterator.remove();
+//                    it.remove();
+//                }
+//            }
+//        }
+        if (!submitList.isEmpty()) {
+            for (ShopGoodsSize size : submitList) {
+                if (size.getId() != null) {
+                    shopGoodsSizeService.updateById(size);
+                    Iterator<ShopGoodsSize> iterator = localList.iterator();
+                    while (iterator.hasNext()) {
+                        ShopGoodsSize next = iterator.next();
+                        if(size.getId().equals(next.getId())){
+                            iterator.remove();
+                        }
+                    }
+                } else {
+                    shopGoodsSizeService.insert(size);
+                }
+            }
+        }
+        if ( !localList.isEmpty()) {
+            for (ShopGoodsSize size : localList) {
+                shopGoodsSizeService.deleteById(size.getId());
+            }
+        }
+//        while (iterator.hasNext()) {
+//            ShopGoodsSize next = iterator.next();
+//            if (sizeList.contains(next)) {
+//                iterator.remove();
+//            }
+//        }
+//
+//        for (ShopGoodsSize shopGoodsSize : list) {
+//            if (sizeList.contains(shopGoodsSize)) {
+//
+//            }
+//        }
     }
 
 }

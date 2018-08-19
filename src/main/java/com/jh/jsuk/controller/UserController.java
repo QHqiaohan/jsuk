@@ -14,6 +14,7 @@ import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.Dictionary;
 import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
+import com.jh.jsuk.entity.vo.ConsumeInfo;
 import com.jh.jsuk.entity.vo.PlatformUserVo;
 import com.jh.jsuk.entity.vo.UserInfo;
 import com.jh.jsuk.entity.vo.UserInfoVo2;
@@ -137,7 +138,7 @@ public class UserController {
 
     @ApiOperation(value = "获取用户折扣信息", notes = "")
     @PostMapping("/discount")
-    public R discount() throws Exception{
+    public R discount() throws Exception {
         return R.succ(userService.discount(session.lUserId()));
     }
 
@@ -748,34 +749,30 @@ public class UserController {
             PlatformUserVo platformUserVo = new PlatformUserVo();
             platformUserVo.setUser(user);
             Integer userId = user.getId();
-            List<UserOrder> userOrderList = userOrderService.selectList(new EntityWrapper<UserOrder>()
-                .eq(UserOrder.USER_ID, userId)
-            );
+//            List<UserOrder> userOrderList = userOrderService.selectList(new EntityWrapper<UserOrder>()
+//                .eq(UserOrder.USER_ID, userId)
+//            );
             //该用户的消费金额
-            BigDecimal consumeCount = new BigDecimal(0.00);
-            if (userOrderList != null && userOrderList.size() > 0) {
-                //该用户的订单数量
-                platformUserVo.setOrderCount(userOrderList.size());
-                for (UserOrder userOrder : userOrderList) {
-                    BigDecimal orderRealPrice = userOrder.getOrderRealPrice();
-                    if (orderRealPrice == null) {
-                        orderRealPrice = new BigDecimal("0.00");
-                    }
-                    consumeCount = consumeCount.add(orderRealPrice);
-                }
-            } else {
-                platformUserVo.setOrderCount(0);
-            }
-            platformUserVo.setConsumeCount(consumeCount);
+//            BigDecimal consumeCount = new BigDecimal(0.00);
+//            if (userOrderList != null && userOrderList.size() > 0) {
+//                //该用户的订单数量
+//                platformUserVo.setOrderCount(userOrderList.size());
+//                for (UserOrder userOrder : userOrderList) {
+//                    BigDecimal orderRealPrice = userOrder.getOrderRealPrice();
+//                    if (orderRealPrice == null) {
+//                        orderRealPrice = new BigDecimal("0.00");
+//                    }
+//                    consumeCount = consumeCount.add(orderRealPrice);
+//                }
+//            } else {
+//                platformUserVo.setOrderCount(0);
+//            }
+            ConsumeInfo info = userService.getConsume(userId);
+            platformUserVo.setConsumeCount(info.getConsumeAmount());
+            platformUserVo.setOrderCount(info.getOrderCount());
             //该用户可用积分
-            UserIntegral userIntegral = userIntegralService.selectOne(new EntityWrapper<UserIntegral>()
-                .eq(UserIntegral.USER_ID, userId)
-            );
-            if (userIntegral != null) {
-                platformUserVo.setIntegralCount(userIntegral.getIntegralNumber());
-            } else {
-                platformUserVo.setIntegralCount(0);
-            }
+            platformUserVo.setIntegralCount(userService.getIntegral(userId));
+            platformUserVo.setAuthStatus(userService.getAuthenticationStatus(userId));
             plateformUserVoList.add(platformUserVo);
         }
         return new Result().success(page.setRecords(plateformUserVoList));

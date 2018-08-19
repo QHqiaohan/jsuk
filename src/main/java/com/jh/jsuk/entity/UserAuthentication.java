@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.jh.jsuk.envm.UserAuthenticationStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -55,8 +56,8 @@ public class UserAuthentication extends Model<UserAuthentication> {
     /**
      * 审核状态 1=通过 0=审核中 -1=未通过 -2=未认证
      */
-//    private UserAuthenticationStatus status;
-    private Integer status;
+    private UserAuthenticationStatus status;
+//    private Integer status;
     /**
      * 审核原因
      */

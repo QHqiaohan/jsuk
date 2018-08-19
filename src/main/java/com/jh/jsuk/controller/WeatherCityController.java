@@ -20,6 +20,7 @@ import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,6 +39,7 @@ import java.util.Map;
  * @author xuchuruo
  * @since 2018-06-14
  */
+@Slf4j
 @Api(tags = {"天气相关"})
 @RestController
 @RequestMapping(value = "/sys/weatherCity", method = {RequestMethod.POST, RequestMethod.GET})
@@ -64,9 +66,9 @@ public class WeatherCityController {
                 return new Result().erro("暂无城市数据");
             }
             EntityWrapper<WeatherCityOpen> wrapper = new EntityWrapper<>();
-            wrapper.eq(WeatherCityOpen.WEATHER_CITY_ID,weatherCity.getAreaId());
+            wrapper.eq(WeatherCityOpen.WEATHER_CITY_ID, weatherCity.getAreaId());
             WeatherCityOpen weatherCityOpen = weatherCityOpenService.selectOne(wrapper);
-            if(weatherCityOpen == null){
+            if (weatherCityOpen == null) {
                 return R.err("暂无城市数据");
             }
             session.setCityId(weatherCityOpen.getCityId());
@@ -92,7 +94,7 @@ public class WeatherCityController {
                 return new Result().erro("网络繁忙,请稍后再试!");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("查询天气失败", e);
             return new Result().erro("查询天气失败，请联系网站管理员！");
         }
     }
@@ -105,7 +107,7 @@ public class WeatherCityController {
             weatherCityService.insertOrUpdateBatch(weatherCities, 100);
             return new Result().success("查询成功");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("查询天气失败", e);
             return new Result().erro("查询天气失败，请联系网站管理员！");
         }
     }

@@ -5,8 +5,12 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * <p>
@@ -16,6 +20,9 @@ import java.io.Serializable;
  * @author lpf
  * @since 2018-06-20
  */
+@Setter
+@Getter
+@ToString
 @TableName("js_shop_goods_size")
 public class ShopGoodsSize extends Model<ShopGoodsSize> {
 
@@ -127,183 +134,183 @@ public class ShopGoodsSize extends Model<ShopGoodsSize> {
     @ApiModelProperty(value = "商品详情", name = "detailInfo")
     private String detailInfo;
 
-    public String getDetailInfo() {
-        return detailInfo;
-    }
-
-    public void setDetailInfo(String detailInfo) {
-        this.detailInfo = detailInfo;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getShopGoodsId() {
-        return shopGoodsId;
-    }
-
-    public void setShopGoodsId(Integer shopGoodsId) {
-        this.shopGoodsId = shopGoodsId;
-    }
-
-    public String getSizeName() {
-        return sizeName;
-    }
-
-    public void setSizeName(String sizeName) {
-        this.sizeName = sizeName;
-    }
-
-    public Integer getStock() {
-        return stock;
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
-
-    public String getOriginalPrice() {
-        return originalPrice;
-    }
-
-    public void setOriginalPrice(String originalPrice) {
-        this.originalPrice = originalPrice;
-    }
-
-    public String getSalesPrice() {
-        return salesPrice;
-    }
-
-    public void setSalesPrice(String salesPrice) {
-        this.salesPrice = salesPrice;
-    }
-
-
-
-    public String getWeight() {
-        return weight;
-    }
-
-    public void setWeight(String weight) {
-        this.weight = weight;
-    }
-
-    public String getVolume() {
-        return volume;
-    }
-
-    public void setVolume(String volume) {
-        this.volume = volume;
-    }
-
-    public String getFreight() {
-        return freight;
-    }
-
-    public void setFreight(String freight) {
-        this.freight = freight;
-    }
-
-    public String getFullFreight() {
-        return fullFreight;
-    }
-
-    public void setFullFreight(String fullFreight) {
-        this.fullFreight = fullFreight;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public Integer getIsDel() {
-        return isDel;
-    }
-
-    public void setIsDel(Integer isDel) {
-        this.isDel = isDel;
-    }
-
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getSendJf() {
-        return sendJf;
-    }
-
-    public void setSendJf(String sendJf) {
-        this.sendJf = sendJf;
-    }
-
-    public String getDeductibleJf() {
-        return deductibleJf;
-    }
-
-    public void setDeductibleJf(String deductibleJf) {
-        this.deductibleJf = deductibleJf;
-    }
-
-    public Integer getGoodsTypeId() {
-        return goodsTypeId;
-    }
-
-    public void setGoodsTypeId(Integer goodsTypeId) {
-        this.goodsTypeId = goodsTypeId;
-    }
-
-    public String getGoodsNo() {
-        return goodsNo;
-    }
-
-    public void setGoodsNo(String goodsNo) {
-        this.goodsNo = goodsNo;
-    }
-
-    public String getKillPrice() {
-        return killPrice;
-    }
-
-    public void setKillPrice(String killPrice) {
-        this.killPrice = killPrice;
-    }
-
-    public Integer getKillStock() {
-        return killStock;
-    }
-
-    public void setKillStock(Integer killStock) {
-        this.killStock = killStock;
-    }
+//    public String getDetailInfo() {
+//        return detailInfo;
+//    }
+//
+//    public void setDetailInfo(String detailInfo) {
+//        this.detailInfo = detailInfo;
+//    }
+//
+//    public Integer getId() {
+//        return id;
+//    }
+//
+//    public void setId(Integer id) {
+//        this.id = id;
+//    }
+//
+//    public Integer getShopGoodsId() {
+//        return shopGoodsId;
+//    }
+//
+//    public void setShopGoodsId(Integer shopGoodsId) {
+//        this.shopGoodsId = shopGoodsId;
+//    }
+//
+//    public String getSizeName() {
+//        return sizeName;
+//    }
+//
+//    public void setSizeName(String sizeName) {
+//        this.sizeName = sizeName;
+//    }
+//
+//    public Integer getStock() {
+//        return stock;
+//    }
+//
+//    public void setStock(Integer stock) {
+//        this.stock = stock;
+//    }
+//
+//    public String getOriginalPrice() {
+//        return originalPrice;
+//    }
+//
+//    public void setOriginalPrice(String originalPrice) {
+//        this.originalPrice = originalPrice;
+//    }
+//
+//    public String getSalesPrice() {
+//        return salesPrice;
+//    }
+//
+//    public void setSalesPrice(String salesPrice) {
+//        this.salesPrice = salesPrice;
+//    }
+//
+//
+//
+//    public String getWeight() {
+//        return weight;
+//    }
+//
+//    public void setWeight(String weight) {
+//        this.weight = weight;
+//    }
+//
+//    public String getVolume() {
+//        return volume;
+//    }
+//
+//    public void setVolume(String volume) {
+//        this.volume = volume;
+//    }
+//
+//    public String getFreight() {
+//        return freight;
+//    }
+//
+//    public void setFreight(String freight) {
+//        this.freight = freight;
+//    }
+//
+//    public String getFullFreight() {
+//        return fullFreight;
+//    }
+//
+//    public void setFullFreight(String fullFreight) {
+//        this.fullFreight = fullFreight;
+//    }
+//
+//    public Integer getStatus() {
+//        return status;
+//    }
+//
+//    public void setStatus(Integer status) {
+//        this.status = status;
+//    }
+//
+//    public Integer getType() {
+//        return type;
+//    }
+//
+//    public void setType(Integer type) {
+//        this.type = type;
+//    }
+//
+//    public Integer getIsDel() {
+//        return isDel;
+//    }
+//
+//    public void setIsDel(Integer isDel) {
+//        this.isDel = isDel;
+//    }
+//
+//    public String getImg() {
+//        return img;
+//    }
+//
+//    public void setImg(String img) {
+//        this.img = img;
+//    }
+//
+//    public String getBrand() {
+//        return brand;
+//    }
+//
+//    public void setBrand(String brand) {
+//        this.brand = brand;
+//    }
+//
+//    public String getSendJf() {
+//        return sendJf;
+//    }
+//
+//    public void setSendJf(String sendJf) {
+//        this.sendJf = sendJf;
+//    }
+//
+//    public String getDeductibleJf() {
+//        return deductibleJf;
+//    }
+//
+//    public void setDeductibleJf(String deductibleJf) {
+//        this.deductibleJf = deductibleJf;
+//    }
+//
+//    public Integer getGoodsTypeId() {
+//        return goodsTypeId;
+//    }
+//
+//    public void setGoodsTypeId(Integer goodsTypeId) {
+//        this.goodsTypeId = goodsTypeId;
+//    }
+//
+//    public String getGoodsNo() {
+//        return goodsNo;
+//    }
+//
+//    public void setGoodsNo(String goodsNo) {
+//        this.goodsNo = goodsNo;
+//    }
+//
+//    public String getKillPrice() {
+//        return killPrice;
+//    }
+//
+//    public void setKillPrice(String killPrice) {
+//        this.killPrice = killPrice;
+//    }
+//
+//    public Integer getKillStock() {
+//        return killStock;
+//    }
+//
+//    public void setKillStock(Integer killStock) {
+//        this.killStock = killStock;
+//    }
 
     public static final String ID = "id";
 
@@ -352,30 +359,23 @@ public class ShopGoodsSize extends Model<ShopGoodsSize> {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "ShopGoodsSize{" +
-                "id=" + id +
-                ", shopGoodsId=" + shopGoodsId +
-                ", sizeName='" + sizeName + '\'' +
-                ", stock=" + stock +
-                ", originalPrice='" + originalPrice + '\'' +
-                ", salesPrice='" + salesPrice + '\'' +
-                ", weight='" + weight + '\'' +
-                ", volume='" + volume + '\'' +
-                ", freight='" + freight + '\'' +
-                ", full_freight='" + fullFreight + '\'' +
-                ", status=" + status +
-                ", type=" + type +
-                ", isDel=" + isDel +
-                ", img='" + img + '\'' +
-                ", brand='" + brand + '\'' +
-                ", sendJf='" + sendJf + '\'' +
-                ", deductibleJf='" + deductibleJf + '\'' +
-                ", goodsTypeId=" + goodsTypeId +
-                ", goodsNo='" + goodsNo + '\'' +
-                ", killPrice='" + killPrice + '\'' +
-                ", killStock=" + killStock +
-                '}';
+    public boolean isShopEq(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ShopGoodsSize that = (ShopGoodsSize) o;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(shopGoodsId, that.shopGoodsId) &&
+            Objects.equals(sizeName, that.sizeName) &&
+            Objects.equals(stock, that.stock) &&
+            Objects.equals(originalPrice, that.originalPrice) &&
+            Objects.equals(salesPrice, that.salesPrice) &&
+            Objects.equals(freight, that.freight) &&
+            Objects.equals(img, that.img) &&
+            Objects.equals(brand, that.brand) &&
+            Objects.equals(sendJf, that.sendJf) &&
+            Objects.equals(deductibleJf, that.deductibleJf) &&
+            Objects.equals(goodsTypeId, that.goodsTypeId);
     }
+
+
 }

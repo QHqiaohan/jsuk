@@ -112,6 +112,7 @@ public class ExpressController {
         if (express.getUserId() == null) {
             return new Result().erro("用户信息过期");
         }
+        express.setStatus(1);
         express.setOrderNo(OrderNumUtil.getOrderIdByUUId());
         express.insert();
         map.put("expressId", express.getId());
@@ -171,6 +172,16 @@ public class ExpressController {
         return new Result().success(expressTypeList);
     }
 
+    @Autowired
+    NewsService newsService;
+
+    @ApiOperation("用户端-催一催")
+    @RequestMapping(value = "/urge", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result urge(@ApiParam("快递id")  Integer expressId) {
+        newsService.urgeDistribution(expressId);
+        return new Result().success();
+    }
+
     @ApiOperation("用户端-取消跑腿订单")
     @RequestMapping(value = "/cancelRunOrder", method = {RequestMethod.POST, RequestMethod.GET})
     public Result cancelRunOrder(Integer userId, @ApiParam(value = "订单ID", required = true) Integer orderId) {
@@ -205,7 +216,7 @@ public class ExpressController {
     @RequestMapping(value = "/enterOrder", method = {RequestMethod.POST, RequestMethod.GET})
     public Result enterOrder(Integer userId, @ApiParam(value = "订单ID", required = true) Integer orderId) {
         Express express = new Express();
-        express.setStatus(3);
+        express.setStatus(5);
         boolean res = express.update(new EntityWrapper()
             .eq(Express.ID, orderId)
             .eq(Express.USER_ID, userId));

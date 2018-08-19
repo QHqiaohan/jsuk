@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.ShopGoods;
+import com.jh.jsuk.entity.ShopGoodsSize;
 import com.jh.jsuk.entity.vo.*;
 import com.jh.jsuk.envm.ShopGoodsStatus;
 
@@ -61,4 +62,6 @@ public interface ShopGoodsService extends IService<ShopGoods> {
     List<GoodsSalesPriceVo2> selectLevel2Goods(Integer categoryId);
 
     GoodsInfoVo queryGoodsInfoVoBy(Integer goodsId);
+
+    void updateGoods(Integer id, List<ShopGoodsSize> sizeList);
 }

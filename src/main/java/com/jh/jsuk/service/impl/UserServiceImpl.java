@@ -9,17 +9,18 @@ import com.jh.jsuk.dao.UserDao;
 import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.User;
+import com.jh.jsuk.entity.UserOrder;
+import com.jh.jsuk.entity.vo.ConsumeInfo;
 import com.jh.jsuk.entity.vo.UserInfoVo;
 import com.jh.jsuk.entity.vo.UserInfoVo2;
 import com.jh.jsuk.entity.vo.UserListVo;
+import com.jh.jsuk.envm.UserAuthenticationStatus;
 import com.jh.jsuk.envm.UserType;
-import com.jh.jsuk.service.UserIntegralService;
-import com.jh.jsuk.service.UserOrderService;
-import com.jh.jsuk.service.UserRemainderService;
-import com.jh.jsuk.service.UserService;
+import com.jh.jsuk.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -118,15 +119,58 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     @Override
     public UserInfoVo2 selectUserInfoById(Integer id) {
         UserInfoVo2 vo = baseMapper.selectUserInfoById(id);
-        if(StrUtil.isBlank(vo.getMemberName())){
-         vo.setMemberName("普通会员");
+        if (StrUtil.isBlank(vo.getMemberName())) {
+            vo.setMemberName("普通会员");
         }
         return vo;
     }
 
     @Override
-    public Map<String,Object> discount(Integer lUserId) {
+    public Map<String, Object> discount(Integer lUserId) {
         return baseMapper.discount(lUserId);
     }
+
+    @Override
+    public Integer getIntegral(Integer userId) {
+        return userIntegralService.getIntegral(userId);
+    }
+
+    @Override
+    public BigDecimal getRemainder(Integer userId) {
+        return userRemainderService.getRemainder(userId);
+    }
+
+    @Autowired
+    UserAuthenticationService userAuthenticationService;
+
+    @Override
+    public UserAuthenticationStatus getAuthenticationStatus(Integer userId) {
+        return userAuthenticationService.getStatus(userId);
+    }
+
+    @Override
+    public ConsumeInfo getConsume(Integer userId) {
+        ConsumeInfo info = new ConsumeInfo();
+        List<UserOrder> userOrderList = userOrderService.selectList(new EntityWrapper<UserOrder>()
+            .eq(UserOrder.USER_ID, userId)
+        );
+        BigDecimal consumeCount = new BigDecimal(0.00);
+        info.setConsumeAmount(consumeCount);
+        if (userOrderList != null && userOrderList.size() > 0) {
+            //该用户的订单数量
+            info.setOrderCount(userOrderList.size());
+            for (UserOrder userOrder : userOrderList) {
+                BigDecimal orderRealPrice = userOrder.getOrderRealPrice();
+                if (orderRealPrice == null) {
+                    orderRealPrice = new BigDecimal("0.00");
+                }
+                consumeCount = consumeCount.add(orderRealPrice);
+            }
+        } else {
+            info.setOrderCount(0);
+        }
+        return info;
+    }
+
 
 }
