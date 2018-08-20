@@ -3,13 +3,13 @@ package com.jh.jsuk.service;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.User;
+import com.jh.jsuk.entity.info.UserRemainderInfo;
 import com.jh.jsuk.entity.vo.ConsumeInfo;
 import com.jh.jsuk.entity.vo.UserInfoVo;
 import com.jh.jsuk.entity.vo.UserInfoVo2;
 import com.jh.jsuk.envm.UserAuthenticationStatus;
 import com.jh.jsuk.envm.UserType;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +56,7 @@ public interface UserService extends IService<User> {
      * @param userId
      * @return
      */
-    BigDecimal getRemainder(Integer userId);
+    UserRemainderInfo getRemainder(Integer userId);
 
     /**
      * 获取审核状态

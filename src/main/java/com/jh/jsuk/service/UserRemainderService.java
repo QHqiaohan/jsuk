@@ -2,9 +2,9 @@ package com.jh.jsuk.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.UserRemainder;
+import com.jh.jsuk.entity.info.UserRemainderInfo;
 import com.jh.jsuk.entity.vo.UserRechargeVo;
 import com.pingplusplus.exception.ChannelException;
-import com.pingplusplus.model.Charge;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -27,7 +27,7 @@ public interface UserRemainderService extends IService<UserRemainder> {
      * @return
      * @throws Exception
      */
-    BigDecimal getRemainder(Integer userId);
+    UserRemainderInfo getRemainder(Integer userId);
 
     /**
      * 用户消费了多少
@@ -63,6 +63,7 @@ public interface UserRemainderService extends IService<UserRemainder> {
      * @throws Exception
      */
     void consume(Integer userId, BigDecimal amount) throws Exception;
+    void consume(Integer userId, BigDecimal amount,String orderNum) throws Exception;
 
     /**
      * 用户充值

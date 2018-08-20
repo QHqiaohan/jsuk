@@ -603,7 +603,7 @@ public class PayController {
                 //商品订单支付
                 String[] ids = orderId.split(",");
                 List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
-                userOrderService.balancePay(userOrders);
+                userOrderService.balancePay(userOrders, session.getUserId());
                 break;
             case 2:
                 //快递跑腿订单支付

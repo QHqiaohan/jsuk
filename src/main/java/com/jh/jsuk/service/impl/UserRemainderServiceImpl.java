@@ -7,6 +7,7 @@ import com.jh.jsuk.entity.Member;
 import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.UserRechargeRecord;
 import com.jh.jsuk.entity.UserRemainder;
+import com.jh.jsuk.entity.info.UserRemainderInfo;
 import com.jh.jsuk.entity.vo.ChargeParamVo;
 import com.jh.jsuk.entity.vo.UserRechargeVo;
 import com.jh.jsuk.envm.UserRemainderStatus;
@@ -45,24 +46,50 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
     private UserRechargeRecordService recordService;
 
     @Override
-    public BigDecimal getRemainder(Integer userId) {
+    public UserRemainderInfo getRemainder(Integer userId) {
+        UserRemainderInfo info = new UserRemainderInfo();
         List<UserRemainder> list = selectList(new EntityWrapper<UserRemainder>()
             .eq(UserRemainder.USER_ID, userId));
         // 初始化记录总余额
         BigDecimal remain = new BigDecimal("0.00");
+        info.setRemainder(remain);
         if (list == null || list.isEmpty())
-            return remain;
-        // 如果余额表有该用户信息
+            return info;
+        /**
+         * 已提现金额
+         */
+        BigDecimal cashed = new BigDecimal("0");
+        /**
+         * 总共可用提现金额
+         */
+        BigDecimal totalCash = new BigDecimal("0");
         for (UserRemainder remainder : list) {
-            // 如果是消费
-            if (UserRemainderType.CONSUME.equals(remainder.getType())) {
-                remain = remain.subtract(remainder.getRemainder());
-            } else {
-                // 充值
-                remain = remain.add(remainder.getRemainder());
+            UserRemainderType type = remainder.getType();
+            if (type == null)
+                continue;
+            switch (type) {
+                // 只有红包 和 退款可以提现
+                case GET_RED_PACKET:
+                case REFUND:
+                    totalCash = totalCash.add(remainder.getRemainder());
+                case RECHARGE:
+                    remain = remain.subtract(remainder.getRemainder());
+                    break;
+                case CASH:
+                    cashed = cashed.add(remainder.getRemainder());
+                case CONSUME:
+                    remain = remain.add(remainder.getRemainder());
+                    break;
             }
         }
-        return remain;
+        BigDecimal rem = totalCash.subtract(cashed);
+        if (remain.compareTo(rem) >= 0) {
+            info.setCash(rem);
+        } else {
+            info.setCash(new BigDecimal("0"));
+        }
+        info.setRemainder(remain);
+        return info;
     }
 
     @Override
@@ -90,15 +117,21 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
     public boolean hasRemain(Integer userId, BigDecimal bigDecimal) {
         if (userId == null || bigDecimal == null)
             return false;
-        return getRemainder(userId).compareTo(bigDecimal) > 0;
+        return getRemainder(userId).hasRemain(bigDecimal);
     }
 
     @Override
     public void consume(Integer userId, BigDecimal amount) throws Exception {
+        consume(userId, amount, null);
+    }
+
+    @Override
+    public void consume(Integer userId, BigDecimal amount, String orderNum) throws Exception {
         UserRemainder e = new UserRemainder();
         e.setUserId(userId);
         e.setCreateTime(new Date());
         e.setRemainder(amount);
+        e.setOrderNum(orderNum);
         e.setType(UserRemainderType.CONSUME);
         insert(e);
     }

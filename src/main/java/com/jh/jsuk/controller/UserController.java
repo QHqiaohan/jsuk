@@ -582,7 +582,7 @@ public class UserController {
         Map<String, Object> map = new HashMap<>();
         map.put("sum_jiFen", userIntegralService.getIntegral(userId));
 
-        map.put("sum_yuE", userRemainderService.getRemainder(userId));
+        map.put("sum_yuE", userRemainderService.getRemainder(userId).getRemainder());
         /**
          * 获取用户优惠券总数
          */
