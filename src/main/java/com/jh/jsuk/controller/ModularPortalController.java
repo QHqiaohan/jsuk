@@ -112,7 +112,7 @@ public class ModularPortalController {
                 .eq(Shop.CAN_USE, 1)
                 // 是否推荐,0=不推荐,1=推荐
                 .eq(Shop.IS_RECOMMEND, 1)
-                .eq(Shop.MODULAR_ID, modularId)
+                //.eq(Shop.MODULAR_ID, modularId)
                 .orderBy(Shop.TOTAL_VOLUME, false);
             if (StrUtil.isNotBlank(kw)) {
                 wrapper.like(Shop.SHOP_NAME, "%" + kw + "%");

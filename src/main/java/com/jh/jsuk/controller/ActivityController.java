@@ -139,7 +139,7 @@ public class ActivityController {
                 .eq(Shop.CAN_USE, 1)
                 .eq(Shop.CITY_ID,session.getCityId())
                 .eq(Shop.IS_RECOMMEND, 1)
-               // .eq(Shop.MODULAR_ID, 0)
+
                 .orderBy(Shop.TOTAL_VOLUME, false));
         map.put("shop", shopPage);
         /**
