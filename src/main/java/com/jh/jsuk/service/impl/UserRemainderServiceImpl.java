@@ -49,13 +49,15 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
     public UserRemainderInfo getRemainder(Integer userId) {
         UserRemainderInfo info = new UserRemainderInfo();
         List<UserRemainder> list = selectList(new EntityWrapper<UserRemainder>()
-            .eq(UserRemainder.STATUS,UserRemainderStatus.PASSED.getKey())
+            .eq(UserRemainder.STATUS, UserRemainderStatus.PASSED.getKey())
             .eq(UserRemainder.USER_ID, userId));
         // 初始化记录总余额
         BigDecimal remain = new BigDecimal("0.00");
         info.setRemainder(remain);
-        if (list == null || list.isEmpty())
+        if (list == null || list.isEmpty()){
+            info.setCash(new BigDecimal("0"));
             return info;
+        }
         /**
          * 已提现金额
          */
@@ -66,20 +68,21 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
         BigDecimal totalCash = new BigDecimal("0");
         for (UserRemainder remainder : list) {
             UserRemainderType type = remainder.getType();
-            if (type == null)
+            BigDecimal rmdr = remainder.getRemainder();
+            if (type == null || rmdr == null)
                 continue;
             switch (type) {
                 // 只有红包 和 退款可以提现
                 case GET_RED_PACKET:
                 case REFUND:
-                    totalCash = totalCash.add(remainder.getRemainder());
+                    totalCash = totalCash.add(rmdr);
                 case RECHARGE:
-                    remain = remain.add(remainder.getRemainder());
+                    remain = remain.add(rmdr);
                     break;
                 case CASH:
-                    cashed = cashed.subtract(remainder.getRemainder());
+                    cashed = cashed.add(rmdr);
                 case CONSUME:
-                    remain = remain.subtract(remainder.getRemainder());
+                    remain = remain.subtract(rmdr);
                     break;
             }
         }
