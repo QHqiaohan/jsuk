@@ -71,7 +71,7 @@ public class WeatherCityController {
             if (weatherCityOpen == null) {
                 return R.err("暂无城市数据");
             }
-            session.setCityId(weatherCityOpen.getCityId());
+            session.setCityId(weatherCityOpen.getWeatherCityId());
             Integer areaId = weatherCity.getAreaId();
             String data = HttpUtil.post(Constant.MEIZU_WEATHER_URL, "cityIds=" + areaId);
             Map map = JSONUtil.toBean(data, Map.class);
