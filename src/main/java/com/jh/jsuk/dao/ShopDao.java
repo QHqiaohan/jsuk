@@ -2,7 +2,6 @@ package com.jh.jsuk.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.jh.jsuk.entity.Shop;
-import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.vo.ShopPhoneVo;
 import com.jh.jsuk.entity.vo.ShopTelPhoneVo;
 import com.jh.jsuk.entity.vo.rushbuy.SShopVo;
@@ -31,4 +30,9 @@ public interface ShopDao extends BaseMapper<Shop> {
 
     @Select("SELECT shop_name name FROM js_shop where id = #{id}")
     SShopVo shortVo(Integer id);
+
+    @Select("SELECT shop_name name FROM js_shop where id = #{id}")
+    String shopName(Integer id);
+
+
 }
