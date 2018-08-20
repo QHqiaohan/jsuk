@@ -7,8 +7,11 @@ import com.jh.jsuk.entity.Member;
 import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.UserRechargeRecord;
 import com.jh.jsuk.entity.UserRemainder;
+import com.jh.jsuk.entity.info.UserRemainderInfo;
 import com.jh.jsuk.entity.vo.ChargeParamVo;
 import com.jh.jsuk.entity.vo.UserRechargeVo;
+import com.jh.jsuk.envm.UserRemainderStatus;
+import com.jh.jsuk.envm.UserRemainderType;
 import com.jh.jsuk.service.MemberService;
 import com.jh.jsuk.service.UserRechargeRecordService;
 import com.jh.jsuk.service.UserRemainderService;
@@ -43,31 +46,61 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
     private UserRechargeRecordService recordService;
 
     @Override
-    public BigDecimal getRemainder(Integer userId) {
+    public UserRemainderInfo getRemainder(Integer userId) {
+        UserRemainderInfo info = new UserRemainderInfo();
         List<UserRemainder> list = selectList(new EntityWrapper<UserRemainder>()
+            .eq(UserRemainder.STATUS, UserRemainderStatus.PASSED.getKey())
             .eq(UserRemainder.USER_ID, userId));
         // 初始化记录总余额
         BigDecimal remain = new BigDecimal("0.00");
-        if (list == null || list.isEmpty())
-            return remain;
-        // 如果余额表有该用户信息
+        info.setRemainder(remain);
+        if (list == null || list.isEmpty()){
+            info.setCash(new BigDecimal("0"));
+            return info;
+        }
+        /**
+         * 已提现金额
+         */
+        BigDecimal cashed = new BigDecimal("0");
+        /**
+         * 总共可用提现金额
+         */
+        BigDecimal totalCash = new BigDecimal("0");
         for (UserRemainder remainder : list) {
-            // 如果是消费
-            if (remainder.getType() == -1) {
-                remain = remain.subtract(remainder.getRemainder());
-            } else {
-                // 充值
-                remain = remain.add(remainder.getRemainder());
+            UserRemainderType type = remainder.getType();
+            BigDecimal rmdr = remainder.getRemainder();
+            if (type == null || rmdr == null)
+                continue;
+            switch (type) {
+                // 只有红包 和 退款可以提现
+                case GET_RED_PACKET:
+                case REFUND:
+                    totalCash = totalCash.add(rmdr);
+                case RECHARGE:
+                    remain = remain.add(rmdr);
+                    break;
+                case CASH:
+                    cashed = cashed.add(rmdr);
+                case CONSUME:
+                    remain = remain.subtract(rmdr);
+                    break;
             }
         }
-        return remain;
+        BigDecimal rem = totalCash.subtract(cashed);
+        if (remain.compareTo(rem) >= 0) {
+            info.setCash(rem);
+        } else {
+            info.setCash(new BigDecimal("0"));
+        }
+        info.setRemainder(remain);
+        return info;
     }
 
     @Override
     public BigDecimal getConsumption(Integer userId) {
         List<UserRemainder> list = selectList(new EntityWrapper<UserRemainder>()
             .eq(UserRemainder.USER_ID, userId)
-            .eq(UserRemainder.TYPE, -1));
+            .eq(UserRemainder.TYPE, UserRemainderType.CONSUME));
         // 初始化记录总余额
         BigDecimal remain = new BigDecimal("0.00");
         if (list == null || list.isEmpty())
@@ -86,23 +119,31 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
 
     @Override
     public boolean hasRemain(Integer userId, BigDecimal bigDecimal) {
-        return getRemainder(userId).compareTo(bigDecimal) > 0;
+        if (userId == null || bigDecimal == null)
+            return false;
+        return getRemainder(userId).hasRemain(bigDecimal);
     }
 
     @Override
     public void consume(Integer userId, BigDecimal amount) throws Exception {
+        consume(userId, amount, null);
+    }
+
+    @Override
+    public void consume(Integer userId, BigDecimal amount, String orderNum) throws Exception {
         UserRemainder e = new UserRemainder();
         e.setUserId(userId);
         e.setCreateTime(new Date());
         e.setRemainder(amount);
-        e.setType(-1);
+        e.setOrderNum(orderNum);
+        e.setType(UserRemainderType.CONSUME);
         insert(e);
     }
 
     @Override
     public void recharge(Integer userId, BigDecimal amount) throws Exception {
         UserRemainder e = new UserRemainder();
-        e.setType(1);
+        e.setType(UserRemainderType.RECHARGE);
         e.setUserId(userId);
         e.setCreateTime(new Date());
         e.setRemainder(amount);
@@ -115,7 +156,7 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
         Member member = memberService.selectById(memberId);
         //用户余额表
         UserRemainder e = new UserRemainder();
-        e.setType(2);
+        e.setType(UserRemainderType.RECHARGE);
         e.setUserId(userId);
         e.setCreateTime(new Date());
         e.setMemberId(memberId);
@@ -150,7 +191,7 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
     public void chargeComplete(Integer remainderId, Integer rechargeRecordId, Integer status) {
         //用户余额
         UserRemainder userRemainder = selectById(remainderId);
-        userRemainder.setIsOk(status == 1 ? 2 : 1);
+        userRemainder.setStatus(UserRemainderStatus.PASSED);
         userRemainder.updateById();
         //用户充值记录
         UserRechargeRecord userRechargeRecord = recordService.selectById(rechargeRecordId);

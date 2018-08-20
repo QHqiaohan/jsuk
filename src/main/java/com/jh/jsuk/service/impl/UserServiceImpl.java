@@ -10,6 +10,7 @@ import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.UserOrder;
+import com.jh.jsuk.entity.info.UserRemainderInfo;
 import com.jh.jsuk.entity.vo.ConsumeInfo;
 import com.jh.jsuk.entity.vo.UserInfoVo;
 import com.jh.jsuk.entity.vo.UserInfoVo2;
@@ -136,7 +137,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     }
 
     @Override
-    public BigDecimal getRemainder(Integer userId) {
+    public UserRemainderInfo getRemainder(Integer userId) {
         return userRemainderService.getRemainder(userId);
     }
 

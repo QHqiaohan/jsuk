@@ -1,6 +1,7 @@
 package com.jh.jsuk.service;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.Express;
 import com.jh.jsuk.entity.RunningFee;
 
 /**
@@ -16,5 +17,9 @@ public interface RunningFeeService extends IService<RunningFee> {
      * @return
      */
     double caleRunningFee(long dintance);
+
+    double caleRunningFee(String start,String end);
+
+    void caleRunningFee(Express express);
 
 }

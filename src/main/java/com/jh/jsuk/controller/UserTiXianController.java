@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.ShopUserTiXianVo;
 import com.jh.jsuk.entity.vo.UserTiXianVo;
+import com.jh.jsuk.envm.UserRemainderStatus;
+import com.jh.jsuk.envm.UserRemainderType;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
@@ -59,12 +61,11 @@ public class UserTiXianController {
 
         List<UserRemainder> userRemainderList=userRemainderService.selectList(new EntityWrapper<UserRemainder>()
                                                                               .eq(UserRemainder.USER_ID,userId)
-                                                                              .eq(UserRemainder.ID_DEL,0)
-                                                                              .eq(UserRemainder.IS_OK,2)
+                                                                              .eq(UserRemainder.STATUS, UserRemainderStatus.PASSED)
         );
         if(userRemainderList!=null && userRemainderList.size()>0){
             for(UserRemainder userRemainder:userRemainderList){
-                Integer type = userRemainder.getType();   //类型,1=充值,-1=消费,0=其他 2=购买会员
+                Integer type = userRemainder.getType().getKey();   //类型,1=充值,-1=消费,0=其他 2=购买会员
                 if(userRemainder.getRemainder()==null){
                     userRemainder.setRemainder(new BigDecimal("0.00"));
                 }
@@ -214,11 +215,10 @@ public class UserTiXianController {
 
         UserRemainder userRemainder=new UserRemainder();
         userRemainder.setUserId(userId);
-        userRemainder.setType(-1);   //-1代表消费
+        userRemainder.setType(UserRemainderType.CONSUME);   //-1代表消费
         userRemainder.setRemainder(new BigDecimal(userTiXian.getPrice()));   //金额
-        userRemainder.setIdDel(0);
         userRemainder.setCreateTime(new Date());
-        userRemainder.setIsOk(2);
+        userRemainder.setStatus(UserRemainderStatus.PASSED);
         userRemainder.insert();
 
         return new Result().success("提现成功");

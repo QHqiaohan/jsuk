@@ -16,24 +16,21 @@ import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderGoodsDto;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
+import com.jh.jsuk.entity.info.UserRemainderInfo;
 import com.jh.jsuk.entity.vo.*;
-import com.jh.jsuk.envm.OrderResponseStatus;
-import com.jh.jsuk.envm.OrderStatus;
-import com.jh.jsuk.envm.OrderType;
-import com.jh.jsuk.envm.PayType;
+import com.jh.jsuk.envm.*;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
-import com.jh.jsuk.utils.*;
-import com.pingplusplus.exception.ChannelException;
-import com.pingplusplus.model.Charge;
+import com.jh.jsuk.utils.Date2;
+import com.jh.jsuk.utils.EnumUitl;
+import com.jh.jsuk.utils.ShopJPushUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -617,14 +614,15 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public void balancePay(List<UserOrder> userOrders) throws MessageException {
+    public void balancePay(List<UserOrder> userOrders, Integer userId) throws Exception {
         //获取订单价格
         BigDecimal price = new BigDecimal("0.00");
         for (UserOrder u : userOrders) {
             price = price.add(u.getOrderRealPrice());
         }
         //用户余额不足
-        if (userRemainderService.getRemainder(userOrders.get(0).getUserId()).compareTo(price) < 0) {
+        UserRemainderInfo remainder = userRemainderService.getRemainder(userId);
+        if (!remainder.hasRemain(price)) {
             throw new MessageException("余额不足");
         }
         for (UserOrder userOrder : userOrders) {
@@ -632,12 +630,13 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             UserRemainder userRemainder = new UserRemainder();
             userRemainder.setCreateTime(new Date());
             userRemainder.setRemainder(userOrder.getOrderRealPrice());
-            userRemainder.setType(-1);
+            userRemainder.setType(UserRemainderType.CONSUME);
             userRemainder.setUserId(userOrder.getUserId());
             userRemainder.setOrderNum(userOrder.getOrderNum());
-            userRemainder.setIsOk(2);
+            userRemainder.setStatus(UserRemainderStatus.PASSED);
             userRemainder.setPlatformNumber(userOrder.getPlatformNumber());
             userRemainder.insert();
+            userRemainderService.consume(userId,userOrder.getOrderRealPrice());
             //修改订单信息
             userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
             userOrder.setPayType(PayType.BALANCE_PAY.getKey());
@@ -685,10 +684,10 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         UserRemainder userRemainder = new UserRemainder();
         userRemainder.setCreateTime(new Date());
         userRemainder.setRemainder(new BigDecimal(price));
-        userRemainder.setType(0);
+        userRemainder.setType(UserRemainderType.CONSUME);
         userRemainder.setUserId(order.getUserId());
         userRemainder.setOrderNum(order.getOrderNum());
-        userRemainder.setIsOk(2);
+        userRemainder.setStatus(UserRemainderStatus.PASSED);
         userRemainder.setPlatformNumber(order.getPlatformNumber());
         userRemainder.insert();
 

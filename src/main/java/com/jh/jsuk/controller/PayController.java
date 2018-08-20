@@ -16,10 +16,12 @@ import com.egzosn.pay.wx.bean.WxTransactionType;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.GoodsVo;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
-import com.jh.jsuk.exception.MessageException;
+import com.jh.jsuk.envm.UserRemainderStatus;
+import com.jh.jsuk.envm.UserRemainderType;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.*;
@@ -178,8 +180,8 @@ public class PayController {
             userRemainder.setOrderNum("JSUKVIP" + RandomUtil.randomNumbers(18));
 //            userRemainder.setRemainder(new BigDecimal(memberConfig.getMemberPrice()));
             userRemainder.setMemberId(memberConfigId);
-            userRemainder.setIsOk(0);
-            userRemainder.setType(2);
+            userRemainder.setStatus(UserRemainderStatus.PASSED);
+            userRemainder.setType(UserRemainderType.CONSUME);
             userRemainder.setCreateTime(new Date());
             //新增购买充值记录
             userRemainder.insert();
@@ -261,8 +263,8 @@ public class PayController {
             userRemainder.setUserId(userId);
             userRemainder.setOrderNum("JSUKCZ" + RandomUtil.randomNumbers(18));
             userRemainder.setRemainder(new BigDecimal(paymentAmount));
-            userRemainder.setIsOk(0);
-            userRemainder.setType(1);
+            userRemainder.setStatus(UserRemainderStatus.PASSED);
+            userRemainder.setType(UserRemainderType.CONSUME);
             userRemainder.setCreateTime(new Date());
             //新增用户充值记录
             userRemainder.insert();
@@ -347,12 +349,12 @@ public class PayController {
             //当为购买订单时memberConfigId必须
             if (StrUtil.equals(orderType, "2")) {
                 userRemainder = userRemainderService.selectOne(new MyEntityWrapper<UserRemainder>().eq(UserRemainder.ORDER_NUM, orderId)
-                    .eq(UserRemainder.IS_OK, "0")
+                    .eq(UserRemainder.STATUS, "0")
                 );
                 if (userRemainder == null) {
                     return ServerResponse.createByErrorMessage("订单不存在");
                 }
-                if (userRemainder.getIsOk() > 0) {
+                if (UserRemainderStatus.PASSED.equals(userRemainder.getRemainder())) {
                     return ServerResponse.createByErrorMessage("订单已支付,请勿重复支付");
                 }
                 payOrder = new PayOrder("巨商U客订单" + userRemainder.getOrderNum(), "巨商U客充值会员订单", userRemainder.getRemainder(), orderId);
@@ -439,7 +441,7 @@ public class PayController {
                 }
             }
             for (UserOrder userOrder : userOrders) {
-                UserRemainder userRemainder = userRemainderService.selectOne(new MyEntityWrapper<UserRemainder>().eq(UserRemainder.ORDER_NUM, userOrder.getOrderNum()).eq(UserRemainder.IS_OK, "0"));
+                UserRemainder userRemainder = userRemainderService.selectOne(new MyEntityWrapper<UserRemainder>().eq(UserRemainder.ORDER_NUM, userOrder.getOrderNum()).eq(UserRemainder.STATUS, UserRemainderStatus.APPLYING));
                 if (userOrder != null) {
                     //TODO 普通订单
                     //0待付款  1待发货  2=已发货 3=交易成功 4=申请退款 5=退款成功 6=交易关闭 7=售后
@@ -461,11 +463,11 @@ public class PayController {
                     }
                 } else if (userRemainder != null) {
                     //0待付款  1已付款
-                    if (userRemainder.getIsOk() > 0) {
+                    if (UserRemainderStatus.PASSED.equals(userRemainder.getStatus())) {
                         return true;
                     } else {
                         //类型 1=充值,-1=消费,0=其他,2=购买会员
-                        Integer type = userRemainder.getType();
+                        Integer type = userRemainder.getType().getKey();
                         logger.info("充值类型--->{}", type);
                         //TODO 充值订单
                         try {
@@ -477,7 +479,7 @@ public class PayController {
 //                                    user.setLevel(memberConfig.getId());
                                     user.updateById();
                                 case 1:
-                                    userRemainder.setIsOk(1);
+                                    userRemainder.setStatus(UserRemainderStatus.PASSED);
                                     userRemainder.setPlatformNumber(platform_number);
                                     //更新充值订单状态
                                     userRemainder.updateById();
@@ -588,21 +590,24 @@ public class PayController {
         return null;
     }
 
+    @Autowired
+    Session session;
+
     @ApiOperation(value = "用户端-余额支付")
     @RequestMapping(value = "/balancePay", method = {RequestMethod.POST, RequestMethod.GET})
     public Result balancePay(@ApiParam(name = "orderId", value = "订单Id") String orderId,
-                             @ApiParam(name = "type", value = "类型 1.商品订单 2.快递跑腿") Integer type) throws MessageException {
+                             @ApiParam(name = "type", value = "类型 1.商品订单 2.快递跑腿") Integer type) throws Exception {
 
         switch (type) {
             case 1:
                 //商品订单支付
                 String[] ids = orderId.split(",");
                 List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
-                userOrderService.balancePay(userOrders);
+                userOrderService.balancePay(userOrders, session.getUserId());
                 break;
             case 2:
                 //快递跑腿订单支付
-                expressService.balancePay(orderId);
+                expressService.balancePay(orderId, session.getUserId());
                 break;
         }
         //余额支付

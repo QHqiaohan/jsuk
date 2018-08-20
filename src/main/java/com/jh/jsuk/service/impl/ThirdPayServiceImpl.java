@@ -5,6 +5,8 @@ import com.jh.jsuk.entity.vo.ChargeParamVo;
 import com.jh.jsuk.entity.vo.ThirdPayVo;
 import com.jh.jsuk.entity.vo.ThirdPayVoChild;
 import com.jh.jsuk.envm.OrderStatus;
+import com.jh.jsuk.envm.UserRemainderStatus;
+import com.jh.jsuk.envm.UserRemainderType;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
@@ -129,7 +131,7 @@ public class ThirdPayServiceImpl implements ThirdPayService {
         user.updateById();
         //用户余额
         UserRemainder userRemainder = userRemainderService.selectById(payVoChild.getUserRemainderId());
-        userRemainder.setIsOk(2);
+        userRemainder.setStatus(UserRemainderStatus.PASSED);
         userRemainder.updateById();
         //用户充值记录
         UserRechargeRecord userRechargeRecord = userRechargeRecordService.selectById(payVoChild.getUserRechargeRecordId());
@@ -183,7 +185,8 @@ public class ThirdPayServiceImpl implements ThirdPayService {
         Member member = memberService.selectById(payVo.getParam());
         //用户余额表
         UserRemainder e = new UserRemainder();
-        e.setType(2);
+        e.setType(UserRemainderType.RECHARGE);
+        e.setStatus(UserRemainderStatus.APPLYING);
         e.setUserId(payVo.getUserId());
         e.setCreateTime(new Date());
         e.setMemberId(member.getId());

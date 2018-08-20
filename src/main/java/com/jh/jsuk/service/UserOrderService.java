@@ -94,7 +94,7 @@ public interface UserOrderService extends IService<UserOrder> {
     /**
      * 订单余额支付
      */
-    void balancePay(List<UserOrder> userOrders) throws MessageException;
+    void balancePay(List<UserOrder> userOrders, Integer userId) throws Exception;
 
 
     /**
