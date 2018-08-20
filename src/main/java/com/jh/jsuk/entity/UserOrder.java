@@ -137,6 +137,12 @@ public class UserOrder extends Model<UserOrder> {
      */
     private String logisticsNo;
     /**
+     * 物流类型
+     */
+    private String logisticstype;
+
+
+    /**
      * 备注
      */
     private String remark;
@@ -162,7 +168,16 @@ public class UserOrder extends Model<UserOrder> {
      */
     private Date updateTime;
 
-
+    /**
+     * 设置物流类型
+     * @param logisticstype
+     */
+    public void setLogisticstype(String logisticstype){
+    this.logisticstype=logisticstype;
+}
+public String getLogisticstype(){
+    return logisticstype;
+}
     public Integer getId() {
         return id;
     }

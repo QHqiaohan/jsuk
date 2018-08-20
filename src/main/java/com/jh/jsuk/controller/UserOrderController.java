@@ -554,14 +554,99 @@ public class UserOrderController {
         userOrder.updateById();
         return new Result().success("取消成功!");
     }
+    @ApiOperation(value = "获取物流类型")
+    @RequestMapping(value = "/getLogisticstype", method = {RequestMethod.POST, RequestMethod.GET})
+    public Result getLogisticstype(){
+        Map<String,String> coms=new HashMap<>();
+        coms.put("aae", "aae全球专递");
+        coms.put("anjie", "安捷快递");
+        coms.put("anxindakuaixi", "安信达快递");
+        coms.put("biaojikuaidi", "彪记快递");
+        coms.put("bht", "bht");
+        coms.put("baifudongfang", "百福东方国际物流");
+        coms.put("coe", "中国东方（COE）");
+        coms.put("changyuwuliu", "长宇物流");
+        coms.put("datianwuliu", "大田物流");
+        coms.put("debangwuliu", "德邦物流");
+        coms.put("dhl", "dhl");
+        coms.put("dpex", "dpex");
+        coms.put("dsukuaidi", "d速快递");
+        coms.put("disifang", "递四方");
+        coms.put("ems", "ems快递");
+        coms.put("fedex", "fedex（国外）");
+        coms.put("feikangda", "飞康达物流");
+        coms.put("fenghuangkuaidi", "凤凰快递");
+        coms.put("feikuaida", "飞快达");
+        coms.put("guotongkuaidi", "国通快递");
+        coms.put("ganzhongnengda", "港中能达物流");
+        coms.put("guangdongyouzhengwuliu", "广东邮政物流");
+        coms.put("gongsuda", "共速达");
+        coms.put("huitongkuaidi", "汇通快运");
+        coms.put("hengluwuliu", "恒路物流");
+        coms.put("huaxialongwuliu", "华夏龙物流");
+        coms.put("haihongwangsong", "海红");
+        coms.put("haiwaihuanqiu", "海外环球");
+        coms.put("jiayiwuliu", "佳怡物流");
+        coms.put("jinguangsudikuaijian", "京广速递");
+        coms.put("jixianda", "急先达");
+        coms.put("jjwl", "佳吉物流");
+        coms.put("jymwl", "加运美物流");
+        coms.put("jindawuliu", "金大物流");
+        coms.put("jialidatong", "嘉里大通");
+        coms.put("jykd", "晋越快递");
+        coms.put("kuaijiesudi", "快捷速递");
+        coms.put("lianb", "联邦快递（国内）");
+        coms.put("lianhaowuliu", "联昊通物流");
+        coms.put("longbanwuliu", "龙邦物流");
+        coms.put("lijisong", "立即送");
+        coms.put("lejiedi", "乐捷递");
+        coms.put("minghangkuaidi", "民航快递");
+        coms.put("meiguokuaidi", "美国快递");
+        coms.put("menduimen", "门对门");
+        coms.put("ocs", "OCS");
+        coms.put("peisihuoyunkuaidi", "配思货运");
+        coms.put("quanchenkuaidi", "全晨快递");
+        coms.put("quanfengkuaidi", "全峰快递");
+        coms.put("quanjitong", "全际通物流");
+        coms.put("quanritongkuaidi", "全日通快递");
+        coms.put("quanyikuaidi", "全一快递");
+        coms.put("rufengda", "如风达");
+        coms.put("santaisudi", "三态速递");
+        coms.put("shenghuiwuliu", "盛辉物流");
+        coms.put("shentong", "申通");
+        coms.put("shunfeng", "顺丰");
+        coms.put("sue", "速尔物流");
+        coms.put("shengfeng", "盛丰物流");
+        coms.put("saiaodi", "赛澳递");
+        coms.put("tiandihuayu", "天地华宇");
+        coms.put("tiantian", "天天快递");
+        coms.put("tnt", "tnt");
+        coms.put("ups", "ups");
+        return new Result().success(coms);
+    }
 
+    /**
+     *
+     * @param id
+     * @param type 1.快递，2.同城跑腿
+     * @param logisticsNype
+     * @param logisticsNo
+     * @return
+     */
     @ApiOperation(value = "商家端-确认发货")
     @RequestMapping(value = "/sendOrder", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result sendOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
-        UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
-        userOrder.setStatus(OrderStatus.DELIVERED.getKey());
-        userOrder.updateById();
-        return new Result().success("发货成功!");
+    public Result sendOrder(@ApiParam(value = "订单ID", required = true) Integer id,Integer type,String logisticsType,
+                            String logisticsNo) {
+        if(type==1){
+            UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
+            userOrder.setStatus(OrderStatus.DELIVERED.getKey());
+            userOrder.setLogisticsNo(logisticsNo);
+            userOrder.setLogisticstype(logisticsType);
+            userOrder.updateById();
+            return new Result().success("发货成功!");
+        }
+        return new Result().success("暂未开发");
+
     }
 
     @ApiOperation(value = "用户端-删除订单")
