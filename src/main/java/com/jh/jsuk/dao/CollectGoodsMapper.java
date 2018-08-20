@@ -3,7 +3,7 @@ package com.jh.jsuk.dao;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.CollectGoods;
-import com.jh.jsuk.entity.ShopGoods;
+import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -18,6 +18,6 @@ import java.util.List;
  */
 public interface CollectGoodsMapper extends BaseMapper<CollectGoods> {
 
-    List<ShopGoods> selectCollectList(Page page,@Param("userId") Integer userId);
+    List<GoodsSalesPriceVo> selectCollectList(Page page, @Param("userId") Integer userId);
 
 }
