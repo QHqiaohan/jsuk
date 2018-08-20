@@ -4,6 +4,7 @@ package com.jh.jsuk.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.UserRemainder;
+import com.jh.jsuk.envm.UserRemainderType;
 import com.jh.jsuk.service.UserRemainderService;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
@@ -59,7 +60,7 @@ public class UserRemainderController {
         if (userRemainderList.size() != 0) {
             for (UserRemainder ur : userRemainderList) {
                 // 如果是消费
-                if (ur.getType() == -1) {
+                if (UserRemainderType.CONSUME.equals(ur.getType())) {
                     decimalSum = decimalSum.subtract(ur.getRemainder());
                 } else {
                     // 充值

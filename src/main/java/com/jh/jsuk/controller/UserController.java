@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -581,50 +580,9 @@ public class UserController {
         }
         // 封装数据map
         Map<String, Object> map = new HashMap<>();
-        /**
-         * 获取用户总积分
-         */
-        List<UserIntegral> userIntegrals = userIntegralService.selectList(new EntityWrapper<UserIntegral>()
-            .eq(UserIntegral.USER_ID, userId));
-        // 如果余额表没有该用户信息
-        if (userIntegrals.size() == 0) {
-            map.put("sum_jiFen", 0);
-        } else {
-            // 初始记录总积分数
-            int sum = 0;
-            for (UserIntegral integral : userIntegrals) {
-                // 如果是购物获赠积分
-                if (integral.getIntegralType() == 1) {
-                    sum += integral.getIntegralNumber();
-                    // 抵扣积分
-                } else if (integral.getIntegralType() == -1) {
-                    sum -= integral.getIntegralNumber();
-                }
-            }
-            map.put("sum_jiFen", sum);
-        }
-        /**
-         * 获取用户总余额
-         */
+        map.put("sum_jiFen", userIntegralService.getIntegral(userId));
 
-        List<UserRemainder> userRemainderList = userRemainderService.selectList(new EntityWrapper<UserRemainder>().eq(UserRemainder.USER_ID, userId));
-        // 初始化记录总余额
-        BigDecimal decimalSum = new BigDecimal("0.00");
-        // 如果余额表有该用户信息
-        if (userRemainderList.size() != 0) {
-            for (UserRemainder ur : userRemainderList) {
-                // 如果是消费
-                if (ur.getType() == -1) {
-                    decimalSum = decimalSum.subtract(ur.getRemainder());
-                } else {
-                    // 充值
-                    decimalSum = decimalSum.add(ur.getRemainder());
-                }
-            }
-            map.put("sum_yuE", decimalSum);
-        } else {
-            map.put("sum_yuE", 0);
-        }
+        map.put("sum_yuE", userRemainderService.getRemainder(userId));
         /**
          * 获取用户优惠券总数
          */

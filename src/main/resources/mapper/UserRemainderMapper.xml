@@ -9,16 +9,15 @@
         <result column="type" property="type"/>
         <result column="remainder" property="remainder"/>
         <result column="user_id" property="userId"/>
-        <result column="is_ok" property="isOk"/>
+        <result column="status" property="status"/>
         <result column="member_id" property="memberId"/>
-        <result column="id_del" property="idDel"/>
         <result column="order_num" property="orderNum"/>
         <result column="platform_number" property="platformNumber"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, create_time, type, remainder, user_id, is_ok, member_id, id_del, order_num, platform_number
+        id, create_time, `type`, remainder, user_id, status, member_id, order_num, platform_number
     </sql>
 
 </mapper>

@@ -114,9 +114,11 @@ public class ExpressController {
         }
         express.setStatus(1);
         express.setOrderNo(OrderNumUtil.getOrderIdByUUId());
+        runningFeeService.caleRunningFee(express);
         express.insert();
         map.put("expressId", express.getId());
         map.put("orderNo", express.getOrderNo());
+        map.put("price", express.getPrice());
         distributionUserService.notifyRobbing();
         return new Result().success(map);
 
@@ -144,8 +146,7 @@ public class ExpressController {
             StrUtil.isBlank(endLat)){
             return R.err("数据为空");
         }
-        long distance = GetDistance.getDistance(startLng + "," + startLat, endLng + "," + endLat);
-        return R.succ(runningFeeService.caleRunningFee(distance));
+        return R.succ(runningFeeService.caleRunningFee(startLng + "," + startLat, endLng + "," + endLat));
     }
 
     @ApiOperation("用户端-跑腿订单列表-不传表示查所有")

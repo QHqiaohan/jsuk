@@ -9,6 +9,8 @@ import com.jh.jsuk.entity.UserRechargeRecord;
 import com.jh.jsuk.entity.UserRemainder;
 import com.jh.jsuk.entity.vo.ChargeParamVo;
 import com.jh.jsuk.entity.vo.UserRechargeVo;
+import com.jh.jsuk.envm.UserRemainderStatus;
+import com.jh.jsuk.envm.UserRemainderType;
 import com.jh.jsuk.service.MemberService;
 import com.jh.jsuk.service.UserRechargeRecordService;
 import com.jh.jsuk.service.UserRemainderService;
@@ -53,7 +55,7 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
         // 如果余额表有该用户信息
         for (UserRemainder remainder : list) {
             // 如果是消费
-            if (remainder.getType() == -1) {
+            if (UserRemainderType.CONSUME.equals(remainder.getType())) {
                 remain = remain.subtract(remainder.getRemainder());
             } else {
                 // 充值
@@ -67,7 +69,7 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
     public BigDecimal getConsumption(Integer userId) {
         List<UserRemainder> list = selectList(new EntityWrapper<UserRemainder>()
             .eq(UserRemainder.USER_ID, userId)
-            .eq(UserRemainder.TYPE, -1));
+            .eq(UserRemainder.TYPE, UserRemainderType.CONSUME));
         // 初始化记录总余额
         BigDecimal remain = new BigDecimal("0.00");
         if (list == null || list.isEmpty())
@@ -86,6 +88,8 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
 
     @Override
     public boolean hasRemain(Integer userId, BigDecimal bigDecimal) {
+        if (userId == null || bigDecimal == null)
+            return false;
         return getRemainder(userId).compareTo(bigDecimal) > 0;
     }
 
@@ -95,14 +99,14 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
         e.setUserId(userId);
         e.setCreateTime(new Date());
         e.setRemainder(amount);
-        e.setType(-1);
+        e.setType(UserRemainderType.CONSUME);
         insert(e);
     }
 
     @Override
     public void recharge(Integer userId, BigDecimal amount) throws Exception {
         UserRemainder e = new UserRemainder();
-        e.setType(1);
+        e.setType(UserRemainderType.RECHARGE);
         e.setUserId(userId);
         e.setCreateTime(new Date());
         e.setRemainder(amount);
@@ -115,7 +119,7 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
         Member member = memberService.selectById(memberId);
         //用户余额表
         UserRemainder e = new UserRemainder();
-        e.setType(2);
+        e.setType(UserRemainderType.RECHARGE);
         e.setUserId(userId);
         e.setCreateTime(new Date());
         e.setMemberId(memberId);
@@ -150,7 +154,7 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
     public void chargeComplete(Integer remainderId, Integer rechargeRecordId, Integer status) {
         //用户余额
         UserRemainder userRemainder = selectById(remainderId);
-        userRemainder.setIsOk(status == 1 ? 2 : 1);
+        userRemainder.setStatus(UserRemainderStatus.PASSED);
         userRemainder.updateById();
         //用户充值记录
         UserRechargeRecord userRechargeRecord = recordService.selectById(rechargeRecordId);

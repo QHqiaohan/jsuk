@@ -7,7 +7,6 @@ import com.jh.jsuk.entity.Express;
 import com.jh.jsuk.entity.vo.ExpressVo2;
 import com.jh.jsuk.envm.ExpressStatus;
 import com.jh.jsuk.envm.UserType;
-import com.jh.jsuk.exception.MessageException;
 
 import java.util.List;
 
@@ -45,5 +44,5 @@ public interface ExpressService extends IService<Express> {
     /**
      * 快递跑腿 余额支付
      */
-    void balancePay(String orderId) throws MessageException;
+    void balancePay(String orderId, Integer userId) throws Exception;
 }
