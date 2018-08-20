@@ -520,7 +520,12 @@ public class ShopGoodsController {
             return new Result().erro("请上传商品头图");
         }*/
 
+        //根据店铺id查询区域id
+        Shop shop = new Shop();
+        Shop shop1 = shop.selectById(shopId);
+        Integer cityId = shop1.getCityId();
         ShopGoods shopGoods = new ShopGoods();
+        shopGoods.setCityId(cityId);
         shopGoods.setShopId(shopId);
         shopGoods.setAttributeId(addGoodsVo.getAttributeId());
         shopGoods.setBrandName(addGoodsVo.getBrandName());
