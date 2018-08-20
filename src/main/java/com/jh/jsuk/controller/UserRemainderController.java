@@ -4,6 +4,7 @@ package com.jh.jsuk.controller;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.UserRemainder;
+import com.jh.jsuk.envm.UserRemainderStatus;
 import com.jh.jsuk.service.UserRemainderService;
 import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
@@ -32,17 +33,18 @@ public class UserRemainderController {
 
     @ApiOperation(value = "用户-查询余额账单明细")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "current", value = "当前页码",
-                    paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数",
-                    paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "current", value = "当前页码",
+            paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "size", value = "每页条数",
+            paramType = "query", dataType = "integer"),
     })
     @PostMapping("/getBill")
     public Result getBill(@RequestParam Integer userId, Page page) {
         // 根据用户ID查询用户余额账单
         Page remainderPage = userRemainderService.selectPage(page, new EntityWrapper<UserRemainder>()
-                .eq(UserRemainder.USER_ID, userId)
-                .orderBy(UserRemainder.CREATE_TIME, false));
+            .eq(UserRemainder.USER_ID, userId)
+            .eq(UserRemainder.STATUS, UserRemainderStatus.PASSED.getKey())
+            .orderBy(UserRemainder.CREATE_TIME, false));
         return new Result().success(remainderPage);
     }
 

@@ -186,6 +186,7 @@ public class ThirdPayServiceImpl implements ThirdPayService {
         //用户余额表
         UserRemainder e = new UserRemainder();
         e.setType(UserRemainderType.RECHARGE);
+        e.setStatus(UserRemainderStatus.APPLYING);
         e.setUserId(payVo.getUserId());
         e.setCreateTime(new Date());
         e.setMemberId(member.getId());

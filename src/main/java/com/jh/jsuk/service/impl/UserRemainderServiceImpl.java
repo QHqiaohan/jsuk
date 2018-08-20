@@ -49,6 +49,7 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
     public UserRemainderInfo getRemainder(Integer userId) {
         UserRemainderInfo info = new UserRemainderInfo();
         List<UserRemainder> list = selectList(new EntityWrapper<UserRemainder>()
+            .eq(UserRemainder.STATUS,UserRemainderStatus.PASSED.getKey())
             .eq(UserRemainder.USER_ID, userId));
         // 初始化记录总余额
         BigDecimal remain = new BigDecimal("0.00");
@@ -73,12 +74,12 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
                 case REFUND:
                     totalCash = totalCash.add(remainder.getRemainder());
                 case RECHARGE:
-                    remain = remain.subtract(remainder.getRemainder());
+                    remain = remain.add(remainder.getRemainder());
                     break;
                 case CASH:
-                    cashed = cashed.add(remainder.getRemainder());
+                    cashed = cashed.subtract(remainder.getRemainder());
                 case CONSUME:
-                    remain = remain.add(remainder.getRemainder());
+                    remain = remain.subtract(remainder.getRemainder());
                     break;
             }
         }
