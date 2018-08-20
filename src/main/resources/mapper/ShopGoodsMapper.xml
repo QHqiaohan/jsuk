@@ -48,13 +48,13 @@
    *
     FROM
     js_shop_goods jsg
-    LEFT JOIN js_sys_citys jsc
-    ON jsg.city_id = jsc.id
+    LEFT JOIN js_sys_weather_city_open jsc
+    ON jsg.city_id = jsc.weather_city_id
     WHERE
     jsg.is_recommend = '1'
     AND jsg.`status` = '1'
     AND jsg.is_del = 0
-    AND jsg.shop_modular_id = #{modularId}
+--     AND jsg.shop_modular_id = #{modularId}
     AND jsg.city_id = #{cityId}
     ORDER BY
     jsg.sale_amont DESC
