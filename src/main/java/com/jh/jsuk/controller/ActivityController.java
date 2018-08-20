@@ -148,8 +148,7 @@ public class ActivityController {
         Page<SpecialTheme> themePage = specialThemeService.selectPage(
             new Page<>(1, 1),
             new EntityWrapper<SpecialTheme>()
-                .e
-            q(SpecialTheme.IS_DEL, 0)
+                .eq(SpecialTheme.IS_DEL, 0)
                 .orderBy(SpecialTheme.RANK, false));
         Page isRecommend = shopGoodsService.getIsRecommend(new Page(1, 1), new EntityWrapper());
         List list = isRecommend.getRecords();
