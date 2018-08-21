@@ -826,15 +826,24 @@ public class UserOrderController {
     @RequestMapping(value = "/sendOrder", method = {RequestMethod.POST, RequestMethod.GET})
     public Result sendOrder(@ApiParam(value = "订单ID", required = true) Integer id,Integer type,String logisticsType,
                             String logisticsNo) {
+        UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
         if(type==1){
-            UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
+
             userOrder.setStatus(OrderStatus.DELIVERED.getKey());
             userOrder.setLogisticsNo(logisticsNo);
             userOrder.setLogisticstype(logisticsType);
             userOrder.updateById();
             return new Result().success("发货成功!");
+        }else if(type==2){
+            userOrder.setStatus(OrderStatus.DELIVERED.getKey());
+            userOrder.updateById();
+            return new Result().success("发货成功");
+        }else{
+            userOrder.setStatus(OrderStatus.DELIVERED.getKey());
+            userOrder.updateById();
+            return new Result().success("发货成功");
         }
-        return new Result().success("暂未开发");
+
 
     }
 
