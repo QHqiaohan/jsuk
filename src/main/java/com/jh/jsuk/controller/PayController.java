@@ -597,17 +597,16 @@ public class PayController {
     @RequestMapping(value = "/balancePay", method = {RequestMethod.POST, RequestMethod.GET})
     public Result balancePay(@ApiParam(name = "orderId", value = "订单Id") String orderId,
                              @ApiParam(name = "type", value = "类型 1.商品订单 2.快递跑腿") Integer type) throws Exception {
-
         switch (type) {
             case 1:
                 //商品订单支付
                 String[] ids = orderId.split(",");
                 List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
-                userOrderService.balancePay(userOrders, session.getUserId());
+                userOrderService.balancePay(userOrders, session.lUserId());
                 break;
             case 2:
                 //快递跑腿订单支付
-                expressService.balancePay(orderId, session.getUserId());
+                expressService.balancePay(orderId, session.lUserId());
                 break;
         }
         //余额支付

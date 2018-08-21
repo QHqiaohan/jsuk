@@ -660,15 +660,17 @@ public class UserOrderController {
 
     @ApiOperation(value = "用户端-申请售后")
     @RequestMapping(value = "/addOrderService", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result addOrderService(@ModelAttribute com.jh.jsuk.entity.UserOrderService userOrderService1) {
-        UserOrder userOrder = userOrderService.selectById(userOrderService1.getOrderId());
-        if (userOrderService1.getType() != 3) {
+    public Result addOrderService(@ModelAttribute com.jh.jsuk.entity.UserOrderService service) {
+        UserOrder userOrder = userOrderService.selectById(service.getOrderId());
+        if (service.getType() != 3) {
             userOrder.setStatus(OrderStatus.REFUND_MONEY.getKey());
         } else {
             userOrder.setStatus(OrderStatus.REFUND_GOODS.getKey());
         }
         userOrder.updateById();
-        userOrderService1.insert();
+        service.setServiceCode(OrderNumUtil.getOrderIdByUUId());
+
+        service.insert();
         return new Result().success("操作成功!");
     }
 

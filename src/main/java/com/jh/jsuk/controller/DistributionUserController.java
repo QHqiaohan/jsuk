@@ -13,7 +13,6 @@ import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.jwt.AccessToken;
 import com.jh.jsuk.entity.jwt.JwtParam;
 import com.jh.jsuk.entity.vo.DistributionUserVo;
-import com.jh.jsuk.entity.vo.PlatformDistributionUserVo;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.*;
@@ -52,49 +51,57 @@ public class DistributionUserController {
     @Autowired
     private DistributionDetailService distributionDetailService;
 
+    @PatchMapping
+    public R edit(DistributionUser user) {
+        user.updateById();
+        return R.succ();
+    }
+
     @ApiOperation("骑手-登陆")
     @PostMapping("/login")
-    public Result login(@RequestParam @ApiParam(value = "手机号", required = true) String phone, @RequestParam @ApiParam(value = "密码", required = true) String password, HttpServletRequest request) throws Exception {
+    public Result login(@RequestParam @ApiParam(value = "手机号", required = true) String phone,
+                        @RequestParam @ApiParam(value = "密码", required = true) String password, HttpServletRequest request) throws Exception {
         Result result = new Result();
         DistributionUser user = distributionUserService.selectOne(new EntityWrapper<DistributionUser>()
-                .eq(DistributionUser.PHONE, phone));
-        if (user != null) {
-            if (user.getCanUse() == 0) {
-                result.setCode((long) 2002);
-                result.setMsg("非常抱歉，系统维护中，十万火急请打电话!");
-            } else if (MD5Util.getMD5(password).equals(user.getPassword())) {
-                Date loginTime = new Date();
-                JwtParam jwtParam = new JwtParam();
-                jwtParam.setUserId(user.getId());
-                jwtParam.setLoginTime(loginTime);
-                jwtParam.setLoginType(2);
-                user.setLastLoginTime(loginTime);
-                user.setLoginIp(IpUtil.getIpAddr(request));
-                distributionUserService.updateById(user);
-                String subject = JwtHelper.generalSubject(jwtParam);
-                String jwt = jwtHelper.createJWT(Constant.JWT_ID, subject);
-                AccessToken accessToken = new AccessToken();
-                accessToken.setAccess_id(user.getId());
-                accessToken.setAccess_token(jwt);
-                result.success("登录成功", accessToken);
-            } else {
-                result.erro("密码错误");
-            }
-        } else {
-            result.erro("该用户不存在");
+            .eq(DistributionUser.PHONE, phone));
+        if (user == null) {
+            return result.erro("用户名或密码错误");
         }
+        if (!MD5Util.getMD5(password).equals(user.getPassword())) {
+            return result.erro("用户名或密码错误");
+        }
+        Integer status = user.getStatus();
+        if (status == null || !status.equals(1))
+            return result.erro("该账号未审核通过");
+        Integer canUse = user.getCanUse();
+        if (canUse == null || !canUse.equals(1))
+            return result.erro("该账号已被禁用");
+        Date loginTime = new Date();
+        JwtParam jwtParam = new JwtParam();
+        jwtParam.setUserId(user.getId());
+        jwtParam.setLoginTime(loginTime);
+        jwtParam.setLoginType(2);
+        user.setLastLoginTime(loginTime);
+        user.setLoginIp(IpUtil.getIpAddr(request));
+        distributionUserService.updateById(user);
+        String subject = JwtHelper.generalSubject(jwtParam);
+        String jwt = jwtHelper.createJWT(Constant.JWT_ID, subject);
+        AccessToken accessToken = new AccessToken();
+        accessToken.setAccess_id(user.getId());
+        accessToken.setAccess_token(jwt);
+        result.success("登录成功", accessToken);
         return result;
     }
 
     @ApiOperation("骑手-注册")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "phone", required = true, value = "手机号", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "password", required = true, value = "密码", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "name", required = true, value = "姓名", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "idCardNo", required = true, value = "身份证号码", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "cardFront", required = true, value = "身份证正面图", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "cardBack", required = true, value = "身份证背面图", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "code", required = true, value = "验证码", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "phone", required = true, value = "手机号", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "password", required = true, value = "密码", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "name", required = true, value = "姓名", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "idCardNo", required = true, value = "身份证号码", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "cardFront", required = true, value = "身份证正面图", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "cardBack", required = true, value = "身份证背面图", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "code", required = true, value = "验证码", paramType = "query", dataType = "string"),
     })
     @PostMapping("/register")
     public Result register(@ModelAttribute DistributionUser distributionUser, @RequestParam String code, HttpSession session) {
@@ -122,9 +129,9 @@ public class DistributionUserController {
 
     @ApiOperation("骑手-信息修改")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "headImg", required = true, value = "头像", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "gender", required = true, value = "性别", paramType = "query", dataType = "int"),
-            @ApiImplicitParam(name = "age", required = true, value = "年龄", paramType = "query", dataType = "int"),
+        @ApiImplicitParam(name = "headImg", required = true, value = "头像", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "gender", required = true, value = "性别", paramType = "query", dataType = "int"),
+        @ApiImplicitParam(name = "age", required = true, value = "年龄", paramType = "query", dataType = "int"),
     })
     @PostMapping("/edit")
     public Result edit(@ModelAttribute DistributionUser distributionUser, Integer userId) {
@@ -145,21 +152,21 @@ public class DistributionUserController {
 
     @ApiOperation("骑手-绑定支付宝")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "bankNumber", required = true,value = "支付宝账号", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "phone", required = true, value = "手机号", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "code", required = true, value = "验证码", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "bankNumber", required = true, value = "支付宝账号", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "phone", required = true, value = "手机号", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "code", required = true, value = "验证码", paramType = "query", dataType = "string"),
     })
     @PostMapping("/binding")
-    public Result binding(UserBank bank,String phone,String code, Integer userId,HttpSession session) {
+    public Result binding(UserBank bank, String phone, String code, Integer userId, HttpSession session) {
         Result result = new Result();
         String verificationCode = (String) session.getAttribute(phone + "bind0");
-        if(verificationCode == null)
+        if (verificationCode == null)
             return result.erro("验证码已失效");
         Wrapper<UserBank> wrapper = new EntityWrapper<>();
-        wrapper.eq(UserBank.USER_TYPE,1)
-                .eq(UserBank.USER_ID,userId);
+        wrapper.eq(UserBank.USER_TYPE, 1)
+            .eq(UserBank.USER_ID, userId);
         UserBank userBank = userBankService.selectOne(wrapper);
-        if(userBank != null)
+        if (userBank != null)
             return result.erro("已绑定支付宝");
         bank.setUserType(1);
         bank.setBankName("支付宝");
@@ -170,21 +177,21 @@ public class DistributionUserController {
 
     @ApiOperation("骑手-修改绑定支付宝")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "bankNumber", required = true, value = "支付宝账号", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "phone",required = true, value = "手机号", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "code",required = true, value = "验证码", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "bankNumber", required = true, value = "支付宝账号", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "phone", required = true, value = "手机号", paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "code", required = true, value = "验证码", paramType = "query", dataType = "string"),
     })
     @PostMapping("/binding/edit")
-    public Result bindingEdit(UserBank bank,String phone,String code, Integer userId,HttpSession session) {
+    public Result bindingEdit(UserBank bank, String phone, String code, Integer userId, HttpSession session) {
         Result result = new Result();
         String verificationCode = (String) session.getAttribute(phone + "bind0");
-        if(verificationCode == null)
+        if (verificationCode == null)
             return result.erro("验证码已失效");
         Wrapper<UserBank> wrapper = new EntityWrapper<>();
-        wrapper.eq(UserBank.USER_TYPE,1)
-                .eq(UserBank.BANK_NAME,"支付宝")
-                .eq(UserBank.USER_ID,userId);
-        userBankService.update(bank,wrapper);
+        wrapper.eq(UserBank.USER_TYPE, 1)
+            .eq(UserBank.BANK_NAME, "支付宝")
+            .eq(UserBank.USER_ID, userId);
+        userBankService.update(bank, wrapper);
         return new Result().success();
     }
 
@@ -192,8 +199,8 @@ public class DistributionUserController {
     @GetMapping("/binding/get")
     public Result binding(String userId) {
         Wrapper<UserBank> wrapper = new EntityWrapper<>();
-        wrapper.eq(UserBank.USER_TYPE,1)
-                .eq(UserBank.USER_ID,userId);
+        wrapper.eq(UserBank.USER_TYPE, 1)
+            .eq(UserBank.USER_ID, userId);
         return new Result().success(userBankService.selectList(wrapper));
     }
 
@@ -240,8 +247,8 @@ public class DistributionUserController {
     @ApiOperation("骑手-修改骑手工作状态")
     @GetMapping("/editJobStatus")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "int"),
-            @ApiImplicitParam(name = "jobStatus", value = "状态 0:休息 1:接单", required = true, paramType = "query", dataType = "int"),
+        @ApiImplicitParam(name = "userId", value = "用户ID", required = true, paramType = "query", dataType = "int"),
+        @ApiImplicitParam(name = "jobStatus", value = "状态 0:休息 1:接单", required = true, paramType = "query", dataType = "int"),
     })
     public Result editJobStatus(Integer userId, Integer jobStatus) {
         DistributionUser distributionUser = distributionUserService.selectById(userId);
@@ -255,9 +262,9 @@ public class DistributionUserController {
 
     @ApiOperation("骑手-根据手机验证码修改密码")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "password", value = "新密码", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "password", value = "新密码", required = true, paramType = "query", dataType = "string"),
     })
     @PostMapping("/editPassword")
     public Result editPassword(@RequestParam String phone, @RequestParam String code, @RequestParam String password, HttpSession session) {
@@ -278,8 +285,8 @@ public class DistributionUserController {
 
     @ApiOperation("骑手-修改手机号")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "phone", value = "手机号", required = true, paramType = "query", dataType = "string"),
+        @ApiImplicitParam(name = "code", value = "验证码", required = true, paramType = "query", dataType = "string"),
     })
     @PostMapping("/editPhone")
     public Result editPhone(Integer userId, @RequestParam String phone, @RequestParam String code, HttpSession session) {
@@ -305,10 +312,10 @@ public class DistributionUserController {
     @ApiOperation("骑手-客服中心")
     @GetMapping("/kefu")
     public Result kefu() {
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         Wrapper<Qa> wrapper = new EntityWrapper<>();
-        wrapper.orderBy(Qa.SORT,false);
-        map.put("qa",qaService.selectList(wrapper));
+        wrapper.orderBy(Qa.SORT, false);
+        map.put("qa", qaService.selectList(wrapper));
         return new Result().success(map);
 
     }
@@ -416,69 +423,68 @@ public class DistributionUserController {
 
     /**
      * 后台管理系统-骑手相关
-     *
      */
 
     @ApiOperation("后台管理系统-配送管理-用户列表-高级检索")
-    @RequestMapping(value="/searchDistributionUserBy",method={RequestMethod.GET,RequestMethod.POST})
-    public Result searchDistributionUserBy(String account,String name,Integer current,Integer size){
-        current=current==null?1:current;
-        size=size==null?10:size;
+    @RequestMapping(value = "/searchDistributionUserBy", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result searchDistributionUserBy(String account, String name, Integer current, Integer size) {
+        current = current == null ? 1 : current;
+        size = size == null ? 10 : size;
 
-        Page page=new Page(current,size);
+        Page page = new Page(current, size);
         MyEntityWrapper<DistributionUser> ew = new MyEntityWrapper<>();
-        Page distributionUserPage=distributionUserService.searchDistributionUserBy(page,ew,account,name);
+        Page distributionUserPage = distributionUserService.searchDistributionUserBy(page, ew, account, name);
 
         return new Result().success(distributionUserPage);
     }
 
 
     @ApiOperation("后台管理系统-配送管理-骑手列表")
-    @RequestMapping(value="/getDistributionUserList",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getDistributionUserList(Integer current,Integer size){
-        current=current==null?1:current;
-        size=size==null?10:size;
+    @RequestMapping(value = "/getDistributionUserList", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result getDistributionUserList(Integer current, Integer size) {
+        current = current == null ? 1 : current;
+        size = size == null ? 10 : size;
 
-        Page page=new Page(current,size);
+        Page page = new Page(current, size);
         MyEntityWrapper<DistributionUser> ew = new MyEntityWrapper<>();
-        Page distributionUserPage=distributionUserService.getDistributionUserList(page,ew);
+        Page distributionUserPage = distributionUserService.getDistributionUserList(page, ew);
 
         return new Result().success(distributionUserPage);
     }
 
     @ApiOperation("后台管理系统-配送管理-骑手列表-查看详情")
-    @RequestMapping(value="/getDistributionDetailList",method={RequestMethod.GET,RequestMethod.POST})
-    public Result getDistributionDetailList(@RequestParam Integer distributionUserId,Integer current,Integer size){
-        current=current==null?1:current;
-        size=size==null?10:size;
+    @RequestMapping(value = "/getDistributionDetailList", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result getDistributionDetailList(@RequestParam Integer distributionUserId, Integer current, Integer size) {
+        current = current == null ? 1 : current;
+        size = size == null ? 10 : size;
 
-        Page distributionDetailPage=distributionDetailService.selectPage(new Page(current,size),
-                                                                         new EntityWrapper<DistributionDetail>()
-                                                                             .eq(DistributionDetail.USER_ID,distributionUserId)
-            );
+        Page distributionDetailPage = distributionDetailService.selectPage(new Page(current, size),
+            new EntityWrapper<DistributionDetail>()
+                .eq(DistributionDetail.USER_ID, distributionUserId)
+        );
 
         return new Result().success(distributionDetailPage);
     }
 
 
     @ApiOperation("后台管理系统-配送管理-骑手列表-编辑")
-    @RequestMapping(value="/editDistributionUser",method={RequestMethod.POST})
-    public Result editDistributionUser(@ModelAttribute DistributionUser distributionUser){
-        try{
-            String password=distributionUser.getPassword();
+    @RequestMapping(value = "/editDistributionUser", method = {RequestMethod.POST})
+    public Result editDistributionUser(@ModelAttribute DistributionUser distributionUser) {
+        try {
+            String password = distributionUser.getPassword();
             distributionUser.setPassword(MD5Util.getMD5(password));
             distributionUser.updateById();
-        }catch(Exception e){
+        } catch (Exception e) {
             return new Result().erro("编辑失败");
         }
         return new Result().success("编辑成功");
     }
 
     @ApiOperation("后台管理系统-配送管理-骑手列表-删除")
-    @RequestMapping(value="/deleteDistributionUser",method={RequestMethod.GET,RequestMethod.POST})
-    public Result deleteDistributionUser(@RequestParam Integer distributionUserId){
-        DistributionUser distributionUser=distributionUserService.selectById(distributionUserId);
-        if(distributionUser==null){
+    @RequestMapping(value = "/deleteDistributionUser", method = {RequestMethod.GET, RequestMethod.POST})
+    public Result deleteDistributionUser(@RequestParam Integer distributionUserId) {
+        DistributionUser distributionUser = distributionUserService.selectById(distributionUserId);
+        if (distributionUser == null) {
             return new Result().erro("系统错误,请稍后再试");
         }
         distributionUser.setCanUse(0);

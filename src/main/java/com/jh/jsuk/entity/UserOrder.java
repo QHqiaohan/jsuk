@@ -170,14 +170,17 @@ public class UserOrder extends Model<UserOrder> {
 
     /**
      * 设置物流类型
+     *
      * @param logisticstype
      */
-    public void setLogisticstype(String logisticstype){
-    this.logisticstype=logisticstype;
-}
-public String getLogisticstype(){
-    return logisticstype;
-}
+    public void setLogisticstype(String logisticstype) {
+        this.logisticstype = logisticstype;
+    }
+
+    public String getLogisticstype() {
+        return logisticstype;
+    }
+
     public Integer getId() {
         return id;
     }
