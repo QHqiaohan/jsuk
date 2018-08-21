@@ -523,13 +523,14 @@ public class ShopGoodsController {
         //根据店铺id查询区域id
         Shop shop = new Shop();
         Shop shop1 = shop.selectById(shopId);
+        Integer modularId = shop1.getModularId();
         Integer cityId = shop1.getCityId();
         ShopGoods shopGoods = new ShopGoods();
         shopGoods.setCityId(cityId);
         shopGoods.setShopId(shopId);
         shopGoods.setAttributeId(addGoodsVo.getAttributeId());
         shopGoods.setBrandName(addGoodsVo.getBrandName());
-        shopGoods.setShopModularId(addGoodsVo.getShopModularId());
+        shopGoods.setShopModularId(modularId);
         shopGoods.setIsRecommend(addGoodsVo.getIsRecommend());
         shopGoods.setGoodsLabelId(addGoodsVo.getGoodsLabelId());
         shopGoods.setGoodsName(addGoodsVo.getGoodsName());
@@ -568,37 +569,7 @@ public class ShopGoodsController {
         return new Result().success("添加成功");
     }
 
-    /*    @ApiOperation("商家端-修改商品")
-        @RequestMapping(value = "/updateShopGoods", method = {RequestMethod.POST})
-        public Result updateShopGoods(@ModelAttribute ShopGoods shopGoods,
-                                      @ModelAttribute ShopGoodsSize shopGoodsSize,
-                                      @RequestParam Integer shopGoodsId,
-                                      @RequestParam Integer sizeId) {
-            if(shopGoods.getGoodsName()==null){
-                return new Result().erro("商品名称为空");
-            }
-            if(shopGoods.getCategoryId()==null){
-                return new Result().erro("商品类别为空");
-            }
-            if(shopGoods.getGoodsImg()==null){
-                return new Result().erro("请上传商品详情图片");
-            }
-            if(shopGoods.getMainImage()==null){
-                return new Result().erro("请上传商品头图");
-            }
-            if(shopGoodsSize.getStock()==null){
-                return new Result().erro("请输入规格数量");
-            }
-            if(shopGoodsSize.getSalesPrice()==null){
-                return new Result().erro("请输入商品价格");
-            }
-            shopGoods.setId(shopGoodsId);
-            shopGoods.updateById();
-            // 规格id
-            shopGoodsSize.setId(sizeId);
-            shopGoodsSize.updateById();
-            return new Result().success();
-        }*/
+
     @ApiOperation("商家端-修改商品")
     @RequestMapping(value = "/updateShopGoods", method = {RequestMethod.POST})
     @Transactional
