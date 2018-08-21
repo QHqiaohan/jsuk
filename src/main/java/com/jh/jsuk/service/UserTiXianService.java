@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.UserTiXian;
 import com.jh.jsuk.entity.vo.ShopUserTiXianVo;
 import com.jh.jsuk.entity.vo.UserTiXianVo;
-import com.jh.jsuk.utils.Result;
 
 /**
  * <p>
@@ -17,10 +16,14 @@ import com.jh.jsuk.utils.Result;
  */
 public interface UserTiXianService extends IService<UserTiXian> {
 
-    Result tixian(UserTiXian userTiXian, Integer type, Integer userId);
+    void tixian(UserTiXian userTiXian) throws Exception;
 
 
-    Page<ShopUserTiXianVo> selectByAdvance(Page page, Integer tixianId, Integer begin, Integer end, Integer status);
+    Page<ShopUserTiXianVo> selectByAdvance(Page page, String tixianId, Integer begin, Integer end, Integer status);
 
-    Page<UserTiXianVo> selectByAdvance2(Page page, Integer tixianId, Integer begin, Integer end, Integer status);
+    Page<UserTiXianVo> selectByAdvance2(Page page, String tixianId, Integer begin, Integer end, Integer status);
+
+    void pass(Integer id);
+
+    void decline(Integer id);
 }

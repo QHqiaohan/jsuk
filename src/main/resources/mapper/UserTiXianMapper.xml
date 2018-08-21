@@ -2,58 +2,54 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jh.jsuk.dao.UserTiXianDao">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.UserTiXian">
-        <id column="id" property="id" />
-        <result column="user_id" property="userId" />
-        <result column="manager_id" property="managerId" />
-        <result column="bank_id" property="bankId" />
-        <result column="num" property="num" />
-        <result column="status" property="status" />
-        <result column="remark" property="remark" />
-        <result column="is_del" property="isDel" />
-        <result column="price" property="price" />
-        <result column="create_time" property="createTime" />
-        <result column="examine" property="examine" />
-        <result column="destination" property="destination" />
-    </resultMap>
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.jh.jsuk.entity.UserTiXian">
+    <id column="id" property="id"/>
+    <result column="user_id" property="userId"/>
+    <result column="manager_id" property="managerId"/>
+    <result column="bank_id" property="bankId"/>
+    <result column="num" property="num"/>
+    <result column="status" property="status"/>
+    <result column="remark" property="remark"/>
+    <result column="is_del" property="isDel"/>
+    <result column="price" property="price"/>
+    <result column="create_time" property="createTime"/>
+    <result column="examine" property="examine"/>
+    <result column="destination" property="destination"/>
+  </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
         id, user_id, manager_id, bank_id, num, status, remark, is_del, price, create_time,examine,destination
     </sql>
 
   <resultMap id="ShopUserTiXianVo" type="com.jh.jsuk.entity.vo.ShopUserTiXianVo" extends="BaseResultMap">
-    <association property="shopUser" column="user_id" select="com.jh.jsuk.dao.ShopUserDao.selectShopUserByMid"></association>
+    <association property="shopUser" column="user_id"
+                 select="com.jh.jsuk.dao.ShopUserDao.selectShopUserByMid"></association>
   </resultMap>
 
   <resultMap id="UserTiXianVo" type="com.jh.jsuk.entity.vo.UserTiXianVo" extends="BaseResultMap">
-    <association property="user" column="user_id" select="com.jh.jsuk.dao.UserDao.findTiXianUser"></association>
   </resultMap>
 
   <!--查询用户提现列表-->
-  <select id="selectByAdvance2" resultMap="UserTiXianVo">
+  <select id="selectByAdvance2" resultType="com.jh.jsuk.entity.vo.UserTiXianVo">
     select
     tixian.*
-    from
-    js_user_ti_xian tixian
-    join js_user user
-    on tixian.user_id=user.id
-    and tixian.manager_id is null
+    from js_user_ti_xian tixian
     where
-    tixian.is_del=0
-      <if test="tixianId!=null">
-        and tixian.id=#{tixianId}
-      </if>
-      <if test="begin!=null and end!=null">
-       and tixian.price between #{begin} and #{end}
-      </if>
-      <if test="begin!=null and end==null">
-       and tixian.price>=#{begin}
-      </if>
-      <if test="status!=null">
-       and tixian.status=#{status}
-      </if>
+    1=1
+    <if test="tixianId!=null">
+      and tixian.ti_xian_no like concat('%',#{tixianId},'%')
+    </if>
+    <if test="begin!=null and end!=null">
+      and tixian.price between #{begin} and #{end}
+    </if>
+    <if test="begin!=null and end==null">
+      and tixian.price>=#{begin}
+    </if>
+    <if test="status!=null">
+      and tixian.status=#{status}
+    </if>
   </select>
 
 
@@ -76,7 +72,7 @@
     and
     shopUser.manager_user_id=manager.id
     where
-    tixian.is_del=0
+    1=1
     and manager.user_type=2
     <if test="tixianId!=null">
       and tixian.id=#{tixianId}

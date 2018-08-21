@@ -4,6 +4,10 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.jh.jsuk.envm.DistributionApplyStatus;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -18,6 +22,9 @@ import java.util.Date;
  * @author lpf
  * @since 2018-06-20
  */
+@Setter
+@Getter
+@ToString
 @TableName("js_distribution_apply")
 public class DistributionApply extends Model<DistributionApply> {
 
@@ -30,7 +37,7 @@ public class DistributionApply extends Model<DistributionApply> {
     /**
      * 0待审核  1通过  2拒绝
      */
-    private Integer status;
+    private DistributionApplyStatus status;
     private Integer userId;
     /**
      * 拒绝原因
@@ -44,77 +51,7 @@ public class DistributionApply extends Model<DistributionApply> {
 
     private String userNickName;
 
-    public String getUserNickName() {
-        return userNickName;
-    }
-
-    public void setUserNickName(String userNickName) {
-        this.userNickName = userNickName;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getBankId() {
-        return bankId;
-    }
-
-    public void setBankId(Integer bankId) {
-        this.bankId = bankId;
-    }
-
-    public BigDecimal getMoney() {
-        return money;
-    }
-
-    public void setMoney(BigDecimal money) {
-        this.money = money;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public Date getPublishTime() {
-        return publishTime;
-    }
-
-    public void setPublishTime(Date publishTime) {
-        this.publishTime = publishTime;
-    }
-
-    public BigDecimal getPoundage() {
-        return poundage;
-    }
-
-    public void setPoundage(BigDecimal poundage) {
-        this.poundage = poundage;
-    }
+    private String platformNo;
 
     public static final String ID = "id";
 
@@ -132,22 +69,11 @@ public class DistributionApply extends Model<DistributionApply> {
 
     public static final String POUNDAGE = "poundage";
 
+    public static final String PLATFORM_NO = "platform_no";
+
     @Override
     protected Serializable pkVal() {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "DistributionApply{" +
-        "id=" + id +
-        ", bankId=" + bankId +
-        ", money=" + money +
-        ", status=" + status +
-        ", userId=" + userId +
-        ", desc=" + desc +
-        ", publishTime=" + publishTime +
-        ", poundage=" + poundage +
-        "}";
-    }
 }

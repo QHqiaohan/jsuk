@@ -6,10 +6,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.UserDao;
-import com.jh.jsuk.entity.DistributionUser;
-import com.jh.jsuk.entity.ManagerUser;
-import com.jh.jsuk.entity.User;
-import com.jh.jsuk.entity.UserOrder;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.info.UserRemainderInfo;
 import com.jh.jsuk.entity.vo.ConsumeInfo;
 import com.jh.jsuk.entity.vo.UserInfoVo;
@@ -18,6 +15,7 @@ import com.jh.jsuk.entity.vo.UserListVo;
 import com.jh.jsuk.envm.UserAuthenticationStatus;
 import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.service.*;
+import com.jh.jsuk.service.UserOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -171,6 +169,52 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             info.setOrderCount(0);
         }
         return info;
+    }
+
+    @Autowired
+    DistributionUserService distributionUserService;
+
+    @Autowired
+    ManagerUserService managerUserService;
+
+    @Autowired
+    ShopService shopService;
+
+    @Override
+    public String userName(Integer userId, UserType userType) {
+        if (userId == null || userType == null)
+            return "";
+        switch (userType) {
+            case SHOP:
+            case ADMIN:
+            case CITY_ADMIN:
+                ManagerUser managerUser = managerUserService.selectById(userId);
+                if (managerUser != null) {
+                    String nickName = managerUser.getNickName();
+                    if (StrUtil.isNotBlank(nickName))
+                        return nickName;
+                    String name = managerUser.getName();
+                    if (StrUtil.isNotBlank(name))
+                        return name;
+                    if (UserType.SHOP.equals(userType)) {
+                        Shop shop = shopService.selectById(managerUser.getShopId());
+                        return shop.getShopName();
+                    }
+                }
+
+                break;
+            case DISTRIBUTION:
+                DistributionUser distributionUser = distributionUserService.selectById(userId);
+                if (distributionUser != null)
+                    return distributionUser.getName();
+                break;
+            case USER:
+                User user = selectById(userId);
+                if (user != null)
+                    return user.getNickName();
+                break;
+        }
+        return "";
     }
 
 

@@ -26,7 +26,6 @@ import com.jh.jsuk.utils.Result;
 import com.jh.jsuk.utils.wx.MD5Util;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
@@ -37,7 +36,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -130,7 +128,7 @@ public class ManagerUserController {
         @ApiImplicitParam(name = "cardNum", value = "身份证", required = true, paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "/register", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result register(String phone, String password, String headImg,String license,
+    public Result register(String phone, String password, String headImg, String license,
                            String shopName, String address, Integer modularId,
                            String legalPersonName, String cardNum, @RequestParam Integer cityId) {
         /**
@@ -264,35 +262,8 @@ public class ManagerUserController {
         /**
          * 店铺余额
          */
-        List<ShopMoney> shopMoneyList = shopMoneyService.selectList(new EntityWrapper<ShopMoney>()
-            .eq(ShopMoney.SHOP_ID, shopId));
-        if (CollectionUtils.isEmpty(shopMoneyList)) {
-            map.put("money", 0);
-        } else {
-            // 初始化余额
-//            int sum = 0;
-            BigDecimal bigDecimal = new BigDecimal("0");
-            for (ShopMoney shopMoney : shopMoneyList) {
-                // 金额
-                String money = shopMoney.getMoney();
-                if (StrUtil.isBlank(money)) {
-                    continue;
-                }
-//                Integer m = Integer.parseInt(money);
-                // 消费类型,计算
-                Integer type = shopMoney.getType();
-                if (type != null && type.equals(0)) {
-                    // 消费
-//                    sum -= m;
-                    bigDecimal = bigDecimal.subtract(new BigDecimal(money));
-                } else if (type != null && type.equals(1)) {
-                    // 收入
-//                    sum += m;
-                    bigDecimal = bigDecimal.add(new BigDecimal(money));
-                }
-            }
-            map.put("money", bigDecimal);
-        }
+        map.put("money", shopMoneyService.getShopMoney(shopId));
+
         /**
          * 访客/订单/交易额
          */
