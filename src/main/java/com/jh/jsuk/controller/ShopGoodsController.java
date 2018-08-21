@@ -530,7 +530,7 @@ public class ShopGoodsController {
         shopGoods.setAttributeId(addGoodsVo.getAttributeId());
         shopGoods.setBrandName(addGoodsVo.getBrandName());
         shopGoods.setShopModularId(addGoodsVo.getShopModularId());
-        shopGoods.setIsRecommend(addGoodsVo.getIsRecommend());
+        shopGoods.setIsRecommend(0);
         shopGoods.setGoodsLabelId(addGoodsVo.getGoodsLabelId());
         shopGoods.setGoodsName(addGoodsVo.getGoodsName());
         shopGoods.setGoodsImg(addGoodsVo.getGoodsImg());
@@ -638,7 +638,7 @@ public class ShopGoodsController {
         shopGoods.setAttributeId(addGoodsVo.getAttributeId());
         shopGoods.setBrandName(addGoodsVo.getBrandName());
         shopGoods.setShopModularId(addGoodsVo.getShopModularId());
-        shopGoods.setIsRecommend(addGoodsVo.getIsRecommend());
+        shopGoods.setIsRecommend(0);
         shopGoods.setGoodsLabelId(addGoodsVo.getGoodsLabelId());
         shopGoods.setGoodsName(addGoodsVo.getGoodsName());
         shopGoods.setGoodsImg(addGoodsVo.getGoodsImg());

@@ -97,6 +97,7 @@ public class WGoodsController {
         ShopGoods shopGoods = new ShopGoods();
         shopGoods.setId(id);
         shopGoods.setIsRecommend(isRecommend);
+        shopGoods.setUpdateTime(new Date());
         shopGoods.updateById();
         return R.succ("修改成功");
     }
