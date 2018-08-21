@@ -42,6 +42,7 @@
     select *
     from js_coupon
     where shop_id=#{shopId}
+    order by `full_price` desc
   </select>
 
 
