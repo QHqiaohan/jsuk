@@ -44,7 +44,7 @@
 
   <!-- 通用查询结果列 -->
   <sql id="Base_Column_List">
-    id, order_num, order_price, full_reduce, coupon_reduce, integral_reduce, order_real_price, distribution_fee, distribution_time, distribution_type, creat_time, pay_time, pay_type, status, is_unsubscribe, is_evaluate, is_shop_del, is_user_del, is_closed, shop_id, address_id, user_id, cancel_time, complete_time, send_time, coupon_id, order_type, logistics_no, remark, discount, integral_rule_id, full_reduce_id, platform_number, goods_name
+    id, order_num, order_price, full_reduce, coupon_reduce, integral_reduce, order_real_price, distribution_fee, distribution_time, distribution_type, creat_time, pay_time, pay_type, status, is_unsubscribe, is_evaluate, is_shop_del, is_user_del, is_closed, shop_id, address_id, user_id, cancel_time, complete_time, send_time, coupon_id, order_type, logistics_no, remark, discount, integral_rule_id, full_reduce_id, platform_number, goods_name,freight
   </sql>
 
   <resultMap id="UserOrderVo" type="com.jh.jsuk.entity.vo.UserOrderVo" extends="BaseResultMap">
