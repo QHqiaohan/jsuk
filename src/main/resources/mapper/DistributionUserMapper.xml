@@ -43,7 +43,7 @@
     sum(e.price) as income
     from js_distribution_user du
     left join js_express e on du.id = e.distribution_user_id
-    where du.can_use = 1
+    where 1 = 1
     <if test="account!=null">
       and ( du.id like concat('%',#{account},'%') or du.phone like concat('%',#{account},'%'))
     </if>
@@ -54,6 +54,7 @@
       and du.status = #{status}
     </if>
     group by du.id
+    order by du.publish_time desc
   </select>
   <!--<resultMap id="orderAmount" type="java.lang.Integer">
     <result column="order_amount" property=""
@@ -90,23 +91,23 @@
     from
     js_distribution_user
     where
-    can_use=1
+    1 = 1
     <if test="account!=null">
-      and id=#{account} or phone=#{account}
+      and id like concat('%',#{account},'%') or phone like concat('%',#{account},'%')
     </if>
     <if test="name!=null">
       and name like concat('%',#{name},'%')
     </if>
   </select>
 
-  <select id="selectDistributionUserById" resultMap="BaseResultMap">
-    select
-     id, phone, password, name, id_card_no, card_front, card_back, last_login_time, login_ip, longitude, latitude, head_img, gender, age,
-    star_num, account, publish_time, can_use, status, is_online
-    from
-    js_distribution_user
-    where
-    id=#{user_id}
-  </select>
+  <!--<select id="selectDistributionUserById" resultMap="BaseResultMap">-->
+  <!--select-->
+  <!--id, phone, password, name, id_card_no, card_front, card_back, last_login_time, login_ip, longitude, latitude, head_img, gender, age,-->
+  <!--star_num, account, publish_time, can_use, status, is_online-->
+  <!--from-->
+  <!--js_distribution_user-->
+  <!--where-->
+  <!--id=#{user_id}-->
+  <!--</select>-->
 
 </mapper>
