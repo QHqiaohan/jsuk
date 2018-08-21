@@ -484,7 +484,14 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             //查询是否包邮；
             ShopSets shopSet = shopSetService.getShopSet(orderGoods.getShopId());
             if(shopSet==null){
+                //不然将邮费和商品价和满减相加减起来
+                BigDecimal yf = new BigDecimal(you);
+                o.setFreight(yf);
+                o.setOrderPrice(zong.add(yf));
+                BigDecimal add = zong.add(yf);
+                BigDecimal subtract = add.subtract(discount);
 
+                o.setOrderRealPrice(subtract);
             }else{
                 //获取包邮数据
                 Double money = shopSet.getMoney();
@@ -493,13 +500,17 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 if(zong.compareTo(baoy)>=0){
 
                     o.setOrderPrice(zong);
+
                     o.setOrderRealPrice(zong.subtract(discount));
                 }else{
                     //不然将邮费和商品价和满减相加减起来
                     BigDecimal yf = new BigDecimal(you);
                     o.setFreight(yf);
                     o.setOrderPrice(zong.add(yf));
-                    o.setOrderRealPrice(zong.add(yf).subtract(discount));
+                    BigDecimal add = zong.add(yf);
+                    BigDecimal subtract = add.subtract(discount);
+
+                    o.setOrderRealPrice(subtract);
                 }
             }
 
