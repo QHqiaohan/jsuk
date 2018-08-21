@@ -42,10 +42,11 @@ public interface UserService extends IService<User> {
 
     UserInfoVo2 selectUserInfoById(Integer id);
 
-    Map<String,Object> discount(Integer lUserId);
+    Map<String, Object> discount(Integer lUserId);
 
     /**
      * 获取用户积分
+     *
      * @param userId
      * @return
      */
@@ -53,6 +54,7 @@ public interface UserService extends IService<User> {
 
     /**
      * 用户余额
+     *
      * @param userId
      * @return
      */
@@ -60,11 +62,14 @@ public interface UserService extends IService<User> {
 
     /**
      * 获取审核状态
+     *
      * @param userId
      * @return
      */
     UserAuthenticationStatus getAuthenticationStatus(Integer userId);
 
     ConsumeInfo getConsume(Integer userId);
+
+    String userName(Integer userId, UserType userType);
 
 }

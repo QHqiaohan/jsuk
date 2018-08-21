@@ -92,4 +92,15 @@ public interface UserRemainderService extends IService<UserRemainder> {
      * @param status           支付状态
      */
     void chargeComplete(Integer remainderId, Integer rechargeRecordId, Integer status);
+
+    /**
+     * 添加提现申请记录
+     * @param userId
+     * @param price
+     * @param tiXianNo
+     */
+    void createCashApplying(Integer userId, String price, String tiXianNo);
+
+    void confirm(String no);
+    void decline(String no);
 }

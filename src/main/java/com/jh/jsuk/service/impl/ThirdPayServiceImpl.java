@@ -5,6 +5,7 @@ import com.jh.jsuk.entity.vo.ChargeParamVo;
 import com.jh.jsuk.entity.vo.ThirdPayVo;
 import com.jh.jsuk.entity.vo.ThirdPayVoChild;
 import com.jh.jsuk.envm.OrderStatus;
+import com.jh.jsuk.envm.ShopMoneyType;
 import com.jh.jsuk.envm.UserRemainderStatus;
 import com.jh.jsuk.envm.UserRemainderType;
 import com.jh.jsuk.exception.MessageException;
@@ -112,8 +113,12 @@ public class ThirdPayServiceImpl implements ThirdPayService {
         }
     }
 
+
+
+
     /**
      * 快递跑腿用户支付成功
+     * 回调
      */
     private void expressComplete(ThirdPayVo payVo) {
         Express express = expressService.selectById(payVo.getParam());
@@ -123,6 +128,8 @@ public class ThirdPayServiceImpl implements ThirdPayService {
 
     /**
      * 会员充值成功
+     *
+     * 回调
      */
     private void userRechargeComplete(ThirdPayVoChild payVoChild) {
         //用户
@@ -142,25 +149,34 @@ public class ThirdPayServiceImpl implements ThirdPayService {
 
     /**
      * 到店支付成功
+     *
+     *
+     * 回调
+     *
      */
     private void payStore(ThirdPayVo payVo) {
         //商家余额
         ShopMoney shopMoney = new ShopMoney();
         shopMoney.setMoney(payVo.getPrice());
         shopMoney.setPublishTime(new Date());
-        shopMoney.setType(1);
+        shopMoney.setType(ShopMoneyType.GAIN);
         shopMoney.setShopId(Integer.valueOf(payVo.getParam()));
         shopMoney.insert();
     }
 
     /**
      * 用户订单支付成功
+     *
+     * 回调
+     *
      */
     private void userOrderComplete(ThirdPayVo payVo) {
         String[] ids = payVo.getParam().split(",");
         List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
         BigDecimal price = new BigDecimal("0.00");
         for (UserOrder userOrder : userOrders) {
+            if(userOrder == null)
+                continue;
             //修改订单信息
             userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
             userOrder.setPayTime(new Date());
@@ -173,10 +189,24 @@ public class ThirdPayServiceImpl implements ThirdPayService {
         ShopMoney shopMoney = new ShopMoney();
         shopMoney.setMoney(price.toString());
         shopMoney.setPublishTime(new Date());
-        shopMoney.setType(1);
+        shopMoney.setType(ShopMoneyType.GAIN);
         shopMoney.setShopId(userOrders.get(0).getShopId());
         shopMoney.insert();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 会员充值

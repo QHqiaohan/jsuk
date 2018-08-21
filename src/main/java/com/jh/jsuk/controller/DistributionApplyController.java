@@ -9,7 +9,6 @@ import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.rules.AccountRule;
 import com.jh.jsuk.entity.vo.UserApplyVo;
 import com.jh.jsuk.service.*;
-import com.jh.jsuk.utils.DisJPushUtils;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
@@ -125,31 +124,32 @@ public class DistributionApplyController {
         return new Result().success(userApplyVoPage);
     }
 
-    @PostMapping("/ui/adopt")
-    public Result uiAgree(DistributionApply apply) {
-        apply.setStatus(1);
-        apply.updateById();
-        DisJPushUtils.pushMsg(apply.getUserId() + "", "您的提现申请已通过注意查收", "", null);
-        return new Result().success();
-    }
+//    @PostMapping("/ui/adopt")
+//    public Result uiAgree(DistributionApply apply) {
+//        apply.setStatus(1);
+//        apply.updateById();
+//        DisJPushUtils.pushMsg(apply.getUserId() + "", "您的提现申请已通过注意查收", "", null);
+//        return new Result().success();
+//    }
 
-    @PostMapping("/ui/refuse")
-    public Result uiRefuse(DistributionApply apply) {
-        DistributionUser user = userService.selectById(apply.getUserId());
+//    @PostMapping("/ui/refuse")
+//    public Result uiRefuse(DistributionApply apply) {
+//        DistributionUser user = userService.selectById(apply.getUserId());
+//
+//        DistributionDetail detail = new DistributionDetail();
+//        detail.setDetail("提现拒绝");
+//        detail.setMoney(apply.getMoney());
+//        AccountRule accountRule = new AccountRule(user, detail);
+//        AccountRule result = ruleEngineService.executeRuleEngine("myDetail", accountRule);
+//        result.updateUserAndInsertDetail();
+//
+//        apply.setStatus(2);
+//        apply.updateById();
+//
+//        DisJPushUtils.pushMsg(apply.getUserId() + "", "您的提现申请未通过：" + apply.getDesc(), "", null);
+//        return new Result().success();
+//    }
 
-        DistributionDetail detail = new DistributionDetail();
-        detail.setDetail("提现拒绝");
-        detail.setMoney(apply.getMoney());
-        AccountRule accountRule = new AccountRule(user, detail);
-        AccountRule result = ruleEngineService.executeRuleEngine("myDetail", accountRule);
-        result.updateUserAndInsertDetail();
-
-        apply.setStatus(2);
-        apply.updateById();
-
-        DisJPushUtils.pushMsg(apply.getUserId() + "", "您的提现申请未通过：" + apply.getDesc(), "", null);
-        return new Result().success();
-    }
 
 }
 

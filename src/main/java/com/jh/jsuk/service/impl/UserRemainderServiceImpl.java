@@ -54,7 +54,7 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
         // 初始化记录总余额
         BigDecimal remain = new BigDecimal("0.00");
         info.setRemainder(remain);
-        if (list == null || list.isEmpty()){
+        if (list == null || list.isEmpty()) {
             info.setCash(new BigDecimal("0"));
             return info;
         }
@@ -198,5 +198,35 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
         userRechargeRecord.setFinishTime(new Date());
         userRechargeRecord.setIsOk(status == 1 ? 2 : 1);
         userRechargeRecord.updateById();
+    }
+
+    @Override
+    public void createCashApplying(Integer userId, String price, String tiXianNo) {
+        UserRemainder e = new UserRemainder();
+        e.setType(UserRemainderType.CASH);
+        e.setStatus(UserRemainderStatus.APPLYING);
+        e.setUserId(userId);
+        e.setCreateTime(new Date());
+        e.setRemainder(new BigDecimal(price));
+        e.setOrderNum(tiXianNo);
+        e.insert();
+    }
+
+    @Override
+    public void decline(String no) {
+        UserRemainder entity = new UserRemainder();
+        EntityWrapper<UserRemainder> wrapper = new EntityWrapper<>();
+        entity.setStatus(UserRemainderStatus.REFUSED);
+        wrapper.eq(UserRemainder.ORDER_NUM, no);
+        update(entity, wrapper);
+    }
+
+    @Override
+    public void confirm(String no) {
+        UserRemainder entity = new UserRemainder();
+        EntityWrapper<UserRemainder> wrapper = new EntityWrapper<>();
+        entity.setStatus(UserRemainderStatus.PASSED);
+        wrapper.eq(UserRemainder.ORDER_NUM, no);
+        update(entity, wrapper);
     }
 }

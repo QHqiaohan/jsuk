@@ -23,12 +23,26 @@ public interface ShopMoneyService extends IService<ShopMoney> {
     BigDecimal getShopMoney(Integer shopId);
 
     /**
-     * 商家消费
+     * 申请中的余额
+     * @param shopId
+     * @return
+     */
+    BigDecimal getApplying(Integer shopId);
+
+    /**
+     * 创建提现申请
      * @param shopId
      * @param amount
      * @throws Exception
      */
-    void consume(Integer shopId,BigDecimal amount) throws Exception;
+    void createCashApplying(Integer shopId, BigDecimal amount,String tiXianNo) throws Exception;
+
+    /**
+     * 确认通过
+     * @param platformNo
+     */
+    void confirm(String platformNo);
+    void decline(String platformNo);
 
     /**
      * 商家收入
@@ -36,6 +50,6 @@ public interface ShopMoneyService extends IService<ShopMoney> {
      * @param amount
      * @throws Exception
      */
-    void makeIncome(Integer shopId,BigDecimal amount) throws Exception;
+    void gain(Integer shopId, BigDecimal amount) throws Exception;
 
 }

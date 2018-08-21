@@ -1,11 +1,17 @@
 package com.jh.jsuk.entity;
 
-import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+import com.jh.jsuk.envm.ShopMoneyType;
+import com.jh.jsuk.envm.UserRemainderStatus;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -15,6 +21,9 @@ import java.io.Serializable;
  * @author lpf
  * @since 2018-06-20
  */
+@Setter
+@Getter
+@ToString
 @TableName("js_shop_money")
 public class ShopMoney extends Model<ShopMoney> {
 
@@ -30,52 +39,15 @@ public class ShopMoney extends Model<ShopMoney> {
     /**
      * 类型,0=消费,1=收入
      */
-    private Integer type;
+    private ShopMoneyType type;
     /**
      * 操作时间
      */
     private Date publishTime;
 
+    private UserRemainderStatus status;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(Integer shopId) {
-        this.shopId = shopId;
-    }
-
-    public String getMoney() {
-        return money;
-    }
-
-    public void setMoney(String money) {
-        this.money = money;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public Date getPublishTime() {
-        return publishTime;
-    }
-
-    public void setPublishTime(Date publishTime) {
-        this.publishTime = publishTime;
-    }
+    private String platformNo;
 
     public static final String ID = "id";
 
@@ -85,21 +57,15 @@ public class ShopMoney extends Model<ShopMoney> {
 
     public static final String TYPE = "type";
 
+    public static final String STATUS = "status";
+
     public static final String PUBLISH_TIME = "publish_time";
+
+    public static final String PLATFORM_NO = "platform_no";
 
     @Override
     protected Serializable pkVal() {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "ShopMoney{" +
-        "id=" + id +
-        ", shopId=" + shopId +
-        ", money=" + money +
-        ", type=" + type +
-        ", publishTime=" + publishTime +
-        "}";
-    }
 }

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ShopDao;
 import com.jh.jsuk.entity.Shop;
-import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.vo.ShopTelPhoneVo;
 import com.jh.jsuk.service.ShopMoneyService;
 import com.jh.jsuk.service.ShopService;
@@ -52,7 +51,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopDao, Shop> implements ShopS
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
     public void doDeal(Integer shopId, Integer userId, BigDecimal bigDecimal) throws Exception {
         userRemainderService.consume(userId, bigDecimal);
-        shopMoneyService.makeIncome(shopId, bigDecimal);
+        shopMoneyService.gain(shopId, bigDecimal);
     }
 
     @Override

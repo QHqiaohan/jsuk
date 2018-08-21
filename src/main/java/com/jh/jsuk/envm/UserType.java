@@ -1,6 +1,6 @@
 package com.jh.jsuk.envm;
 
-public enum UserType {
+public enum UserType implements BaseEnum {
 
     SHOP(1, "商家", ManageUserType.SHOP, "shp"),
 
