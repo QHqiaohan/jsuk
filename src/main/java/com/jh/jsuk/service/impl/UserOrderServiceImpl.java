@@ -498,7 +498,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     //不然将邮费和商品价和满减相加减起来
                     BigDecimal yf = new BigDecimal(you);
                     o.setFreight(yf);
-                    o.setOrderPrice(zong);
+                    o.setOrderPrice(zong.add(yf));
                     o.setOrderRealPrice(zong.add(yf).subtract(discount));
                 }
             }
