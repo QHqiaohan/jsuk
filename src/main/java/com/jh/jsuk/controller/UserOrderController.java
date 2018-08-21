@@ -18,7 +18,6 @@ import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.*;
-import com.jh.jsuk.utils.wx.WxPay;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindException;

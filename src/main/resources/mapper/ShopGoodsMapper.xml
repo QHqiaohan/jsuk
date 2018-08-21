@@ -61,7 +61,7 @@
 
   <select id="shopGoodsListByAttributeId" resultMap="GoodsSalesPriceVo">
     SELECT
-   *
+    *
     FROM
     js_shop_goods
     WHERE
@@ -80,7 +80,7 @@
 
   <select id="getShopGoodsByLikeName" resultMap="GoodsSalesPriceVo">
     SELECT
-   *
+    *
     FROM
     js_shop_goods
     WHERE
@@ -329,7 +329,7 @@
 
   <select id="shopGoodsListByModularId" resultMap="GoodsSizeVo">
     SELECT
-   *
+    *
     FROM js_shop_goods
     WHERE
     shop_modular_id = #{modularId}
@@ -348,7 +348,7 @@
 
   <select id="getShopGoodsByBrandId" resultMap="GoodsSalesPriceVo">
     SELECT
-   *
+    *
     FROM js_shop_goods
     WHERE
     brand_id = #{brandId}
@@ -360,9 +360,9 @@
 
   <select id="getIsRecommend" resultMap="GoodsSalesPriceVo">
     SELECT
-   *
+    *
     FROM js_shop_goods
-    WHERE is_recommend and not is_del
+    WHERE is_recommend and not is_del and status = 1
     ORDER BY sale_amont DESC
     <where>
       ${ew.sqlSegment}
@@ -382,7 +382,7 @@
 
   <select id="findShopGoodsAndGoodsSizeByShopId" resultMap="ShopGoodsVoT">
     SELECT
-   *
+    *
     FROM js_shop_goods
     WHERE
     shop_id = #{shopId}
@@ -421,6 +421,7 @@
     <if test="status != null">
       and sg.status = #{status}
     </if>
+    order by sg.update_time desc
   </select>
   <select id="shopGoodsRecycleList" resultMap="shopGoodsVo2">
     select * from js_shop_goods
