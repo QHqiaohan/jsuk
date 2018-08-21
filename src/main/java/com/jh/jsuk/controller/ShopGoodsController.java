@@ -524,13 +524,19 @@ public class ShopGoodsController {
         Shop shop = new Shop();
         Shop shop1 = shop.selectById(shopId);
         Integer modularId = shop1.getModularId();
+        ModularPortal mp = new ModularPortal();
+        ModularPortal mpl = mp.selectById(modularId);
+        Integer parentId=0;
+        if(mpl!=null){
+            parentId = mpl.getParentId();
+        }
         Integer cityId = shop1.getCityId();
         ShopGoods shopGoods = new ShopGoods();
         shopGoods.setCityId(cityId);
         shopGoods.setShopId(shopId);
         shopGoods.setAttributeId(addGoodsVo.getAttributeId());
         shopGoods.setBrandName(addGoodsVo.getBrandName());
-        shopGoods.setShopModularId(modularId);
+        shopGoods.setShopModularId(parentId);
         shopGoods.setIsRecommend(0);
         shopGoods.setGoodsLabelId(addGoodsVo.getGoodsLabelId());
         shopGoods.setGoodsName(addGoodsVo.getGoodsName());
