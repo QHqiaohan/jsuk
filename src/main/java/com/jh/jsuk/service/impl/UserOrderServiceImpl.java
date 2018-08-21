@@ -84,6 +84,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Autowired
     private ShopMoneyService shopMoneyService;
+    @Autowired
+    private ShopSetService shopSetService;//是否包邮
 
     @Override
     public int statusCount(OrderStatus orderStatus, Integer shopId) {
@@ -415,6 +417,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             }
         }
         if (gs.size() > 0) {
+
             o.setOrderNum(createOrderNum());
             o.setDistributionTime(orderDto.getDistributionTime());
             o.setDistributionType(orderDto.getDistributionType());
@@ -439,11 +442,72 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setFreight(orderPrice.getFreight());
             o.setUpdateTime(new Date());
             StringBuilder goodsName = new StringBuilder();
+            //创建一个邮费计数值；
+                Integer you=0;
+            //创建一个总价计数值；
+            BigDecimal zong =new BigDecimal(0);
+
             for (UserOrderGoods userOrderGoods : gs) {
+                //获取商品型号数量
+                Integer num = userOrderGoods.getNum();
+                BigDecimal nums = new BigDecimal(num);
+                //获取购买价格
+                BigDecimal goodsPrice = userOrderGoods.getGoodsPrice();
+                 zong =  zong.add(nums.multiply(goodsPrice));
+                //获取商品型号id
+                Integer goodsSizeId = userOrderGoods.getGoodsSizeId();
+                //根据型号查询邮费；
+                ShopGoodsSize sgs = new ShopGoodsSize();
+                ShopGoodsSize ss = sgs.selectById(goodsSizeId);
+                //取出型号id的邮费；
+                if(ss!=null){
+                    int i = Integer.parseInt(ss.getFreight());
+                    you=you+i;
+                }
+
                 ShopGoods shopGoods = shopGoodsService.selectById(userOrderGoods.getGoodsId());
                 goodsName.append(shopGoods.getGoodsName());
                 goodsName.append(",");
             }
+            //满减数量
+            BigDecimal discount=new BigDecimal(0);
+            //查询是否满减
+            List<Coupon> lb = couponService.getListByShopId(orderGoods.getShopId());
+            for(Coupon cu : lb){
+                //获取满减值
+                BigDecimal fullPrice = cu.getFullPrice();
+                if(zong.compareTo(fullPrice)>=0){
+                    discount = cu.getDiscount();
+                    break;
+                }
+            }
+            //查询是否包邮；
+            ShopSets shopSet = shopSetService.getShopSet(orderGoods.getShopId());
+            if(shopSet==null){
+
+            }else{
+                //获取包邮数据
+                Double money = shopSet.getMoney();
+                BigDecimal baoy = new BigDecimal(money);
+                //如果价格大于包邮量邮费为0
+                if(zong.compareTo(baoy)>=0){
+
+                    o.setOrderPrice(zong);
+                    o.setOrderRealPrice(zong.subtract(discount));
+                }else{
+                    //不然将邮费和商品价和满减相加减起来
+                    BigDecimal yf = new BigDecimal(you);
+                    o.setFreight(yf);
+                    o.setOrderPrice(zong.add(yf));
+                    o.setOrderRealPrice(zong.add(yf).subtract(discount));
+                }
+            }
+
+
+
+
+            //设置满减；
+            o.setFullReduce(discount);
             o.setGoodsName(goodsName.toString());
             o.insert();
             Integer orderId = o.getId();

@@ -307,6 +307,7 @@
     <result column="goods_name" property="goodsName"/>
     <result column="price" property="price"/>
     <result column="sale_amont" property="saleAmount"/>
+    <result column="shop_id" property="shopId"/>
   </resultMap>
   <select id="guessYourLike" resultMap="GoodsVo2">
     select
@@ -314,6 +315,7 @@
       jsg.main_image,
       jsg.goods_name,
       jsg.sale_amont,
+      jsg.shop_id,
       avg(jsgs.sales_price) as price
     from js_shop_goods jsg
       left join js_shop_goods_size jsgs on jsgs.shop_goods_id = jsg.id

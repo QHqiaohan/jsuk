@@ -21,5 +21,6 @@ public class GoodsVo2 implements Serializable {
     private String price;
 
     private Integer saleAmount;
+    private Integer shopId;
 
 }
