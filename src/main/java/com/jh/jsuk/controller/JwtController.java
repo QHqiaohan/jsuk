@@ -21,9 +21,9 @@ public class JwtController {
         return new Result().noLogin();
     }
 
-    //没有找到该用户
-    @RequestMapping(value = "/nofound", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result nofound() {
-        return new Result().nofound();
-    }
+//    //没有找到该用户
+//    @RequestMapping(value = "/nofound", method = {RequestMethod.POST, RequestMethod.GET})
+//    public Result nofound() {
+//        return new Result().nofound();
+//    }
 }

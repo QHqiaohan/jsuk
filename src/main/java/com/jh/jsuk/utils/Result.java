@@ -35,20 +35,20 @@ public class Result<T> {
         return this;
     }
 
-    public Result excption(String msg) {
-        this.code = Constant.RESCODE_EXCEPTION;
-        this.msg = msg;
-        return this;
-    }
+//    public Result excption(String msg) {
+//        this.code = Constant.RESCODE_EXCEPTION;
+//        this.msg = msg;
+//        return this;
+//    }
 
-    public Result nofound() {
-        this.code = Constant.RESCODE_NOFOUND;
-        this.msg = "没有找到该用户";
-        return this;
-    }
+//    public Result nofound() {
+//        this.code = Constant.RESCODE_NOFOUND;
+//        this.msg = "没有找到该用户";
+//        return this;
+//    }
 
     public Result overdue() {
-        this.code = Constant.RESCODE_LOGIN_OVERDUE;
+        this.code = Constant.RESCODE_NOLOGIN;
         this.msg = "登陆过期";
         return this;
     }
@@ -60,21 +60,21 @@ public class Result<T> {
     }
 
     public Result success(String msg, T data) {
-        this.code = Constant.RESCODE_SUCCESS_MSG_DATA;
+        this.code = Constant.RESCODE_SUCCESS;
         this.msg = msg;
         this.data = data;
         return this;
     }
 
     public Result success(T data) {
-        this.code = Constant.RESCODE_SUCCESS_DATA;
+        this.code = Constant.RESCODE_SUCCESS;
         this.msg = "success";
         this.data = data;
         return this;
     }
 
     public Result success(String msg) {
-        this.code = Constant.RESCODE_SUCCESS_MSG;
+        this.code = Constant.RESCODE_SUCCESS;
         this.msg = msg;
         return this;
     }

@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public Result errorHandler(Exception e) {
         log.error(e.getLocalizedMessage(), e);
-        return new Result().excption(e.getLocalizedMessage());
+        return new Result().erro(e.getLocalizedMessage());
     }
 
     @ResponseBody

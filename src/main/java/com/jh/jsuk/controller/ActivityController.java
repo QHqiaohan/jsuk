@@ -17,6 +17,7 @@ import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.Result;
 import com.jh.jsuk.utils.SensitiveWordUtil;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,7 @@ import java.util.*;
  * @author lpf
  * @since 2018-06-20
  */
+@Slf4j
 @Api(tags = {"首页相关API--便捷生活新/乡村旅游/二手市场部分API"})
 @RestController
 @RequestMapping("/activity")
@@ -558,10 +560,10 @@ public class ActivityController {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getLocalizedMessage(),e);
             return new Result().erro("新增失败", e);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getLocalizedMessage(),e);
         }
         return new Result().success();
     }
@@ -729,7 +731,7 @@ public class ActivityController {
             result.success("删除活动成功");
         } catch (Exception e) {
             e.printStackTrace();
-            result.excption("抱歉!出错啦...我们会尽快解决");
+            result.erro("抱歉!出错啦...我们会尽快解决");
         }
 
         return result;
