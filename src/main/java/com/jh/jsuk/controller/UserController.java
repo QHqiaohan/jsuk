@@ -138,7 +138,8 @@ public class UserController {
     @ApiOperation(value = "获取用户折扣信息", notes = "")
     @PostMapping("/discount")
     public R discount() throws Exception {
-        return R.succ(userService.discount(session.lUserId()));
+        Map<String, Object> discount = userService.discount(session.lUserId());
+        return R.succ(discount);
     }
 
     @ApiOperation(value = "获取多类型用户信息", notes = "")

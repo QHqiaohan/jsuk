@@ -514,9 +514,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 }
             }
 
-
-
-
             //设置满减；
             o.setFullReduce(discount);
             o.setGoodsName(goodsName.toString());
