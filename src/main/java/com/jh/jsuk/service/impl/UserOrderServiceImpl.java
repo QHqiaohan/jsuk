@@ -721,6 +721,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         shopMoney.setMoney(price.toString());
         shopMoney.setPublishTime(new Date());
         shopMoney.setType(ShopMoneyType.GAIN);
+        shopMoney.setStatus(UserRemainderStatus.PASSED);
         shopMoney.setShopId(userOrders.get(0).getShopId());
         shopMoney.insert();
     }
