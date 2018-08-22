@@ -114,7 +114,7 @@
   <update id="deliverRobbingOrder">
     update js_express
     set distribution_user_id = #{userId}, `status` = #{waitDeliver}
-    where not is_del and `status` = #{payed}
+    where not is_del and `status` = #{payed} and id = #{expressId}
   </update>
 
 </mapper>
