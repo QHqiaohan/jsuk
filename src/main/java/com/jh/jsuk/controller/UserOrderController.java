@@ -13,6 +13,8 @@ import com.jh.jsuk.entity.rules.AccountRule;
 import com.jh.jsuk.entity.vo.AfterSaleVo;
 import com.jh.jsuk.entity.vo.UserOrderInfoVo;
 import com.jh.jsuk.envm.OrderStatus;
+import com.jh.jsuk.envm.RefundType;
+import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
@@ -605,7 +607,10 @@ public class UserOrderController {
         }
         userOrder.updateById();
         service.setServiceCode(OrderNumUtil.getOrderIdByUUId());
-
+        User user = userService.selectById(userOrder.getUserId());
+        service.setUserName(user.getNickName());
+        service.setUserPhone(user.getPhone());
+        service.setStatus(0);
         service.insert();
         return new Result().success("操作成功!");
     }
