@@ -133,9 +133,11 @@
     from js_user_order uo
     WHERE
     uo.shop_id = #{shopId}
+    AND uo.is_shop_del=0
     <if test="status != null">
       AND uo.status = #{status}
     </if>
+
     ORDER BY
     uo.creat_time DESC
     <where>

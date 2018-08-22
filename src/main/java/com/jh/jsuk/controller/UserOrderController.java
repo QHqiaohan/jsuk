@@ -208,6 +208,21 @@ public class UserOrderController {
     @Autowired
     RobbingOrderProducer producer;
 
+        @ApiOperation(value = "商家端-删除订单")
+        @PostMapping(value = "/deleteShopOrder")
+    public Result deleteShopOrder(Integer orderId){
+
+            UserOrder uo = new UserOrder();
+            UserOrder userOrder = uo.selectById(orderId);
+            if(userOrder!=null){
+                userOrder.setIsShopDel(1);
+                userOrder.updateById();
+                return new Result().success("删除成功");
+            }
+            return new Result().erro("数据异常");
+        }
+
+
 
 
     //--------------------骑手端----------------------------------------------//
