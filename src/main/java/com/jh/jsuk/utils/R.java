@@ -25,11 +25,11 @@ public class R extends Result {
         return R.err(-11,msg);
     }
 
-    public static R notFound(){
-        R r = new R();
-        r.nofound();
-        return r;
-    }
+//    public static R notFound(){
+//        R r = new R();
+//        r.nofound();
+//        return r;
+//    }
 
 
 }
