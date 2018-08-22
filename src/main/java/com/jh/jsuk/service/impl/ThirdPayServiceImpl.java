@@ -206,6 +206,7 @@ public class ThirdPayServiceImpl implements ThirdPayService {
         shopMoney.setPublishTime(new Date());
         shopMoney.setType(ShopMoneyType.GAIN);
         shopMoney.setShopId(userOrders.get(0).getShopId());
+        shopMoney.setStatus(UserRemainderStatus.PASSED);
         shopMoney.insert();
     }
 
