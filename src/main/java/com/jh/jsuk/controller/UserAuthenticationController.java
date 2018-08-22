@@ -66,27 +66,12 @@ public class UserAuthenticationController {
     public Result getStatusByUserId(@ApiParam("用户ID") @RequestParam Integer userId) {
         UserAuthentication userAuthentication = userAuthenticationService.selectOne(new EntityWrapper<UserAuthentication>()
             .eq(UserAuthentication.USER_ID, userId));
-        // 初始化 审核状态
-        int status = -88;
         // 如果表信息为空
         if (userAuthentication == null) {
             return new Result(-1l, "没有该用户认证信息");
-        } else {
-            // 获取审核状态
-            UserAuthenticationStatus sts = userAuthentication.getStatus();
-            if (sts != null)
-                status = sts.getKey();
         }
-        if (status == 1) {
-            return new Result().success("审核通过", userAuthentication);
-        } else if (status == 0) {
-            return new Result().success("审核中", userAuthentication);
-        } else if (status == -1) {
-            return new Result().success("未通过", userAuthentication);
-        } else if (status == -2) {
-            return new Result().success("未认证", userAuthentication);
-        }
-        return new Result().erro("没有该用户认证信息");
+        UserAuthenticationStatus status = userAuthentication.getStatus();
+        return new Result().success(status.getValue(), userAuthentication);
     }
 
     @ApiOperation("用户-查询认证信息")
