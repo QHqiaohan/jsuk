@@ -23,13 +23,13 @@ public class Result<T> {
     }
 
     public Result erro(String msg) {
-        this.code = Constant.RESCODE_NOAUTH;
+        this.code = Constant.RESCODE_ERROR;
         this.msg = msg;
         return this;
     }
 
     public Result erro(String msg, T data) {
-        this.code = Constant.RESCODE_NOAUTH;
+        this.code = Constant.RESCODE_ERROR;
         this.msg = msg;
         this.data = data;
         return this;
