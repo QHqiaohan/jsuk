@@ -1,5 +1,6 @@
 package com.jh.jsuk.service.impl;
 
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.ChargeParamVo;
 import com.jh.jsuk.entity.vo.ThirdPayVo;
@@ -184,6 +185,17 @@ public class ThirdPayServiceImpl implements ThirdPayService {
             userOrder.updateById();
             //订单总价格
             price = price.add(userOrder.getOrderRealPrice());
+
+            //修改商品销量；
+            UserOrderGoods uog = new UserOrderGoods();
+            List<UserOrderGoods> order_id = uog.selectList("order_id", userOrder.getId());
+            for (UserOrderGoods uo :order_id){
+                ShopGoods sg = new ShopGoods();
+                ShopGoods shopGoods = sg.selectById(uo.getGoodsId());
+                shopGoods.setSaleAmont(shopGoods.getSaleAmont()+uo.getNum());
+                shopGoods.updateById();
+            }
+
         }
         //商家余额
         ShopMoney shopMoney = new ShopMoney();
