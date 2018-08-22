@@ -45,6 +45,8 @@ public class RedisKeys {
      */
     public static final String SHOP_GOODS_ORDER_SERVICE_CODE = "shop_goods_order_service_code";
 
+    public static final String WEATHER = "weather";
+
     /**
      * 阻止重复提交
      */
