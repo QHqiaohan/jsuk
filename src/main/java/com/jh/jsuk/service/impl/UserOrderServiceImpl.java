@@ -490,7 +490,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 o.setOrderPrice(zong.add(yf));
                 BigDecimal add = zong.add(yf);
                 BigDecimal subtract = add.subtract(discount);
-
+                orderPrice.setOrderRealPrice(subtract);
                 o.setOrderRealPrice(subtract);
             }else{
                 //获取包邮数据
@@ -500,7 +500,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 if(zong.compareTo(baoy)>=0){
 
                     o.setOrderPrice(zong);
-
+                    orderPrice.setOrderRealPrice(zong.subtract(discount));
                     o.setOrderRealPrice(zong.subtract(discount));
                 }else{
                     //不然将邮费和商品价和满减相加减起来
@@ -509,7 +509,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     o.setOrderPrice(zong.add(yf));
                     BigDecimal add = zong.add(yf);
                     BigDecimal subtract = add.subtract(discount);
-
+                    orderPrice.setOrderRealPrice(subtract);
                     o.setOrderRealPrice(subtract);
                 }
             }
@@ -525,6 +525,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             response.setOrderId(orderId);
             response.setOrderNum(o.getOrderNum());
             response.setOrderPrice(orderPrice);
+
             for (UserOrderGoods g : gs) {
                 g.setOrderId(orderId);
                 g.insert();
