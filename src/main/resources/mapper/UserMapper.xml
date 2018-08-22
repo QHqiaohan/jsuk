@@ -100,7 +100,7 @@
   </select>
 
   <select id="discount" resultType="java.util.Map">
-    select member_discount,member_name from js_sys_member where id = (select member_id from js_user where id =#{userId})
+    select member_discount,member_name from js_sys_member where id = (select level from js_user where id =#{userId})
   </select>
 
 </mapper>

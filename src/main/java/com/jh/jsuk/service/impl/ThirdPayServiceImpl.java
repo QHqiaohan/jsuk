@@ -146,6 +146,9 @@ public class ThirdPayServiceImpl implements ThirdPayService {
         userRechargeRecord.setFinishTime(new Date());
         userRechargeRecord.setIsOk(2);
         userRechargeRecord.updateById();
+
+
+
     }
 
     /**
@@ -192,7 +195,7 @@ public class ThirdPayServiceImpl implements ThirdPayService {
             for (UserOrderGoods uo :order_id){
                 ShopGoods sg = new ShopGoods();
                 ShopGoods shopGoods = sg.selectById(uo.getGoodsId());
-                shopGoods.setSaleAmont(shopGoods.getSaleAmont()+uo.getNum());
+                shopGoods.setSaleAmont(shopGoods.getSaleAmont()+1);
                 shopGoods.updateById();
             }
 
