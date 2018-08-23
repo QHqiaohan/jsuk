@@ -18,6 +18,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,15 +52,15 @@ public class ShopController {
     private ManagerUserService managerUserService;
 
     @PatchMapping
-    public R edit(Shop shop){
+    public R edit(Shop shop) {
         shop.updateById();
         return R.succ();
     }
 
     @PostMapping(value = "/setShopSet")
-    public  Result setShopSet(ShopSets se){
+    public Result setShopSet(ShopSets se) {
         boolean b = se.updateById();
-        if (b){
+        if (b) {
             return new Result().success("修改成功");
         }
         return new Result().success("修改失败");
@@ -67,18 +68,19 @@ public class ShopController {
 
     /**
      * 商家获取是否包邮
+     *
      * @param shopId
      * @return
      */
     @GetMapping("/getShopSetByShopId")
-    public Result getShopSetByShopId(Integer shopId){
-        if(shopId==null){
+    public Result getShopSetByShopId(Integer shopId) {
+        if (shopId == null) {
             return new Result().erro("数据为空");
         }
 
         ShopSets sd = shopSetService.getShopSetByShopId(shopId);//根据店铺id查询一条信息
         //如果为空则添加一条新数据，否则就将查询的数据返回前台
-        if(sd==null){
+        if (sd == null) {
             ShopSets ss = new ShopSets();
             ss.setIntegral(1);//设置使用积分为否
             ss.setMoney(0.0);//设置包邮金额为0；
@@ -86,7 +88,7 @@ public class ShopController {
             ss.setShopid(shopId);
             ss.insert();//添加新数据
 
-            ShopSets shopid=shopSetService.getShopSetByShopId(shopId);//根据店铺id查询一条信息
+            ShopSets shopid = shopSetService.getShopSetByShopId(shopId);//根据店铺id查询一条信息
 
             return new Result().success(shopid);
         }
@@ -94,11 +96,14 @@ public class ShopController {
     }
 
     @GetMapping("/list")
-    public R list(){
+    public R list() {
         Wrapper<Shop> wrapper = new EntityWrapper<>();
-        wrapper.eq(Shop.CAN_USE,1);
+        wrapper.eq(Shop.CAN_USE, 1);
         return R.succ(shopService.selectList(wrapper));
     }
+
+    @Autowired
+    ShopVisitService shopVisitService;
 
     @ApiOperation("用户端-根据店铺id查看店铺信息")
     @RequestMapping(value = "/getShopById", method = {RequestMethod.POST, RequestMethod.GET})
@@ -107,13 +112,29 @@ public class ShopController {
         if (shop == null) {
             return new Result().success(null);
         }
+        EntityWrapper<ShopVisit> wrapper = new EntityWrapper<>();
+        wrapper.eq(ShopVisit.SHOP_ID, shopAttributeGoodsService);
+        List<ShopVisit> visits = shopVisitService.selectList(wrapper);
+        ShopVisit visit = null;
+        for (ShopVisit v : visits) {
+            if (userId.equals(v.getUserId())) {
+                visit = v;
+            }
+        }
+        if (visit != null) {
+            visit.setPublishTime(new Date());
+            visit.updateById();
+            return new Result().success(shop);
+        }
         // 总访问量+1
         Shop shop1 = shopService.selectById(shopId);
         shop1.setTotalVolume(shop1.getTotalVolume() + 1);
         shop1.updateById();
+
         // 今日访客+1
         ShopTodayStatistics todayStatistics = shopTodayStatisticsService.selectOne(new EntityWrapper<ShopTodayStatistics>()
-                .eq(ShopTodayStatistics.SHOP_ID, shopId));
+            .eq(ShopTodayStatistics.SHOP_ID, shopId));
+
         if (todayStatistics == null) {
             ShopTodayStatistics shopTodayStatistics = new ShopTodayStatistics();
             shopTodayStatistics.setShopId(shopId);
@@ -126,7 +147,7 @@ public class ShopController {
         }
         // 月访问人数+1
         ShopMonthStatistics monthStatistics = shopMonthStatisticsService.selectOne(new EntityWrapper<ShopMonthStatistics>()
-                .eq(ShopMonthStatistics.SHOP_ID, shopId));
+            .eq(ShopMonthStatistics.SHOP_ID, shopId));
         if (monthStatistics == null) {
             ShopMonthStatistics shopMonthStatistics = new ShopMonthStatistics();
             shopMonthStatistics.setShopId(shopId);
@@ -164,8 +185,8 @@ public class ShopController {
     @RequestMapping(value = "/addShopInfo", method = {RequestMethod.POST, RequestMethod.GET})
     public Result addShopInfo(@ApiParam(value = "商家id") Integer userId, @ModelAttribute Shop shop) {
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-                .eq(ManagerUser.ID, userId));
-        if(managerUser==null){
+            .eq(ManagerUser.ID, userId));
+        if (managerUser == null) {
             return new Result().erro("系统错误,请稍后再试");
         }
 
@@ -259,10 +280,10 @@ public class ShopController {
 
     @ApiOperation("到店支付、扫码支付")
     @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "shopId", value = "商家id",
-                    required = true, paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "amount", value = "交易金额",
-                    required = true, paramType = "query", dataType = "string")
+        @ApiImplicitParam(name = "shopId", value = "商家id",
+            required = true, paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "amount", value = "交易金额",
+            required = true, paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "/pay", method = {RequestMethod.POST, RequestMethod.GET})
     public Result pay(Integer shopId, Integer userId, String amount) {
