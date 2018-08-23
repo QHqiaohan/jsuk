@@ -87,6 +87,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     @Autowired
     private ShopSetService shopSetService;//是否包邮
 
+
     @Override
     public int statusCount(OrderStatus orderStatus, Integer shopId) {
         EntityWrapper<UserOrder> wrapper = new EntityWrapper<>();
@@ -376,7 +377,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public OrderResponse createOrder(SubmitOrderDto orderDto, ShopSubmitOrderDto orderGoods,
-                                     OrderType orderType, Integer userId) throws Exception {
+                                     OrderType orderType, Integer userId,Integer isuseintegerl) throws Exception {
         boolean isTimeOut = false;
         OrderResponse response = new OrderResponse();
         response.setStatus(OrderResponseStatus.PARTLY_SUCCESS);
@@ -469,6 +470,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 goodsName.append(shopGoods.getGoodsName());
                 goodsName.append(",");
             }
+            //查询是否包邮；
+            ShopSets shopSet = shopSetService.getShopSet(orderGoods.getShopId());
+            //积分抵扣
             //获取用户会员级别
             User user = new User();
             User user1 = user.selectById(userId);
@@ -494,17 +498,14 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     break;
                 }
             }
-            //查询是否包邮；
-            ShopSets shopSet = shopSetService.getShopSet(orderGoods.getShopId());
+            BigDecimal subtract = new BigDecimal(0);
             if(shopSet==null){
                 //不然将邮费和商品价和满减相加减起来
                 BigDecimal yf = new BigDecimal(you);
                 o.setFreight(yf);
                 o.setOrderPrice(zong.add(yf));
                 BigDecimal add = zong.add(yf);
-                BigDecimal subtract = add.subtract(discount);
-                orderPrice.setOrderRealPrice(subtract.multiply(zhe));
-                o.setOrderRealPrice(subtract.multiply(zhe));
+                subtract = (add.subtract(discount)).multiply(zhe);
             }else{
                 //获取包邮数据
                 Double money = shopSet.getMoney();
@@ -513,20 +514,67 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 if(zong.compareTo(baoy)>=0){
 
                     o.setOrderPrice(zong);
-                    orderPrice.setOrderRealPrice((zong.subtract(discount)).multiply(zhe));
-                    o.setOrderRealPrice((zong.subtract(discount)).multiply(zhe));
+                    subtract =  (zong.subtract(discount)).multiply(zhe);
                 }else{
                     //不然将邮费和商品价和满减相加减起来
                     BigDecimal yf = new BigDecimal(you);
                     o.setFreight(yf);
                     o.setOrderPrice(zong.add(yf));
                     BigDecimal add = zong.add(yf);
-                    BigDecimal subtract = (add.subtract(discount)).multiply(zhe);
-                    orderPrice.setOrderRealPrice(subtract);
-                    o.setOrderRealPrice(subtract);
+                    subtract = (add.subtract(discount)).multiply(zhe);
                 }
             }
+            //设置积分折扣的钱
+            BigDecimal jizong = new BigDecimal(0);
+            //是否使用积分
+            if(isuseintegerl==1){//使用积分
 
+                //获取店家是否允许使用积分；
+                if(shopSet!=null){
+                    if (shopSet.getIntegral()==2) {
+                        //获取积分列表
+                        List<UserIntegral> userIntegrals = userIntegralService.selectList(new EntityWrapper<UserIntegral>()
+                            .eq(UserIntegral.USER_ID, userId));
+                        // 初始记录总积分数
+                        int sum = 0;
+                        for (UserIntegral integral : userIntegrals) {
+                            // 如果是购物获赠积分
+                            if (integral.getIntegralType() == 1) {
+                                sum += integral.getIntegralNumber();
+                                // 抵扣积分
+                            } else if (integral.getIntegralType() == -1) {
+                                sum -= integral.getIntegralNumber();
+                            }
+                        }
+                        System.out.println(sum);
+                        //获取积分规则列表
+                        IntegralRule ir = new IntegralRule();
+                        IntegralRule ie = ir.selectById(1);
+                        if(ie!=null){
+                            Integer ii = ie.getIntegral();//多少积分
+                            BigDecimal mon = ie.getDeduction();//换多少钱
+                            BigDecimal jif = new BigDecimal(ii);
+
+                            UserIntegral ui = new UserIntegral();
+                            ui.setIntegralType(-1);
+                            ui.setUserId(userId);
+                            ui.setCraTime(new Date());
+                            //判断积分和钱
+                            BigDecimal zongji = new BigDecimal(sum);//总积分
+                            if(zong.compareTo(zongji)>=0){
+                                jizong=zongji.multiply(mon).divide(jif);
+                                ui.setIntegralNumber(sum);
+                            }else{
+                                jizong=zong.multiply(mon).divide(jif);
+                                ui.setIntegralNumber(subtract.intValue());
+                            }
+                            ui.insert();
+                        }
+                    }
+                }
+            }
+            orderPrice.setOrderRealPrice(subtract.subtract(jizong));
+            o.setOrderRealPrice(subtract.subtract(jizong));
             //设置满减；
             o.setFullReduce(discount);
             o.setGoodsName(goodsName.toString());
@@ -577,7 +625,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             if (shop.getGoods().size() == 0) {
                 continue;
             }
-            OrderResponse response = createOrder(orderDto, shop, orderType, userId);
+            OrderResponse response = createOrder(orderDto, shop, orderType, userId,orderDto.getIsUseIntegral());
             if (OrderType.NORMAL.equals(orderType) &&
                 (response.is(OrderResponseStatus.SUCCESS) || response.is(OrderResponseStatus.PARTLY_SUCCESS))) {
                 delShopCart(shop);
@@ -646,7 +694,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             totalPriceWithOutDiscount = totalPriceWithOutDiscount.subtract(discount);   //减去优惠券的折扣
             orderPrice.setCouponReduce(discount.setScale(2));         //优惠券优惠了多少
         }
-        if (isUseIntegral == 1) {
+        if (isUseIntegral == 3) {
             //计算积分抵扣
             //查询用户总积分
             Integer integralNum = userIntegralService.getIntegral(userId);    //总积分
