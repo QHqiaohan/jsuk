@@ -23,4 +23,6 @@ public interface ShopVisitDao extends BaseMapper<ShopVisit> {
     List<ShopVisitorVo> getVisitList(RowBounds rowBounds, @Param("ew") Wrapper wrapper,
                                      @Param("shopId") Integer shopId, @Param("today") String today);
 
+    List<ShopVisit> getListShopVisit(Integer shopId);
+
 }

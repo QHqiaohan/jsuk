@@ -9,6 +9,8 @@ import com.jh.jsuk.entity.ShopVisit;
 import com.jh.jsuk.service.ShopVisitService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 商家端-店铺访问记录明细 服务实现类
@@ -25,6 +27,11 @@ public class ShopVisitServiceImpl extends ServiceImpl<ShopVisitDao, ShopVisit> i
         wrapper = SqlHelper.fillWrapper(page, wrapper);
         page.setRecords(baseMapper.getVisitList(page, wrapper, shopId, today));
         return page;
+    }
+
+    @Override
+    public List<ShopVisit> getListShopVisit(Integer ShopId) {
+        return baseMapper.getListShopVisit(ShopId);
     }
 
 }

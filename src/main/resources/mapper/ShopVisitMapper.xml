@@ -31,5 +31,11 @@
             ${ew.sqlSegment}
         </where>
     </select>
+  <select id="getListShopVisit" resultMap="BaseResultMap">
+    select *
+    from js_shop_visit
+    where shop_id=#{shopId}
+
+  </select>
 
 </mapper>

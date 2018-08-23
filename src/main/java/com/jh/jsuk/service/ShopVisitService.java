@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.ShopVisit;
 
+import java.util.List;
+
 /**
  * <p>
  * 商家端-店铺访问记录明细 服务类
@@ -16,4 +18,6 @@ import com.jh.jsuk.entity.ShopVisit;
 public interface ShopVisitService extends IService<ShopVisit> {
 
     Page getVisitList(Page page, Wrapper wrapper, Integer shopId, String today);
+
+    List<ShopVisit> getListShopVisit(Integer ShopId);
 }
