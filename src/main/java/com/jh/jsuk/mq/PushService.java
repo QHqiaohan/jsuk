@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jh.jsuk.entity.Mq;
 import com.jh.jsuk.entity.dto.MessageDTO;
 import com.jh.jsuk.envm.MqStatus;
+import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.utils.UuidUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -17,12 +18,27 @@ import static com.jh.jsuk.conf.QueueConfig.QUEUE_PUSH_MESSAGE;
 
 @Slf4j
 @Component
-public class DjsMessageProducer {
+public class PushService {
 
     @Autowired
     private AmqpTemplate rabbitTemplate;
 
-    public void send(MessageDTO data) {
+    public void pushUser(MessageDTO data) {
+        data.setUserType(UserType.USER);
+        send(data);
+    }
+
+    public void pushShop(MessageDTO data) {
+        data.setUserType(UserType.SHOP);
+        send(data);
+    }
+
+    public void pushDistp(MessageDTO data) {
+        data.setUserType(UserType.DISTRIBUTION);
+        send(data);
+    }
+
+    private void send(MessageDTO data) {
         Mq mq = new Mq();
         String id = UuidUtil.getUUID();
         data.setId(id);

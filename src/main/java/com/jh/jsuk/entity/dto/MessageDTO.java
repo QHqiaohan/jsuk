@@ -1,5 +1,6 @@
 package com.jh.jsuk.entity.dto;
 
+import com.jh.jsuk.envm.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,9 +12,11 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class MessageDTO implements Serializable {
 
+    private UserType userType;
+
     private String id;
 
-    private String alias;
+    private Integer userId;
 
     private String content;
 

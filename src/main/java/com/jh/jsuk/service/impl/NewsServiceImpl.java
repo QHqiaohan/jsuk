@@ -79,7 +79,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
         News news = selectById(newsUser.getNewsId());
         pushTaskExecutor.execute(() -> {
             try {
-                JPushUtils.push(UserType.USER, String.valueOf(newsUser.getReceivedId()), news.getContent(), news.getTitle());
+                JPushUtils.push(UserType.USER, newsUser.getReceivedId(), news.getContent(), news.getTitle());
                 newsUser.setIsPushed(1);
                 newsUser.updateById();
             } catch (Exception e) {
@@ -110,7 +110,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
             newsUser.insert();
             pushTaskExecutor.execute(() -> {
                 try {
-                    JPushUtils.push(UserType.USER, String.valueOf(receivedUserId), news.getContent(), news.getTitle());
+                    JPushUtils.push(UserType.USER, receivedUserId, news.getContent(), news.getTitle());
                     newsUser.setIsPushed(1);
                     newsUser.updateById();
                 } catch (Exception e) {
