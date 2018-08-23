@@ -136,6 +136,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Override
     public void remindingOrderTaking() {
+
         List<UserOrder> orders = this.selectList(new EntityWrapper<UserOrder>()
             .eq("status", 1)
             .eq("is_unsubscribe", 0));
