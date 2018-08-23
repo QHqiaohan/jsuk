@@ -13,7 +13,6 @@ import com.jh.jsuk.conf.RedisKeys;
 import com.jh.jsuk.dao.UserOrderDao;
 import com.jh.jsuk.dao.UserOrderGoodsDao;
 import com.jh.jsuk.entity.*;
-import com.jh.jsuk.entity.dto.MessageDTO;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderGoodsDto;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
@@ -21,11 +20,11 @@ import com.jh.jsuk.entity.info.UserRemainderInfo;
 import com.jh.jsuk.entity.vo.*;
 import com.jh.jsuk.envm.*;
 import com.jh.jsuk.exception.MessageException;
-import com.jh.jsuk.mq.MessagePushProducer;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.Date2;
 import com.jh.jsuk.utils.EnumUitl;
+import com.jh.jsuk.utils.ShopJPushUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -132,8 +131,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         }
     }
 
-    @Autowired
-    MessagePushProducer messagePushProducer;
 
     @Override
     public void remindingOrderTaking() {
@@ -141,19 +138,18 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             .eq("status", 1)
             .eq("is_unsubscribe", 0));
         for (UserOrder order : orders) {
-            Integer shopId = order.getShopId();
-            ShopUser shopUser = shopUserService.selectOne(new EntityWrapper<ShopUser>().eq("shop_id", shopId));
-//                ShopJPushUtils.pushMsgMusic(shopUser.getId() + "", "您有新的订单请注意接单", "", null);
-            MessageDTO data = new MessageDTO();
-            data.setUserId(shopUser.getId());
-            data.setContent("您有新的订单请注意接单");
-            messagePushProducer.pushShop(data);
+            try {
+                Integer shopId = order.getShopId();
+                ShopUser shopUser = shopUserService.selectOne(new EntityWrapper<ShopUser>().eq("shop_id", shopId));
+                ShopJPushUtils.pushMsgMusic(shopUser.getId() + "", "您有新的订单请注意接单", "", null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     /**
      * 用户端
-     *
      * @param page
      * @param wrapper
      * @param userId
@@ -173,7 +169,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     .orderBy(true, UserOrder.UPDATE_TIME, false)
                     .where("not is_user_del"));
             }
-        } else if (status == 8) {
+        }else if(status == 8){
             //待评价
             if (goodsName != null) {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
@@ -291,27 +287,17 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         return page.setRecords(list);
     }
 
-    @Autowired
-    ManagerUserService managerUserService;
-
     @Override
     public String pushAPush(Integer orderId) {
         //获取订单详情
         UserOrderDetailVo orderDetail = userOrderDetail(orderId);
         //获取商家信息
-        ManagerUser shopUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>().eq(ManagerUser.SHOP_ID, orderDetail.getShopId()));
-
+        ShopUser shopUser = shopUserService.selectOne(new EntityWrapper<ShopUser>().eq("shop_id", orderDetail.getShopId()));
         //获取买家信息
         User user = userService.selectOne(new EntityWrapper<User>().eq("id", orderDetail.getUserId()));
-        MessageDTO data = new MessageDTO();
-        data.setContent("订单(" + orderDetail.getOrderNum() + ")请尽快发货！催单人：" + user.getNickName() + "");
-        data.setTitle("用户催单");
-        data.setUserId(shopUser.getId());
-        messagePushProducer.pushShop(data);
-        return "催单成功";
-//        return ShopJPushUtils.pushMsg(shopUser.getId() + "",
-//            "订单(" + orderId + ")请尽快发货！催单人：" + user.getNickName() + "",
-//            "用户催单", null) ? "催单成功" : "催单失败";
+        return ShopJPushUtils.pushMsg(shopUser.getId() + "",
+            "订单(" + orderId + ")请尽快发货！催单人：" + user.getNickName() + "",
+            "用户催单", null) ? "催单成功" : "催单失败";
     }
 
     /**
@@ -457,9 +443,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setUpdateTime(new Date());
             StringBuilder goodsName = new StringBuilder();
             //创建一个邮费计数值；
-            Integer you = 0;
+                Integer you=0;
             //创建一个总价计数值；
-            BigDecimal zong = new BigDecimal(0);
+            BigDecimal zong =new BigDecimal(0);
 
             for (UserOrderGoods userOrderGoods : gs) {
                 //获取商品型号数量
@@ -467,16 +453,16 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 BigDecimal nums = new BigDecimal(num);
                 //获取购买价格
                 BigDecimal goodsPrice = userOrderGoods.getGoodsPrice();
-                zong = zong.add(nums.multiply(goodsPrice));
+                 zong =  zong.add(nums.multiply(goodsPrice));
                 //获取商品型号id
                 Integer goodsSizeId = userOrderGoods.getGoodsSizeId();
                 //根据型号查询邮费；
                 ShopGoodsSize sgs = new ShopGoodsSize();
                 ShopGoodsSize ss = sgs.selectById(goodsSizeId);
                 //取出型号id的邮费；
-                if (ss != null) {
+                if(ss!=null){
                     int i = Integer.parseInt(ss.getFreight());
-                    you = you + i;
+                    you=you+i;
                 }
 
                 ShopGoods shopGoods = shopGoodsService.selectById(userOrderGoods.getGoodsId());
@@ -487,9 +473,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             User user = new User();
             User user1 = user.selectById(userId);
             BigDecimal zhe = new BigDecimal(1);
-            if (user1 != null) {
+            if(user1!=null){
                 Integer level = user1.getLevel();
-                if (level != 0) {
+                if(level!=0){
                     Member mm = new Member();
                     Member member = mm.selectById(level);
                     zhe = member.getMemberDiscount();
@@ -497,20 +483,20 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             }
 
             //满减数量
-            BigDecimal discount = new BigDecimal(0);
+            BigDecimal discount=new BigDecimal(0);
             //查询是否满减
             List<Coupon> lb = couponService.getListByShopId(orderGoods.getShopId());
-            for (Coupon cu : lb) {
+            for(Coupon cu : lb){
                 //获取满减值
                 BigDecimal fullPrice = cu.getFullPrice();
-                if (zong.compareTo(fullPrice) >= 0) {
+                if(zong.compareTo(fullPrice)>=0){
                     discount = cu.getDiscount();
                     break;
                 }
             }
             //查询是否包邮；
             ShopSets shopSet = shopSetService.getShopSet(orderGoods.getShopId());
-            if (shopSet == null) {
+            if(shopSet==null){
                 //不然将邮费和商品价和满减相加减起来
                 BigDecimal yf = new BigDecimal(you);
                 o.setFreight(yf);
@@ -519,17 +505,17 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 BigDecimal subtract = add.subtract(discount);
                 orderPrice.setOrderRealPrice(subtract.multiply(zhe));
                 o.setOrderRealPrice(subtract.multiply(zhe));
-            } else {
+            }else{
                 //获取包邮数据
                 Double money = shopSet.getMoney();
                 BigDecimal baoy = new BigDecimal(money);
                 //如果价格大于包邮量邮费为0
-                if (zong.compareTo(baoy) >= 0) {
+                if(zong.compareTo(baoy)>=0){
 
                     o.setOrderPrice(zong);
                     orderPrice.setOrderRealPrice((zong.subtract(discount)).multiply(zhe));
                     o.setOrderRealPrice((zong.subtract(discount)).multiply(zhe));
-                } else {
+                }else{
                     //不然将邮费和商品价和满减相加减起来
                     BigDecimal yf = new BigDecimal(you);
                     o.setFreight(yf);
@@ -737,7 +723,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             userRemainder.setStatus(UserRemainderStatus.PASSED);
             userRemainder.setPlatformNumber(userOrder.getPlatformNumber());
             userRemainder.insert();
-            userRemainderService.consume(userId, userOrder.getOrderRealPrice());
+            userRemainderService.consume(userId,userOrder.getOrderRealPrice());
             //修改订单信息
             userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
             userOrder.setPayType(PayType.BALANCE_PAY.getKey());
@@ -748,10 +734,10 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
             List<UserOrderGoods> order_id1 = userOrderGoodsService.getListByOrderId(userOrder.getId());
 
-            for (UserOrderGoods uo : order_id1) {
+            for (UserOrderGoods uo :order_id1){
                 ShopGoods sg = new ShopGoods();
                 ShopGoods shopGoods = sg.selectById(uo.getGoodsId());
-                shopGoods.setSaleAmont(shopGoods.getSaleAmont() + 1);
+                shopGoods.setSaleAmont(shopGoods.getSaleAmont()+1);
                 shopGoods.updateById();
 
             }
@@ -759,7 +745,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         //获取积分规则列表
         IntegralRule ir = new IntegralRule();
         IntegralRule ie = ir.selectById(1);
-        if (ie != null) {
+        if(ie!=null){
             Integer consumption = ie.getConsumption();//多少钱
             Integer gainIntegral = ie.getGainIntegral();//送多少积分
             int i = price.intValue();
