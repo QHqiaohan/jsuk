@@ -469,6 +469,19 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 goodsName.append(shopGoods.getGoodsName());
                 goodsName.append(",");
             }
+            //获取用户会员级别
+            User user = new User();
+            User user1 = user.selectById(userId);
+            BigDecimal zhe = new BigDecimal(1);
+            if(user1!=null){
+                Integer level = user1.getLevel();
+                if(level!=0){
+                    Member mm = new Member();
+                    Member member = mm.selectById(level);
+                    zhe = member.getMemberDiscount();
+                }
+            }
+
             //满减数量
             BigDecimal discount=new BigDecimal(0);
             //查询是否满减
@@ -490,8 +503,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 o.setOrderPrice(zong.add(yf));
                 BigDecimal add = zong.add(yf);
                 BigDecimal subtract = add.subtract(discount);
-                orderPrice.setOrderRealPrice(subtract);
-                o.setOrderRealPrice(subtract);
+                orderPrice.setOrderRealPrice(subtract.multiply(zhe));
+                o.setOrderRealPrice(subtract.multiply(zhe));
             }else{
                 //获取包邮数据
                 Double money = shopSet.getMoney();
@@ -500,15 +513,15 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 if(zong.compareTo(baoy)>=0){
 
                     o.setOrderPrice(zong);
-                    orderPrice.setOrderRealPrice(zong.subtract(discount));
-                    o.setOrderRealPrice(zong.subtract(discount));
+                    orderPrice.setOrderRealPrice((zong.subtract(discount)).multiply(zhe));
+                    o.setOrderRealPrice((zong.subtract(discount)).multiply(zhe));
                 }else{
                     //不然将邮费和商品价和满减相加减起来
                     BigDecimal yf = new BigDecimal(you);
                     o.setFreight(yf);
                     o.setOrderPrice(zong.add(yf));
                     BigDecimal add = zong.add(yf);
-                    BigDecimal subtract = add.subtract(discount);
+                    BigDecimal subtract = (add.subtract(discount)).multiply(zhe);
                     orderPrice.setOrderRealPrice(subtract);
                     o.setOrderRealPrice(subtract);
                 }
