@@ -9,7 +9,7 @@ import com.jh.jsuk.dao.DistributionUserDao;
 import com.jh.jsuk.entity.DistributionDetail;
 import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.entity.dto.MessageDTO;
-import com.jh.jsuk.mq.PushService;
+import com.jh.jsuk.mq.MessagePushProducer;
 import com.jh.jsuk.service.DistributionDetailService;
 import com.jh.jsuk.service.DistributionUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ import java.util.List;
 public class DistributionUserServiceImpl extends ServiceImpl<DistributionUserDao, DistributionUser> implements DistributionUserService {
 
     @Autowired
-    PushService pushService;
+    MessagePushProducer messagePushProducer;
 
     @Async
     @Override
@@ -46,7 +46,7 @@ public class DistributionUserServiceImpl extends ServiceImpl<DistributionUserDao
         List<DistributionUser> list = selectList(wrapper);
         for (DistributionUser user : list) {
             data.setUserId(user.getId());
-            pushService.pushDistp(data);
+            messagePushProducer.pushDistp(data);
         }
     }
 

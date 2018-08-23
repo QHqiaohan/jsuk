@@ -18,7 +18,7 @@ import static com.jh.jsuk.conf.QueueConfig.QUEUE_PUSH_MESSAGE;
 
 @Slf4j
 @Component
-public class PushService {
+public class MessagePushProducer {
 
     @Autowired
     private AmqpTemplate rabbitTemplate;
@@ -45,7 +45,7 @@ public class PushService {
         mq.setId(id);
         mq.setQueueName(QUEUE_PUSH_MESSAGE);
         mq.setCreateTime(new Date());
-        mq.setStatus(MqStatus.CREATE.getKey());
+        mq.setStatus(MqStatus.CREATE);
         try {
             mq.setBody(new ObjectMapper().writeValueAsString(data));
         } catch (JsonProcessingException e) {
@@ -53,7 +53,7 @@ public class PushService {
         }
         mq.insert();
         rabbitTemplate.convertAndSend(QUEUE_PUSH_MESSAGE, data);
-        mq.setStatus(MqStatus.SENT.getKey());
+        mq.setStatus(MqStatus.SENT);
         mq.setSentTime(new Date());
         mq.updateById();
     }

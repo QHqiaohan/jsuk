@@ -19,20 +19,32 @@ import static com.jh.jsuk.conf.QueueConfig.QUEUE_PUSH_MESSAGE;
 @Slf4j
 @Component
 @RabbitListener(queues = QUEUE_PUSH_MESSAGE)
-public class DjsMessageConsumer {
+public class MessageConsumer {
 
     @Autowired
     MqService mqService;
 
     @RabbitHandler
     public void process(MessageDTO data) throws Exception {
+        System.out.println("m22q");
+        System.out.println("m22q");
+        System.out.println("m22q");
+        System.out.println("m22q");
         Mq mq = mqService.selectById(data.getId());
+        System.out.println(mq);
+        System.out.println("mq");
+        System.out.println("mq");
+        System.out.println("mq");
+        System.out.println("mq");
+        System.out.println("mq");
+        System.out.println("mq");
+        System.out.println("mq");
         if (mq == null || mq.isConsumed())
             return;
         try {
             JPushUtils.push(data.getUserType(), data.getUserId(), data.getContent(), data.getTitle());
             mq.setConsumeTime(new Date());
-            mq.setStatus(MqStatus.CONSUME.getKey());
+            mq.setStatus(MqStatus.CONSUME);
             mq.updateById();
         } catch (Exception e) {
             log.error(e.getMessage());

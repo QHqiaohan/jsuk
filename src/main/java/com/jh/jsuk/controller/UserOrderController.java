@@ -16,7 +16,6 @@ import com.jh.jsuk.envm.OrderStatus;
 import com.jh.jsuk.envm.RefundType;
 import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.exception.MessageException;
-import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.*;
@@ -205,8 +204,8 @@ public class UserOrderController {
 //        return new Result().success(userOrderService.selectCount(wrapper));
 //    }
 
-    @Autowired
-    RobbingOrderProducer producer;
+//    @Autowired
+//    RobbingOrderProducer producer;
 
         @ApiOperation(value = "商家端-删除订单")
         @PostMapping(value = "/deleteShopOrder")

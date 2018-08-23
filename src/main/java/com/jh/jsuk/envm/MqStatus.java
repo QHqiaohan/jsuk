@@ -1,6 +1,6 @@
 package com.jh.jsuk.envm;
 
-public enum  MqStatus {
+public enum  MqStatus implements BaseEnum{
 
     CREATE(1,"创建"),
 

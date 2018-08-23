@@ -21,7 +21,7 @@ import com.jh.jsuk.entity.info.UserRemainderInfo;
 import com.jh.jsuk.entity.vo.*;
 import com.jh.jsuk.envm.*;
 import com.jh.jsuk.exception.MessageException;
-import com.jh.jsuk.mq.PushService;
+import com.jh.jsuk.mq.MessagePushProducer;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.Date2;
@@ -133,7 +133,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Autowired
-    PushService pushService;
+    MessagePushProducer messagePushProducer;
 
     @Override
     public void remindingOrderTaking() {
@@ -147,7 +147,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             MessageDTO data = new MessageDTO();
             data.setUserId(shopUser.getId());
             data.setContent("您有新的订单请注意接单");
-            pushService.pushShop(data);
+            messagePushProducer.pushShop(data);
         }
     }
 
@@ -291,18 +291,23 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         return page.setRecords(list);
     }
 
+    @Autowired
+    ManagerUserService managerUserService;
+
     @Override
     public String pushAPush(Integer orderId) {
         //获取订单详情
         UserOrderDetailVo orderDetail = userOrderDetail(orderId);
         //获取商家信息
-        ShopUser shopUser = shopUserService.selectOne(new EntityWrapper<ShopUser>().eq("shop_id", orderDetail.getShopId()));
+        ManagerUser shopUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>().eq(ManagerUser.SHOP_ID, orderDetail.getShopId()));
+
         //获取买家信息
         User user = userService.selectOne(new EntityWrapper<User>().eq("id", orderDetail.getUserId()));
         MessageDTO data = new MessageDTO();
-        data.setContent("订单(" + orderId + ")请尽快发货！催单人：" + user.getNickName() + "");
+        data.setContent("订单(" + orderDetail.getOrderNum() + ")请尽快发货！催单人：" + user.getNickName() + "");
         data.setTitle("用户催单");
-        pushService.pushShop(data);
+        data.setUserId(shopUser.getId());
+        messagePushProducer.pushShop(data);
         return "催单成功";
 //        return ShopJPushUtils.pushMsg(shopUser.getId() + "",
 //            "订单(" + orderId + ")请尽快发货！催单人：" + user.getNickName() + "",

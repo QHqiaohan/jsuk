@@ -112,6 +112,9 @@ public class JPushUtils {
                 log.error("不支持的用户类型: {}", userType);
                 return;
         }
+        if (userId == null) {
+            throw new Exception("userId为空");
+        }
         try {
             client.sendPush(buildPush(userType.getPushKey() + userId, content, title, new HashMap<>()));
         } catch (APIConnectionException e) {

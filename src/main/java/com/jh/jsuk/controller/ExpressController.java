@@ -9,7 +9,7 @@ import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.envm.DistributionExpressStatus;
 import com.jh.jsuk.envm.ExpressStatus;
-import com.jh.jsuk.mq.RobbingOrderProducer;
+//import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.*;
 import io.swagger.annotations.*;
@@ -246,8 +246,8 @@ public class ExpressController {
         return new Result().success(expressList);
     }
 
-    @Autowired
-    RobbingOrderProducer producer;
+//    @Autowired
+//    RobbingOrderProducer producer;
 
     @ApiOperation("骑手端-配送数量")
     @PostMapping("/dvr/count")
