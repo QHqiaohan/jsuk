@@ -3,6 +3,8 @@ package com.jh.jsuk.service;
 import com.jh.jsuk.entity.UserOrderGoods;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 订单商品关联 服务类
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface UserOrderGoodsService extends IService<UserOrderGoods> {
 
+    List<UserOrderGoods> getListByOrderId(Integer orderId);
 }

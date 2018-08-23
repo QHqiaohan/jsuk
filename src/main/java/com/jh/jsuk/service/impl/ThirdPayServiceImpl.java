@@ -16,6 +16,7 @@ import com.jh.jsuk.utils.OrderNumUtil;
 import com.jh.jsuk.utils.PingPPUtil;
 import com.pingplusplus.exception.ChannelException;
 import com.pingplusplus.model.Charge;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,8 @@ public class ThirdPayServiceImpl implements ThirdPayService {
     private UserService userService;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private UserOrderGoodsService userOrderGoodsService;
     @Autowired
     private ExpressService expressService;
     @Autowired
@@ -190,22 +193,38 @@ public class ThirdPayServiceImpl implements ThirdPayService {
             price = price.add(userOrder.getOrderRealPrice());
 
             //修改商品销量；
-            UserOrderGoods uog = new UserOrderGoods();
-            List<UserOrderGoods> order_id = uog.selectList("order_id", userOrder.getId());
-            for (UserOrderGoods uo :order_id){
+            List<UserOrderGoods> order_id1 = userOrderGoodsService.getListByOrderId(userOrder.getId());
+            for (UserOrderGoods uo :order_id1){
                 ShopGoods sg = new ShopGoods();
                 ShopGoods shopGoods = sg.selectById(uo.getGoodsId());
                 shopGoods.setSaleAmont(shopGoods.getSaleAmont()+1);
                 shopGoods.updateById();
             }
-
         }
+        //获取积分规则列表
+        IntegralRule ir = new IntegralRule();
+        IntegralRule ie = ir.selectById(1);
+        int i1=0;
+        if(ie!=null){
+            Integer consumption = ie.getConsumption();//多少钱
+            Integer gainIntegral = ie.getGainIntegral();//送多少积分
+            int i = price.intValue();
+            i1 = i * gainIntegral / consumption;
+        }
+        //新增用户积分
+        UserIntegral ui = new UserIntegral();
+        ui.setIntegralNumber(i1);
+        ui.setIntegralType(1);
+        ui.setUserId(userOrders.get(0).getUserId());
+        ui.setCraTime(new Date());
+        ui.insert();
         //商家余额
         ShopMoney shopMoney = new ShopMoney();
         shopMoney.setMoney(price.toString());
         shopMoney.setPublishTime(new Date());
         shopMoney.setType(ShopMoneyType.GAIN);
         shopMoney.setShopId(userOrders.get(0).getShopId());
+        shopMoney.setStatus(UserRemainderStatus.PASSED);
         shopMoney.insert();
     }
 

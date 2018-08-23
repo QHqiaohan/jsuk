@@ -26,4 +26,6 @@ public interface UserOrderGoodsDao extends BaseMapper<UserOrderGoods> {
 
     List<UserOrderGoodsDetailVo> orderGoodsDetail(Integer orderId);
 
+     List<UserOrderGoods> getListByOrderId(Integer orderId);
+
 }
