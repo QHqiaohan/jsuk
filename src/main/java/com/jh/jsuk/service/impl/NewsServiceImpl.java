@@ -183,6 +183,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
         Express express = expressService.selectById(expressId);
         MessageDTO data = new MessageDTO();
         data.setContent("订单(" + express.getOrderNo() + ")请尽快送货,催单人:" + userName);
+        data.setUserId(express.getDistributionUserId());
         messagePushProducer.pushDistp(data);
     }
 }
