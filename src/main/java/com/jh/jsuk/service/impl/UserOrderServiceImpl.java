@@ -13,6 +13,7 @@ import com.jh.jsuk.conf.RedisKeys;
 import com.jh.jsuk.dao.UserOrderDao;
 import com.jh.jsuk.dao.UserOrderGoodsDao;
 import com.jh.jsuk.entity.*;
+import com.jh.jsuk.entity.dto.MessageDTO;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderDto;
 import com.jh.jsuk.entity.dto.ShopSubmitOrderGoodsDto;
 import com.jh.jsuk.entity.dto.SubmitOrderDto;
@@ -20,11 +21,12 @@ import com.jh.jsuk.entity.info.UserRemainderInfo;
 import com.jh.jsuk.entity.vo.*;
 import com.jh.jsuk.envm.*;
 import com.jh.jsuk.exception.MessageException;
+import com.jh.jsuk.mq.MessagePushProducer;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.Date2;
 import com.jh.jsuk.utils.EnumUitl;
-import com.jh.jsuk.utils.ShopJPushUtils;
+//import com.jh.jsuk.utils.ShopJPushUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,8 +76,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     private UserIntegralService userIntegralService;
     @Autowired
     private IntegralRuleService integralRuleService;
-    @Autowired
-    private ShopGoodsFullReduceService shopGoodsFullReduceService;
     @Autowired
     private ShoppingCartService shoppingCartService;
 
@@ -131,6 +131,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         }
     }
 
+    @Autowired
+    MessagePushProducer messagePushProducer;
 
     @Override
     public void remindingOrderTaking() {
@@ -138,13 +140,13 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             .eq("status", 1)
             .eq("is_unsubscribe", 0));
         for (UserOrder order : orders) {
-            try {
-                Integer shopId = order.getShopId();
-                ShopUser shopUser = shopUserService.selectOne(new EntityWrapper<ShopUser>().eq("shop_id", shopId));
-                ShopJPushUtils.pushMsgMusic(shopUser.getId() + "", "您有新的订单请注意接单", "", null);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Integer shopId = order.getShopId();
+            ShopUser shopUser = shopUserService.selectOne(new EntityWrapper<ShopUser>().eq("shop_id", shopId));
+//                ShopJPushUtils.pushMsgMusic(shopUser.getId() + "", "您有新的订单请注意接单", "", null);
+            MessageDTO data = new MessageDTO();
+            data.setUserId(shopUser.getId());
+            data.setContent("您有新的订单请注意接单");
+            messagePushProducer.pushShop(data);
         }
     }
 
@@ -287,17 +289,27 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         return page.setRecords(list);
     }
 
+    @Autowired
+    ManagerUserService managerUserService;
+
     @Override
     public String pushAPush(Integer orderId) {
         //获取订单详情
         UserOrderDetailVo orderDetail = userOrderDetail(orderId);
         //获取商家信息
-        ShopUser shopUser = shopUserService.selectOne(new EntityWrapper<ShopUser>().eq("shop_id", orderDetail.getShopId()));
+        ManagerUser shopUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>().eq(ManagerUser.SHOP_ID, orderDetail.getShopId()));
+
         //获取买家信息
         User user = userService.selectOne(new EntityWrapper<User>().eq("id", orderDetail.getUserId()));
-        return ShopJPushUtils.pushMsg(shopUser.getId() + "",
-            "订单(" + orderId + ")请尽快发货！催单人：" + user.getNickName() + "",
-            "用户催单", null) ? "催单成功" : "催单失败";
+        MessageDTO data = new MessageDTO();
+        data.setContent("订单(" + orderDetail.getOrderNum() + ")请尽快发货！催单人：" + user.getNickName() + "");
+        data.setTitle("用户催单");
+        data.setUserId(shopUser.getId());
+        messagePushProducer.pushShop(data);
+        return "催单成功";
+//        return ShopJPushUtils.pushMsg(shopUser.getId() + "",
+//            "订单(" + orderId + ")请尽快发货！催单人：" + user.getNickName() + "",
+//            "用户催单", null) ? "催单成功" : "催单失败";
     }
 
     /**
