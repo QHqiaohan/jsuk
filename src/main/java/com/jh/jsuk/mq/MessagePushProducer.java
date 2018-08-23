@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jh.jsuk.entity.Mq;
 import com.jh.jsuk.entity.dto.MessageDTO;
 import com.jh.jsuk.envm.MqStatus;
+import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.utils.UuidUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -17,19 +18,34 @@ import static com.jh.jsuk.conf.QueueConfig.QUEUE_PUSH_MESSAGE;
 
 @Slf4j
 @Component
-public class DjsMessageProducer {
+public class MessagePushProducer {
 
     @Autowired
     private AmqpTemplate rabbitTemplate;
 
-    public void send(MessageDTO data) {
+    public void pushUser(MessageDTO data) {
+        data.setUserType(UserType.USER);
+        send(data);
+    }
+
+    public void pushShop(MessageDTO data) {
+        data.setUserType(UserType.SHOP);
+        send(data);
+    }
+
+    public void pushDistp(MessageDTO data) {
+        data.setUserType(UserType.DISTRIBUTION);
+        send(data);
+    }
+
+    private void send(MessageDTO data) {
         Mq mq = new Mq();
         String id = UuidUtil.getUUID();
         data.setId(id);
         mq.setId(id);
         mq.setQueueName(QUEUE_PUSH_MESSAGE);
         mq.setCreateTime(new Date());
-        mq.setStatus(MqStatus.CREATE.getKey());
+        mq.setStatus(MqStatus.CREATE);
         try {
             mq.setBody(new ObjectMapper().writeValueAsString(data));
         } catch (JsonProcessingException e) {
@@ -37,7 +53,7 @@ public class DjsMessageProducer {
         }
         mq.insert();
         rabbitTemplate.convertAndSend(QUEUE_PUSH_MESSAGE, data);
-        mq.setStatus(MqStatus.SENT.getKey());
+        mq.setStatus(MqStatus.SENT);
         mq.setSentTime(new Date());
         mq.updateById();
     }

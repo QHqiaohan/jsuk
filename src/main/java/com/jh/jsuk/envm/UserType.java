@@ -2,15 +2,15 @@ package com.jh.jsuk.envm;
 
 public enum UserType implements BaseEnum {
 
-    SHOP(1, "商家", ManageUserType.SHOP, "shp"),
+    SHOP(1, "商家", ManageUserType.SHOP, "shp", "SHOP"),
 
-    DISTRIBUTION(2, "骑手", null, "dsb"),
+    DISTRIBUTION(2, "骑手", null, "dsb", "DISP"),
 
-    USER(3, "用户", null, "usr"),
+    USER(3, "用户", null, "usr", "USER"),
 
-    ADMIN(4, "平台", ManageUserType.PLATFORM, "adm"),
+    ADMIN(4, "平台", ManageUserType.PLATFORM, "adm", ""),
 
-    CITY_ADMIN(5, "城市管理员", ManageUserType.CITY, "ctadm");
+    CITY_ADMIN(5, "城市管理员", ManageUserType.CITY, "ctadm", "");
 
 
 //    ROOT(4, "运维", ManageUserType.PLATFORM, "rot");
@@ -23,11 +23,14 @@ public enum UserType implements BaseEnum {
 
     private final String shortKey;
 
-    UserType(Integer key, String value, ManageUserType manageUserType, String shortKey) {
+    private final String pushKey;
+
+    UserType(Integer key, String value, ManageUserType manageUserType, String shortKey, String pushKey) {
         this.key = key;
         this.value = value;
         this.manageUserType = manageUserType;
         this.shortKey = shortKey;
+        this.pushKey = pushKey;
     }
 
     public boolean hasManageUserType() {
@@ -48,5 +51,9 @@ public enum UserType implements BaseEnum {
 
     public String getValue() {
         return value;
+    }
+
+    public String getPushKey() {
+        return pushKey;
     }
 }

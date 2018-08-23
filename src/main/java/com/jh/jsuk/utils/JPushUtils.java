@@ -95,7 +95,7 @@ public class JPushUtils {
     }
 
 
-    public static void push(UserType userType, String userId, String content, String title) throws Exception {
+    public static void push(UserType userType, Integer userId, String content, String title) throws Exception {
         JPushClient client = null;
         switch (userType) {
             case SHOP:
@@ -112,8 +112,11 @@ public class JPushUtils {
                 log.error("不支持的用户类型: {}", userType);
                 return;
         }
+        if (userId == null) {
+            throw new Exception("userId为空");
+        }
         try {
-            client.sendPush(buildPush(userId, content, title, new HashMap<>()));
+            client.sendPush(buildPush(userType.getPushKey() + userId, content, title, new HashMap<>()));
         } catch (APIConnectionException e) {
             log.error(e.getMessage());
             throw e;
@@ -146,7 +149,8 @@ public class JPushUtils {
                         IosNotification.newBuilder().setSound("happy").addExtras(map)
                             .build())
                     .build())
-            .setOptions(Options.newBuilder().setApnsProduction(true)
+            .setOptions(Options.newBuilder()
+                .setApnsProduction(false)
                 .build())
             .build();
     }

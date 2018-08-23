@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jh.jsuk.envm.MqStatus;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -18,6 +21,9 @@ import java.util.Date;
  * @author lpf
  * @since 2018-06-28
  */
+@Setter
+@Getter
+@ToString
 @TableName("js_mq")
 public class Mq extends Model<Mq> {
 
@@ -40,7 +46,7 @@ public class Mq extends Model<Mq> {
     /**
      * 1 创建 2 发送 3 消费
      */
-    private Integer status;
+    private MqStatus status;
     /**
      * 队列名称
      */
@@ -56,69 +62,69 @@ public class Mq extends Model<Mq> {
 
 
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getSentTime() {
-        return sentTime;
-    }
-
-    public void setSentTime(Date sentTime) {
-        this.sentTime = sentTime;
-    }
-
-    public Date getConsumeTime() {
-        return consumeTime;
-    }
-
-    public void setConsumeTime(Date consumeTime) {
-        this.consumeTime = consumeTime;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getQueueName() {
-        return queueName;
-    }
-
-    public void setQueueName(String queueName) {
-        this.queueName = queueName;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public String getFailureReason() {
-        return failureReason;
-    }
-
-    public void setFailureReason(String failureReason) {
-        this.failureReason = failureReason;
-    }
+//    public String getId() {
+//        return id;
+//    }
+//
+//    public void setId(String id) {
+//        this.id = id;
+//    }
+//
+//    public Date getCreateTime() {
+//        return createTime;
+//    }
+//
+//    public void setCreateTime(Date createTime) {
+//        this.createTime = createTime;
+//    }
+//
+//    public Date getSentTime() {
+//        return sentTime;
+//    }
+//
+//    public void setSentTime(Date sentTime) {
+//        this.sentTime = sentTime;
+//    }
+//
+//    public Date getConsumeTime() {
+//        return consumeTime;
+//    }
+//
+//    public void setConsumeTime(Date consumeTime) {
+//        this.consumeTime = consumeTime;
+//    }
+//
+//    public Integer getStatus() {
+//        return status;
+//    }
+//
+//    public void setStatus(Integer status) {
+//        this.status = status;
+//    }
+//
+//    public String getQueueName() {
+//        return queueName;
+//    }
+//
+//    public void setQueueName(String queueName) {
+//        this.queueName = queueName;
+//    }
+//
+//    public String getBody() {
+//        return body;
+//    }
+//
+//    public void setBody(String body) {
+//        this.body = body;
+//    }
+//
+//    public String getFailureReason() {
+//        return failureReason;
+//    }
+//
+//    public void setFailureReason(String failureReason) {
+//        this.failureReason = failureReason;
+//    }
 
     public static final String ID = "id";
 
@@ -141,19 +147,19 @@ public class Mq extends Model<Mq> {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "Mq{" +
-        "id=" + id +
-        ", createTime=" + createTime +
-        ", sentTime=" + sentTime +
-        ", consumeTime=" + consumeTime +
-        ", status=" + status +
-        ", queueName=" + queueName +
-        ", body=" + body +
-        ", failureReason=" + failureReason +
-        "}";
-    }
+//    @Override
+//    public String toString() {
+//        return "Mq{" +
+//        "id=" + id +
+//        ", createTime=" + createTime +
+//        ", sentTime=" + sentTime +
+//        ", consumeTime=" + consumeTime +
+//        ", status=" + status +
+//        ", queueName=" + queueName +
+//        ", body=" + body +
+//        ", failureReason=" + failureReason +
+//        "}";
+//    }
 
     @JsonIgnore
     public boolean isConsumed() {

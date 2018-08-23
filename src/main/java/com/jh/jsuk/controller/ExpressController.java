@@ -9,7 +9,7 @@ import com.jh.jsuk.conf.Session;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.envm.DistributionExpressStatus;
 import com.jh.jsuk.envm.ExpressStatus;
-import com.jh.jsuk.mq.RobbingOrderProducer;
+//import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.*;
 import io.swagger.annotations.*;
@@ -139,11 +139,11 @@ public class ExpressController {
             paramType = "query", dataType = "integer"),
     })
     @RequestMapping(value = "/expressPrice", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result expressPrice(String startLng,String startLat,String endLng,String endLat) {
-        if(StrUtil.isBlank(startLng) ||
+    public Result expressPrice(String startLng, String startLat, String endLng, String endLat) {
+        if (StrUtil.isBlank(startLng) ||
             StrUtil.isBlank(startLat) ||
             StrUtil.isBlank(endLng) ||
-            StrUtil.isBlank(endLat)){
+            StrUtil.isBlank(endLat)) {
             return R.err("数据为空");
         }
         return R.succ(runningFeeService.caleRunningFee(startLng + "," + startLat, endLng + "," + endLat));
@@ -178,8 +178,8 @@ public class ExpressController {
 
     @ApiOperation("用户端-催一催")
     @RequestMapping(value = "/urge", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result urge(@ApiParam("快递id")  Integer expressId) {
-        newsService.urgeDistribution(expressId);
+    public Result urge(@ApiParam("快递id") Integer expressId) {
+        newsService.urgeDistribution(expressId, session.getNickName());
         return new Result().success();
     }
 
@@ -187,7 +187,7 @@ public class ExpressController {
     @RequestMapping(value = "/cancelRunOrder", method = {RequestMethod.POST, RequestMethod.GET})
     public Result cancelRunOrder(Integer userId, @ApiParam(value = "订单ID", required = true) Integer orderId) {
         Express express = new Express();
-        express.setStatus(5);
+        express.setStatus(0);
         boolean res = express.update(new EntityWrapper()
             .eq(Express.ID, orderId)
             .eq(Express.USER_ID, userId));
@@ -246,8 +246,8 @@ public class ExpressController {
         return new Result().success(expressList);
     }
 
-    @Autowired
-    RobbingOrderProducer producer;
+//    @Autowired
+//    RobbingOrderProducer producer;
 
     @ApiOperation("骑手端-配送数量")
     @PostMapping("/dvr/count")
