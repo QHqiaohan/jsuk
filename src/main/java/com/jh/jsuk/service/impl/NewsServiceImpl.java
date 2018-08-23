@@ -5,12 +5,12 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.NewsDao;
-import com.jh.jsuk.entity.Activity;
-import com.jh.jsuk.entity.MarketComment;
-import com.jh.jsuk.entity.News;
-import com.jh.jsuk.entity.NewsUser;
+import com.jh.jsuk.entity.*;
+import com.jh.jsuk.entity.dto.MessageDTO;
 import com.jh.jsuk.envm.NewsType;
 import com.jh.jsuk.envm.UserType;
+import com.jh.jsuk.mq.MessagePushProducer;
+import com.jh.jsuk.service.ExpressService;
 import com.jh.jsuk.service.NewsService;
 import com.jh.jsuk.service.NewsUserService;
 import com.jh.jsuk.utils.JPushUtils;
@@ -172,8 +172,17 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
         push(news, activity.getUserId());
     }
 
-    @Override
-    public void urgeDistribution(Integer expressId) {
+    @Autowired
+    ExpressService expressService;
 
+    @Autowired
+    MessagePushProducer messagePushProducer;
+
+    @Override
+    public void urgeDistribution(Integer expressId,String userName) {
+        Express express = expressService.selectById(expressId);
+        MessageDTO data = new MessageDTO();
+        data.setContent("订单(" + express.getOrderNo() + ")请尽快送货,催单人:" + userName);
+        messagePushProducer.pushDistp(data);
     }
 }

@@ -79,6 +79,6 @@ public interface NewsService extends IService<News> {
      * 催一催配送源
      * @param expressId
      */
-    void urgeDistribution(Integer expressId);
+    void urgeDistribution(Integer expressId,String userName);
 
 }
