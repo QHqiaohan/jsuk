@@ -51,6 +51,7 @@ public class ShopController {
     @Autowired
     private ManagerUserService managerUserService;
 
+
     @PatchMapping
     public R edit(Shop shop) {
         shop.updateById();
@@ -114,7 +115,7 @@ public class ShopController {
         }
         EntityWrapper<ShopVisit> wrapper = new EntityWrapper<>();
         wrapper.eq(ShopVisit.SHOP_ID, shopAttributeGoodsService);
-        List<ShopVisit> visits = shopVisitService.selectList(wrapper);
+        List<ShopVisit> visits = shopVisitService.getListShopVisit(shopId);
         ShopVisit visit = null;
         for (ShopVisit v : visits) {
             if (userId.equals(v.getUserId())) {
