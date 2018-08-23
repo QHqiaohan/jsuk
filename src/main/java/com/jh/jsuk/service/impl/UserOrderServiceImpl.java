@@ -711,6 +711,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         if (!remainder.hasRemain(price)) {
             throw new MessageException("余额不足");
         }
+        Integer ji = 0;//赠送的积分
         for (UserOrder userOrder : userOrders) {
             //用户交易记录
             UserRemainder userRemainder = new UserRemainder();
@@ -728,7 +729,35 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             userOrder.setPayType(PayType.BALANCE_PAY.getKey());
             userOrder.setPayTime(new Date());
             userOrder.updateById();
+
+            //修改商品销量；
+
+            List<UserOrderGoods> order_id1 = userOrderGoodsService.getListByOrderId(userOrder.getId());
+
+            for (UserOrderGoods uo :order_id1){
+                ShopGoods sg = new ShopGoods();
+                ShopGoods shopGoods = sg.selectById(uo.getGoodsId());
+                shopGoods.setSaleAmont(shopGoods.getSaleAmont()+1);
+                shopGoods.updateById();
+
+            }
         }
+        //获取积分规则列表
+        IntegralRule ir = new IntegralRule();
+        IntegralRule ie = ir.selectById(1);
+        if(ie!=null){
+            Integer consumption = ie.getConsumption();//多少钱
+            Integer gainIntegral = ie.getGainIntegral();//送多少积分
+            int i = price.intValue();
+            ji = i * gainIntegral / consumption;
+        }
+        //新增用户积分
+        UserIntegral ui = new UserIntegral();
+        ui.setIntegralNumber(ji);
+        ui.setIntegralType(1);
+        ui.setUserId(userOrders.get(0).getUserId());
+        ui.setCraTime(new Date());
+        ui.insert();
         //商家余额
         ShopMoney shopMoney = new ShopMoney();
         shopMoney.setMoney(price.toString());

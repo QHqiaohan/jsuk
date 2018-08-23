@@ -29,5 +29,10 @@
         <include refid="Base_Column_List"/>
       from js_user_order_goods where order_id = #{orderId}
   </select>
+  <select id="getListByOrderId" resultMap="BaseResultMap">
+    select
+    *
+    from js_user_order_goods where order_id=#{orderId}
+  </select>
 
 </mapper>
