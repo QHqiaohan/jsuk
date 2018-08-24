@@ -58,7 +58,7 @@ public class DistributionUserController {
     }
 
     @ApiOperation("服务热线")
-    @PostMapping("/hotline")
+    @GetMapping("/hotline")
     public Result hotline(){
         List<String> list = new ArrayList<>();
         String phone = "18581500727";
