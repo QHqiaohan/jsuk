@@ -322,6 +322,7 @@ public class ExpressController {
         detail.insert();
         distributionUserService.addAccount(amount, userId);
         express.setId(expressId);
+        express.setEndTime(new Date());
         express.setStatus(5);
         express.updateById();
         return new Result().success();
