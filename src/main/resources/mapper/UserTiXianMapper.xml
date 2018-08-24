@@ -50,6 +50,7 @@
     <if test="status!=null">
       and tixian.status=#{status}
     </if>
+    order by create_time desc
   </select>
 
 

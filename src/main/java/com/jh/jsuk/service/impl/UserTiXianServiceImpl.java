@@ -117,15 +117,15 @@ public class UserTiXianServiceImpl extends ServiceImpl<UserTiXianDao, UserTiXian
     DistributionApplyService distributionApplyService;
 
     private void userCash(UserTiXian cash) throws Exception {
-        userRemainderService.createCashApplying(cash.getUserId(), cash.getPrice(), cash.getTiXianNo());
+        userRemainderService.createCashApplying(cash.getUserId(), cash.getPrice(), cash.getTiXianNo(), cash.getBankId());
     }
 
     private void distributionCash(UserTiXian cash) throws Exception {
-        distributionApplyService.createCashApplying(cash.getUserId(), new BigDecimal(cash.getPrice()), cash.getTiXianNo());
+        distributionApplyService.createCashApplying(cash.getUserId(), new BigDecimal(cash.getPrice()), cash.getTiXianNo(), cash.getBankId());
     }
 
     private void shopCash(UserTiXian cash) throws Exception {
-        shopMoneyService.createCashApplying(cash.getManagerId(), new BigDecimal(cash.getPrice()), cash.getTiXianNo());
+        shopMoneyService.createCashApplying(cash.getManagerId(), new BigDecimal(cash.getPrice()), cash.getTiXianNo(), cash.getBankId());
     }
 
     @Override

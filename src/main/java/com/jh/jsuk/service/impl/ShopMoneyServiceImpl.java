@@ -82,7 +82,7 @@ public class ShopMoneyServiceImpl extends ServiceImpl<ShopMoneyDao, ShopMoney> i
     }
 
     @Override
-    public void createCashApplying(Integer shopId, BigDecimal amount, String tiXianNo) throws Exception {
+    public void createCashApplying(Integer shopId, BigDecimal amount, String tiXianNo, Integer bankId) throws Exception {
         ShopMoney entity = new ShopMoney();
         entity.setShopId(shopId);
         entity.setPublishTime(new Date());

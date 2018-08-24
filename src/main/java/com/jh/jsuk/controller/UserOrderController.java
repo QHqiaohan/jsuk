@@ -106,7 +106,9 @@ public class UserOrderController {
 
     @PatchMapping
     public R orderDetail(UserOrder userOrder) {
-        return R.succ(userOrderService.updateById(userOrder));
+        userOrder.setUserId(null);
+        userOrderService.updateById(userOrder);
+        return R.succ();
     }
 
     @ApiOperation(value = "用户端&商家端-订单详情/再次购买")

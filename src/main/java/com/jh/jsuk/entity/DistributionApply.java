@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.jh.jsuk.envm.DistributionApplyStatus;
+import com.jh.jsuk.envm.DistributionApplyType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -38,6 +39,9 @@ public class DistributionApply extends Model<DistributionApply> {
      * 0待审核  1通过  2拒绝
      */
     private DistributionApplyStatus status;
+
+    private DistributionApplyType type;
+
     private Integer userId;
     /**
      * 拒绝原因
@@ -62,6 +66,8 @@ public class DistributionApply extends Model<DistributionApply> {
     public static final String STATUS = "status";
 
     public static final String USER_ID = "user_id";
+
+    public static final String TYPE = "type";
 
     public static final String DESC = "desc";
 

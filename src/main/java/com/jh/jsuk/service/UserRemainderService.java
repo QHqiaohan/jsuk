@@ -98,8 +98,9 @@ public interface UserRemainderService extends IService<UserRemainder> {
      * @param userId
      * @param price
      * @param tiXianNo
+     * @param bankId
      */
-    void createCashApplying(Integer userId, String price, String tiXianNo);
+    void createCashApplying(Integer userId, String price, String tiXianNo, Integer bankId);
 
     void confirm(String no);
     void decline(String no);

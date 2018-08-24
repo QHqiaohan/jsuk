@@ -5,9 +5,14 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.jh.jsuk.entity.*;
+import com.jh.jsuk.conf.Session;
+import com.jh.jsuk.entity.DistributionApply;
+import com.jh.jsuk.entity.DistributionUser;
+import com.jh.jsuk.entity.UserBank;
+import com.jh.jsuk.entity.UserTiXian;
 import com.jh.jsuk.entity.rules.AccountRule;
 import com.jh.jsuk.entity.vo.UserApplyVo;
+import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
 import com.jh.jsuk.utils.R;
@@ -50,6 +55,12 @@ public class DistributionApplyController {
     @Autowired
     DistributionUserService distributionUserService;
 
+    @Autowired
+    UserTiXianService userTiXianService;
+
+    @Autowired
+    Session session;
+
     @ApiOperation("骑手-余额")
     @GetMapping("/remainder")
     public R remainder(Integer userId) {
@@ -64,7 +75,7 @@ public class DistributionApplyController {
                     required = false, paramType = "query", dataType = "double"),
     })
     @PostMapping("/add")
-    public Result add(DistributionApply apply) {
+    public Result add(DistributionApply apply) throws Exception {
         Integer userId = apply.getUserId();
         DistributionUser user = userService.selectById(userId);
         BigDecimal account = user.getAccount();
@@ -74,20 +85,27 @@ public class DistributionApplyController {
         UserBank userBank = userBankService.selectById(apply.getBankId());
         if (userBank == null)
             throw new RuntimeException("银行卡不存在！");
-        DistributionDetail detail = new DistributionDetail();
-        detail.setDetail("提现");
-        detail.setMoney(apply.getMoney().negate());
-        AccountRule accountRule = new AccountRule(user, detail);
-        AccountRule result = ruleEngineService.executeRuleEngine("myDetail", accountRule);
-        result.updateUserAndInsertDetail();
-        EntityWrapper<Dictionary> wrapper = new EntityWrapper<>();
-        wrapper.eq("code", "poundage_configuration");
-        Dictionary dictionary = dictionaryService.selectOne(wrapper);
-        BigDecimal poundage_configuration = new BigDecimal(dictionary.getValue());
-        BigDecimal money = apply.getMoney();
-        BigDecimal poundage = poundage_configuration.multiply(money).multiply(new BigDecimal(Percent)).setScale(2, BigDecimal.ROUND_HALF_DOWN);
-        apply.setPoundage(poundage);
-        apply.insert();
+//        DistributionDetail detail = new DistributionDetail();
+//        detail.setDetail("提现");
+//        detail.setMoney(apply.getMoney().negate());
+//        AccountRule accountRule = new AccountRule(user, detail);
+//        AccountRule result = ruleEngineService.executeRuleEngine("myDetail", accountRule);
+//        result.updateUserAndInsertDetail();
+//        EntityWrapper<Dictionary> wrapper = new EntityWrapper<>();
+//        wrapper.eq("code", "poundage_configuration");
+//        Dictionary dictionary = dictionaryService.selectOne(wrapper);
+//        BigDecimal poundage_configuration = new BigDecimal(dictionary.getValue());
+//        BigDecimal money = apply.getMoney();
+//        BigDecimal poundage = poundage_configuration.multiply(money).multiply(new BigDecimal(Percent)).setScale(2, BigDecimal.ROUND_HALF_DOWN);
+//        apply.setPoundage(poundage);
+//        apply.setStatus(DistributionApplyStatus.APPLYING);
+//        apply.insert();
+        UserTiXian tx = new UserTiXian();
+        tx.setUserType(UserType.DISTRIBUTION);
+        tx.setUserId(session.getUserId());
+        tx.setPrice(apply.getMoney().toString());
+        tx.setBankId(apply.getBankId());
+        userTiXianService.tixian(tx);
         return new Result().success();
     }
 

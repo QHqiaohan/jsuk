@@ -10,7 +10,10 @@ import com.jh.jsuk.entity.DistributionApply;
 import com.jh.jsuk.entity.vo.UserApplyVo;
 import com.jh.jsuk.entity.vo.DistributionApplyVo;
 import com.jh.jsuk.envm.DistributionApplyStatus;
+import com.jh.jsuk.envm.DistributionApplyType;
 import com.jh.jsuk.service.DistributionApplyService;
+import com.jh.jsuk.service.DistributionDetailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -45,14 +48,18 @@ public class DistributionApplyServiceImpl extends ServiceImpl<DistributionApplyD
     }
 
     @Override
-    public void createCashApplying(Integer userId, BigDecimal price, String tiXianNo) {
+    public void createCashApplying(Integer userId, BigDecimal price, String tiXianNo, Integer bankId) {
         DistributionApply a = new DistributionApply();
         a.setUserId(userId);
         a.setMoney(price);
         a.setStatus(DistributionApplyStatus.APPLYING);
+        a.setBankId(bankId);
         a.setPlatformNo(tiXianNo);
         a.insert();
     }
+
+    @Autowired
+    DistributionDetailService distributionDetailService;
 
     @Override
     public void confirm(String no) {
@@ -60,7 +67,9 @@ public class DistributionApplyServiceImpl extends ServiceImpl<DistributionApplyD
         EntityWrapper<DistributionApply> wrapper = new EntityWrapper<>();
         entity.setStatus(DistributionApplyStatus.PASSED);
         wrapper.eq(DistributionApply.PLATFORM_NO, no);
+        DistributionApply apply = selectOne(wrapper);
         update(entity, wrapper);
+        distributionDetailService.tixian(apply.getUserId(), apply.getMoney());
     }
 
     @Override
@@ -70,6 +79,33 @@ public class DistributionApplyServiceImpl extends ServiceImpl<DistributionApplyD
         entity.setStatus(DistributionApplyStatus.REFUSED);
         wrapper.eq(DistributionApply.PLATFORM_NO, no);
         update(entity, wrapper);
+    }
+
+    @Override
+    public BigDecimal getRemainder(Integer userId) {
+        EntityWrapper<DistributionApply> wrapper = new EntityWrapper<>();
+        wrapper.eq(DistributionApply.USER_ID, userId);
+        List<DistributionApply> list = selectList(wrapper);
+        BigDecimal bigDecimal = new BigDecimal("0");
+        if (list == null || list.isEmpty()) {
+            return bigDecimal;
+        }
+        for (DistributionApply apply : list) {
+            DistributionApplyType type = apply.getType();
+            BigDecimal money = apply.getMoney();
+            if (type == null || money == null)
+                continue;
+            money = money.abs();
+            switch (type) {
+                case DISTP_COMPLETE:
+                    bigDecimal = bigDecimal.add(money);
+                    break;
+                case CASH:
+                    bigDecimal = bigDecimal.subtract(money);
+                    break;
+            }
+        }
+        return bigDecimal;
     }
 
 }

@@ -201,7 +201,7 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
     }
 
     @Override
-    public void createCashApplying(Integer userId, String price, String tiXianNo) {
+    public void createCashApplying(Integer userId, String price, String tiXianNo, Integer bankId) {
         UserRemainder e = new UserRemainder();
         e.setType(UserRemainderType.CASH);
         e.setStatus(UserRemainderStatus.APPLYING);
