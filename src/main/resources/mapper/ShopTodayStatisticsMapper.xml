@@ -16,5 +16,11 @@
     <sql id="Base_Column_List">
         id, shop_id, today, today_visitor, today_money, today_order
     </sql>
+  <select id="getOneByshopId" resultMap="BaseResultMap">
+    select * from js_shop_today_statistics
+    where shop_id=#{shopId}
+    and #{da2}>today>#{da1}
+
+  </select>
 
 </mapper>

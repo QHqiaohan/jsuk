@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface ShopTodayStatisticsService extends IService<ShopTodayStatistics> {
 
+    ShopTodayStatistics getOneByshopId(String da1,String da2,Integer shopId);
+
 }

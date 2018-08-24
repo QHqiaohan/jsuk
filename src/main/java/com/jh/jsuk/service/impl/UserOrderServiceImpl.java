@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -86,6 +87,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     private ShopMoneyService shopMoneyService;
     @Autowired
     private ShopSetService shopSetService;//是否包邮
+    @Autowired
+    private  ShopTodayStatisticsService shopTodayStatisticsService;
 
     @Override
     public int statusCount(OrderStatus orderStatus, Integer shopId) {
@@ -825,6 +828,28 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         shopMoney.setStatus(UserRemainderStatus.PASSED);
         shopMoney.setShopId(userOrders.get(0).getShopId());
         shopMoney.insert();
+
+        Date day=new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+        String format = df.format(day);
+        SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
+        String format1 = df1.format(day);
+        ShopTodayStatistics oi = shopTodayStatisticsService.getOneByshopId(format, format1, userOrders.get(0).getShopId());
+        if(oi==null){
+            ShopTodayStatistics sts = new ShopTodayStatistics();
+            sts.setShopId(userOrders.get(0).getShopId());
+            sts.setTodayMoney(price.toString());
+            sts.setTodayOrder(1);
+            sts.setToday(new Date());
+            sts.insert();
+        }else{
+            oi.setTodayOrder(oi.getTodayOrder()+1);
+            oi.setTodayMoney(oi.getTodayMoney()+price);
+            oi.updateById();
+        }
+        //添加今日订单；
+
+
     }
 
 

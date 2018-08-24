@@ -17,4 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShopTodayStatisticsServiceImpl extends ServiceImpl<ShopTodayStatisticsDao, ShopTodayStatistics> implements ShopTodayStatisticsService {
 
+    @Override
+    public ShopTodayStatistics getOneByshopId(String da1, String da2, Integer shopId) {
+        return baseMapper.getOneByshopId(da1,da2,shopId);
+    }
 }
