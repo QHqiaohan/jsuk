@@ -12,5 +12,6 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @since 2018-06-20
  */
 public interface ShopTodayStatisticsDao extends BaseMapper<ShopTodayStatistics> {
+    ShopTodayStatistics getOneByshopId(String da1, String da2, Integer shopId);
 
 }

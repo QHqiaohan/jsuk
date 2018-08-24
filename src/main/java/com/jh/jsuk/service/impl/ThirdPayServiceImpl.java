@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +51,8 @@ public class ThirdPayServiceImpl implements ThirdPayService {
     private UserRemainderService userRemainderService;
     @Autowired
     private UserRechargeRecordService userRechargeRecordService;
+    @Autowired
+    private ShopTodayStatisticsService shopTodayStatisticsService;
 
     @Override
     public Charge thirdPay(ThirdPayVo payVo) throws MessageException, UnsupportedEncodingException, ChannelException {
@@ -226,6 +229,25 @@ public class ThirdPayServiceImpl implements ThirdPayService {
         shopMoney.setShopId(userOrders.get(0).getShopId());
         shopMoney.setStatus(UserRemainderStatus.PASSED);
         shopMoney.insert();
+
+        Date day=new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+        String format = df.format(day);
+        SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
+        String format1 = df1.format(day);
+        ShopTodayStatistics oi = shopTodayStatisticsService.getOneByshopId(format, format1, userOrders.get(0).getShopId());
+        if(oi==null){
+            ShopTodayStatistics sts = new ShopTodayStatistics();
+            sts.setShopId(userOrders.get(0).getShopId());
+            sts.setTodayMoney(price.toString());
+            sts.setTodayOrder(1);
+            sts.setToday(new Date());
+            sts.insert();
+        }else{
+            oi.setTodayOrder(oi.getTodayOrder()+1);
+            oi.setTodayMoney(oi.getTodayMoney()+price);
+            oi.updateById();
+        }
     }
 
 

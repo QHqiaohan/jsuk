@@ -36,6 +36,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -267,8 +268,14 @@ public class ManagerUserController {
         /**
          * 访客/订单/交易额
          */
-        ShopTodayStatistics todayStatistics = shopTodayStatisticsService.selectOne(new EntityWrapper<ShopTodayStatistics>()
-            .eq(ShopTodayStatistics.SHOP_ID, shopId));
+       // ShopTodayStatistics todayStatistics = shopTodayStatisticsService.selectOne(new EntityWrapper<ShopTodayStatistics>()
+         //   .eq(ShopTodayStatistics.SHOP_ID, shopId));
+        Date day=new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+        String format = df.format(day);
+        SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
+        String format1 = df1.format(day);
+        ShopTodayStatistics todayStatistics = shopTodayStatisticsService.getOneByshopId(format,format1,shopId);
         if (todayStatistics == null) {
             // 日访客
             map.put("todayVisitor", 0);
