@@ -666,9 +666,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             );
             //订单项的价格
             if (shopGoodsSize != null) {
-                if (shopGoodsSize.getStock() < goodsDto.getNum()) {
-                    throw new MessageException(shopGoodsService.selectById(goodsDto.getGoodsId()).getGoodsName() + "库存不足!");
-                }
+//                if (shopGoodsSize.getStock() < goodsDto.getNum()) {
+//                    throw new MessageException(shopGoodsService.selectById(goodsDto.getGoodsId()).getGoodsName() + "库存不足!");
+//                }
                 BigDecimal orderItemPrice = goodsDto.getGoodsPrice().multiply(new BigDecimal(goodsDto.getNum()));
                 totalPriceWithOutDiscount = totalPriceWithOutDiscount.add(orderItemPrice);
             }

@@ -1,7 +1,6 @@
 package com.jh.jsuk.utils;
 
 import com.pingplusplus.exception.ChannelException;
-import com.pingplusplus.model.Charge;
 import com.pingplusplus.util.WxpubOAuth;
 
 import java.io.UnsupportedEncodingException;
@@ -28,7 +27,7 @@ public class WxPubOAuthUtil {
     /**
      * 微信公共号里面获取 openid 时的回跳 URL
      */
-    public static String redirectUrl = "http://www.mcwob.cn/wechat/";
+    public static String redirectUrl = "http://www.h26i5.cn/wechat/";
     /**
      * 微信公共号的 appId，通常为 `wx` 开头的字符串
      */

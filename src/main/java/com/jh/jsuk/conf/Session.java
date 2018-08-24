@@ -37,7 +37,7 @@ public class Session {
 
     private String shopName;
 
-    private Integer cityId;
+    private Integer cityId = 510100;
 
     private Integer provinceId;
 
