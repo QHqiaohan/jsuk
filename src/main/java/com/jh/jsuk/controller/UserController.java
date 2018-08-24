@@ -311,13 +311,13 @@ public class UserController {
         } else {
             //tokenType  1==微信  0==QQ 2==新浪微博
             if (StrUtil.equals(String.valueOf(tokenType), "0")) {
-                return new Result().erro("您还没有绑定第三方登陆");
+                return new Result(Constant.BIND_QQ_NOAUTH, "您还没有绑定第三方登陆");
             }
             if (StrUtil.equals(String.valueOf(tokenType), "1")) {
-                return new Result().erro("您还没有绑定第三方登陆");
+                return new Result(Constant.BIND_WX_NOAUTH, "您还没有绑定第三方登陆");
             }
             if (StrUtil.equals(String.valueOf(tokenType), "2")) {
-                return new Result().erro("您还没有绑定第三方登陆");
+                return new Result(Constant.BIND_WX_NOAUTH, "您还没有绑定第三方登陆");
             }
             return new Result().erro("网络繁忙");
         }

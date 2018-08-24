@@ -15,9 +15,9 @@ public class Constant {
 //    public static final long RESCODE_LOGIN_OVERDUE = -100;        //登陆过期
 //    public static final long RESCODE_NOFOUND = -101;                //没有找到该用户
     public static final long RESCODE_ERROR = -11;                //无操作权限
-//    public static final long BIND_QQ_NOAUTH = -1001;                //未绑定QQ
-//    public static final long BIND_WX_NOAUTH = -1002;                //未绑定微信
-//    public static final long BIND_WB_NOAUTH = -1003;                //未绑定微博
+    public static final long BIND_QQ_NOAUTH = -1001;                //未绑定QQ
+    public static final long BIND_WX_NOAUTH = -1002;                //未绑定微信
+    public static final long BIND_WB_NOAUTH = -1003;                //未绑定微博
 //    public static final long RESCODE_NOEXIST = -10;                //查询结果为空
 
     /**

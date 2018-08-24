@@ -246,9 +246,13 @@ public class DistributionUserController {
         return new Result().success();
     }
 
+    @Autowired
+    DistributionApplyService distributionApplyService;
+
     @ApiOperation("骑手-查看骑手资料")
     @GetMapping("/getInfo")
     public Result getInfo(Integer userId) {
+        distributionApplyService.syncRemainder(userId);
         DistributionUser distributionUser = distributionUserService.selectById(userId);
         return new Result().success(distributionUser);
     }
