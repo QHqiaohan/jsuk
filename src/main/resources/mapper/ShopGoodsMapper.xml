@@ -316,7 +316,7 @@
       jsg.goods_name,
       jsg.sale_amont,
       jsg.shop_id,
-      avg(jsgs.sales_price) as price
+     GROUP_CONCAT(jsgs.sales_price) as price
     from js_shop_goods jsg
       left join js_shop_goods_size jsgs on jsgs.shop_goods_id = jsg.id
       left join js_sys_citys jsc on jsg.city_id = jsc.id
