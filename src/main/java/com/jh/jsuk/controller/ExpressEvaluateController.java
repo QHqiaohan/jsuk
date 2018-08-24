@@ -36,7 +36,7 @@ public class ExpressEvaluateController {
     @ApiOperation("添加评价")
     @PostMapping("/add")
     public R add(@ModelAttribute ExpressEvaluate expressEvaluate) {
-        expressEvaluate.insert();
+        expressEvaluateService.insert(expressEvaluate);
         Express entity = new Express();
         entity.setId(expressEvaluate.getExpressId());
         entity.setStatus(6);
