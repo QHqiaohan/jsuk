@@ -10,9 +10,9 @@ public enum DistributionApplyStatus implements BaseEnum {
 
     APPLYING(1, "申请中"),
 
-    PASSED(1, "通过"),
+    PASSED(2, "通过"),
 
-    REFUSED(2, "拒绝");
+    REFUSED(3, "拒绝");
 
     private final Integer key;
     private final String value;

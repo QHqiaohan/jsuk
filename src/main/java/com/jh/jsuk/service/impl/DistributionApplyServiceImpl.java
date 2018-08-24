@@ -59,6 +59,7 @@ public class DistributionApplyServiceImpl extends ServiceImpl<DistributionApplyD
         a.setMoney(price);
         a.setStatus(DistributionApplyStatus.APPLYING);
         a.setBankId(bankId);
+        a.setType(DistributionApplyType.CASH);
         a.setPlatformNo(tiXianNo);
         a.insert();
     }
