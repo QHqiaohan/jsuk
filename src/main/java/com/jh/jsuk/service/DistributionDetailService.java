@@ -2,6 +2,7 @@ package com.jh.jsuk.service;
 
 import com.jh.jsuk.entity.DistributionDetail;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.Express;
 
 import java.math.BigDecimal;
 
@@ -18,4 +19,5 @@ public interface DistributionDetailService extends IService<DistributionDetail> 
 
     void tixian(Integer userId, BigDecimal price);
 
+    void complete(Express express);
 }

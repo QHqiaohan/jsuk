@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.DistributionApply;
+import com.jh.jsuk.entity.Express;
 import com.jh.jsuk.entity.vo.UserApplyVo;
 
 import java.math.BigDecimal;
@@ -32,4 +33,6 @@ public interface DistributionApplyService extends IService<DistributionApply> {
     BigDecimal getRemainder(Integer userId);
 
     void syncRemainder(Integer userId);
+
+    void complete(Express express);
 }

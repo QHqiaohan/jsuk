@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.DistributionApplyDao;
 import com.jh.jsuk.entity.DistributionApply;
 import com.jh.jsuk.entity.DistributionUser;
+import com.jh.jsuk.entity.Express;
+import com.jh.jsuk.entity.User;
 import com.jh.jsuk.entity.vo.UserApplyVo;
 import com.jh.jsuk.entity.vo.DistributionApplyVo;
 import com.jh.jsuk.envm.DistributionApplyStatus;
@@ -15,6 +17,7 @@ import com.jh.jsuk.envm.DistributionApplyType;
 import com.jh.jsuk.service.DistributionApplyService;
 import com.jh.jsuk.service.DistributionDetailService;
 import com.jh.jsuk.service.DistributionUserService;
+import com.jh.jsuk.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -120,6 +123,23 @@ public class DistributionApplyServiceImpl extends ServiceImpl<DistributionApplyD
         entity.setId(userId);
         entity.setAccount(getRemainder(userId));
         distributionUserService.updateById(entity);
+    }
+
+    @Autowired
+    UserService userService;
+
+    @Override
+    public void complete(Express express) {
+        DistributionApply apply = new DistributionApply();
+        apply.setStatus(DistributionApplyStatus.PASSED);
+        apply.setType(DistributionApplyType.DISTP_COMPLETE);
+        String price = express.getPrice();
+        apply.setMoney(new BigDecimal(price == null ? "0" : price));
+        User user = userService.selectById(express.getUserId());
+        if (user != null) {
+            apply.setUserNickName(user.getNickName());
+        }
+        insert(apply);
     }
 
 }

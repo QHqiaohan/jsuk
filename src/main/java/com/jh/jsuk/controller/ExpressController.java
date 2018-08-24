@@ -299,6 +299,10 @@ public class ExpressController {
         return new Result().success();
     }
 
+    @Autowired
+    DistributionApplyService distributionApplyService;
+
+
     @ApiOperation("骑手端-送达")
     @PostMapping("/dvr/delivered")
     @ApiImplicitParams(value = {
@@ -314,13 +318,14 @@ public class ExpressController {
             throw new RuntimeException("配送单已完成");
         String price = express.getPrice();
         BigDecimal amount = new BigDecimal(price);
-        DistributionDetail detail = new DistributionDetail();
-        detail.setMoney(amount);
-        detail.setDetail("完成配送");
-        detail.setPublishTime(new Date());
-        detail.setUserId(userId);
-        detail.insert();
-        distributionUserService.addAccount(amount, userId);
+//        DistributionDetail detail = new DistributionDetail();
+//        detail.setMoney(amount);
+//        detail.setDetail("完成配送");
+//        detail.setPublishTime(new Date());
+//        detail.setUserId(userId);
+//        detail.insert();
+        distributionDetailService.complete(express);
+        distributionApplyService.complete(express);
         express.setId(expressId);
         express.setEndTime(new Date());
         express.setStatus(5);
