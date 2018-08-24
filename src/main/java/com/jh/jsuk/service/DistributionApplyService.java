@@ -23,8 +23,11 @@ public interface DistributionApplyService extends IService<DistributionApply> {
 
     Page searchDistributionUserTiXian(Page page, Wrapper wrapper,Integer tixianId,Integer begin,Integer end,Integer status);
 
-    void createCashApplying(Integer userId, BigDecimal price, String tiXianNo);
+    void createCashApplying(Integer userId, BigDecimal price, String tiXianNo, Integer bankId);
 
     void confirm(String no);
+
     void decline(String no);
+
+    BigDecimal getRemainder(Integer userId);
 }

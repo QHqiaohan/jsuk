@@ -33,9 +33,10 @@ public interface ShopMoneyService extends IService<ShopMoney> {
      * 创建提现申请
      * @param shopId
      * @param amount
+     * @param bankId
      * @throws Exception
      */
-    void createCashApplying(Integer shopId, BigDecimal amount,String tiXianNo) throws Exception;
+    void createCashApplying(Integer shopId, BigDecimal amount, String tiXianNo, Integer bankId) throws Exception;
 
     /**
      * 确认通过
