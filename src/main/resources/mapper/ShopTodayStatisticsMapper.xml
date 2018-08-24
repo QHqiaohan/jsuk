@@ -18,8 +18,10 @@
     </sql>
   <select id="getOneByshopId" resultMap="BaseResultMap">
     select * from js_shop_today_statistics
-    where shop_id=#{shopId}
-    and #{da2}>today>#{da1}
+    where
+    today>#{da1}
+    and #{da2}>today
+    and  shop_id=#{shopId}
 
   </select>
 
