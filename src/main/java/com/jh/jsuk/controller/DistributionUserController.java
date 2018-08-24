@@ -57,6 +57,15 @@ public class DistributionUserController {
         return R.succ();
     }
 
+    @ApiOperation("服务热线")
+    @PostMapping("/hotline")
+    public Result hotline(){
+        List<String> list = new ArrayList<>();
+        String phone = "18581500727";
+        list.add(phone);
+        return new Result().success(list);
+    }
+
     @ApiOperation("骑手-登陆")
     @PostMapping("/login")
     public Result login(@RequestParam @ApiParam(value = "手机号", required = true) String phone,
