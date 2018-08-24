@@ -133,6 +133,7 @@ public class DistributionApplyServiceImpl extends ServiceImpl<DistributionApplyD
         DistributionApply apply = new DistributionApply();
         apply.setStatus(DistributionApplyStatus.PASSED);
         apply.setType(DistributionApplyType.DISTP_COMPLETE);
+        apply.setUserId(express.getDistributionUserId());
         String price = express.getPrice();
         apply.setMoney(new BigDecimal(price == null ? "0" : price));
         User user = userService.selectById(express.getUserId());

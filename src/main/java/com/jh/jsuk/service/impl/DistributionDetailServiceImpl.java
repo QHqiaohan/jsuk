@@ -34,7 +34,7 @@ public class DistributionDetailServiceImpl extends ServiceImpl<DistributionDetai
     @Override
     public void complete(Express express) {
         DistributionDetail detail = new DistributionDetail();
-        detail.setUserId(express.getUserId());
+        detail.setUserId(express.getDistributionUserId());
         detail.setDetail("完成配送");
         String price = express.getPrice();
         detail.setMoney(new BigDecimal(price == null ? "0" : price));

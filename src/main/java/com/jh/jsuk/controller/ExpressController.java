@@ -6,10 +6,12 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Session;
-import com.jh.jsuk.entity.*;
+import com.jh.jsuk.entity.Banner;
+import com.jh.jsuk.entity.Express;
+import com.jh.jsuk.entity.ExpressType;
+import com.jh.jsuk.entity.UserAddress;
 import com.jh.jsuk.envm.DistributionExpressStatus;
 import com.jh.jsuk.envm.ExpressStatus;
-//import com.jh.jsuk.mq.RobbingOrderProducer;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.*;
 import io.swagger.annotations.*;
@@ -17,8 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.*;
+
+//import com.jh.jsuk.mq.RobbingOrderProducer;
 
 /**
  * <p>
@@ -310,14 +313,14 @@ public class ExpressController {
             paramType = "query", dataType = "integer")
     })
     @Transactional
-    public Result deliverDelivered(Integer expressId, Integer userId) {
+    public Result deliverDelivered(Integer expressId) {
         Express express = expressService.selectById(expressId);
         if (express == null)
             throw new RuntimeException("配送单不存在");
         if (express.isCompleted())
             throw new RuntimeException("配送单已完成");
         String price = express.getPrice();
-        BigDecimal amount = new BigDecimal(price);
+//        BigDecimal amount = new BigDecimal(price);
 //        DistributionDetail detail = new DistributionDetail();
 //        detail.setMoney(amount);
 //        detail.setDetail("完成配送");
