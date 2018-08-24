@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface ShopMonthStatisticsService extends IService<ShopMonthStatistics> {
 
+    ShopMonthStatistics getmonthByShopId(Integer shopid,String month);
+
 }

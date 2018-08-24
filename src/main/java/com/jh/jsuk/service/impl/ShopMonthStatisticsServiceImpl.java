@@ -17,4 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShopMonthStatisticsServiceImpl extends ServiceImpl<ShopMonthStatisticsDao, ShopMonthStatistics> implements ShopMonthStatisticsService {
 
+    @Override
+    public ShopMonthStatistics getmonthByShopId(Integer shopid,String month) {
+        return baseMapper.getmonthByShopId(shopid,month);
+    }
 }
