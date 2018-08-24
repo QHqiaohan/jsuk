@@ -30,4 +30,6 @@ public interface DistributionApplyService extends IService<DistributionApply> {
     void decline(String no);
 
     BigDecimal getRemainder(Integer userId);
+
+    void syncRemainder(Integer userId);
 }

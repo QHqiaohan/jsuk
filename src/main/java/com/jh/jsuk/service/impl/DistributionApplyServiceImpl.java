@@ -7,12 +7,14 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.DistributionApplyDao;
 import com.jh.jsuk.entity.DistributionApply;
+import com.jh.jsuk.entity.DistributionUser;
 import com.jh.jsuk.entity.vo.UserApplyVo;
 import com.jh.jsuk.entity.vo.DistributionApplyVo;
 import com.jh.jsuk.envm.DistributionApplyStatus;
 import com.jh.jsuk.envm.DistributionApplyType;
 import com.jh.jsuk.service.DistributionApplyService;
 import com.jh.jsuk.service.DistributionDetailService;
+import com.jh.jsuk.service.DistributionUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -85,6 +87,7 @@ public class DistributionApplyServiceImpl extends ServiceImpl<DistributionApplyD
     public BigDecimal getRemainder(Integer userId) {
         EntityWrapper<DistributionApply> wrapper = new EntityWrapper<>();
         wrapper.eq(DistributionApply.USER_ID, userId);
+        wrapper.eq(DistributionApply.STATUS, DistributionApplyStatus.PASSED.getKey());
         List<DistributionApply> list = selectList(wrapper);
         BigDecimal bigDecimal = new BigDecimal("0");
         if (list == null || list.isEmpty()) {
@@ -106,6 +109,17 @@ public class DistributionApplyServiceImpl extends ServiceImpl<DistributionApplyD
             }
         }
         return bigDecimal;
+    }
+
+    @Autowired
+    DistributionUserService distributionUserService;
+
+    @Override
+    public void syncRemainder(Integer userId) {
+        DistributionUser entity = new DistributionUser();
+        entity.setId(userId);
+        entity.setAccount(getRemainder(userId));
+        distributionUserService.updateById(entity);
     }
 
 }
