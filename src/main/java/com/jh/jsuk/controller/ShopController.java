@@ -7,6 +7,7 @@ import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.ShopAttributeVo;
 import com.jh.jsuk.entity.vo.ShopTelPhoneVo;
 import com.jh.jsuk.service.*;
+import com.jh.jsuk.utils.Date2;
 import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import io.swagger.annotations.*;
@@ -114,8 +115,9 @@ public class ShopController {
             return new Result().success(null);
         }
         EntityWrapper<ShopVisit> wrapper = new EntityWrapper<>();
-        wrapper.eq(ShopVisit.SHOP_ID, shopAttributeGoodsService);
-        List<ShopVisit> visits = shopVisitService.getListShopVisit(shopId);
+        wrapper.eq(ShopVisit.SHOP_ID, shopId);
+        wrapper.between(ShopVisit.PUBLISH_TIME, new Date2().start(), new Date2().end());
+        List<ShopVisit> visits = shopVisitService.selectList(wrapper);
         ShopVisit visit = null;
         for (ShopVisit v : visits) {
             if (userId.equals(v.getUserId())) {
