@@ -208,22 +208,19 @@ public class UserOrderController {
 
 //    @Autowired
 //    RobbingOrderProducer producer;
+    @ApiOperation(value = "商家端-删除订单")
+    @PostMapping(value = "/deleteShopOrder")
+    public Result deleteShopOrder(Integer orderId) {
 
-        @ApiOperation(value = "商家端-删除订单")
-        @PostMapping(value = "/deleteShopOrder")
-    public Result deleteShopOrder(Integer orderId){
-
-            UserOrder uo = new UserOrder();
-            UserOrder userOrder = uo.selectById(orderId);
-            if(userOrder!=null){
-                userOrder.setIsShopDel(1);
-                userOrder.updateById();
-                return new Result().success("删除成功");
-            }
-            return new Result().erro("数据异常");
+        UserOrder uo = new UserOrder();
+        UserOrder userOrder = uo.selectById(orderId);
+        if (userOrder != null) {
+            userOrder.setIsShopDel(1);
+            userOrder.updateById();
+            return new Result().success("删除成功");
         }
-
-
+        return new Result().erro("数据异常");
+    }
 
 
     //--------------------骑手端----------------------------------------------//
@@ -307,9 +304,10 @@ public class UserOrderController {
         userOrder.updateById();
         return new Result().success("取消成功!");
     }
+
     @ApiOperation(value = "获取物流类型")
     @RequestMapping(value = "/getLogisticstype", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getLogisticstype(){
+    public Result getLogisticstype() {
         List<LogisticsType> li = new ArrayList<LogisticsType>();
         LogisticsType lt = new LogisticsType();
         lt.setName("aae全球专递");
@@ -571,30 +569,29 @@ public class UserOrderController {
     }
 
     /**
-     *
      * @param id
-     * @param type 1.快递，2.同城跑腿
+     * @param type          1.快递，2.同城跑腿
      * @param logisticsNype
      * @param logisticsNo
      * @return
      */
     @ApiOperation(value = "商家端-确认发货")
     @RequestMapping(value = "/sendOrder", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result sendOrder(@ApiParam(value = "订单ID", required = true) Integer id,Integer type,String logisticsType,
+    public Result sendOrder(@ApiParam(value = "订单ID", required = true) Integer id, Integer type, String logisticsType,
                             String logisticsNo) {
         UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
-        if(type==1){
+        if (type == 1) {
 
             userOrder.setStatus(OrderStatus.DELIVERED.getKey());
             userOrder.setLogisticsNo(logisticsNo);
             userOrder.setLogisticstype(logisticsType);
             userOrder.updateById();
             return new Result().success("发货成功!");
-        }else if(type==2){
+        } else if (type == 2) {
             userOrder.setStatus(OrderStatus.DELIVERED.getKey());
             userOrder.updateById();
             return new Result().success("发货成功");
-        }else{
+        } else {
             userOrder.setStatus(OrderStatus.DELIVERED.getKey());
             userOrder.updateById();
             return new Result().success("发货成功");
@@ -685,7 +682,7 @@ public class UserOrderController {
             return new Result().erro("订单信息为空");
         } else {
             //余额退款
-            userOrderService.refund(id,price);
+            userOrderService.refund(id, price);
             return new Result().success("退款成功");
         }
     }
