@@ -44,9 +44,9 @@ public interface UserOrderService extends IService<UserOrder> {
      * @param goodsName
      * @return
      */
-    Page getOrderByUserId(Page page, Wrapper wrapper, Integer userId, Integer status, String goodsName);
+    Page getOrderByUserId(Page page, Wrapper wrapper, Integer userId, Integer status, String goodsName) throws Exception;
 
-    Page getShopOrderByUserId(Page page, Wrapper wrapper, Integer shopId, Integer status, String goodsName);
+    Page getShopOrderByUserId(Page page, Wrapper wrapper, Integer shopId, Integer status, String goodsName) throws Exception;
 
     Page listPage(Page page, List<String> date, String kw, OrderStatus orderStatus, Integer shopId);
 

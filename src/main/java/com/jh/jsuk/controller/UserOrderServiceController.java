@@ -7,8 +7,8 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.UserOrderService;
-import com.jh.jsuk.envm.OrderRefundStatus;
-import com.jh.jsuk.envm.RefundType;
+import com.jh.jsuk.envm.OrderServiceStatus;
+import com.jh.jsuk.envm.OrderServiceType;
 import com.jh.jsuk.service.UserOrderServiceService;
 import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.R;
@@ -49,12 +49,12 @@ public class UserOrderServiceController {
 
     @GetMapping("/pageMoney")
     public R pageMoney(Page page, String status, String kw, String[] date) throws Exception {
-        OrderRefundStatus sts = null;
+        OrderServiceStatus sts = null;
         if (StrUtil.isNotBlank(status) && !"all".equals(status)) {
-            sts = EnumUitl.valueOf(OrderRefundStatus.class, status);
+            sts = EnumUitl.valueOf(OrderServiceStatus.class, status);
         }
         Wrapper<UserOrderService> wrapper = new EntityWrapper<>();
-        wrapper.eq(UserOrderService.TYPE, RefundType.RETURN_MONEY.getKey());
+        wrapper.eq(UserOrderService.TYPE, OrderServiceType.RETURN_MONEY.getKey());
         if (sts != null) {
             wrapper.eq(UserOrderService.STATUS, sts.getKey());
         }
@@ -77,11 +77,11 @@ public class UserOrderServiceController {
     public R count() {
         Map<String, Object> map = new HashMap<>();
         int all = 0;
-        OrderRefundStatus[] values = OrderRefundStatus.values();
-        for (OrderRefundStatus value : values) {
+        OrderServiceStatus[] values = OrderServiceStatus.values();
+        for (OrderServiceStatus value : values) {
             EntityWrapper<UserOrderService> wrapper = new EntityWrapper<>();
             wrapper.eq(UserOrderService.STATUS, value.getKey());
-            wrapper.in(UserOrderService.TYPE, new Integer[]{RefundType.RETURN_GOODS.getKey(), RefundType.CHANGE_GOODS.getKey()});
+            wrapper.in(UserOrderService.TYPE, new Integer[]{OrderServiceType.RETURN_GOODS.getKey(), OrderServiceType.CHANGE_GOODS.getKey()});
             int cnt = userOrderServiceService.selectCount(wrapper);
             all += cnt;
             map.put(value.toString().toLowerCase(), cnt);
@@ -94,12 +94,12 @@ public class UserOrderServiceController {
     public R pageCount() {
         Map<String, Object> map = new HashMap<>();
         int all = 0;
-        OrderRefundStatus[] values = OrderRefundStatus.values();
-        for (OrderRefundStatus value : values) {
+        OrderServiceStatus[] values = OrderServiceStatus.values();
+        for (OrderServiceStatus value : values) {
             EntityWrapper<UserOrderService> wrapper = new EntityWrapper<>();
             wrapper.eq(UserOrderService.STATUS, value.getKey());
-//            wrapper.in(UserOrderService.TYPE, new Integer[]{RefundType.RETURN_GOODS.getKey(), RefundType.CHANGE_GOODS.getKey()});
-            wrapper.eq(UserOrderService.TYPE, RefundType.RETURN_MONEY.getKey());
+//            wrapper.in(UserOrderService.TYPE, new Integer[]{OrderServiceType.RETURN_GOODS.getKey(), OrderServiceType.CHANGE_GOODS.getKey()});
+            wrapper.eq(UserOrderService.TYPE, OrderServiceType.RETURN_MONEY.getKey());
             int cnt = userOrderServiceService.selectCount(wrapper);
             all += cnt;
             map.put(value.toString().toLowerCase(), cnt);
@@ -113,12 +113,12 @@ public class UserOrderServiceController {
      */
     @GetMapping("/page")
     public R page(Page page, String status, String kw, String[] date) throws Exception {
-        OrderRefundStatus sts = null;
+        OrderServiceStatus sts = null;
         if (StrUtil.isNotBlank(status) && !"all".equals(status)) {
-            sts = EnumUitl.valueOf(OrderRefundStatus.class, status);
+            sts = EnumUitl.valueOf(OrderServiceStatus.class, status);
         }
         Wrapper<UserOrderService> wrapper = new EntityWrapper<>();
-        wrapper.in(UserOrderService.TYPE, new Integer[]{RefundType.RETURN_GOODS.getKey(), RefundType.CHANGE_GOODS.getKey()});
+        wrapper.in(UserOrderService.TYPE, new Integer[]{OrderServiceType.RETURN_GOODS.getKey(), OrderServiceType.CHANGE_GOODS.getKey()});
         if (sts != null) {
             wrapper.eq(UserOrderService.STATUS, sts.getKey());
         }

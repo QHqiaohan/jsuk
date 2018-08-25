@@ -1,7 +1,9 @@
 package com.jh.jsuk.aspect;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -15,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Web层日志切面
@@ -51,7 +55,14 @@ public class WebLogAspect {
         log.info("地址 : {}", request.getRequestURL().toString());
         log.info("请求方式 : {}", request.getMethod());
         log.info("IP : {}", request.getRemoteAddr());
-        log.info("执行的方法 : {}", joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
+        Signature signature = joinPoint.getSignature();
+        String declaringTypeName = signature.getDeclaringTypeName();
+        String methodName = signature.getName();
+        Matcher matcher = Pattern.compile("\\w+$").matcher(declaringTypeName);
+        String fileName = matcher.find() ? matcher.group() : "";
+        System.out.println(StrUtil.format("{}.{}({}:{})",
+            declaringTypeName, methodName, fileName, 100));
+//        log.info("执行的方法: {}.{}({}:{})", declaringTypeName, methodName, fileName, 21);
         log.info("参数 : {}", Arrays.toString(joinPoint.getArgs()));
     }
 

@@ -82,6 +82,10 @@
     <collection property="shopGoodsList" column="id" select="com.jh.jsuk.dao.UserOrderGoodsDao.orderGoodsDetail"/>
   </resultMap>
 
+  <resultMap id="UserOrderInfoVo2" type="com.jh.jsuk.entity.vo.UserOrderInfoVo" extends="BaseResultMap">
+    <collection property="shopGoodsList" column="id" select="com.jh.jsuk.dao.UserOrderGoodsDao.orderGoodsDetail"/>
+  </resultMap>
+
   <select id="getOrderByUserId" resultMap="UserOrderInfoVo">
     SELECT
     uo.id,
@@ -127,7 +131,7 @@
     </where>
   </select>
 
-  <select id="getShopOrderByUserId" resultMap="UserOrderInfoVo">
+  <select id="getShopOrderByUserId" resultMap="UserOrderInfoVo2">
     SELECT
     <include refid="Base_Column_List"/>
     from js_user_order uo

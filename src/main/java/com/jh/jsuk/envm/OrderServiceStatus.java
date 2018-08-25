@@ -6,7 +6,7 @@ import lombok.Getter;
  * 订单退货状态
  */
 @Getter
-public enum OrderRefundStatus {
+public enum OrderServiceStatus {
 
     PENDING(0, "待处理"),
 
@@ -20,7 +20,7 @@ public enum OrderRefundStatus {
 
     private final String value;
 
-    OrderRefundStatus(Integer key, String value) {
+    OrderServiceStatus(Integer key, String value) {
         this.key = key;
         this.value = value;
     }
