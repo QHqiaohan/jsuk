@@ -84,6 +84,7 @@ public class ThirdPayController {
                 map.put("payVo", ThirdPayVo.class);
                 ThirdPayVoChild payVoChild = (ThirdPayVoChild) JSONObject.toBean(body, ThirdPayVoChild.class, map);
                 thirdPayService.chargeBack(payVoChild);
+                response.setStatus(200);
             } else {
                 log.error("支付失败...");
             }
