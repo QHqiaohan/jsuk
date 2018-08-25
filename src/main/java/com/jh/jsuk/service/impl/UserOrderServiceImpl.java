@@ -497,7 +497,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     zhe = member.getMemberDiscount();
                 }
             }
-            o.setDiscount(zong.subtract((zong.multiply(zhe))));
+
             //满减数量
             BigDecimal discount=new BigDecimal(0);
             //查询是否满减
@@ -510,6 +510,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     break;
                 }
             }
+            o.setDiscount((zong.subtract(discount)).multiply(new BigDecimal(1).subtract(zhe)));
             BigDecimal subtract = new BigDecimal(0);
             //查询是否包邮；
             ShopSets shopSet = shopSetService.getShopSet(orderGoods.getShopId());
@@ -538,6 +539,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     subtract = (add.subtract(discount)).multiply(zhe);
                 }
             }
+
             //设置积分折扣的钱
             BigDecimal jizong = new BigDecimal(0);
             //是否使用积分
