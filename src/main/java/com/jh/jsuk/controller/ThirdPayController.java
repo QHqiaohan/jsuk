@@ -80,7 +80,7 @@ public class ThirdPayController {
                 Map map = new HashMap<String, Object>();
                 map.put("payVo", ThirdPayVo.class);
                 ThirdPayVoChild payVoChild = (ThirdPayVoChild) JSONObject.toBean(body, ThirdPayVoChild.class, map);
-             //   thirdPayService.chargeBack(payVoChild);
+                thirdPayService.chargeBack(payVoChild);
             } else {
                 log.error("支付失败...");
             }

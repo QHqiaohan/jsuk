@@ -497,7 +497,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     zhe = member.getMemberDiscount();
                 }
             }
-            o.setDiscount(zhe);
+            o.setDiscount(zong.subtract((zong.multiply(zhe))));
             //满减数量
             BigDecimal discount=new BigDecimal(0);
             //查询是否满减
