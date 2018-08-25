@@ -1,5 +1,6 @@
 package com.jh.jsuk.entity.vo;
 
+import com.jh.jsuk.entity.UserBank;
 import com.jh.jsuk.entity.UserTiXian;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,5 +17,7 @@ import java.io.Serializable;
 public class UserTiXianVo extends UserTiXian implements Serializable {
 
     private String userName;
+
+    private UserBank bank;
 
 }

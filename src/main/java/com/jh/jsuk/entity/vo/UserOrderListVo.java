@@ -2,8 +2,11 @@ package com.jh.jsuk.entity.vo;
 
 import com.jh.jsuk.entity.Shop;
 import com.jh.jsuk.entity.UserOrder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,9 +14,15 @@ import java.util.List;
  * Date:2018/7/27 14:55
  * Description:
  */
-@Data
-public class UserOrderListVo {
+@Setter
+@Getter
+@ToString
+public class UserOrderListVo implements Serializable {
+
     private Shop shop;
+
     private UserOrder userOrder;
+
     private List<ShopGoodsVo> shopGoodsVos;
+
 }

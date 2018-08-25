@@ -29,10 +29,12 @@
   </resultMap>
 
   <resultMap id="UserTiXianVo" type="com.jh.jsuk.entity.vo.UserTiXianVo" extends="BaseResultMap">
+    <association property="bank" column="bank_id"
+                 select="com.jh.jsuk.dao.UserBankDao.selectById"/>
   </resultMap>
 
   <!--查询用户提现列表-->
-  <select id="selectByAdvance2" resultType="com.jh.jsuk.entity.vo.UserTiXianVo">
+  <select id="selectByAdvance2" resultMap="UserTiXianVo">
     select
     tixian.*
     from js_user_ti_xian tixian
