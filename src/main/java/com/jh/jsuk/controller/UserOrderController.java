@@ -12,9 +12,8 @@ import com.jh.jsuk.entity.dto.SubmitOrderDto;
 import com.jh.jsuk.entity.rules.AccountRule;
 import com.jh.jsuk.entity.vo.AfterSaleVo;
 import com.jh.jsuk.entity.vo.UserOrderInfoVo;
+import com.jh.jsuk.envm.OrderServiceStatus;
 import com.jh.jsuk.envm.OrderStatus;
-import com.jh.jsuk.envm.RefundType;
-import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
@@ -283,15 +282,15 @@ public class UserOrderController {
         @ApiImplicitParam(name = "goodsName", value = "商品名称", paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "/getShopOrderByUserId", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getShopOrderByUserId(Page page, Integer userId, Integer status, String goodsName) {
-        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-            .eq(ManagerUser.ID, userId));
-        if (managerUser == null)
-            return R.err("用户不存在");
-        Integer shopId = managerUser.getShopId();
-        MyEntityWrapper<UserOrderInfoVo> ew = new MyEntityWrapper<>();
+    public Result getShopOrderByUserId(Page page, Integer status, String goodsName) throws Exception {
+//        ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
+//            .eq(ManagerUser.ID, userId));
+//        if (managerUser == null)
+//            return R.err("用户不存在");
+//        Integer shopId = managerUser.getShopId();
+//        MyEntityWrapper<UserOrderInfoVo> ew = new MyEntityWrapper<>();
 
-        Page orderPage = userOrderService.getShopOrderByUserId(page, ew, shopId, status, goodsName);
+        Page orderPage = userOrderService.getShopOrderByUserId(page, null, session.confirmShopId(), status, goodsName);
 
         return new Result().success(orderPage);
     }
@@ -581,7 +580,6 @@ public class UserOrderController {
                             String logisticsNo) {
         UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
         if (type == 1) {
-
             userOrder.setStatus(OrderStatus.DELIVERED.getKey());
             userOrder.setLogisticsNo(logisticsNo);
             userOrder.setLogisticstype(logisticsType);
@@ -613,17 +611,18 @@ public class UserOrderController {
     @RequestMapping(value = "/addOrderService", method = {RequestMethod.POST, RequestMethod.GET})
     public Result addOrderService(@ModelAttribute com.jh.jsuk.entity.UserOrderService service) {
         UserOrder userOrder = userOrderService.selectById(service.getOrderId());
-        if (service.getType() != 3) {
-            userOrder.setStatus(OrderStatus.REFUND_MONEY.getKey());
-        } else {
-            userOrder.setStatus(OrderStatus.REFUND_GOODS.getKey());
-        }
+        userOrder.setStatus(OrderStatus.SERVICE.getKey());
+//        if (service.getType() != 3) {
+//            userOrder.setStatus(OrderStatus.REFUND_MONEY.getKey());
+//        } else {
+//            userOrder.setStatus(OrderStatus.REFUND_GOODS.getKey());
+//        }
         userOrder.updateById();
         service.setServiceCode(OrderNumUtil.getOrderIdByUUId());
         User user = userService.selectById(userOrder.getUserId());
         service.setUserName(user.getNickName());
         service.setUserPhone(user.getPhone());
-        service.setStatus(0);
+        service.setStatus(OrderServiceStatus.PENDING.getKey());
         service.insert();
         return new Result().success("操作成功!");
     }

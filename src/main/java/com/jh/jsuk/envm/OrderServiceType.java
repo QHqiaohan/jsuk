@@ -7,9 +7,9 @@ import lombok.Getter;
  * 1=仅退款,2=退货退款,3=换货
  */
 @Getter
-public enum RefundType {
+public enum OrderServiceType {
 
-    RETURN_MONEY(1, "仅退款"),
+    RETURN_MONEY(1, "退款"),
 
     RETURN_GOODS(2, "退货退款"),
 
@@ -19,7 +19,7 @@ public enum RefundType {
 
     private final String value;
 
-    RefundType(Integer key, String value) {
+    OrderServiceType(Integer key, String value) {
         this.key = key;
         this.value = value;
     }

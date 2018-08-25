@@ -3,9 +3,12 @@ package com.jh.jsuk;
 import com.jh.jsuk.entity.vo.ThirdPayVo;
 import com.jh.jsuk.entity.vo.ThirdPayVoChild;
 import net.sf.json.JSONObject;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Author:xyl
@@ -13,6 +16,18 @@ import java.util.Map;
  * Description:
  */
 public class JsonTest {
+
+    @Test
+    public void test(){
+        System.out.println("com.jh.jsuk.controller.UserController".replaceAll("^[\\w\\d_\\.]+\\.",""));
+        Pattern compile = Pattern.compile("\\w+$");
+//        Matcher matcher = compile.matcher("com.jh.jsuk.controller.UserController");
+        Matcher matcher = compile.matcher("");
+        System.out.println(matcher.find());
+        System.out.println(matcher.group());
+//        "com.jh.jsuk.controller.UserController"
+    }
+
     public static void main(String[] args) {
        /* ThirdPayVo payVo = new ThirdPayVo();
         payVo.setParam("22");

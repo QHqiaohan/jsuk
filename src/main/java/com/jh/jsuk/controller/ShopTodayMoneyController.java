@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.vo.ShopTodayMoneyVo;
-import com.jh.jsuk.entity.vo.ShopVisitorVo;
 import com.jh.jsuk.service.ManagerUserService;
 import com.jh.jsuk.service.ShopTodayMoneyService;
 import com.jh.jsuk.utils.MyEntityWrapper;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -43,24 +41,24 @@ public class ShopTodayMoneyController {
 
     @ApiOperation("商家端-查看今日交易额列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "userId", value = "商家id", paramType = "query", dataType = "integer"),
-            @ApiImplicitParam(name = "today", value = "年-月-日(格式:2018-07-24)", required = true, paramType = "query", dataType = "string")
+        @ApiImplicitParam(name = "current", value = "当前页码", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "userId", value = "商家id", paramType = "query", dataType = "integer"),
+        @ApiImplicitParam(name = "today", value = "年-月-日(格式:2018-07-24)", required = true, paramType = "query", dataType = "string")
     })
     @RequestMapping(value = "/getTodayMoney", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getTodayMoney(Integer current,Integer size , Integer userId, String today) {
-        current=current==null?1:current;
-        size=size==null?10:size;
-        Page page=new Page(current,size);
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-        if(today==null || today.equals("") || !today.contains("-")){
-            today=sdf.format(new Date());
+    public Result getTodayMoney(Integer current, Integer size, Integer userId, String today) {
+        current = current == null ? 1 : current;
+        size = size == null ? 10 : size;
+        Page page = new Page(current, size);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if (today == null || today.equals("") || !today.contains("-")) {
+            today = sdf.format(new Date());
         }
 
         ManagerUser managerUser = managerUserService.selectOne(new EntityWrapper<ManagerUser>()
-                .eq(ManagerUser.ID, userId));
-        if(managerUser==null){
+            .eq(ManagerUser.ID, userId));
+        if (managerUser == null) {
             return new Result().erro("该商家不存在");
         }
         Integer shopId = managerUser.getShopId();

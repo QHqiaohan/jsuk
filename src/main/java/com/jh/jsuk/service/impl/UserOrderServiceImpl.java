@@ -154,6 +154,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         }
     }
 
+    @Autowired
+    UserOrderServiceService userOrderServiceService;
+
     /**
      * 用户端
      * @param page
@@ -164,7 +167,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
      * @return
      */
     @Override
-    public Page getOrderByUserId(Page page, Wrapper wrapper, Integer userId, Integer status, String goodsName) {
+    public Page getOrderByUserId(Page page, Wrapper wrapper, Integer userId, Integer status, String goodsName) throws Exception {
         if (null == status) {
             if (goodsName != null) {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
@@ -229,14 +232,21 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             vo.setShopGoodsVos(shopGoodsVos);
             userOrderListVos.add(vo);
         }
+        for (UserOrderListVo vo : userOrderListVos) {
+            vo.updateStatus(userOrderServiceService);
+        }
         page.setRecords(userOrderListVos);
         return page;
     }
 
     @Override
-    public Page getShopOrderByUserId(Page page, Wrapper wrapper, Integer shopId, Integer status, String goodsName) {
+    public Page getShopOrderByUserId(Page page, Wrapper wrapper, Integer shopId, Integer status, String goodsName) throws Exception {
         wrapper = SqlHelper.fillWrapper(page, wrapper);
-        page.setRecords(baseMapper.getShopOrderByUserId(page, wrapper, shopId, status, goodsName));
+        List<UserOrderInfoVo> list = baseMapper.getShopOrderByUserId(page, wrapper, shopId, status, goodsName);
+        for (UserOrderInfoVo vo : list) {
+            vo.updateStatus(userOrderServiceService);
+        }
+        page.setRecords(list);
         return page;
     }
 
@@ -333,9 +343,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         }
         return RandomUtil.randomNumbers(6) + String.format("%06d", count);
     }
-
-    @Autowired
-    UserOrderServiceService userOrderServiceService;
 
     /**
      * 生成服务单号
