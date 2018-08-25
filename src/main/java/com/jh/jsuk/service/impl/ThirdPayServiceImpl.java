@@ -246,7 +246,10 @@ public class ThirdPayServiceImpl implements ThirdPayService {
             sts.insert();
         }else{
             oi.setTodayOrder(oi.getTodayOrder()+1);
-            oi.setTodayMoney(oi.getTodayMoney()+price);
+            String todayMoney = oi.getTodayMoney();
+            BigDecimal bm = new BigDecimal(todayMoney);
+            BigDecimal add = bm.add(price);
+            oi.setTodayMoney(add.toString());
             oi.updateById();
         }
     }
