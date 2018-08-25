@@ -181,6 +181,7 @@ public class ThirdPayServiceImpl implements ThirdPayService {
      *
      */
     private void userOrderComplete(ThirdPayVo payVo) {
+        System.out.println("22222222222222222222222222222222222222222222222222222222222222");
         String[] ids = payVo.getParam().split(",");
         List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
         BigDecimal price = new BigDecimal("0.00");

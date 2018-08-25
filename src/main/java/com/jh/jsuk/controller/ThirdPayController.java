@@ -48,6 +48,7 @@ public class ThirdPayController {
     @ApiOperation(value = "支付成功回调(不用管)")
     @PostMapping(value = "/webhooks")
     public void webhooks(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        log.info("1222222222222211111111111111111111222222222222222111111111");
         request.setCharacterEncoding("UTF-8");
         //获取头部所有信息
         Enumeration headerNames = request.getHeaderNames();
@@ -67,6 +68,7 @@ public class ThirdPayController {
             eventJson = eventJson.append(str);
         }
         reader.close();
+        log.info("111111111111111111111111111111111111111111111111111111111");
         log.info(eventJson.toString());
         JSONObject event = JSONObject.fromObject(eventJson.toString());//转化成json对象
         PublicKey publicKey = WebhooksVerifyService.getPubKey();
@@ -77,6 +79,7 @@ public class ThirdPayController {
                 JSONObject data = JSONObject.fromObject(event.get("data"));
                 JSONObject object = JSONObject.fromObject(data.get("object"));
                 JSONObject body = JSONObject.fromObject(object.get("body"));
+                System.out.println(body+"333333333333333333333333333333333333333333333333333333333");
                 Map map = new HashMap<String, Object>();
                 map.put("payVo", ThirdPayVo.class);
                 ThirdPayVoChild payVoChild = (ThirdPayVoChild) JSONObject.toBean(body, ThirdPayVoChild.class, map);
