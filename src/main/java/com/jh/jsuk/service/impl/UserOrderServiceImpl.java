@@ -497,7 +497,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     zhe = member.getMemberDiscount();
                 }
             }
-
+            o.setDiscount(zong.subtract((zong.multiply(zhe))));
             //满减数量
             BigDecimal discount=new BigDecimal(0);
             //查询是否满减
@@ -586,6 +586,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     }
                 }
             }
+
             o.setIntegralReduce(jizong);
             orderPrice.setOrderRealPrice(subtract.subtract(jizong));
             o.setOrderRealPrice(subtract.subtract(jizong));
@@ -844,14 +845,32 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             sts.insert();
         }else{
             oi.setTodayOrder(oi.getTodayOrder()+1);
-            oi.setTodayMoney(oi.getTodayMoney()+price);
+            String todayMoney = oi.getTodayMoney();
+            BigDecimal bm = new BigDecimal(todayMoney);
+            BigDecimal add = bm.add(price);
+
+            oi.setTodayMoney(add.toString());
             oi.updateById();
         }
-        //添加今日订单；
 
+        SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-01 00:00:00");
+        String format3 = df2.format(day);
+        Date   date   =   df2.parse(format3);
+        ShopMonthStatistics monthStatistics = shopMonthStatisticsService.getmonthByShopId(userOrders.get(0).getShopId(),format3);
+            if(monthStatistics==null){
+                ShopMonthStatistics sms = new ShopMonthStatistics();
+                sms.setShopId(userOrders.get(0).getShopId());
+                sms.setMonth(date);
+                sms.setMonthOrder(1);
+                sms.insert();
+            }else{
+                monthStatistics.setMonthOrder(monthStatistics.getMonthOrder()+1);
+                monthStatistics.updateById();
+            }
 
     }
-
+    @Autowired
+private  ShopMonthStatisticsService shopMonthStatisticsService;
 
     @Override
     public AfterSaleVo getAddressAndPhone(Integer orderId) {

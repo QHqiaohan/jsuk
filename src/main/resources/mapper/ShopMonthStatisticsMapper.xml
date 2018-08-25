@@ -16,5 +16,11 @@
     <sql id="Base_Column_List">
         id, shop_id, month, month_visitor, month_money, month_order
     </sql>
+  <select id="getmonthByShopId" resultMap="BaseResultMap">
+    select * from js_shop_month_statistics
+    where month =  #{month}
+    and shop_id =#{shopId}
+
+  </select>
 
 </mapper>

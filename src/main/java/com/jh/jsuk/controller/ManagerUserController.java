@@ -286,8 +286,10 @@ public class ManagerUserController {
             map.put("todayMoney", todayStatistics.getTodayMoney());
         }
         // 月订单
-        ShopMonthStatistics monthStatistics = shopMonthStatisticsService.selectOne(new EntityWrapper<ShopMonthStatistics>()
-            .eq(ShopMonthStatistics.SHOP_ID, shop));
+        SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-01 00:00:00");
+        String format3 = df2.format(day);
+
+        ShopMonthStatistics monthStatistics = shopMonthStatisticsService.getmonthByShopId(shopId,format3);
         if (monthStatistics == null) {
             map.put("monthOrder", 0);
         } else {
