@@ -288,6 +288,8 @@
     <association property="categoryInfo" column="category_id" select="com.jh.jsuk.dao.GoodsCategoryDao.selectById"/>
     <association property="shopName" column="shop_id"
                  select="com.jh.jsuk.dao.ShopDao.shopName"/>
+    <association property="shopPhone" column="shop_id"
+                 select="com.jh.jsuk.dao.ShopDao.shopPhone"/>
     <collection property="shopGoodsSize" column="id"
                 select="com.jh.jsuk.dao.ShopGoodsSizeDao.getGoodsSizeByGoodsId"></collection>
   </resultMap>

@@ -33,6 +33,8 @@ public interface ShopDao extends BaseMapper<Shop> {
 
     @Select("SELECT shop_name name FROM js_shop where id = #{id}")
     String shopName(Integer id);
+    @Select("SELECT shop_phone name FROM js_shop where id = #{id}")
+    String shopPhone(Integer id);
 
 
 }

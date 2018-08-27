@@ -65,6 +65,7 @@ public class Shop extends Model<Shop> {
      */
     @ApiModelProperty(value = "店铺图片", name = "shopImg")
     private String shopImg;
+    private String positioning;//定位地址；
     /**
      * 公告
      */
@@ -171,6 +172,8 @@ public class Shop extends Model<Shop> {
         return vo;
     }
 
+    public String getPositioning(){return positioning;}
+    public void setPositioning (String positioning){this.positioning=positioning;}
     public String getLicense(){return license;}
     public void setLicense(String license){this.license=license;}
     public Integer getId() {
