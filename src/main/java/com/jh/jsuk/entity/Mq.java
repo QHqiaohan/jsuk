@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.jh.jsuk.envm.MqStatus;
+import com.jh.jsuk.envm.mq.MqStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

@@ -19,6 +19,7 @@ import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.*;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -35,6 +36,7 @@ import java.util.*;
  * @author lpf
  * @since 2018-06-20
  */
+@Slf4j
 @Api(tags = "订单相关:")
 @RestController
 @RequestMapping("/userOrder")
@@ -698,11 +700,17 @@ public class UserOrderController {
         @ApiImplicitParam(name = "orderId", value = "订单id", paramType = "query", dataType = "integer"),
     })
     @GetMapping("/disInfo")
-    public R disInfo(Integer orderId) throws Exception {
-        String val = LogisticsUtil.queryData("yuantong", "800848347680428412");
-        LogisticsResponse logisticsResponse = new ObjectMapper().readValue(val, LogisticsResponse.class);
-        logisticsResponse.parseCom();
-        return R.succ(logisticsResponse);
+    public R disInfo(Integer orderId)  {
+        try{
+            UserOrder order = userOrderService.selectById(orderId);
+            String val = LogisticsUtil.queryData(order.getLogisticstype(), order.getLogisticsNo());
+            LogisticsResponse logisticsResponse = new ObjectMapper().readValue(val, LogisticsResponse.class);
+            logisticsResponse.parseCom();
+            return R.succ(logisticsResponse);
+        }catch (Exception e){
+            log.error("",e);
+            return R.err("没有物流信息");
+        }
     }
 
 

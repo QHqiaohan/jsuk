@@ -1,11 +1,13 @@
 package com.jh.jsuk.envm;
 
+import com.github.tj123.common.enum2md.Envm;
 import lombok.Getter;
 
 /**
  * 订单退货状态
  */
 @Getter
+@Envm(name = "订单退货状态")
 public enum OrderServiceStatus {
 
     PENDING(0, "待处理"),

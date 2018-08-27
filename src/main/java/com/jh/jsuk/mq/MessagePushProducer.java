@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jh.jsuk.entity.Mq;
 import com.jh.jsuk.entity.dto.MessageDTO;
-import com.jh.jsuk.envm.MqStatus;
+import com.jh.jsuk.envm.mq.MqStatus;
 import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.utils.UuidUtil;
 import lombok.extern.slf4j.Slf4j;

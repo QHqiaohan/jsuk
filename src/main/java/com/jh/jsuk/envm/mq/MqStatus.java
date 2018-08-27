@@ -1,6 +1,12 @@
-package com.jh.jsuk.envm;
+package com.jh.jsuk.envm.mq;
 
-public enum  MqStatus implements BaseEnum{
+import com.github.tj123.common.enum2md.Envm;
+import com.jh.jsuk.envm.BaseEnum;
+
+@Envm(name = "mq 消息状态" ,
+    description = "rabbitmq 消息状态"
+)
+public enum  MqStatus implements BaseEnum {
 
     CREATE(1,"创建"),
 

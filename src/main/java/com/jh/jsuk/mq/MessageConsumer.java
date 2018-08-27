@@ -3,7 +3,7 @@ package com.jh.jsuk.mq;
 
 import com.jh.jsuk.entity.Mq;
 import com.jh.jsuk.entity.dto.MessageDTO;
-import com.jh.jsuk.envm.MqStatus;
+import com.jh.jsuk.envm.mq.MqStatus;
 import com.jh.jsuk.service.MqService;
 import com.jh.jsuk.utils.JPushUtils;
 import lombok.extern.slf4j.Slf4j;

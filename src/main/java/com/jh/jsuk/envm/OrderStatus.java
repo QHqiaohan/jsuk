@@ -1,8 +1,11 @@
 package com.jh.jsuk.envm;
 
+import com.github.tj123.common.enum2md.Envm;
+
 /**
  * 订单状态
  */
+@Envm(name = "订单状态")
 public enum OrderStatus {
 
     DUE_PAY(0, "待付款", "dpay"),
