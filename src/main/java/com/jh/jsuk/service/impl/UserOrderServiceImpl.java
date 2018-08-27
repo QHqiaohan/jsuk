@@ -584,10 +584,10 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                             //判断积分和钱
                             BigDecimal zongji = new BigDecimal(sum);//总积分
                             if(zong.compareTo(zongji)>=0){
-                                jizong=zongji.multiply(mon).divide(jif);
+                                jizong=(zongji.add(new BigDecimal(you)).subtract(discount)).multiply(mon).divide(jif);
                                 ui.setIntegralNumber(sum);
                             }else{
-                                jizong=zong.multiply(mon).divide(jif);
+                                jizong=(zong.add(new BigDecimal(you)).subtract(discount)).multiply(mon).divide(jif);
                                 ui.setIntegralNumber(subtract.intValue());
                             }
                             ui.insert();
@@ -598,7 +598,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
             o.setIntegralReduce(jizong);
             orderPrice.setOrderRealPrice(subtract.subtract(jizong));
-            o.setOrderRealPrice(subtract.subtract(jizong));
+            o.setOrderRealPrice((subtract.subtract(jizong)).setScale(2,BigDecimal.ROUND_HALF_UP));
             //设置满减；
             o.setFullReduce(discount);
             o.setGoodsName(goodsName.toString());
