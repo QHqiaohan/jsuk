@@ -23,4 +23,5 @@ public class OrderShops {
     private Integer ShopGoodSum;//店铺商品数量
     private BigDecimal ShopPrice;//店铺价格
     private ArrayList<OrderShopGoods> shopGoods;
+    private BigDecimal full;//满了多少；
 }
