@@ -19,12 +19,15 @@ import com.jh.jsuk.service.*;
 import com.jh.jsuk.service.UserOrderService;
 import com.jh.jsuk.utils.*;
 import io.swagger.annotations.*;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -84,6 +87,8 @@ public class UserOrderController {
 
     @Autowired
     private CouponService couponService;
+
+    private ShopSetService shopSetService;//获取是否使用积分；
 
     @GetMapping("/page")
     public R userOrderPage(Page page, String[] date, String kw, String status) throws Exception {
@@ -220,6 +225,231 @@ public class UserOrderController {
         }
         return new Result().erro("数据异常");
     }
+    @Autowired
+    private UserIntegralService userIntegralService;
+    @ApiOperation(value = "用户端-提交购物车计数价格")
+    @PostMapping(value = "/Calculates")
+    public Result Calculates(@RequestBody @Valid OrderList orderList,Integer userId){
+        //查询用户的积分；
+        //获取积分列表
+        List<UserIntegral> userIntegrals = userIntegralService.selectList(new EntityWrapper<UserIntegral>()
+            .eq(UserIntegral.USER_ID, userId));
+        // 初始记录总积分数
+        int sum = 0;
+        for (UserIntegral integral : userIntegrals) {
+            if (integral.getIntegralType() == 1) {
+                sum += integral.getIntegralNumber();
+                // 抵扣积分
+            } else if (integral.getIntegralType() == -1) {
+                sum -= integral.getIntegralNumber();
+            }
+        }
+        //设置使用积分计数；
+        Integer jifen = 0;
+        //取店铺列表值
+        ArrayList<OrderShops> shops = orderList.getShops();
+
+        //获取总价格
+        BigDecimal zongpraice = new BigDecimal(0);
+        //循环的取店铺里的购买商品
+        for(OrderShops os : shops){
+            //获取商家的商品列表
+            ArrayList<OrderShopGoods> shopGoods = os.getShopGoods();
+            //计算店家的商品价格；
+            //创建一个商家价格对象；
+            BigDecimal shopPrice = new BigDecimal(0);
+            //店铺商品数量
+            Integer goodSum=0;
+            //是否包邮
+            ShopSets shopSet = shopSetService.getShopSetByShopId(os.getShopId());
+            //商品的邮费
+            BigDecimal you = new BigDecimal(0);
+            for (OrderShopGoods osg :shopGoods){
+                //获取商品信息
+                ShopGoods sg1 = new ShopGoods();
+                ShopGoods shopGoods1 = sg1.selectById(osg.getGoodId());
+                if(shopGoods1!=null){
+                    osg.setGoodName(shopGoods1.getGoodsName());//设置商品名称
+                }
+                //根据规格id查询商品价格；
+                Integer goodSizeId = osg.getGoodSizeId();
+                ShopGoodsSize sgs = new ShopGoodsSize();
+                ShopGoodsSize shopGoodsSize = sgs.selectById(goodSizeId);
+                if(shopGoodsSize!=null){
+                    //获取销售价格
+                    String salesPrice = shopGoodsSize.getSalesPrice();
+                    BigDecimal sales = new BigDecimal(salesPrice);//商品价格
+                    BigDecimal sum1 = new BigDecimal(osg.getGoodSum());//商品数量
+                    shopPrice=(sales.multiply(sum1)).add(shopPrice);
+                    goodSum=goodSum+osg.getGoodSum();
+                    String freight = shopGoodsSize.getFreight();//商品的邮费
+                    you=you.add(new BigDecimal(freight));//邮费
+                    osg.setGoodImg(shopGoodsSize.getImg());//设置商品图片
+                    osg.setGoodSizeName(shopGoodsSize.getSizeName());//设置商品规格名称
+                }
+            }
+            //判断配送方式
+            if(orderList.getDistributionType()==0){//快递
+                //判断是否包邮
+                if(shopSet==null){//如果为空添加一条数据
+                    shopSet.setShopid(os.getShopId());
+                    shopSet.setPackagemail(1);
+                    shopSet.setIntegral(1);
+                    shopSet.setMoney(0.0);
+                    shopSet.insert();
+                }else{
+                    if(shopSet.getPackagemail()==2){
+                        if(shopPrice.compareTo(new BigDecimal(shopSet.getMoney()))>=0){//判断支付价是否大于包邮
+                            you=new BigDecimal(0);//设置邮费为0
+                        }
+                    }
+                }
+                os.setFreight(you); //设置快递费用
+            }else if(orderList.getDistributionType()==1){//同城配送
+                //计算同城邮费
+                //根据店铺id查询店铺的经纬度；
+                Shop sp = new Shop();
+                Shop shop = sp.selectById(os.getShopId());
+                Double shopwei=0.0;
+                Double shopjing=0.0;
+                if(shop!=null){
+                   shopwei =   shop.getLatitude();//s商家维度
+                   shopjing = shop.getLongitude();//商家经度
+                }
+                //获取用户地址的经纬度；
+                UserAddress ua = new UserAddress();
+                UserAddress uss = ua.selectById(orderList.getUserAddressId());
+                Double userwei=0.0;
+                Double userjing=0.0;
+                if(uss!=null){
+                   userwei=Double.parseDouble(uss.getLatitude());//用户维度
+                   userjing= Double.parseDouble(uss.getLongitude());//用户经度
+                }
+                //获取计算规则
+                RunningFee rf = new RunningFee();
+                RunningFee runningFee = rf.selectById(1);
+                Integer qiprace = 0;//起步费用
+                Integer qiju = 0;//起步距离
+                Integer chaofei =0;//超过费用
+                if(runningFee!=null){
+                    qiprace = runningFee.getStartFee();
+                    qiju = runningFee.getStartDistance();
+                    chaofei = runningFee.getAddFee();
+                }
+                //算邮费；
+                double v = GetDistance(shopwei, shopjing, userwei, userjing);//距离
+                DecimalFormat df = new DecimalFormat("######0"); //四色五入转换成整数
+                String format = df.format(v);
+                int i = Integer.parseInt(format);//距离
+                if(i>qiju){
+                    int i1 = (i - qiju) * chaofei + qiprace;
+                    you = new BigDecimal(i1);
+                }else{
+                    you = new BigDecimal(qiprace);
+                }
+            }else{//到店自提
+                you=new BigDecimal(0);
+            }
+            shopPrice=shopPrice.add(you);//原价加上邮费
+            //设置满减值
+            BigDecimal discount=new BigDecimal(0);
+            //查询是否满减
+            List<Coupon> lb = couponService.getListByShopId(os.getShopId());
+            for(Coupon cu : lb){
+                //获取满减值
+                BigDecimal fullPrice = cu.getFullPrice();
+                if(shopPrice.compareTo(fullPrice)>=0){
+                    discount = cu.getDiscount();
+                    break;
+                }
+            }
+            shopPrice=shopPrice.subtract(discount);//满减后的价格；
+            //获取会员折扣
+            //获取用户会员级别
+            os.setFullReduce(discount);//设置满减的值
+            os.setFreight(you);//设置邮费
+            os.setShopGoodSum(goodSum);//设置店铺商品数量
+            os.setShopPrice(shopPrice);//设置店铺钱
+            zongpraice = zongpraice.add(shopPrice);
+
+            //获取店铺id
+            Integer shopId = os.getShopId();
+            //查询商家是否支持积分，包邮
+
+            if(shopSet.getIntegral()==1){//不支持使用积分
+            }else{
+                //支持使用积分；
+                jifen = shopPrice.intValue();//使用积分量
+            }
+        }
+        User user = new User();
+        User user1 = user.selectById(userId);
+        BigDecimal zhe = new BigDecimal(1);//折扣
+        if(user1!=null){
+            Integer level = user1.getLevel();
+            if(level!=0){
+                Member m = new Member();
+                Member mm = m.selectById(level);
+                zhe = mm.getMemberDiscount();
+                orderList.setMemberName(mm.getMemberName());//设置会员名称
+            }
+        }
+        BigDecimal bigDecimal = (zongpraice.multiply(zhe)).setScale(2, BigDecimal.ROUND_HALF_UP);//折扣后总价
+
+        //判断会员积分与交易金额的大小
+        BigDecimal jif = new BigDecimal(0);//积分可抵换的钱
+        //获取积分规则表；
+        //获取积分规则列表
+        IntegralRule ir = new IntegralRule();
+        IntegralRule ie = ir.selectById(1);
+        //设置可用积分量
+        Integer ji = 0;
+        if(ie!=null){
+            Integer ii = ie.getIntegral();//多少积分
+            BigDecimal mon = ie.getDeduction();//换多少
+            //判断积分和钱
+            if(jifen>sum){//订单积分大于用户积分
+                ji = sum;
+            }else{
+                ji = jifen;
+            }
+            jif = ((new BigDecimal(ji)).multiply(mon)).divide(new BigDecimal(ii));//积分可换钱
+        }
+        orderList.setIntegralReduce(jif);//设置积分可抵扣的价格
+        orderList.setIntegral(ji);//设置可用积分
+        orderList.setMemberzZhe(zhe);//会员折扣
+        orderList.setZongPrice(bigDecimal.subtract(jif));//设置总价折扣后总价
+
+        return  new Result().success(orderList);
+    }
+
+    private static double EARTH_RADIUS = 6371.393;
+    private static double rad(double d)
+    {
+        return d * Math.PI / 180.0;
+    }
+
+    /**
+     * 计算两个经纬度之间的距离
+     * @param lat1
+     * @param lng1
+     * @param lat2
+     * @param lng2
+     * @return
+     */
+    public static double GetDistance(double lat1, double lng1, double lat2, double lng2)
+    {
+        double radLat1 = rad(lat1);
+        double radLat2 = rad(lat2);
+        double a = radLat1 - radLat2;
+        double b = rad(lng1) - rad(lng2);
+        double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2) +
+            Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
+        s = s * EARTH_RADIUS;
+        s = Math.round(s * 1000);
+        return s;
+    }
+
 
 
     //--------------------骑手端----------------------------------------------//
@@ -309,6 +539,30 @@ public class UserOrderController {
     public Result getLogisticstype() {
         List<LogisticsType> li = new ArrayList<LogisticsType>();
         LogisticsType lt = new LogisticsType();
+        LogisticsType lt55 = new LogisticsType();
+        lt55.setName("申通");
+        lt55.setPingying("shentong");
+        li.add(lt55);
+        LogisticsType lt56 = new LogisticsType();
+        lt56.setName("顺丰");
+        lt56.setPingying("shunfeng");
+        li.add(lt56);
+        LogisticsType lt19 = new LogisticsType();
+        lt19.setName("国通快递");
+        lt19.setPingying("guotongkuaidi");
+        li.add(lt19);
+        LogisticsType lt60 = new LogisticsType();
+        lt60.setName("天地华宇");
+        lt60.setPingying("tiandihuayu");
+        li.add(lt60);
+        LogisticsType lt61 = new LogisticsType();
+        lt61.setName("天天快递");
+        lt61.setPingying("tiantian");
+        li.add(lt61);
+        LogisticsType lt40 = new LogisticsType();
+        lt40.setName("立即送");
+        lt40.setPingying("lijisong");
+        li.add(lt40);
         lt.setName("aae全球专递");
         lt.setPingying("aae");
         li.add(lt);
@@ -384,10 +638,7 @@ public class UserOrderController {
         lt18.setName("飞快达");
         lt18.setPingying("feikuaida");
         li.add(lt18);
-        LogisticsType lt19 = new LogisticsType();
-        lt18.setName("国通快递");
-        lt18.setPingying("guotongkuaidi");
-        li.add(lt19);
+
         LogisticsType lt20 = new LogisticsType();
         lt20.setName("港中能达物流");
         lt20.setPingying("ganzhongnengda");
@@ -468,10 +719,7 @@ public class UserOrderController {
         lt39.setName("龙邦物流");
         lt39.setPingying("longbanwuliu");
         li.add(lt39);
-        LogisticsType lt40 = new LogisticsType();
-        lt40.setName("立即送");
-        lt40.setPingying("lijisong");
-        li.add(lt40);
+
         LogisticsType lt41 = new LogisticsType();
         lt41.setName("乐捷递");
         lt41.setPingying("lejiedi");
@@ -528,14 +776,7 @@ public class UserOrderController {
         lt54.setName("盛辉物流");
         lt54.setPingying("shenghuiwuliu");
         li.add(lt54);
-        LogisticsType lt55 = new LogisticsType();
-        lt55.setName("申通");
-        lt55.setPingying("shentong");
-        li.add(lt55);
-        LogisticsType lt56 = new LogisticsType();
-        lt56.setName("顺丰");
-        lt56.setPingying("shunfeng");
-        li.add(lt56);
+
         LogisticsType lt57 = new LogisticsType();
         lt57.setName("速尔物流");
         lt57.setPingying("sue");
@@ -548,14 +789,7 @@ public class UserOrderController {
         lt59.setName("赛澳递");
         lt59.setPingying("saiaodi");
         li.add(lt59);
-        LogisticsType lt60 = new LogisticsType();
-        lt60.setName("天地华宇");
-        lt60.setPingying("tiandihuayu");
-        li.add(lt60);
-        LogisticsType lt61 = new LogisticsType();
-        lt61.setName("天天快递");
-        lt61.setPingying("tiantian");
-        li.add(lt61);
+
         LogisticsType lt62 = new LogisticsType();
         lt62.setName("tnt");
         lt62.setPingying("tnt");
