@@ -10,10 +10,12 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ExpressDao;
 import com.jh.jsuk.entity.Express;
 import com.jh.jsuk.entity.UserOrder;
+import com.jh.jsuk.entity.UserRemainder;
 import com.jh.jsuk.entity.vo.ExpressVo;
 import com.jh.jsuk.entity.vo.ExpressVo2;
 import com.jh.jsuk.envm.DistributionExpressStatus;
 import com.jh.jsuk.envm.ExpressStatus;
+import com.jh.jsuk.envm.UserRemainderType;
 import com.jh.jsuk.envm.UserType;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.ExpressService;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -117,16 +120,28 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
 
     @Override
     public void balancePay(String expressId, Integer userId) throws Exception {
-        Express express = selectById(expressId);
+        Express ee  = new Express();
+        Express express = ee.selectById(expressId);
         //获取订单价格
         BigDecimal price = new BigDecimal(express.getPrice());
         //用户余额不足
         if (userRemainderService.hasRemain(userId, price)) {
+           //userRemainderService.consume(userId, price);
+            //修改订单信息
+            express.setStatus(2);
+            express.updateById();
+            UserRemainder ee1 = new UserRemainder();
+            ee1.setUserId(userId);
+            ee1.setCreateTime(new Date());
+            ee1.setRemainder(price);
+            ee1.setOrderNum(express.getOrderNo());
+            ee1.setType(UserRemainderType.CONSUME);
+            ee1.insert();
+
+
+        }else{
             throw new MessageException("余额不足");
         }
-        userRemainderService.consume(userId, price);
-        //修改订单信息
-        express.setStatus(2);
-        express.updateById();
+
     }
 }

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 @ToString
 public class OrderShops {
     private Integer shopId;//店铺id
+    private String shopName;//店铺名称
     private BigDecimal fullReduce;//满减了多少
     private BigDecimal freight;//运费
     private Integer ShopGoodSum;//店铺商品数量

@@ -90,7 +90,7 @@ public class UserOrderController {
 
     @Autowired
     private CouponService couponService;
-
+    @Autowired
     private ShopSetService shopSetService;//获取是否使用积分；
 
     @GetMapping("/page")
@@ -273,6 +273,7 @@ public class UserOrderController {
                 ShopGoods shopGoods1 = sg1.selectById(osg.getGoodId());
                 if(shopGoods1!=null){
                     osg.setGoodName(shopGoods1.getGoodsName());//设置商品名称
+                    osg.setGoodImg(shopGoods1.getMainImage());//设置商品图片
                 }
                 //根据规格id查询商品价格；
                 Integer goodSizeId = osg.getGoodSizeId();
@@ -287,7 +288,7 @@ public class UserOrderController {
                     goodSum=goodSum+osg.getGoodSum();
                     String freight = shopGoodsSize.getFreight();//商品的邮费
                     you=you.add(new BigDecimal(freight));//邮费
-                    osg.setGoodImg(shopGoodsSize.getImg());//设置商品图片
+
                     osg.setGoodSizeName(shopGoodsSize.getSizeName());//设置商品规格名称
                 }
             }

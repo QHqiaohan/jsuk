@@ -51,6 +51,8 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
         List<UserRemainder> list = selectList(new EntityWrapper<UserRemainder>()
             .eq(UserRemainder.STATUS, UserRemainderStatus.PASSED.getKey())
             .eq(UserRemainder.USER_ID, userId));
+
+
         // 初始化记录总余额
         BigDecimal remain = new BigDecimal("0.00");
         info.setRemainder(remain);
@@ -74,21 +76,21 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
             switch (type) {
                 // 只有红包 和 退款可以提现
                 case GET_RED_PACKET:
-                case REFUND:
+                case REFUND://退款
                     totalCash = totalCash.add(rmdr);
-                case RECHARGE:
+                case RECHARGE://充值
                     remain = remain.add(rmdr);
                     break;
-                case CASH:
+                case CASH://提现
                     cashed = cashed.add(rmdr);
-                case CONSUME:
+                case CONSUME://消费
                     remain = remain.subtract(rmdr);
                     break;
             }
         }
         BigDecimal rem = totalCash.subtract(cashed);
         if (remain.compareTo(rem) >= 0) {
-            info.setCash(rem);
+            info.setCash(rem);//可提现金额
         } else {
             info.setCash(new BigDecimal("0"));
         }
