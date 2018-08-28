@@ -32,6 +32,7 @@ public class WeatherCity extends Model<WeatherCity> {
      * 城市名称
      */
     private String countyName;
+    private Integer cityId;//城市id
 
     public static final String AREA_ID = "area_id";
 

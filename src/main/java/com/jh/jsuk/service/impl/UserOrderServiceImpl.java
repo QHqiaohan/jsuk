@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -465,7 +466,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setFreight(orderPrice.getFreight());
             o.setUpdateTime(new Date());
             StringBuilder goodsName = new StringBuilder();
-            Integer you=0; //创建一个邮费计数值；
+            BigDecimal you=new BigDecimal(0); //创建一个邮费计数值；
             BigDecimal zong =new BigDecimal(0); //创建一个总价计数值；
 
             for (UserOrderGoods userOrderGoods : gs) {
@@ -481,13 +482,75 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 //取出型号id的邮费；
                 if(ss!=null){
                     int i = Integer.parseInt(ss.getFreight());
-                    you=you+i;
+                    you=you.add(new BigDecimal(i));
                 }
 
                 ShopGoods shopGoods = shopGoodsService.selectById(userOrderGoods.getGoodsId());
                 goodsName.append(shopGoods.getGoodsName());
                 goodsName.append(",");
             }
+            //获取商家是否包邮
+            ShopSets shopSet = shopSetService.getShopSet(orderGoods.getShopId());
+            Integer dt = orderDto.getDistributionType();//获取配送类型 0 快递，1同城，2到店
+            //判断配送类型
+            if(dt==0){
+                //判断商家是否包邮
+               if(shopSet!=null){
+                   Integer packagemail = shopSet.getPackagemail();
+                   if(packagemail==2){//开启了包邮
+                       //判断购买价是否大于包邮价
+                       if(zong.compareTo(new BigDecimal(shopSet.getMoney()))>=0){
+                           you=new BigDecimal(0);//如果大于 ，邮费为0
+                       }
+                   }
+               }
+            }else if(dt==1){
+                //计算同城邮费
+                //根据店铺id查询店铺的经纬度；
+                Shop sp = new Shop();
+                Shop shop = sp.selectById(orderGoods.getShopId());
+                Double shopwei=0.0;
+                Double shopjing=0.0;
+                if(shop!=null){
+                    shopwei =   shop.getLatitude();//s商家维度
+                    shopjing = shop.getLongitude();//商家经度
+                }
+                //获取用户地址的经纬度；
+                UserAddress ua = new UserAddress();
+                UserAddress uss = ua.selectById(orderDto.getAddressId());
+                Double userwei=0.0;
+                Double userjing=0.0;
+                if(uss!=null){
+                    userwei=Double.parseDouble(uss.getLatitude());//用户维度
+                    userjing= Double.parseDouble(uss.getLongitude());//用户经度
+                }
+                //获取计算规则
+                RunningFee rf = new RunningFee();
+                RunningFee runningFee = rf.selectById(1);
+                Integer qiprace = 0;//起步费用
+                Integer qiju = 0;//起步距离
+                Integer chaofei =0;//超过费用
+                if(runningFee!=null){
+                    qiprace = runningFee.getStartFee();
+                    qiju = runningFee.getStartDistance();
+                    chaofei = runningFee.getAddFee();
+                }
+                //算邮费；
+                double v = GetDistance(shopwei, shopjing, userwei, userjing);//距离
+                DecimalFormat df = new DecimalFormat("######0"); //四色五入转换成整数
+                String format = df.format(v);
+                int i = Integer.parseInt(format);//距离
+                if(i>qiju){
+                    int i1 = (i - qiju) * chaofei + qiprace;
+                    you = new BigDecimal(i1);
+                }else{
+                    you = new BigDecimal(qiprace);
+                }
+            }else{
+                you=new BigDecimal(0);//到店自提邮费为0；
+            }
+
+
             //获取用户会员级别
             User user = new User();
             User user1 = user.selectById(userId);
@@ -515,34 +578,10 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             }
             o.setDiscount((zong.subtract(discount)).multiply(new BigDecimal(1).subtract(zhe)));
             BigDecimal subtract = new BigDecimal(0);
-            //查询是否包邮；
-            ShopSets shopSet = shopSetService.getShopSet(orderGoods.getShopId());
-            if(shopSet==null){
-                //不然将邮费和商品价和满减相加减起来
-                BigDecimal yf = new BigDecimal(you);
-                o.setFreight(yf);
-                o.setOrderPrice(zong.add(yf));
-                BigDecimal add = zong.add(yf);
-                 subtract = (add.subtract(discount).multiply(zhe));
-            }else{
-                //获取包邮数据
-                Double money = shopSet.getMoney();
-                BigDecimal baoy = new BigDecimal(money);
-                //如果价格大于包邮量邮费为0
-                if(zong.compareTo(baoy)>=0){
-
-                    o.setOrderPrice(zong);
-                    subtract=(zong.subtract(discount)).multiply(zhe);
-                }else{
-                    //不然将邮费和商品价和满减相加减起来
-                    BigDecimal yf = new BigDecimal(you);
-                    o.setFreight(yf);
-                    o.setOrderPrice(zong.add(yf));
-                    BigDecimal add = zong.add(yf);
-                    subtract = (add.subtract(discount)).multiply(zhe);
-                }
-            }
-
+            o.setFreight(you);//设置邮费
+            BigDecimal add = zong.add(you);//将商品价和邮费相加
+            o.setOrderPrice(add);//设置总价
+            subtract = ((add.subtract(discount)).multiply(zhe));//（总价-满减）*折扣=支付价
             //设置积分折扣的钱
             BigDecimal jizong = new BigDecimal(0);
             //是否使用积分
@@ -564,7 +603,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                                 sum -= integral.getIntegralNumber();
                             }
                         }
-                        System.out.println(sum);
                         //获取积分规则列表
                         IntegralRule ir = new IntegralRule();
                         IntegralRule ie = ir.selectById(1);
@@ -580,10 +618,10 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                             //判断积分和钱
                             BigDecimal zongji = new BigDecimal(sum);//总积分
                             if(zong.compareTo(zongji)>=0){
-                                jizong=(zongji.add(new BigDecimal(you)).subtract(discount)).multiply(mon).divide(jif);
+                                jizong=(zongji.add(you).subtract(discount)).multiply(mon).divide(jif);
                                 ui.setIntegralNumber(sum);
                             }else{
-                                jizong=(zong.add(new BigDecimal(you)).subtract(discount)).multiply(mon).divide(jif);
+                                jizong=(zong.add(you).subtract(discount)).multiply(mon).divide(jif);
                                 ui.setIntegralNumber(subtract.intValue());
                             }
                             ui.insert();
@@ -591,9 +629,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     }
                 }
             }
-
             o.setIntegralReduce(jizong);
-            orderPrice.setOrderRealPrice(subtract.subtract(jizong));
+            orderPrice.setOrderRealPrice(subtract.subtract(jizong).setScale(2,BigDecimal.ROUND_HALF_UP));
             o.setOrderRealPrice((subtract.subtract(jizong)).setScale(2,BigDecimal.ROUND_HALF_UP));
             //设置满减；
             o.setFullReduce(discount);
@@ -621,6 +658,34 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         }
         return response;
     }
+
+    private static double EARTH_RADIUS = 6371.393;
+    private static double rad(double d)
+    {
+        return d * Math.PI / 180.0;
+    }
+
+    /**
+     * 计算两个经纬度之间的距离
+     * @param lat1
+     * @param lng1
+     * @param lat2
+     * @param lng2
+     * @return
+     */
+    public static double GetDistance(double lat1, double lng1, double lat2, double lng2)
+    {
+        double radLat1 = rad(lat1);
+        double radLat2 = rad(lat2);
+        double a = radLat1 - radLat2;
+        double b = rad(lng1) - rad(lng2);
+        double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2) +
+            Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
+        s = s * EARTH_RADIUS;
+        s = Math.round(s * 1000);
+        return s;
+    }
+
 
     /**
      * 清除购物车
