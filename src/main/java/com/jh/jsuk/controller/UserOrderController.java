@@ -1,6 +1,7 @@
 package com.jh.jsuk.controller;
 
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -938,7 +939,12 @@ public class UserOrderController {
     public R disInfo(Integer orderId)  {
         try{
             UserOrder order = userOrderService.selectById(orderId);
-            String val = LogisticsUtil.queryData(order.getLogisticstype(), order.getLogisticsNo());
+            String logisticstype = order.getLogisticstype();
+            String logisticsNo = order.getLogisticsNo();
+            if(StrUtil.isBlank(logisticsNo) || StrUtil.isBlank(logisticstype)){
+                return R.err("没有物流信息");
+            }
+            String val = LogisticsUtil.queryData(logisticstype, logisticsNo);
             LogisticsResponse logisticsResponse = new ObjectMapper().readValue(val, LogisticsResponse.class);
             logisticsResponse.parseCom();
             return R.succ(logisticsResponse);

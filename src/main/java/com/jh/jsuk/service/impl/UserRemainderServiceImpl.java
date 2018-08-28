@@ -224,6 +224,17 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
     }
 
     @Override
+    public void gain(Integer userId, BigDecimal amount) {
+        UserRemainder e = new UserRemainder();
+        e.setType(UserRemainderType.REFUND);
+        e.setStatus(UserRemainderStatus.PASSED);
+        e.setUserId(userId);
+        e.setCreateTime(new Date());
+        e.setRemainder(amount);
+        e.insert();
+    }
+
+    @Override
     public void confirm(String no) {
         UserRemainder entity = new UserRemainder();
         EntityWrapper<UserRemainder> wrapper = new EntityWrapper<>();

@@ -123,4 +123,16 @@ public class ShopMoneyServiceImpl extends ServiceImpl<ShopMoneyDao, ShopMoney> i
         insert(entity);
     }
 
+    @Override
+    public boolean refund(Integer shopId, BigDecimal amount) throws Exception {
+        ShopMoney entity = new ShopMoney();
+        entity.setShopId(shopId);
+        entity.setMoney(amount.toString());
+        entity.setPublishTime(new Date());
+        entity.setStatus(UserRemainderStatus.PASSED);
+        entity.setType(ShopMoneyType.REFUND);
+        insert(entity);
+        return true;
+    }
+
 }
