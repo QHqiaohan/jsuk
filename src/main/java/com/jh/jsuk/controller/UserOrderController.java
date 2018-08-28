@@ -363,6 +363,7 @@ public class UserOrderController {
                 //获取满减值
                 BigDecimal fullPrice = cu.getFullPrice();
                 if(shopPrice.compareTo(fullPrice)>=0){
+                    os.setFull(fullPrice);
                     discount = cu.getDiscount();
                     break;
                 }
