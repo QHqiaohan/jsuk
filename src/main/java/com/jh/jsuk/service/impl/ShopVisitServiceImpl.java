@@ -1,5 +1,6 @@
 package com.jh.jsuk.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.SqlHelper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -7,6 +8,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ShopVisitDao;
 import com.jh.jsuk.entity.ShopVisit;
 import com.jh.jsuk.service.ShopVisitService;
+import com.jh.jsuk.utils.Date2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +34,14 @@ public class ShopVisitServiceImpl extends ServiceImpl<ShopVisitDao, ShopVisit> i
     @Override
     public List<ShopVisit> getListShopVisit(Integer ShopId) {
         return baseMapper.getListShopVisit(ShopId);
+    }
+
+    @Override
+    public Integer todayVisit(Integer shopId) {
+        EntityWrapper<ShopVisit> wrapper = new EntityWrapper<>();
+        wrapper.eq(ShopVisit.SHOP_ID, shopId)
+            .between(ShopVisit.PUBLISH_TIME, new Date2().start(), new Date2().end());
+        return selectCount(wrapper);
     }
 
 }

@@ -2,12 +2,14 @@ package com.jh.jsuk.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ShopMoneyDao;
 import com.jh.jsuk.entity.ShopMoney;
 import com.jh.jsuk.envm.ShopMoneyType;
 import com.jh.jsuk.envm.UserRemainderStatus;
 import com.jh.jsuk.service.ShopMoneyService;
+import com.jh.jsuk.utils.Date2;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -28,12 +30,20 @@ public class ShopMoneyServiceImpl extends ServiceImpl<ShopMoneyDao, ShopMoney> i
 
     @Override
     public BigDecimal getShopMoney(Integer shopId) {
+        return getShopMoney(shopId, null);
+    }
+
+    public BigDecimal getShopMoney(Integer shopId, Date date) {
         /**
          * 店铺余额
          */
-        List<ShopMoney> list = selectList(new EntityWrapper<ShopMoney>()
+        Wrapper<ShopMoney> w = new EntityWrapper<ShopMoney>()
             .eq(ShopMoney.STATUS, UserRemainderStatus.PASSED.getKey())
-            .eq(ShopMoney.SHOP_ID, shopId));
+            .eq(ShopMoney.SHOP_ID, shopId);
+        if (date != null) {
+            w.between(ShopMoney.PUBLISH_TIME, new Date2(date).start(), new Date2(date).end());
+        }
+        List<ShopMoney> list = selectList(w);
         BigDecimal bigDecimal = new BigDecimal("0.00");
         if (CollectionUtils.isEmpty(list)) {
             return bigDecimal;
@@ -58,6 +68,11 @@ public class ShopMoneyServiceImpl extends ServiceImpl<ShopMoneyDao, ShopMoney> i
             }
             return bigDecimal;
         }
+    }
+
+    @Override
+    public BigDecimal getTodayShopMoney(Integer shopId) {
+        return getShopMoney(shopId, new Date());
     }
 
     @Override

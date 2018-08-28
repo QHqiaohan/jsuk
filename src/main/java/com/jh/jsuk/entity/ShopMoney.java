@@ -49,6 +49,8 @@ public class ShopMoney extends Model<ShopMoney> {
 
     private String platformNo;
 
+    private String user;
+
     public static final String ID = "id";
 
     public static final String SHOP_ID = "shop_id";

@@ -20,4 +20,6 @@ public interface ShopVisitService extends IService<ShopVisit> {
     Page getVisitList(Page page, Wrapper wrapper, Integer shopId, String today);
 
     List<ShopVisit> getListShopVisit(Integer ShopId);
+
+    Integer todayVisit(Integer shopId);
 }

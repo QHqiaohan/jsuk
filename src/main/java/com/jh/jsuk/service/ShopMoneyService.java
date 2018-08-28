@@ -21,6 +21,7 @@ public interface ShopMoneyService extends IService<ShopMoney> {
      * @return
      */
     BigDecimal getShopMoney(Integer shopId);
+    BigDecimal getTodayShopMoney(Integer shopId);
 
     /**
      * 申请中的余额

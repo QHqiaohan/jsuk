@@ -99,9 +99,6 @@ public class SessionListener {
                 break;
         }
 
-
-        System.out.println(session);
-
     }
 
 

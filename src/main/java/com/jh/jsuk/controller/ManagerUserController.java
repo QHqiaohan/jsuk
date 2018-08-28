@@ -131,7 +131,7 @@ public class ManagerUserController {
     @RequestMapping(value = "/register", method = {RequestMethod.POST, RequestMethod.GET})
     public Result register(String phone, String password, String headImg, String license,
                            String shopName, String address, Integer modularId,
-                           String legalPersonName, String cardNum, @RequestParam Integer cityId,double latitude,Double longitude,String positioning) {
+                           String legalPersonName, String cardNum, @RequestParam Integer cityId, double latitude, Double longitude, String positioning) {
         /**
          * 判断该手机号是否已经注册
          */
@@ -249,6 +249,9 @@ public class ManagerUserController {
         return new Result().success();
     }
 
+    @Autowired
+    ShopVisitService shopVisitService;
+
     @ApiOperation("商家端-首页信息")
     @RequestMapping(value = "/shopInfo", method = {RequestMethod.POST, RequestMethod.GET})
     public Result shopInfo(Integer userId) {
@@ -271,28 +274,30 @@ public class ManagerUserController {
         /**
          * 访客/订单/交易额
          */
-       // ShopTodayStatistics todayStatistics = shopTodayStatisticsService.selectOne(new EntityWrapper<ShopTodayStatistics>()
-         //   .eq(ShopTodayStatistics.SHOP_ID, shopId));
+        // ShopTodayStatistics todayStatistics = shopTodayStatisticsService.selectOne(new EntityWrapper<ShopTodayStatistics>()
+        //   .eq(ShopTodayStatistics.SHOP_ID, shopId));
         Date day=new Date();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
-        String format = df.format(day);
-        SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
-        String format1 = df1.format(day);
-        ShopTodayStatistics todayStatistics = shopTodayStatisticsService.getOneByshopId(format,format1,shopId);
-        if (todayStatistics == null) {
-            // 日访客
-            map.put("todayVisitor", 0);
-            // 日交易额
-            map.put("todayMoney", 0);
-        } else {
-            map.put("todayVisitor", todayStatistics.getTodayVisitor());
-            map.put("todayMoney", todayStatistics.getTodayMoney());
-        }
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+//        String format = df.format(day);
+//        SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
+//        String format1 = df1.format(day);
+//        ShopTodayStatistics todayStatistics = shopTodayStatisticsService.getOneByshopId(format,format1,shopId);
+        map.put("todayVisitor", shopVisitService.todayVisit(shopId));
+        map.put("todayMoney", shopMoneyService.getTodayShopMoney(shopId));
+//        if (todayStatistics == null) {
+//            // 日访客
+////            map.put("todayVisitor", 0);
+//            // 日交易额
+//            map.put("todayMoney", 0);
+//        } else {
+////            map.put("todayVisitor", todayStatistics.getTodayVisitor());
+//            map.put("todayMoney", todayStatistics.getTodayMoney());
+//        }
         // 月订单
         SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-01 00:00:00");
         String format3 = df2.format(day);
 
-        ShopMonthStatistics monthStatistics = shopMonthStatisticsService.getmonthByShopId(shopId,format3);
+        ShopMonthStatistics monthStatistics = shopMonthStatisticsService.getmonthByShopId(shopId, format3);
         if (monthStatistics == null) {
             map.put("monthOrder", 0);
         } else {
