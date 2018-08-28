@@ -21,5 +21,6 @@ public class OrderShopGoods {
     private String goodSizeName;//商品规格名称；
     private String salesPrice;//商品价格
     private String goodName;//s商品名称
+    private Integer careId;//购物车id
 
 }
