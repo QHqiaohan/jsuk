@@ -405,6 +405,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         OrderResponse response = new OrderResponse();
         response.setStatus(OrderResponseStatus.PARTLY_SUCCESS);
         response.setPayType(orderDto.getPayType());
+        PayType payType = EnumUitl.toEnum(PayType.class, orderDto.getPayType());
         UserOrder o = new UserOrder();
         Date createTime = new Date();
         List<ShopSubmitOrderGoodsDto> goods = orderGoods.getGoods();
@@ -446,7 +447,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setDistributionTime(orderDto.getDistributionTime());
             o.setDistributionType(orderDto.getDistributionType());
             o.setCreatTime(createTime);
-            o.setStatus(OrderStatus.DUE_PAY.getKey());
+            o.setStatus(PayType.PAY_ON_DELIVERY.equals(payType) ? OrderStatus.WAIT_DELIVER.getKey() : OrderStatus.DUE_PAY.getKey());
             o.setIsUserDel(0);
             o.setIsShopDel(0);
             o.setIsClosed(0);
@@ -565,7 +566,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                                 sum -= integral.getIntegralNumber();
                             }
                         }
-                        System.out.println(sum);
                         //获取积分规则列表
                         IntegralRule ir = new IntegralRule();
                         IntegralRule ie = ir.selectById(1);
