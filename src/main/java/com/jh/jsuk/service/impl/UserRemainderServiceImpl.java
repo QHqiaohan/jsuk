@@ -137,6 +137,7 @@ public class UserRemainderServiceImpl extends ServiceImpl<UserRemainderDao, User
         e.setRemainder(amount);
         e.setOrderNum(orderNum);
         e.setType(UserRemainderType.CONSUME);
+        e.setStatus(UserRemainderStatus.PASSED);
         insert(e);
     }
 

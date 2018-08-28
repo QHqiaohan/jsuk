@@ -77,7 +77,7 @@ public class WeatherCityController {
             if (weatherCityOpen == null) {
                 return R.err("暂无城市数据");
             }
-            session.setCityId(weatherCityOpen.getWeatherCityId());
+            session.setCityId(weatherCityOpen.getCityId());
             Integer areaId = weatherCity.getAreaId();
             String key = RedisKeys.WEATHER + ":" + areaId;
             Map mp = redisUtils.get(key, Map.class);
