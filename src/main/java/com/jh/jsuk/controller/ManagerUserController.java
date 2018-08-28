@@ -131,7 +131,7 @@ public class ManagerUserController {
     @RequestMapping(value = "/register", method = {RequestMethod.POST, RequestMethod.GET})
     public Result register(String phone, String password, String headImg, String license,
                            String shopName, String address, Integer modularId,
-                           String legalPersonName, String cardNum, @RequestParam Integer cityId) {
+                           String legalPersonName, String cardNum, @RequestParam Integer cityId,double latitude,Double longitude,String positioning) {
         /**
          * 判断该手机号是否已经注册
          */
@@ -156,6 +156,9 @@ public class ManagerUserController {
         shop.setModularId(modularId);
         shop.setAddress(address);
         shop.setShopPhone(phone);
+        shop.setLatitude(latitude);
+        shop.setLongitude(longitude);
+        shop.setPositioning(positioning);
         shop.insert();
 
         ManagerUser managerUser = new ManagerUser();
