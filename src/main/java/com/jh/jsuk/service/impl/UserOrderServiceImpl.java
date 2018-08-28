@@ -786,16 +786,16 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         Integer ji = 0;//赠送的积分
         for (UserOrder userOrder : userOrders) {
             //用户交易记录
-            UserRemainder userRemainder = new UserRemainder();
-            userRemainder.setCreateTime(new Date());
-            userRemainder.setRemainder(userOrder.getOrderRealPrice());
-            userRemainder.setType(UserRemainderType.CONSUME);
-            userRemainder.setUserId(userOrder.getUserId());
-            userRemainder.setOrderNum(userOrder.getOrderNum());
-            userRemainder.setStatus(UserRemainderStatus.PASSED);
-            userRemainder.setPlatformNumber(userOrder.getPlatformNumber());
-            userRemainder.insert();
-            userRemainderService.consume(userId,userOrder.getOrderRealPrice());
+//            UserRemainder userRemainder = new UserRemainder();
+//            userRemainder.setCreateTime(new Date());
+//            userRemainder.setRemainder(userOrder.getOrderRealPrice());
+//            userRemainder.setType(UserRemainderType.CONSUME);
+//            userRemainder.setUserId(userOrder.getUserId());
+//            userRemainder.setOrderNum(userOrder.getOrderNum());
+//            userRemainder.setStatus(UserRemainderStatus.PASSED);
+//            userRemainder.setPlatformNumber(userOrder.getPlatformNumber());
+//            userRemainder.insert();
+            userRemainderService.consume(userId,userOrder.getOrderRealPrice(),userOrder.getOrderNum());
             //修改订单信息
             userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
             userOrder.setPayType(PayType.BALANCE_PAY.getKey());

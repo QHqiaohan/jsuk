@@ -14,6 +14,7 @@ import com.jh.jsuk.entity.vo.ActivityVoT;
 import com.jh.jsuk.entity.vo.GoodsSalesPriceVo;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.MyEntityWrapper;
+import com.jh.jsuk.utils.R;
 import com.jh.jsuk.utils.Result;
 import com.jh.jsuk.utils.SensitiveWordUtil;
 import io.swagger.annotations.*;
@@ -130,7 +131,7 @@ public class ActivityController {
         /**
          * 商品推荐
          */
-        List<GoodsSalesPriceVo> goodsSalesPriceVos = shopGoodsService.findShopGoodsByModularId(0,session.getCityId());
+        List<GoodsSalesPriceVo> goodsSalesPriceVos = shopGoodsService.findShopGoodsByModularId(0, session.getCityId());
         map.put("shopGoods", goodsSalesPriceVos);
         /**
          * 精选商家
@@ -139,7 +140,7 @@ public class ActivityController {
             new Page<>(1, 8),
             new EntityWrapper<Shop>()
                 .eq(Shop.CAN_USE, 1)
-                .eq(Shop.CITY_ID,session.getCityId())
+                .eq(Shop.CITY_ID, session.getCityId())
                 .eq(Shop.IS_RECOMMEND, 1)
 
                 .orderBy(Shop.TOTAL_VOLUME, false));
@@ -154,7 +155,7 @@ public class ActivityController {
                 .orderBy(SpecialTheme.RANK, false));
         Page isRecommend = shopGoodsService.getIsRecommend(new Page(1, 1), new EntityWrapper());
         List list = isRecommend.getRecords();
-        map.put("specialTheme", list != null && !list.isEmpty()? list.get(0) : null);
+        map.put("specialTheme", list != null && !list.isEmpty() ? list.get(0) : null);
         return new Result().success(map);
     }
 
@@ -317,7 +318,7 @@ public class ActivityController {
         /**
          * 商品列表
          */
-        List<GoodsSalesPriceVo> shopGoodsByModularId = shopGoodsService.findShopGoodsByModularId(modularId,session.getCityId());
+        List<GoodsSalesPriceVo> shopGoodsByModularId = shopGoodsService.findShopGoodsByModularId(modularId, session.getCityId());
         map.put("shopGoods", shopGoodsByModularId);
         return new Result().success(map);
     }
@@ -354,7 +355,7 @@ public class ActivityController {
         /**
          * 商品列表
          */
-        List<GoodsSalesPriceVo> shopGoodsByModularId = shopGoodsService.findShopGoodsByModularId(modularId,session.getCityId());
+        List<GoodsSalesPriceVo> shopGoodsByModularId = shopGoodsService.findShopGoodsByModularId(modularId, session.getCityId());
         map.put("shopGoods", shopGoodsByModularId);
         return new Result().success(map);
     }
@@ -404,7 +405,7 @@ public class ActivityController {
          * 获取二手市场商品列表
          */
         MyEntityWrapper<User> ew = new MyEntityWrapper<>();
-        Page activityList = activityService.getActivityList(page, ew, userId,cityId);
+        Page activityList = activityService.getActivityList(page, ew, userId, cityId);
         map.put("activity", activityList);
         return new Result().success(map);
     }
@@ -434,10 +435,10 @@ public class ActivityController {
                                  @ApiParam(value = "0=代付款，1=进行中，2=已完成") Integer zhuangtai) {
         Page myInfoPage = activityService.selectPage(page, new EntityWrapper<Activity>()
             .eq(Activity.IS_DEL, 0)
-            .eq(modularId!=null,Activity.MODULAR_ID, modularId)
+            .eq(modularId != null, Activity.MODULAR_ID, modularId)
             .eq(type != null, Activity.TYPE, type)
             .eq(Activity.USER_ID, userId)
-            .eq(zhuangtai!=null,Activity.ZHUANG_TAI,zhuangtai)
+            .eq(zhuangtai != null, Activity.ZHUANG_TAI, zhuangtai)
             .orderBy(Activity.PUBLISH_TIME, false));
 
         if (CollectionUtils.isEmpty(myInfoPage.getRecords())) {
@@ -560,10 +561,10 @@ public class ActivityController {
                 }
             }
         } catch (IOException e) {
-            log.error(e.getLocalizedMessage(),e);
+            log.error(e.getLocalizedMessage(), e);
             return new Result().erro("新增失败", e);
         } catch (Exception e) {
-            log.error(e.getLocalizedMessage(),e);
+            log.error(e.getLocalizedMessage(), e);
         }
         return new Result().success();
     }
@@ -572,7 +573,7 @@ public class ActivityController {
     //首页-二手市场-发布活动
     //首页-便捷生活-发布活动
     @ApiOperation(value = "用户-便捷生活&二手市场&乡村旅游-新增活动",
-            notes = "type按类型必填!!! 1=乡村旅游,2=便捷生活,3=二手市场',如果是便捷生活,classId必填!!如果是乡村旅游,modularId必填!!二手市场不用填.")
+        notes = "type按类型必填!!! 1=乡村旅游,2=便捷生活,3=二手市场',如果是便捷生活,classId必填!!如果是乡村旅游,modularId必填!!二手市场不用填.")
     @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.GET})
     public Result add(@ModelAttribute Activity activity,
                       @RequestParam Integer modularId) throws Exception {
@@ -613,7 +614,7 @@ public class ActivityController {
         }
         EntityWrapper ew = new EntityWrapper();
         ew.setEntity(new Activity());
-        ew.eq(Activity.TRANSACTION_AREA_ID,session.getCityId());
+        ew.eq(Activity.TRANSACTION_AREA_ID, session.getCityId());
         ew.like("title", keywords, SqlLike.DEFAULT);
         List<Activity> searchList = activityService.selectList(ew);
 
@@ -646,7 +647,7 @@ public class ActivityController {
         Result result = new Result();
         Page<Activity> activityPage = activityService.selectPage(new Page<Activity>(current, size),
             new EntityWrapper<Activity>()
-                .eq(Activity.TRANSACTION_AREA_ID,session.getCityId())
+                .eq(Activity.TRANSACTION_AREA_ID, session.getCityId())
                 .eq(Activity.IS_DEL, 0)
                 .eq(Activity.IS_RECOMMEND, 1)
                 .eq(Activity.MODULAR_ID, ModularId)
@@ -657,11 +658,11 @@ public class ActivityController {
 
     @ApiOperation("用户-模块-获取更多活动列表")
     @RequestMapping(value = "/getMoreActivity", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result getMoreActivity(Page page,@RequestParam Integer ModularId) throws Exception {
+    public Result getMoreActivity(Page page, @RequestParam Integer ModularId) throws Exception {
         Page<Activity> activityPage = activityService.selectPage(page,
             new EntityWrapper<Activity>()
                 .eq(Activity.IS_DEL, 0)
-                .eq(Activity.TRANSACTION_AREA_ID,session.getCityId())
+                .eq(Activity.TRANSACTION_AREA_ID, session.getCityId())
                 .eq(Activity.MODULAR_ID, ModularId)
                 .orderBy(Activity.PUBLISH_TIME, false)
         );
@@ -749,7 +750,7 @@ public class ActivityController {
 
         Page activityPage = activityService.selectPage(new Page(current, size),
             new EntityWrapper<Activity>()
-                .eq(Activity.TRANSACTION_AREA_ID,session.getCityId())
+                .eq(Activity.TRANSACTION_AREA_ID, session.getCityId())
                 .eq(Activity.MODULAR_ID, modularId)
         );
         return new Result().success(activityPage);
@@ -804,7 +805,7 @@ public class ActivityController {
             new EntityWrapper<ActivityJoin>()
                 .eq(status != null, ActivityJoin.STATUS, status)
                 .eq(ActivityJoin.IS_DEL, 0)
-                .eq(Activity.TRANSACTION_AREA_ID,session.getCityId())
+                .eq(Activity.TRANSACTION_AREA_ID, session.getCityId())
         );
         return new Result().success(activityJoinPage);
     }
@@ -824,21 +825,15 @@ public class ActivityController {
     //后台-APP促销管理-发布乡村旅游活动
     @RequestMapping(value = "/addVillageActivity", method = {RequestMethod.POST})
     public Result addVillageActivity(@ModelAttribute Activity activity) {
-        System.out.println("门店地址:"+activity.getAddress());
-        try {
-            activity.setPublishTime(new Date());
-            activity.setTransactionAreaId(session.getCityId());
-            activity.setType(1);       // 1=乡村旅游
-            activity.setActivityType(0);    //0:普通活动，1：共享婚车活动
-            //获取登录用户id
-            Integer userId = session.getUserId();
-            activity.setUserId(userId);
-            activity.insert();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Result().erro("系统错误");
-        }
-        return new Result().success("乡村旅游活动发布成功");
+        activity.setPublishTime(new Date());
+        activity.setTransactionAreaId(session.getCityId());
+        activity.setType(1);       // 1=乡村旅游
+        activity.setActivityType(0);    //0:普通活动，1：共享婚车活动
+        //获取登录用户id
+        Integer userId = session.getUserId();
+        activity.setUserId(userId);
+        activity.insert();
+        return R.succ();
     }
 
 
