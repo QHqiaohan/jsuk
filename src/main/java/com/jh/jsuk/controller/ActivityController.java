@@ -752,6 +752,7 @@ public class ActivityController {
             new EntityWrapper<Activity>()
                 .eq(Activity.TRANSACTION_AREA_ID, session.getCityId())
                 .eq(Activity.MODULAR_ID, modularId)
+                .orderBy(Activity.PUBLISH_TIME,false)
         );
         return new Result().success(activityPage);
     }
@@ -826,7 +827,6 @@ public class ActivityController {
     @RequestMapping(value = "/addVillageActivity", method = {RequestMethod.POST})
     public Result addVillageActivity(@ModelAttribute Activity activity) {
         activity.setPublishTime(new Date());
-        activity.setTransactionAreaId(session.getCityId());
         activity.setType(1);       // 1=乡村旅游
         activity.setActivityType(0);    //0:普通活动，1：共享婚车活动
         //获取登录用户id
