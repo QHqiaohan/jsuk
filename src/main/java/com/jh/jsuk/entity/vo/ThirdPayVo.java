@@ -1,7 +1,10 @@
 package com.jh.jsuk.entity.vo;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.io.Serializable;
 
 /**
@@ -9,7 +12,9 @@ import java.io.Serializable;
  * Date:2018/8/11 11:03
  * Description:
  */
-@Data
+@Setter
+@Getter
+@ToString
 public class ThirdPayVo implements Serializable {
 
     @ApiModelProperty(name = "1.用户订单支付 2.到店支付 3.会员充值 4.快递跑腿", value = "type")

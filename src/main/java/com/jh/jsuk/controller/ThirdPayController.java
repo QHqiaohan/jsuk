@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,7 +42,7 @@ public class ThirdPayController {
 
     @ApiOperation(value = "第三方支付接口")
     @PostMapping
-    public Result thirdPay(ThirdPayVo payVo) throws UnsupportedEncodingException, ChannelException, MessageException {
+    public Result thirdPay(@ModelAttribute ThirdPayVo payVo) throws UnsupportedEncodingException, ChannelException, MessageException {
         return new Result().success(thirdPayService.thirdPay(payVo));
     }
 

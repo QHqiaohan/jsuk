@@ -1,6 +1,6 @@
 package com.jh.jsuk.envm;
 
-import com.jh.jsuk.common.Envm;
+import com.github.tj123.common.enum2md.Envm;
 import lombok.Getter;
 
 //0待审核  1通过  2拒绝
