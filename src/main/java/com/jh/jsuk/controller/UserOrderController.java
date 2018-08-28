@@ -421,6 +421,9 @@ public class UserOrderController {
             jif = ((new BigDecimal(ji)).multiply(mon)).divide(new BigDecimal(ii));//积分可换钱
         }
         orderList.setIntegralReduce(jif);//设置积分可抵扣的价格
+        if(orderList.getIsUseintegral()==0){
+            jif=new BigDecimal(0);
+        }
         orderList.setIntegral(ji);//设置可用积分
         orderList.setMemberzZhe(zhe);//会员折扣
         orderList.setZongPrice(bigDecimal.subtract(jif));//设置总价折扣后总价

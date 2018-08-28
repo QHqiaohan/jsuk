@@ -88,7 +88,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     @Autowired
     private ShopSetService shopSetService;//是否包邮
     @Autowired
-    private ShopTodayStatisticsService shopTodayStatisticsService;
+    private  ShopTodayStatisticsService shopTodayStatisticsService;
 
     @Override
     public int statusCount(OrderStatus orderStatus, Integer shopId) {
@@ -159,7 +159,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     /**
      * 用户端
-     *
      * @param page
      * @param wrapper
      * @param userId
@@ -179,7 +178,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     .orderBy(true, UserOrder.UPDATE_TIME, false)
                     .where("not is_user_del"));
             }
-        } else if (status == 8) {
+        }else if(status == 8){
             //待评价
             if (goodsName != null) {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
@@ -400,7 +399,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public OrderResponse createOrder(SubmitOrderDto orderDto, ShopSubmitOrderDto orderGoods,
-                                     OrderType orderType, Integer userId, Integer isuseintegerl) throws Exception {
+                                     OrderType orderType, Integer userId,Integer isuseintegerl) throws Exception {
         boolean isTimeOut = false;
         OrderResponse response = new OrderResponse();
         response.setStatus(OrderResponseStatus.PARTLY_SUCCESS);
@@ -466,27 +465,23 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setFreight(orderPrice.getFreight());
             o.setUpdateTime(new Date());
             StringBuilder goodsName = new StringBuilder();
-            //创建一个邮费计数值；
-            Integer you = 0;
-            //创建一个总价计数值；
-            BigDecimal zong = new BigDecimal(0);
+            Integer you=0; //创建一个邮费计数值；
+            BigDecimal zong =new BigDecimal(0); //创建一个总价计数值；
 
             for (UserOrderGoods userOrderGoods : gs) {
-                //获取商品型号数量
-                Integer num = userOrderGoods.getNum();
+                Integer num = userOrderGoods.getNum(); //获取商品型号数量
                 BigDecimal nums = new BigDecimal(num);
-                //获取购买价格
-                BigDecimal goodsPrice = userOrderGoods.getGoodsPrice();
-                zong = zong.add(nums.multiply(goodsPrice));
+                BigDecimal goodsPrice = userOrderGoods.getGoodsPrice();//获取购买价格
+                 zong =  zong.add(nums.multiply(goodsPrice));
                 //获取商品型号id
                 Integer goodsSizeId = userOrderGoods.getGoodsSizeId();
                 //根据型号查询邮费；
                 ShopGoodsSize sgs = new ShopGoodsSize();
                 ShopGoodsSize ss = sgs.selectById(goodsSizeId);
                 //取出型号id的邮费；
-                if (ss != null) {
+                if(ss!=null){
                     int i = Integer.parseInt(ss.getFreight());
-                    you = you + i;
+                    you=you+i;
                 }
 
                 ShopGoods shopGoods = shopGoodsService.selectById(userOrderGoods.getGoodsId());
@@ -497,9 +492,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             User user = new User();
             User user1 = user.selectById(userId);
             BigDecimal zhe = new BigDecimal(1);
-            if (user1 != null) {
+            if(user1!=null){
                 Integer level = user1.getLevel();
-                if (level != 0) {
+                if(level!=0){
                     Member mm = new Member();
                     Member member = mm.selectById(level);
                     zhe = member.getMemberDiscount();
@@ -507,13 +502,13 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             }
 
             //满减数量
-            BigDecimal discount = new BigDecimal(0);
+            BigDecimal discount=new BigDecimal(0);
             //查询是否满减
             List<Coupon> lb = couponService.getListByShopId(orderGoods.getShopId());
-            for (Coupon cu : lb) {
+            for(Coupon cu : lb){
                 //获取满减值
                 BigDecimal fullPrice = cu.getFullPrice();
-                if (zong.compareTo(fullPrice) >= 0) {
+                if(zong.compareTo(fullPrice)>=0){
                     discount = cu.getDiscount();
                     break;
                 }
@@ -522,23 +517,23 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             BigDecimal subtract = new BigDecimal(0);
             //查询是否包邮；
             ShopSets shopSet = shopSetService.getShopSet(orderGoods.getShopId());
-            if (shopSet == null) {
+            if(shopSet==null){
                 //不然将邮费和商品价和满减相加减起来
                 BigDecimal yf = new BigDecimal(you);
                 o.setFreight(yf);
                 o.setOrderPrice(zong.add(yf));
                 BigDecimal add = zong.add(yf);
-                subtract = (add.subtract(discount).multiply(zhe));
-            } else {
+                 subtract = (add.subtract(discount).multiply(zhe));
+            }else{
                 //获取包邮数据
                 Double money = shopSet.getMoney();
                 BigDecimal baoy = new BigDecimal(money);
                 //如果价格大于包邮量邮费为0
-                if (zong.compareTo(baoy) >= 0) {
+                if(zong.compareTo(baoy)>=0){
 
                     o.setOrderPrice(zong);
-                    subtract = (zong.subtract(discount)).multiply(zhe);
-                } else {
+                    subtract=(zong.subtract(discount)).multiply(zhe);
+                }else{
                     //不然将邮费和商品价和满减相加减起来
                     BigDecimal yf = new BigDecimal(you);
                     o.setFreight(yf);
@@ -551,10 +546,10 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             //设置积分折扣的钱
             BigDecimal jizong = new BigDecimal(0);
             //是否使用积分
-            if (isuseintegerl == 1) {//使用积分
+            if(isuseintegerl==1){//使用积分
                 //获取店家是否允许使用积分；
-                if (shopSet != null) {
-                    if (shopSet.getIntegral() == 2) {
+                if(shopSet!=null){
+                    if (shopSet.getIntegral()==2) {
                         //获取积分列表
                         List<UserIntegral> userIntegrals = userIntegralService.selectList(new EntityWrapper<UserIntegral>()
                             .eq(UserIntegral.USER_ID, userId));
@@ -573,7 +568,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                         //获取积分规则列表
                         IntegralRule ir = new IntegralRule();
                         IntegralRule ie = ir.selectById(1);
-                        if (ie != null) {
+                        if(ie!=null){
                             Integer ii = ie.getIntegral();//多少积分
                             BigDecimal mon = ie.getDeduction();//换多少钱
                             BigDecimal jif = new BigDecimal(ii);
@@ -584,11 +579,11 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                             ui.setCraTime(new Date());
                             //判断积分和钱
                             BigDecimal zongji = new BigDecimal(sum);//总积分
-                            if (zong.compareTo(zongji) >= 0) {
-                                jizong = (zongji.add(new BigDecimal(you)).subtract(discount)).multiply(mon).divide(jif);
+                            if(zong.compareTo(zongji)>=0){
+                                jizong=(zongji.add(new BigDecimal(you)).subtract(discount)).multiply(mon).divide(jif);
                                 ui.setIntegralNumber(sum);
-                            } else {
-                                jizong = (zong.add(new BigDecimal(you)).subtract(discount)).multiply(mon).divide(jif);
+                            }else{
+                                jizong=(zong.add(new BigDecimal(you)).subtract(discount)).multiply(mon).divide(jif);
                                 ui.setIntegralNumber(subtract.intValue());
                             }
                             ui.insert();
@@ -599,7 +594,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
             o.setIntegralReduce(jizong);
             orderPrice.setOrderRealPrice(subtract.subtract(jizong));
-            o.setOrderRealPrice((subtract.subtract(jizong)).setScale(2, BigDecimal.ROUND_HALF_UP));
+            o.setOrderRealPrice((subtract.subtract(jizong)).setScale(2,BigDecimal.ROUND_HALF_UP));
             //设置满减；
             o.setFullReduce(discount);
             o.setGoodsName(goodsName.toString());
@@ -650,7 +645,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             if (shop.getGoods().size() == 0) {
                 continue;
             }
-            OrderResponse response = createOrder(orderDto, shop, orderType, userId, orderDto.getIsUseIntegral());
+            OrderResponse response = createOrder(orderDto, shop, orderType, userId,orderDto.getIsUseIntegral());
             if (OrderType.NORMAL.equals(orderType) &&
                 (response.is(OrderResponseStatus.SUCCESS) || response.is(OrderResponseStatus.PARTLY_SUCCESS))) {
                 delShopCart(shop);
@@ -796,7 +791,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 //            userRemainder.setStatus(UserRemainderStatus.PASSED);
 //            userRemainder.setPlatformNumber(userOrder.getPlatformNumber());
 //            userRemainder.insert();
-            userRemainderService.consume(userId, userOrder.getOrderRealPrice(), userOrder.getOrderNum());
+            userRemainderService.consume(userId,userOrder.getOrderRealPrice(),userOrder.getOrderNum());
             //修改订单信息
             userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
             userOrder.setPayType(PayType.BALANCE_PAY.getKey());
@@ -807,10 +802,10 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
             List<UserOrderGoods> order_id1 = userOrderGoodsService.getListByOrderId(userOrder.getId());
 
-            for (UserOrderGoods uo : order_id1) {
+            for (UserOrderGoods uo :order_id1){
                 ShopGoods sg = new ShopGoods();
                 ShopGoods shopGoods = sg.selectById(uo.getGoodsId());
-                shopGoods.setSaleAmont(shopGoods.getSaleAmont() + 1);
+                shopGoods.setSaleAmont(shopGoods.getSaleAmont()+1);
                 shopGoods.updateById();
 
             }
@@ -818,7 +813,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         //获取积分规则列表
         IntegralRule ir = new IntegralRule();
         IntegralRule ie = ir.selectById(1);
-        if (ie != null) {
+        if(ie!=null){
             Integer consumption = ie.getConsumption();//多少钱
             Integer gainIntegral = ie.getGainIntegral();//送多少积分
             int i = price.intValue();
@@ -840,21 +835,21 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         shopMoney.setShopId(userOrders.get(0).getShopId());
         shopMoney.insert();
 
-        Date day = new Date();
+        Date day=new Date();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
         String format = df.format(day);
         SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
         String format1 = df1.format(day);
         ShopTodayStatistics oi = shopTodayStatisticsService.getOneByshopId(format, format1, userOrders.get(0).getShopId());
-        if (oi == null) {
+        if(oi==null){
             ShopTodayStatistics sts = new ShopTodayStatistics();
             sts.setShopId(userOrders.get(0).getShopId());
             sts.setTodayMoney(price.toString());
             sts.setTodayOrder(1);
             sts.setToday(new Date());
             sts.insert();
-        } else {
-            oi.setTodayOrder(oi.getTodayOrder() + 1);
+        }else{
+            oi.setTodayOrder(oi.getTodayOrder()+1);
             String todayMoney = oi.getTodayMoney();
             BigDecimal bm = new BigDecimal(todayMoney);
             BigDecimal add = bm.add(price);
@@ -865,23 +860,22 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
         SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-01 00:00:00");
         String format3 = df2.format(day);
-        Date date = df2.parse(format3);
-        ShopMonthStatistics monthStatistics = shopMonthStatisticsService.getmonthByShopId(userOrders.get(0).getShopId(), format3);
-        if (monthStatistics == null) {
-            ShopMonthStatistics sms = new ShopMonthStatistics();
-            sms.setShopId(userOrders.get(0).getShopId());
-            sms.setMonth(date);
-            sms.setMonthOrder(1);
-            sms.insert();
-        } else {
-            monthStatistics.setMonthOrder(monthStatistics.getMonthOrder() + 1);
-            monthStatistics.updateById();
-        }
+        Date   date   =   df2.parse(format3);
+        ShopMonthStatistics monthStatistics = shopMonthStatisticsService.getmonthByShopId(userOrders.get(0).getShopId(),format3);
+            if(monthStatistics==null){
+                ShopMonthStatistics sms = new ShopMonthStatistics();
+                sms.setShopId(userOrders.get(0).getShopId());
+                sms.setMonth(date);
+                sms.setMonthOrder(1);
+                sms.insert();
+            }else{
+                monthStatistics.setMonthOrder(monthStatistics.getMonthOrder()+1);
+                monthStatistics.updateById();
+            }
 
     }
-
     @Autowired
-    private ShopMonthStatisticsService shopMonthStatisticsService;
+private  ShopMonthStatisticsService shopMonthStatisticsService;
 
     @Override
     public AfterSaleVo getAddressAndPhone(Integer orderId) {
