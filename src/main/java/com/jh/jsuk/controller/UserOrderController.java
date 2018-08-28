@@ -120,7 +120,7 @@ public class UserOrderController {
 
     @ApiOperation(value = "用户端&商家端-订单详情/再次购买")
     @GetMapping("/detail")
-    public R userOrderDetail(@RequestParam Integer orderId) {
+    public R userOrderDetail(@RequestParam Integer orderId) throws Exception {
         return R.succ(userOrderService.userOrderDetail(orderId));
     }
 
@@ -859,6 +859,7 @@ public class UserOrderController {
 //        } else {
 //            userOrder.setStatus(OrderStatus.REFUND_GOODS.getKey());
 //        }
+        userOrder.setUpdateTime(new Date());
         userOrder.updateById();
         service.setServiceCode(OrderNumUtil.getOrderIdByUUId());
         User user = userService.selectById(userOrder.getUserId());
@@ -894,6 +895,7 @@ public class UserOrderController {
         } else {
             //交易成功
             userOrder.setStatus(OrderStatus.SUCCESS.getKey());
+            userOrder.setUpdateTime(new Date());
             userOrder.updateById();
             return new Result().success("操作成功!");
         }
@@ -930,7 +932,7 @@ public class UserOrderController {
 
     @ApiOperation(value = "用户端-催一催")
     @RequestMapping(value = "/pushAPush", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result pushAPush(@ApiParam(value = "订单ID", required = true) Integer id) {
+    public Result pushAPush(@ApiParam(value = "订单ID", required = true) Integer id) throws Exception {
         return new Result().success(userOrderService.pushAPush(id));
     }
 

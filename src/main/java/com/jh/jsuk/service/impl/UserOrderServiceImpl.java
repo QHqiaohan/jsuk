@@ -283,8 +283,10 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public UserOrderDetailVo userOrderDetail(Integer orderId) {
-        return baseMapper.userOrderDetail(orderId);
+    public UserOrderDetailVo userOrderDetail(Integer orderId) throws Exception {
+        UserOrderDetailVo vo = baseMapper.userOrderDetail(orderId);
+        vo.updateStatus(userOrderServiceService);
+        return vo;
     }
 
     @Override
@@ -308,7 +310,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     ManagerUserService managerUserService;
 
     @Override
-    public String pushAPush(Integer orderId) {
+    public String pushAPush(Integer orderId) throws Exception {
         //获取订单详情
         UserOrderDetailVo orderDetail = userOrderDetail(orderId);
         //获取商家信息
@@ -447,6 +449,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setDistributionTime(orderDto.getDistributionTime());
             o.setDistributionType(orderDto.getDistributionType());
             o.setCreatTime(createTime);
+            o.setUpdateTime(createTime);
             o.setStatus(PayType.PAY_ON_DELIVERY.equals(payType) ? OrderStatus.WAIT_DELIVER.getKey() : OrderStatus.DUE_PAY.getKey());
             o.setIsUserDel(0);
             o.setIsShopDel(0);
@@ -465,7 +468,6 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setIntegralReduce(orderPrice.getIntegralReduce());
             o.setPayType(orderDto.getPayType());
             o.setFreight(orderPrice.getFreight());
-            o.setUpdateTime(new Date());
             StringBuilder goodsName = new StringBuilder();
             Integer you = 0; //创建一个邮费计数值；
             BigDecimal zong = new BigDecimal(0); //创建一个总价计数值；

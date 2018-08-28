@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +39,9 @@ public class UserOrderServiceController {
     @Autowired
     UserOrderServiceService userOrderServiceService;
 
+    @Autowired
+    com.jh.jsuk.service.UserOrderService userOrderService;
+
     @GetMapping("/get")
     public R serviceInfo(Integer id) {
         return R.succ(userOrderServiceService.get(id));
@@ -46,6 +50,13 @@ public class UserOrderServiceController {
     @PatchMapping
     public R edit(UserOrderService userOrderService) {
         userOrderServiceService.updateById(userOrderService);
+        UserOrderService service = userOrderServiceService.selectById(userOrderService.getId());
+        if (service != null && service.getOrderId() != null) {
+            UserOrder order = new UserOrder();
+            order.setId(service.getOrderId());
+            order.setUpdateTime(new Date());
+            order.updateById();
+        }
         return R.succ();
     }
 
@@ -55,12 +66,10 @@ public class UserOrderServiceController {
     @Autowired
     UserRemainderService userRemainderService;
 
-    @Autowired
-    com.jh.jsuk.service.UserOrderService userOrderService;
 
     @PostMapping("/confirm")
     @Transactional
-    public R confirm(Integer id,String shopComment) throws Exception {
+    public R confirm(Integer id, String shopComment) throws Exception {
         R r = R.create();
         UserOrderService service = userOrderServiceService.selectById(id);
         if (service == null)
@@ -70,6 +79,10 @@ public class UserOrderServiceController {
         if (OrderServiceStatus.COMPLETE.equals(status) || OrderServiceStatus.REFUSED.equals(status)) {
             return r.er("订单已{}", status.getValue());
         }
+        UserOrder order = userOrderService.selectById(service.getOrderId());
+        if (order == null) {
+            return r.er("订单不存在");
+        }
         switch (type) {
             /**
              * 前两个都要退款
@@ -77,10 +90,6 @@ public class UserOrderServiceController {
             case RETURN_GOODS:
             case RETURN_MONEY:
 //                shopMoneyService.refund()
-                UserOrder order = userOrderService.selectById(service.getOrderId());
-                if (order == null) {
-                    return r.er("订单不存在");
-                }
                 BigDecimal amount = new BigDecimal(service.getPrice());
                 shopMoneyService.refund(order.getShopId(), amount);
                 userRemainderService.gain(order.getUserId(), amount);
@@ -88,6 +97,8 @@ public class UserOrderServiceController {
             case CHANGE_GOODS:
                 break;
         }
+        order.setUpdateTime(new Date());
+        order.updateById();
         service.setStatus(OrderServiceStatus.COMPLETE.getKey());
         service.setShopComment(shopComment);
         service.updateById();
@@ -122,7 +133,7 @@ public class UserOrderServiceController {
             wrapper.gt(UserOrderService.CREATE_TIME, DateTime.of(start, "yyyy-MM-dd"));
             wrapper.lt(UserOrderService.CREATE_TIME, DateTime.of(stop, "yyyy-MM-dd"));
         }
-        wrapper.orderBy(UserOrderService.CREATE_TIME,false);
+        wrapper.orderBy(UserOrderService.CREATE_TIME, false);
         return R.succ(userOrderServiceService.selectPage(page, wrapper));
     }
 

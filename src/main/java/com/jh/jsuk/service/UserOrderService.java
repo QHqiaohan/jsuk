@@ -50,7 +50,7 @@ public interface UserOrderService extends IService<UserOrder> {
 
     Page listPage(Page page, List<String> date, String kw, OrderStatus orderStatus, Integer shopId);
 
-    UserOrderDetailVo userOrderDetail(Integer orderId);
+    UserOrderDetailVo userOrderDetail(Integer orderId) throws Exception;
 
     /**
      * 用户订单数量
@@ -68,7 +68,7 @@ public interface UserOrderService extends IService<UserOrder> {
      * @param orderId 订单id
      * @return 操作结果
      */
-    String pushAPush(Integer orderId);
+    String pushAPush(Integer orderId) throws Exception;
 
     String createServiceCode() throws Exception;
 
