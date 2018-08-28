@@ -122,6 +122,7 @@ public class UserOrderServiceController {
             wrapper.gt(UserOrderService.CREATE_TIME, DateTime.of(start, "yyyy-MM-dd"));
             wrapper.lt(UserOrderService.CREATE_TIME, DateTime.of(stop, "yyyy-MM-dd"));
         }
+        wrapper.orderBy(UserOrderService.CREATE_TIME,false);
         return R.succ(userOrderServiceService.selectPage(page, wrapper));
     }
 

@@ -38,9 +38,10 @@ public class UserOrderListVo implements Serializable {
 
     private String status;
 
+    // 用户的状态显示
     public void updateStatus(UserOrderServiceService service) throws Exception {
         OrderStatus orderStatus = EnumUitl.toEnum(OrderStatus.class, userOrder.getStatus());
-        status = orderStatus.getValue();
+        status = orderStatus.getUserText();
         if (!OrderStatus.SERVICE.equals(orderStatus)) {
             return;
         }

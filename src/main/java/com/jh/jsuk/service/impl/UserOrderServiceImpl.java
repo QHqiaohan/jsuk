@@ -89,7 +89,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     @Autowired
     private ShopSetService shopSetService;//是否包邮
     @Autowired
-    private  ShopTodayStatisticsService shopTodayStatisticsService;
+    private ShopTodayStatisticsService shopTodayStatisticsService;
 
     @Override
     public int statusCount(OrderStatus orderStatus, Integer shopId) {
@@ -160,6 +160,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     /**
      * 用户端
+     *
      * @param page
      * @param wrapper
      * @param userId
@@ -179,7 +180,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     .orderBy(true, UserOrder.UPDATE_TIME, false)
                     .where("not is_user_del"));
             }
-        }else if(status == 8){
+        } else if (status == 8) {
             //待评价
             if (goodsName != null) {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
@@ -400,11 +401,12 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public OrderResponse createOrder(SubmitOrderDto orderDto, ShopSubmitOrderDto orderGoods,
-                                     OrderType orderType, Integer userId,Integer isuseintegerl) throws Exception {
+                                     OrderType orderType, Integer userId, Integer isuseintegerl) throws Exception {
         boolean isTimeOut = false;
         OrderResponse response = new OrderResponse();
         response.setStatus(OrderResponseStatus.PARTLY_SUCCESS);
         response.setPayType(orderDto.getPayType());
+        PayType payType = EnumUitl.toEnum(PayType.class, orderDto.getPayType());
         UserOrder o = new UserOrder();
         Date createTime = new Date();
         List<ShopSubmitOrderGoodsDto> goods = orderGoods.getGoods();
@@ -446,7 +448,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setDistributionTime(orderDto.getDistributionTime());
             o.setDistributionType(orderDto.getDistributionType());
             o.setCreatTime(createTime);
-            o.setStatus(OrderStatus.DUE_PAY.getKey());
+            o.setStatus(PayType.PAY_ON_DELIVERY.equals(payType) ? OrderStatus.WAIT_DELIVER.getKey() : OrderStatus.DUE_PAY.getKey());
             o.setIsUserDel(0);
             o.setIsShopDel(0);
             o.setIsClosed(0);
@@ -473,7 +475,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 Integer num = userOrderGoods.getNum(); //获取商品型号数量
                 BigDecimal nums = new BigDecimal(num);
                 BigDecimal goodsPrice = userOrderGoods.getGoodsPrice();//获取购买价格
-                 zong =  zong.add(nums.multiply(goodsPrice));
+                zong = zong.add(nums.multiply(goodsPrice));
                 //获取商品型号id
                 Integer goodsSizeId = userOrderGoods.getGoodsSizeId();
                 //根据型号查询邮费；

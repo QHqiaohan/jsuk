@@ -725,16 +725,10 @@ public class ActivityController {
     @RequestMapping(value = "/deleteActivityById", method = {RequestMethod.POST, RequestMethod.GET})
     public Result deleteActivityById(@RequestParam Integer activityId) {
         Result result = new Result();
-        try {
-            activityJoinService.delete(new EntityWrapper<ActivityJoin>()
-                .eq(ActivityJoin.ACTIVITY_ID, activityId)
-            );
-            result.success("删除活动成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-            result.erro("抱歉!出错啦...我们会尽快解决");
-        }
-
+        activityJoinService.delete(new EntityWrapper<ActivityJoin>()
+            .eq(ActivityJoin.ACTIVITY_ID, activityId)
+        );
+        result.success("删除活动成功");
         return result;
     }
 
@@ -752,7 +746,7 @@ public class ActivityController {
             new EntityWrapper<Activity>()
                 .eq(Activity.TRANSACTION_AREA_ID, session.getCityId())
                 .eq(Activity.MODULAR_ID, modularId)
-                .orderBy(Activity.PUBLISH_TIME,false)
+                .orderBy(Activity.PUBLISH_TIME, false)
         );
         return new Result().success(activityPage);
     }
