@@ -465,17 +465,13 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setFreight(orderPrice.getFreight());
             o.setUpdateTime(new Date());
             StringBuilder goodsName = new StringBuilder();
-            //创建一个邮费计数值；
-                Integer you=0;
-            //创建一个总价计数值；
-            BigDecimal zong =new BigDecimal(0);
+            Integer you=0; //创建一个邮费计数值；
+            BigDecimal zong =new BigDecimal(0); //创建一个总价计数值；
 
             for (UserOrderGoods userOrderGoods : gs) {
-                //获取商品型号数量
-                Integer num = userOrderGoods.getNum();
+                Integer num = userOrderGoods.getNum(); //获取商品型号数量
                 BigDecimal nums = new BigDecimal(num);
-                //获取购买价格
-                BigDecimal goodsPrice = userOrderGoods.getGoodsPrice();
+                BigDecimal goodsPrice = userOrderGoods.getGoodsPrice();//获取购买价格
                  zong =  zong.add(nums.multiply(goodsPrice));
                 //获取商品型号id
                 Integer goodsSizeId = userOrderGoods.getGoodsSizeId();
