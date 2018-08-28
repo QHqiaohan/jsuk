@@ -359,6 +359,7 @@ public class UserOrderController {
             BigDecimal discount=new BigDecimal(0);
             //查询是否满减
             List<Coupon> lb = couponService.getListByShopId(os.getShopId());
+            os.setFull(new BigDecimal(0));
             for(Coupon cu : lb){
                 //获取满减值
                 BigDecimal fullPrice = cu.getFullPrice();
@@ -571,8 +572,8 @@ public class UserOrderController {
         lt40.setName("立即送");
         lt40.setPingying("lijisong");
         li.add(lt40);
-        lt.setName("aae全球专递");
-        lt.setPingying("aae");
+        lt.setName("邮政包裹挂号信");
+        lt.setPingying("youzhengguonei");
         li.add(lt);
         LogisticsType lt1 = new LogisticsType();
         lt1.setName("安捷快递");
@@ -583,28 +584,28 @@ public class UserOrderController {
         lt2.setPingying("anxindakuaixi");
         li.add(lt2);
         LogisticsType lt3 = new LogisticsType();
-        lt3.setName("彪记快递");
-        lt3.setPingying("biaojikuaidi");
+        lt3.setName("圆通速递");
+        lt3.setPingying("yuantong");
         li.add(lt3);
         LogisticsType lt4 = new LogisticsType();
-        lt4.setName("bht");
-        lt4.setPingying("bht");
+        lt4.setName("韵达快运");
+        lt4.setPingying("yunda");
         li.add(lt4);
         LogisticsType lt5 = new LogisticsType();
-        lt5.setName("百福东方国际物流");
-        lt5.setPingying("baifudongfang");
+        lt5.setName("宅急送");
+        lt5.setPingying("zhaijisong");
         li.add(lt5);
         LogisticsType lt6 = new LogisticsType();
-        lt6.setName("coe");
-        lt6.setPingying("中国东方（COE）");
+        lt6.setName("中通速递");
+        lt6.setPingying("zhongtong");
         li.add(lt6);
         LogisticsType lt7 = new LogisticsType();
-        lt7.setName("长宇物流");
-        lt7.setPingying("changyuwuliu");
+        lt7.setName("中邮物流");
+        lt7.setPingying("中邮物流");
         li.add(lt7);
         LogisticsType lt8 = new LogisticsType();
-        lt8.setName("datianwuliu");
-        lt8.setPingying("大田物流");
+        lt8.setName("运通快递");
+        lt8.setPingying("yuntongkuaidi");
         li.add(lt8);
         LogisticsType lt9 = new LogisticsType();
         lt9.setName("德邦物流");
