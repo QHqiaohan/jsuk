@@ -53,4 +53,6 @@ public interface ShopMoneyService extends IService<ShopMoney> {
      */
     void gain(Integer shopId, BigDecimal amount) throws Exception;
 
+    boolean refund(Integer shopId,BigDecimal amount) throws Exception;
+
 }

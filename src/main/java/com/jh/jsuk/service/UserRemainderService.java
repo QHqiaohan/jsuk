@@ -104,4 +104,6 @@ public interface UserRemainderService extends IService<UserRemainder> {
 
     void confirm(String no);
     void decline(String no);
+
+    void gain(Integer userId,BigDecimal amount);
 }

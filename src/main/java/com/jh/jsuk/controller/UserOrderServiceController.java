@@ -6,18 +6,20 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.UserOrderService;
 import com.jh.jsuk.envm.OrderServiceStatus;
 import com.jh.jsuk.envm.OrderServiceType;
+import com.jh.jsuk.service.ShopMoneyService;
 import com.jh.jsuk.service.UserOrderServiceService;
+import com.jh.jsuk.service.UserRemainderService;
 import com.jh.jsuk.utils.EnumUitl;
 import com.jh.jsuk.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +46,56 @@ public class UserOrderServiceController {
     @PatchMapping
     public R edit(UserOrderService userOrderService) {
         userOrderServiceService.updateById(userOrderService);
+        return R.succ();
+    }
+
+    @Autowired
+    ShopMoneyService shopMoneyService;
+
+    @Autowired
+    UserRemainderService userRemainderService;
+
+    @Autowired
+    com.jh.jsuk.service.UserOrderService userOrderService;
+
+    @PostMapping("/confirm")
+    @Transactional
+    public R confirm(Integer id,String shopComment) throws Exception {
+        R r = R.create();
+        UserOrderService service = userOrderServiceService.selectById(id);
+        if (service == null)
+            return r.er("id {} 不存在", id);
+        OrderServiceType type = EnumUitl.toEnum(OrderServiceType.class, service.getType());
+        OrderServiceStatus status = EnumUitl.toEnum(OrderServiceStatus.class, service.getStatus());
+        if (OrderServiceStatus.COMPLETE.equals(status) || OrderServiceStatus.REFUSED.equals(status)) {
+            return r.er("订单已{}", status.getValue());
+        }
+        switch (type) {
+            /**
+             * 前两个都要退款
+             */
+            case RETURN_GOODS:
+            case RETURN_MONEY:
+//                shopMoneyService.refund()
+                UserOrder order = userOrderService.selectById(service.getOrderId());
+                if (order == null) {
+                    return r.er("订单不存在");
+                }
+                BigDecimal amount = new BigDecimal(service.getPrice());
+                shopMoneyService.refund(order.getShopId(), amount);
+                userRemainderService.gain(order.getUserId(), amount);
+                break;
+            case CHANGE_GOODS:
+                break;
+        }
+        service.setStatus(OrderServiceStatus.COMPLETE.getKey());
+        service.setShopComment(shopComment);
+        service.updateById();
+        return r.suc();
+    }
+
+    @PostMapping("/decline")
+    public R decline(Integer id) {
         return R.succ();
     }
 
