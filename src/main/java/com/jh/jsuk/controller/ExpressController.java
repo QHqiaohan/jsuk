@@ -91,24 +91,6 @@ public class ExpressController {
     }
 
     @ApiOperation("用户端-新增快递/跑腿信息")
-//    @ApiImplicitParams(value = {
-//            @ApiImplicitParam(name = "用户ID", value = "userId",
-//                    paramType = "query", dataType = "integer"),
-//            @ApiImplicitParam(name = "联系电话", value = "phone",
-//                    paramType = "query", dataType = "integer"),
-//            @ApiImplicitParam(name = "联系人姓名", value = "name",
-//                    paramType = "query", dataType = "String"),
-//            @ApiImplicitParam(name = "寄件人地址", value = "senderAddress",
-//                    paramType = "query", dataType = "integer"),
-//            @ApiImplicitParam(name = "收件人地址", value = "getAddress",
-//                    paramType = "query", dataType = "integer"),
-//            @ApiImplicitParam(name = "物品类型", value = "goodsType",
-//                    paramType = "query", dataType = "integer"),
-//            @ApiImplicitParam(name = "预估重量", value = "weight",
-//                    paramType = "query", dataType = "String"),
-//            @ApiImplicitParam(name = "订单类型 1=快递,2=跑腿", value = "type",
-//                    required = true, paramType = "query", dataType = "integer"),
-//    })
     @RequestMapping(value = "/addExpress", method = {RequestMethod.POST, RequestMethod.GET})
     public Result addExpress(@ModelAttribute Express express) {
         Map<String, Object> map = new HashMap<>();
@@ -117,7 +99,7 @@ public class ExpressController {
         }
         express.setStatus(1);
         express.setOrderNo(OrderNumUtil.getOrderIdByUUId());
-        runningFeeService.caleRunningFee(express);
+       // runningFeeService.caleRunningFee(express);
         express.insert();
         map.put("expressId", express.getId());
         map.put("orderNo", express.getOrderNo());
