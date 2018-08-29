@@ -174,11 +174,11 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             if (goodsName != null) {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
                     .like(UserOrder.GOODS_NAME, goodsName).orderBy(true, UserOrder.UPDATE_TIME, false)
-                    .where("not is_user_del"));
+                    .where("not is_user_del and is_evaluate = 0"));
             } else {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
                     .orderBy(true, UserOrder.UPDATE_TIME, false)
-                    .where("not is_user_del"));
+                    .where("not is_user_del and is_evaluate = 0"));
             }
         } else if (status == 8) {
             //待评价
@@ -197,11 +197,11 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
                     .eq(UserOrder.STATUS, status).like(UserOrder.GOODS_NAME, goodsName)
                     .orderBy(true, UserOrder.UPDATE_TIME, false)
-                    .where("not is_user_del"));
+                    .where("not is_user_del and is_evaluate = 0"));
             } else {
                 page = userOrderService.selectPage(page, new EntityWrapper<UserOrder>().eq(UserOrder.USER_ID, userId)
                     .eq(UserOrder.STATUS, status).orderBy(true, UserOrder.UPDATE_TIME, false)
-                    .where("not is_user_del"));
+                    .where("not is_user_del and is_evaluate = 0"));
             }
 
         }

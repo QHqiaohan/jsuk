@@ -24,7 +24,7 @@
     </resultMap>
 
     <select id="getShopRushBuyList" resultType="java.util.Map">
-      select k.goods_id id,k.price,g.goods_name goodsName,g.main_image mainImage,g.sale_amont saleAmount from(
+      select g.shop_id shopId,k.goods_id id,k.price,g.goods_name goodsName,g.main_image mainImage,g.sale_amont saleAmount from(
       select a.goods_id,GROUP_CONCAT(sz.kill_price) price from
       (select goods_id from js_shop_rush_buy_activity a where a.rush_buy_id = #{rushBuyId} and not a.is_del and a.is_use) a
       left join js_shop_goods_size sz on a.goods_id = sz.shop_goods_id
