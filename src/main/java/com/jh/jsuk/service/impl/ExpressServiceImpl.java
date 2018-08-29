@@ -15,6 +15,7 @@ import com.jh.jsuk.entity.vo.ExpressVo;
 import com.jh.jsuk.entity.vo.ExpressVo2;
 import com.jh.jsuk.envm.*;
 import com.jh.jsuk.exception.MessageException;
+import com.jh.jsuk.service.DistributionUserService;
 import com.jh.jsuk.service.ExpressService;
 import com.jh.jsuk.service.UserRemainderService;
 import com.jh.jsuk.utils.DistanceUtil;
@@ -115,6 +116,9 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
         return baseMapper.deliverRobbingOrder(userId, expressId, ExpressStatus.PAYED.getKey(), ExpressStatus.WAIT_DELIVER.getKey()) > 0;
     }
 
+    @Autowired
+    DistributionUserService distributionUserService;
+
     @Override
     public void balancePay(String expressId, Integer userId) throws Exception {
         Express ee  = new Express();
@@ -142,6 +146,6 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
         }else{
             throw new MessageException("余额不足");
         }
-
+        distributionUserService.notifyRobbing();
     }
 }
