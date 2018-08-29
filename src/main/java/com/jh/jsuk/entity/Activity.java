@@ -144,6 +144,8 @@ public class Activity extends Model<Activity> {
     //是否审核通过.1:是，0：否
     private Integer examine;
 
+    public static final String EXAMINE = "examine";
+
     public Integer getZhuangtai() {
         return zhuangtai;
     }
@@ -388,7 +390,7 @@ public class Activity extends Model<Activity> {
 
     public static final String ACTIVITY_TYPE = "activity_type";
 
-    public static final String ZHUANG_TAI="zhuangtai";
+    public static final String ZHUANG_TAI = "zhuangtai";
 
     @Override
     protected Serializable pkVal() {
@@ -398,28 +400,28 @@ public class Activity extends Model<Activity> {
     @Override
     public String toString() {
         return "Activity{" +
-        "id=" + id +
-        ", phone=" + phone +
-        ", name=" + name +
-        ", title=" + title +
-        ", price=" + price +
-        ", fixedPrice=" + fixedPrice +
-        ", content=" + content +
-        ", startTime=" + startTime +
-        ", endTime=" + endTime +
-        ", publishTime=" + publishTime +
-        ", isDel=" + isDel +
-        ", type=" + type +
-        ", userId=" + userId +
-        ", rank=" + rank +
-        ", classId=" + classId +
-        ", modularId=" + modularId +
-        ", carId=" + carId +
-        ", isRecommend=" + isRecommend +
-        ", images=" + images +
-        ", status=" + status +
-        ", transactionAreaId=" + transactionAreaId +
-        "}";
+            "id=" + id +
+            ", phone=" + phone +
+            ", name=" + name +
+            ", title=" + title +
+            ", price=" + price +
+            ", fixedPrice=" + fixedPrice +
+            ", content=" + content +
+            ", startTime=" + startTime +
+            ", endTime=" + endTime +
+            ", publishTime=" + publishTime +
+            ", isDel=" + isDel +
+            ", type=" + type +
+            ", userId=" + userId +
+            ", rank=" + rank +
+            ", classId=" + classId +
+            ", modularId=" + modularId +
+            ", carId=" + carId +
+            ", isRecommend=" + isRecommend +
+            ", images=" + images +
+            ", status=" + status +
+            ", transactionAreaId=" + transactionAreaId +
+            "}";
     }
 
     public Activity(Integer id, String phone, String name, String title, BigDecimal price,

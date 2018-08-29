@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ShoppingCartDao;
 import com.jh.jsuk.entity.Shop;
 import com.jh.jsuk.entity.ShoppingCart;
-import com.jh.jsuk.entity.vo.GoodsVo;
 import com.jh.jsuk.entity.vo.ShoppingCartVo;
 import com.jh.jsuk.service.CouponService;
 import com.jh.jsuk.service.IntegralRuleService;
@@ -46,14 +45,14 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartDao, Shoppi
             if(shop != null){
                 vo.setShopName(shop.getShopName());
             }
-            List<GoodsVo> goods = vo.getGoods();
-            for(GoodsVo g:goods){
-                System.out.println(g.getGoodsId()+"  "+g.getGoodsSizeId()+"  "+g.getGoodsSizeName());
-            }
-            if (goods == null) {
-                continue;
-            }
-            vo.setCanGetCoupon(couponService.canGetCoupon(vo.getShopId()));
+//            List<GoodsVo> goods = vo.getGoods();
+//            for(GoodsVo g:goods){
+//                System.out.println(g.getGoodsId()+"  "+g.getGoodsSizeId()+"  "+g.getGoodsSizeName());
+//            }
+//            if (goods == null) {
+//                continue;
+//            }
+            //vo.setCanGetCoupon(couponService.canGetCoupon(vo.getShopId()));
         }
         return list;
     }

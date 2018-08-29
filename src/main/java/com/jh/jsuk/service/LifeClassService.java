@@ -1,7 +1,10 @@
 package com.jh.jsuk.service;
 
-import com.jh.jsuk.entity.LifeClass;
 import com.baomidou.mybatisplus.service.IService;
+import com.jh.jsuk.entity.LifeClass;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface LifeClassService extends IService<LifeClass> {
 
+    List<Map<String,Object>> findLifeClasses();
 }

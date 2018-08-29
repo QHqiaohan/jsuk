@@ -141,4 +141,14 @@
     </if>
     order by publish_time desc
   </select>
+  <select id="listSecondGoods2" resultMap="ActivitySecondVo">
+    SELECT
+    <include refid="Base_Column_List"></include>
+    FROM js_activity
+    where type = 2 and is_del = 0
+    <if test="kw!=null and kw!=''">
+      and content like concat('%',#{kw},'%')
+    </if>
+    order by publish_time desc
+  </select>
 </mapper>

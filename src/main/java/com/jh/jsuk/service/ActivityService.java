@@ -3,12 +3,10 @@ package com.jh.jsuk.service;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
-
 import com.jh.jsuk.entity.Activity;
 import com.jh.jsuk.entity.vo.ActivitySecondVo;
 import com.jh.jsuk.entity.vo.ActivityVo;
 import com.jh.jsuk.entity.vo.ActivityVoT;
-import com.jh.jsuk.entity.vo.SecondGoodsVo;
 
 import java.util.List;
 
@@ -44,6 +42,7 @@ public interface ActivityService extends IService<Activity> {
     Page<ActivitySecondVo> getSecondaryMarketList(Page page, String keywords);
 
     Page<ActivitySecondVo> listSecondGoods(Page page, String kw);
+    Page<ActivitySecondVo> listSecondGoods2(Page page, String kw);
 
     ActivityVo selectMerryageCar(Integer id);
 }

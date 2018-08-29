@@ -26,6 +26,11 @@ public class WSecondGoodsController {
         return R.succ(activityService.listSecondGoods(page, kw));
     }
 
+    @GetMapping("/list2")
+    public R list2(Page page, @RequestParam(required = false) String kw) {
+        return R.succ(activityService.listSecondGoods2(page, kw));
+    }
+
 
     @PostMapping("/del")
     public R del(Integer id) {

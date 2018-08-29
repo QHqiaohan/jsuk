@@ -13,7 +13,6 @@ import com.jh.jsuk.entity.vo.ActivityVoT;
 import com.jh.jsuk.service.ActivityService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,6 +80,17 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityDao, Activity> impl
     @Override
     public Page<ActivitySecondVo> listSecondGoods(Page page, String kw) {
         List<ActivitySecondVo> vos = baseMapper.listSecondGoods(page, kw);
+        for (ActivitySecondVo vo : vos) {
+            if (vo.getImages() != null) {
+                vo.setImageArray(vo.getImages().split(","));
+            }
+        }
+        page.setRecords(vos);
+        return page;
+    }
+    @Override
+    public Page<ActivitySecondVo> listSecondGoods2(Page page, String kw) {
+        List<ActivitySecondVo> vos = baseMapper.listSecondGoods2(page, kw);
         for (ActivitySecondVo vo : vos) {
             if (vo.getImages() != null) {
                 vo.setImageArray(vo.getImages().split(","));
