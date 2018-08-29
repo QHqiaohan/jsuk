@@ -6,12 +6,11 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Session;
-import com.jh.jsuk.entity.Banner;
-import com.jh.jsuk.entity.Express;
-import com.jh.jsuk.entity.ExpressType;
-import com.jh.jsuk.entity.UserAddress;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.envm.DistributionExpressStatus;
 import com.jh.jsuk.envm.ExpressStatus;
+import com.jh.jsuk.envm.UserRemainderStatus;
+import com.jh.jsuk.envm.UserRemainderType;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.*;
 import io.swagger.annotations.*;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 //import com.jh.jsuk.mq.RobbingOrderProducer;
@@ -177,6 +177,19 @@ public class ExpressController {
             .eq(Express.ID, orderId)
             .eq(Express.USER_ID, userId));
         if (res) {
+            Express express1 = express.selectById(orderId);
+            if(express1!=null){
+                express1.getPrice();
+                UserRemainder ee1 = new UserRemainder();
+                ee1.setUserId(userId);
+                ee1.setCreateTime(new Date());
+                ee1.setRemainder(new BigDecimal(express1.getPrice()));
+                ee1.setOrderNum(express.getOrderNo());
+                ee1.setType(UserRemainderType.REFUND);
+                ee1.setStatus(UserRemainderStatus.PASSED);
+                ee1.insert();
+            }
+
             return new Result().success();
         } else {
             return new Result().erro("取消失败");
