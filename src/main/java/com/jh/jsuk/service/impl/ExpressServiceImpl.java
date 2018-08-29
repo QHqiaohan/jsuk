@@ -13,10 +13,7 @@ import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.UserRemainder;
 import com.jh.jsuk.entity.vo.ExpressVo;
 import com.jh.jsuk.entity.vo.ExpressVo2;
-import com.jh.jsuk.envm.DistributionExpressStatus;
-import com.jh.jsuk.envm.ExpressStatus;
-import com.jh.jsuk.envm.UserRemainderType;
-import com.jh.jsuk.envm.UserType;
+import com.jh.jsuk.envm.*;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.ExpressService;
 import com.jh.jsuk.service.UserRemainderService;
@@ -130,12 +127,15 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
             //修改订单信息
             express.setStatus(2);
             express.updateById();
+
+
             UserRemainder ee1 = new UserRemainder();
             ee1.setUserId(userId);
             ee1.setCreateTime(new Date());
             ee1.setRemainder(price);
             ee1.setOrderNum(express.getOrderNo());
             ee1.setType(UserRemainderType.CONSUME);
+            ee1.setStatus(UserRemainderStatus.PASSED);
             ee1.insert();
 
 

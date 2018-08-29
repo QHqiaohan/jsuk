@@ -6,12 +6,11 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.jh.jsuk.conf.Session;
-import com.jh.jsuk.entity.Banner;
-import com.jh.jsuk.entity.Express;
-import com.jh.jsuk.entity.ExpressType;
-import com.jh.jsuk.entity.UserAddress;
+import com.jh.jsuk.entity.*;
 import com.jh.jsuk.envm.DistributionExpressStatus;
 import com.jh.jsuk.envm.ExpressStatus;
+import com.jh.jsuk.envm.UserRemainderStatus;
+import com.jh.jsuk.envm.UserRemainderType;
 import com.jh.jsuk.service.*;
 import com.jh.jsuk.utils.*;
 import io.swagger.annotations.*;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 //import com.jh.jsuk.mq.RobbingOrderProducer;
@@ -91,24 +91,6 @@ public class ExpressController {
     }
 
     @ApiOperation("用户端-新增快递/跑腿信息")
-//    @ApiImplicitParams(value = {
-//            @ApiImplicitParam(name = "用户ID", value = "userId",
-//                    paramType = "query", dataType = "integer"),
-//            @ApiImplicitParam(name = "联系电话", value = "phone",
-//                    paramType = "query", dataType = "integer"),
-//            @ApiImplicitParam(name = "联系人姓名", value = "name",
-//                    paramType = "query", dataType = "String"),
-//            @ApiImplicitParam(name = "寄件人地址", value = "senderAddress",
-//                    paramType = "query", dataType = "integer"),
-//            @ApiImplicitParam(name = "收件人地址", value = "getAddress",
-//                    paramType = "query", dataType = "integer"),
-//            @ApiImplicitParam(name = "物品类型", value = "goodsType",
-//                    paramType = "query", dataType = "integer"),
-//            @ApiImplicitParam(name = "预估重量", value = "weight",
-//                    paramType = "query", dataType = "String"),
-//            @ApiImplicitParam(name = "订单类型 1=快递,2=跑腿", value = "type",
-//                    required = true, paramType = "query", dataType = "integer"),
-//    })
     @RequestMapping(value = "/addExpress", method = {RequestMethod.POST, RequestMethod.GET})
     public Result addExpress(@ModelAttribute Express express) {
         Map<String, Object> map = new HashMap<>();
@@ -117,7 +99,7 @@ public class ExpressController {
         }
         express.setStatus(1);
         express.setOrderNo(OrderNumUtil.getOrderIdByUUId());
-        runningFeeService.caleRunningFee(express);
+       // runningFeeService.caleRunningFee(express);
         express.insert();
         map.put("expressId", express.getId());
         map.put("orderNo", express.getOrderNo());
@@ -195,6 +177,19 @@ public class ExpressController {
             .eq(Express.ID, orderId)
             .eq(Express.USER_ID, userId));
         if (res) {
+            Express express1 = express.selectById(orderId);
+            if(express1!=null){
+                express1.getPrice();
+                UserRemainder ee1 = new UserRemainder();
+                ee1.setUserId(userId);
+                ee1.setCreateTime(new Date());
+                ee1.setRemainder(new BigDecimal(express1.getPrice()));
+                ee1.setOrderNum(express.getOrderNo());
+                ee1.setType(UserRemainderType.REFUND);
+                ee1.setStatus(UserRemainderStatus.PASSED);
+                ee1.insert();
+            }
+
             return new Result().success();
         } else {
             return new Result().erro("取消失败");
