@@ -8,9 +8,13 @@ import org.junit.Test;
  */
 public class MdTest {
 
+    /**
+     * 生成枚举对应的markdown文档
+     */
     @Test
-    public void test() throws Exception {
+    public void createEnumMd() throws Exception {
         MarkdownUtil.create("com.jh.jsuk.envm","E:\\work\\jushang\\jsuk-doc\\src\\status_gen.md");
     }
+
 
 }

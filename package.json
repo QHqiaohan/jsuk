@@ -7,11 +7,12 @@
   "author": "tj <tang123jian@126.com>",
   "license": "MIT",
   "scripts": {
-    "ci":"mvn-ci",
-    "uploadp":"yarn ci upload -e prod",
-    "exep":"yarn ci exe -e prod deploy_prod.sh",
-    "pkg":"yarn ci clean && yarn ci package",
-    "prod":"yarn pkg && yarn uploadp && yarn exep"
+    "ci": "mvn-ci",
+    "uploadp": "yarn ci upload -e prod",
+    "exep": "yarn ci exe -e prod deploy_prod.sh",
+    "pkg": "yarn ci clean && yarn ci package",
+    "prod": "yarn pkg && yarn uploadp && yarn exep",
+    "md":"mvnw test -Dtest=com.jh.jsuk.MdTest#createEnumMd"
   },
   "dependencies": {
     "apidoc": "^0.17.6",

@@ -122,7 +122,7 @@ public class ExpressController {
         map.put("expressId", express.getId());
         map.put("orderNo", express.getOrderNo());
         map.put("price", express.getPrice());
-        distributionUserService.notifyRobbing();
+//        distributionUserService.notifyRobbing();
         return new Result().success(map);
 
     }

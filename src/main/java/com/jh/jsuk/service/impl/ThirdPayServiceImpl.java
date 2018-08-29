@@ -1,6 +1,5 @@
 package com.jh.jsuk.service.impl;
 
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.jh.jsuk.entity.*;
 import com.jh.jsuk.entity.vo.ChargeParamVo;
 import com.jh.jsuk.entity.vo.ThirdPayVo;
@@ -16,7 +15,6 @@ import com.jh.jsuk.utils.OrderNumUtil;
 import com.jh.jsuk.utils.PingPPUtil;
 import com.pingplusplus.exception.ChannelException;
 import com.pingplusplus.model.Charge;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +89,9 @@ public class ThirdPayServiceImpl implements ThirdPayService {
         return PingPPUtil.createCharge(paramVo);
     }
 
+    /**
+     * 支付成功回调
+     */
     @Override
     public void chargeBack(ThirdPayVoChild payVoChild) throws MessageException {
         ThirdPayVo payVo = payVoChild.getPayVo();
@@ -122,6 +123,9 @@ public class ThirdPayServiceImpl implements ThirdPayService {
 
 
 
+    @Autowired
+    DistributionUserService distributionUserService;
+
 
     /**
      * 快递跑腿用户支付成功
@@ -131,6 +135,7 @@ public class ThirdPayServiceImpl implements ThirdPayService {
         Express express = expressService.selectById(payVo.getParam());
         express.setStatus(2);
         express.updateById();
+        distributionUserService.notifyRobbing();
     }
 
     /**
