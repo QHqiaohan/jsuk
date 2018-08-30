@@ -174,4 +174,13 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
         e.insert();
         distributionUserService.notifyRobbing();
     }
+
+    @Override
+    public Integer getOrderName(Integer cityId) {
+        List<Express> orderName = baseMapper.getOrderName(cityId);
+        if(orderName==null){
+            return 0;
+        }
+        return orderName.size();
+    }
 }

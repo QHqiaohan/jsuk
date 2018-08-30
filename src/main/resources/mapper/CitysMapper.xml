@@ -28,4 +28,10 @@
     </if>
   </select>
 
+  <select id="getcitynumBycityname" resultMap="java.lang.Integer">
+    select js_sys_city.id from
+    js_sys_city
+    where city_name like '%'#{cityName}'%'
+  </select>
+
 </mapper>

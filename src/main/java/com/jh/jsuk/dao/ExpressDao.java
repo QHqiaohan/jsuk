@@ -36,4 +36,6 @@ public interface ExpressDao extends BaseMapper<Express> {
         , @Param("waitDeliver") Integer waitDeliver);
 
     List<ExpressListVo> listOrderByDistributionId(Page page, @Param("id") Integer id);
+
+    List<Express> getOrderName(@Param("cityId")Integer cityId);
 }

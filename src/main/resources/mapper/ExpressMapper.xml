@@ -117,4 +117,8 @@
     where not is_del and `status` = #{payed} and id = #{expressId}
   </update>
 
+  <select id="getOrderName" resultMap="BaseResultMap">
+    select * from  js_express where status=2 and type=2 and city_id=#{cityId}
+  </select>
+
 </mapper>

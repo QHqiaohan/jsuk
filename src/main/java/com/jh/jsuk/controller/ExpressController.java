@@ -226,6 +226,24 @@ public class ExpressController {
             return new Result().erro("确认收货失败");
         }
     }
+    @Autowired
+    private CitysService citysService;
+    @ApiOperation("骑手端-获取城市")
+    @GetMapping("/dvrCity")
+    public Result dvrCity(String cityName){
+        Integer integer = citysService.getcitynumBycityname(cityName);
+        if(integer==null){
+            return  new Result().erro("获取城市失败");
+        }
+        session.setCityId(integer);
+        return  new Result().success("获取城市成功");
+    }
+    @ApiOperation("骑手端-可接单数量")
+    @GetMapping("/getOrderName")
+    public Result getOrderName(){
+        Integer orderName = expressService.getOrderName(session.getCityId());
+        return new Result().success(orderName);
+    }
 
     @ApiOperation("骑手端-配送单列表-不传表示所有")
     @GetMapping("/dvr/list")

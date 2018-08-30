@@ -26,4 +26,9 @@ public class CitysServiceImpl extends ServiceImpl<CitysDao, Citys> implements Ci
         List<Map<String, Object>> list = baseMapper.page(page, kw);
         return page.setRecords(list);
     }
+
+    @Override
+    public Integer getcitynumBycityname(String cityname) {
+        return baseMapper.getcitynumBycityname(cityname);
+    }
 }
