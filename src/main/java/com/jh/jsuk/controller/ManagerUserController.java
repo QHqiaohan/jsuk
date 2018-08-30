@@ -115,6 +115,8 @@ public class ManagerUserController {
         String verificationCode = (String) session.getAttribute(phone + "register1");
         return new Result().success("", verificationCode);
     }
+    @Autowired
+    private UserAddressService userAddressService;
 
     @ApiOperation("商家端-商家注册,保存商家信息")
     @ApiImplicitParams(value = {
@@ -150,6 +152,19 @@ public class ManagerUserController {
                 .eq(Dictionary.CODE, "shop_default_img"));
             shop.setHeadImg(defaultImg.getValue());
         }
+
+        UserAddress ua = new UserAddress();
+        ua.setLatitude(latitude+"");//设置维度
+        ua.setLongitude(longitude+"");//设置经度
+        ua.setName(shopName);//设置名称
+        ua.setPhone(phone);//设置手机
+        ua.setAddress(address);
+        ua.insert();
+        UserAddress ua1 = userAddressService.selectOne(new EntityWrapper<UserAddress>()
+            .eq(UserAddress.PHONE, phone)
+        .eq(UserAddress.NAME,shopName));
+
+        shop.setAddressId(ua1.getId());
         shop.setLicense(license);
         shop.setCityId(cityId);
         shop.setShopName(shopName);
