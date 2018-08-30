@@ -20,7 +20,7 @@
   </sql>
 
   <select id="page" resultType="java.util.Map">
-    select o.id,city_id,county_name,city_name,`status` from js_sys_weather_city_open o
+    select o.id,o.city_id,county_name,city_name,`status` from js_sys_weather_city_open o
     left join js_sys_weather_city wc on o.weather_city_id = wc.area_id
     left join js_sys_citys c on o.city_id = c.id
     <if test="kw != null">
