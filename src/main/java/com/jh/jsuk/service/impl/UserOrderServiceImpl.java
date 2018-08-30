@@ -687,7 +687,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
         s = s * EARTH_RADIUS;
         s = Math.round(s * 1000);
-        return s;
+        return s/1000;
     }
 
 
