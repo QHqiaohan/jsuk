@@ -55,4 +55,6 @@ public class OrderList {
      */
     private ArrayList<OrderShops> shops;
 
+    private Integer orderType;//是否秒杀 1是 0或null不是；
+
 }
