@@ -284,8 +284,10 @@ public class UserOrderController {
                     String salesPrice ;
                     if(orderList.getOrderType()!=null && orderList.getOrderType()==1){
                         salesPrice = shopGoodsSize.getKillPrice();
+                        osg.setSalesPrice(salesPrice);
                     }else{
                         salesPrice = shopGoodsSize.getSalesPrice();
+                        osg.setSalesPrice(salesPrice);
                     }
                     BigDecimal sales = new BigDecimal(salesPrice);//商品价格
                     BigDecimal sum1 = new BigDecimal(osg.getGoodSum());//商品数量
