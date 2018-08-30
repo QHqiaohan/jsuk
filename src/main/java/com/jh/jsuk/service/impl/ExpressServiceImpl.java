@@ -157,7 +157,7 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
 
 
     @Override
-    public void createCityDistributionPayed(UserOrder order, Integer userId) {
+    public void createCityDistributionPayed(UserOrder order, Integer userId ,Integer cityId) {
         Express e = new Express();
         e.setUserId(userId);
         BigDecimal f = order.getFreight();
@@ -171,6 +171,7 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
         UserAddress address = shopService.syncAddressInfo(order.getShopId());
         if (address != null)
             e.setSenderAddress(address.getId());
+        e.setCityId(cityId);
         e.insert();
         distributionUserService.notifyRobbing();
     }

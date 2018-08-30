@@ -95,7 +95,7 @@ public interface UserOrderService extends IService<UserOrder> {
     /**
      * 订单余额支付
      */
-    void balancePay(List<UserOrder> userOrders, Integer userId) throws Exception;
+    void balancePay(List<UserOrder> userOrders, Integer userId, Integer cityId) throws Exception;
 
 
     /**
@@ -120,5 +120,5 @@ public interface UserOrderService extends IService<UserOrder> {
      * 付款完成之后
      * 包括 在线付款和余额支付
      */
-    void onPayed(List<UserOrder> userOrders, Integer userId) throws Exception;
+    void onPayed(List<UserOrder> userOrders, Integer userId,Integer cityId) throws Exception;
 }
