@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ExpressDao;
 import com.jh.jsuk.entity.Express;
+import com.jh.jsuk.entity.UserAddress;
 import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.UserRemainder;
 import com.jh.jsuk.entity.vo.ExpressVo;
@@ -166,6 +167,10 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
         e.setOrderNo(OrderNumUtil.getOrderIdByUUId());
         e.setNotes(StrUtil.format("帮我送:{}", order.getGoodsName()));
         e.setRequirementTime(order.getDistributionTime());
+        e.setGetAddress(order.getAddressId());
+        UserAddress address = shopService.syncAddressInfo(order.getShopId());
+        if (address != null)
+            e.setSenderAddress(address.getId());
         e.insert();
         distributionUserService.notifyRobbing();
     }

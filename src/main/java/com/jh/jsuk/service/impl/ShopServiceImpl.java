@@ -82,7 +82,9 @@ public class ShopServiceImpl extends ServiceImpl<ShopDao, Shop> implements ShopS
         if (shop == null)
             return null;
         if (shop.getAddressId() != null) {
-            return userAddressService.selectById(shop.getAddressId());
+            UserAddress address = userAddressService.selectById(shop.getAddressId());
+            if (address != null)
+                return address;
         }
         UserAddress a = new UserAddress();
         a.setAddress(shop.getAddress());
@@ -101,6 +103,10 @@ public class ShopServiceImpl extends ServiceImpl<ShopDao, Shop> implements ShopS
         a.setIsDel(0);
         a.setCreateTime(new Date());
         a.insert();
+        Shop entity = new Shop();
+        entity.setId(shopId);
+        entity.setAddressId(a.getId());
+        updateById(entity);
         return a;
     }
 
