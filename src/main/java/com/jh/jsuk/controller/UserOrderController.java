@@ -281,7 +281,12 @@ public class UserOrderController {
                 ShopGoodsSize shopGoodsSize = sgs.selectById(goodSizeId);
                 if(shopGoodsSize!=null){
                     //获取销售价格
-                    String salesPrice = shopGoodsSize.getSalesPrice();
+                    String salesPrice ;
+                    if(orderList.getOrderType()!=null && orderList.getOrderType()==1){
+                        salesPrice = shopGoodsSize.getKillPrice();
+                    }else{
+                        salesPrice = shopGoodsSize.getSalesPrice();
+                    }
                     BigDecimal sales = new BigDecimal(salesPrice);//商品价格
                     BigDecimal sum1 = new BigDecimal(osg.getGoodSum());//商品数量
                     shopPrice=(sales.multiply(sum1)).add(shopPrice);

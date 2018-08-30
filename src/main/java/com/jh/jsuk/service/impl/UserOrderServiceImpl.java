@@ -580,7 +580,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                     break;
                 }
             }
-            o.setDiscount((zong.subtract(discount)).multiply(new BigDecimal(1).subtract(zhe)));
+            o.setDiscount((zong.subtract(discount).add(you)).multiply(new BigDecimal(1).subtract(zhe)));
             BigDecimal subtract = new BigDecimal(0);
             o.setFreight(you);//设置邮费
             BigDecimal add = zong.add(you);//将商品价和邮费相加
@@ -687,7 +687,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
         s = s * EARTH_RADIUS;
         s = Math.round(s * 1000);
-        return s;
+        return s/1000;
     }
 
 

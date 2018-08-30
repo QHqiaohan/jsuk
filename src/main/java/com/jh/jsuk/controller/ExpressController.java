@@ -330,5 +330,37 @@ public class ExpressController {
         express.updateById();
         return new Result().success();
     }
+
+    /**
+     * 用户端 快递下单
+     * @return
+     */
+    @ApiOperation("用户端 快递下单")
+    @PostMapping("/kuaidi")
+    public Result kuaidi(String SenderName,String SenderMobile,String SenderProvince,String SenderCity,String SenderDistrict,
+                         String SenderAddress,String ReceiverName,String ReceiverMobile,String ReceiverProvince,String ReceiverCity,
+                         String ReceiverDistrict,String GoodsType){
+        String AppKey="juxbwcom";
+        String APPSECRET="0e4e4cd5bb1e4e179dd060be3074241e";
+        Map map = new HashMap();
+        map.put("SenderName",SenderName);//寄件人名称
+        map.put("SenderMobile",SenderMobile);//寄件人手机号
+        map.put("SenderProvince",SenderProvince);//寄件人省份
+        map.put("SenderCity",SenderCity);//寄件人城市
+        map.put("SenderDistrict",SenderDistrict);//寄件人区域
+        map.put("SenderAddress",SenderAddress);//寄件人地址
+        map.put("ReceiverName",ReceiverName);//收件人名称
+        map.put("ReceiverMobile",ReceiverMobile);//收件人手机号
+        map.put("ReceiverProvince",ReceiverProvince);//收件人省份
+        map.put("ReceiverCity",ReceiverCity);//收件人城市
+        map.put("ReceiverDistrict",ReceiverDistrict);//收件人区域
+        map.put("GoodsType",GoodsType);//邮件的物品类型：默认：物品
+
+
+
+
+
+        return new Result().success("ok");
+    }
 }
 
