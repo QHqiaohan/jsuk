@@ -59,6 +59,11 @@ public class ShopController {
         return R.succ();
     }
 
+    /**
+     * 修改商家的设置是否包邮和使用积分
+     * @param se
+     * @return
+     */
     @PostMapping(value = "/setShopSet")
     public Result setShopSet(ShopSets se) {
         boolean b = se.updateById();
@@ -196,6 +201,7 @@ public class ShopController {
         Integer shopId = managerUser.getShopId();
         shop.setId(shopId);
         shop.updateById();
+
         return new Result().success("店铺信息修改成功");
     }
 
