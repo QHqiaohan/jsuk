@@ -98,8 +98,9 @@ public class ExpressController {
             return new Result().erro("用户信息过期");
         }
         express.setStatus(1);
+        express.setCityId(session.getCityId());
         express.setOrderNo(OrderNumUtil.getOrderIdByUUId());
-       // runningFeeService.caleRunningFee(express);
+        // runningFeeService.caleRunningFee(express);
         express.insert();
         map.put("expressId", express.getId());
         map.put("orderNo", express.getOrderNo());
@@ -178,7 +179,7 @@ public class ExpressController {
             .eq(Express.USER_ID, userId));
         if (res) {
             Express express1 = express.selectById(orderId);
-            if(express1!=null){
+            if (express1 != null) {
                 express1.getPrice();
                 UserRemainder ee1 = new UserRemainder();
                 ee1.setUserId(userId);
@@ -240,7 +241,7 @@ public class ExpressController {
                               @RequestParam(required = false) String lng, @RequestParam(required = false) String lat) throws Exception {
         Wrapper<Express> ew = new MyEntityWrapper<>();
 //        type = null;
-        Page expressList = expressService.getDeliverList(page, ew, status, type, userId, lng, lat);
+        Page expressList = expressService.getDeliverList(page, ew, status, type, userId, lng, lat, session.getCityId());
         return new Result().success(expressList);
     }
 
@@ -333,31 +334,29 @@ public class ExpressController {
 
     /**
      * 用户端 快递下单
+     *
      * @return
      */
     @ApiOperation("用户端 快递下单")
     @PostMapping("/kuaidi")
-    public Result kuaidi(String SenderName,String SenderMobile,String SenderProvince,String SenderCity,String SenderDistrict,
-                         String SenderAddress,String ReceiverName,String ReceiverMobile,String ReceiverProvince,String ReceiverCity,
-                         String ReceiverDistrict,String GoodsType){
-        String AppKey="juxbwcom";
-        String APPSECRET="0e4e4cd5bb1e4e179dd060be3074241e";
+    public Result kuaidi(String SenderName, String SenderMobile, String SenderProvince, String SenderCity, String SenderDistrict,
+                         String SenderAddress, String ReceiverName, String ReceiverMobile, String ReceiverProvince, String ReceiverCity,
+                         String ReceiverDistrict, String GoodsType) {
+        String AppKey = "juxbwcom";
+        String APPSECRET = "0e4e4cd5bb1e4e179dd060be3074241e";
         Map map = new HashMap();
-        map.put("SenderName",SenderName);//寄件人名称
-        map.put("SenderMobile",SenderMobile);//寄件人手机号
-        map.put("SenderProvince",SenderProvince);//寄件人省份
-        map.put("SenderCity",SenderCity);//寄件人城市
-        map.put("SenderDistrict",SenderDistrict);//寄件人区域
-        map.put("SenderAddress",SenderAddress);//寄件人地址
-        map.put("ReceiverName",ReceiverName);//收件人名称
-        map.put("ReceiverMobile",ReceiverMobile);//收件人手机号
-        map.put("ReceiverProvince",ReceiverProvince);//收件人省份
-        map.put("ReceiverCity",ReceiverCity);//收件人城市
-        map.put("ReceiverDistrict",ReceiverDistrict);//收件人区域
-        map.put("GoodsType",GoodsType);//邮件的物品类型：默认：物品
-
-
-
+        map.put("SenderName", SenderName);//寄件人名称
+        map.put("SenderMobile", SenderMobile);//寄件人手机号
+        map.put("SenderProvince", SenderProvince);//寄件人省份
+        map.put("SenderCity", SenderCity);//寄件人城市
+        map.put("SenderDistrict", SenderDistrict);//寄件人区域
+        map.put("SenderAddress", SenderAddress);//寄件人地址
+        map.put("ReceiverName", ReceiverName);//收件人名称
+        map.put("ReceiverMobile", ReceiverMobile);//收件人手机号
+        map.put("ReceiverProvince", ReceiverProvince);//收件人省份
+        map.put("ReceiverCity", ReceiverCity);//收件人城市
+        map.put("ReceiverDistrict", ReceiverDistrict);//收件人区域
+        map.put("GoodsType", GoodsType);//邮件的物品类型：默认：物品
 
 
         return new Result().success("ok");

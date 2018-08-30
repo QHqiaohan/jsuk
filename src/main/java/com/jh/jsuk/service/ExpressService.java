@@ -23,7 +23,7 @@ public interface ExpressService extends IService<Express> {
 
     Page getExpressListBy(Page page, Wrapper wrapper, Integer status, Integer type, Integer userId);
 
-    Page getDeliverList(Page page, Wrapper ew, String status, Integer type, Integer userId, String lng, String lat) throws Exception;
+    Page getDeliverList(Page page, Wrapper ew, String status, Integer type, Integer userId, String lng, String lat, Integer cityId) throws Exception;
 
     Page listPage(Page page, ExpressStatus expressStatus, List<String> dates, String kw);
 

@@ -79,7 +79,7 @@
     *
     FROM
     js_express
-    WHERE is_del != 1
+    WHERE is_del != 1 and city_id = #{cityId}
     <if test="userId != null">
       AND distribution_user_id = #{userId}
     </if>

@@ -25,6 +25,16 @@ public class Express extends Model<Express> {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+
+    public Integer getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
+    }
+
+    private Integer cityId;
     /**
      * 用户ID
      */
@@ -235,6 +245,8 @@ public class Express extends Model<Express> {
     }
 
     public static final String ID = "id";
+
+    public static final String CITY_ID = "city_id";
 
     public static final String USER_ID = "user_id";
 

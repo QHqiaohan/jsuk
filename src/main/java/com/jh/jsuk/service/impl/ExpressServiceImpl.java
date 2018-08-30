@@ -51,7 +51,7 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
     }
 
     @Override
-    public Page getDeliverList(Page page, Wrapper ew, String status, Integer type, Integer userId, String lng, String lat) throws Exception {
+    public Page getDeliverList(Page page, Wrapper ew, String status, Integer type, Integer userId, String lng, String lat, Integer cityId) throws Exception {
         Integer[] sts = null;
         DistributionExpressStatus envm = null;
         if (status != null) {
@@ -61,7 +61,7 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
             }
             sts = envm.getKey();
         }
-        List<ExpressVo> deliverList = baseMapper.getDeliverList(page, ew, sts, type, userId);
+        List<ExpressVo> deliverList = baseMapper.getDeliverList(page, ew, sts, type, userId,cityId);
         if (DistributionExpressStatus.WAIT_ROBBING.equals(envm))
             DistanceUtil.calcDistance(deliverList, lng, lat);
         return page.setRecords(deliverList);

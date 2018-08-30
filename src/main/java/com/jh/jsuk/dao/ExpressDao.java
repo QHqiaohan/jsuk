@@ -26,7 +26,7 @@ public interface ExpressDao extends BaseMapper<Express> {
         Integer userId);
 
     List<ExpressVo> getDeliverList(Page page, @Param("ew") Wrapper ew, @Param("status") Integer[] status,
-                                   @Param("type") Integer type, @Param("userId") Integer userId);
+                                   @Param("type") Integer type, @Param("userId") Integer userId,@Param("cityId") Integer cityId);
 
     List<ExpressVo2> listPage(Page page, @Param("ew") EntityWrapper wrapper);
 
