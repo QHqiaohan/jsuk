@@ -31,7 +31,7 @@
   <select id="getcitynumBycityname" resultType="java.lang.Integer">
     select js_sys_citys.id from
     js_sys_citys
-    where city_name like '%'#{cityName}'%'
+    where city_name like concat('%',#{cityName},'%')
   </select>
 
 </mapper>
