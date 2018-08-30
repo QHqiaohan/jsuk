@@ -61,7 +61,7 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
             }
             sts = envm.getKey();
         }
-        List<ExpressVo> deliverList = baseMapper.getDeliverList(page, ew, sts, type, userId,cityId);
+        List<ExpressVo> deliverList = baseMapper.getDeliverList(page, ew, sts, type, userId, cityId);
         if (DistributionExpressStatus.WAIT_ROBBING.equals(envm))
             DistanceUtil.calcDistance(deliverList, lng, lat);
         return page.setRecords(deliverList);
@@ -157,10 +157,11 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
 
 
     @Override
-    public void createCityDistributionPayed(UserOrder order, Integer userId ,Integer cityId) {
+    public void createCityDistributionPayed(UserOrder order, Integer userId, Integer cityId) {
         Express e = new Express();
         e.setUserId(userId);
         BigDecimal f = order.getFreight();
+        e.setType(2);
         e.setPrice(f == null ? null : String.valueOf(f));
         e.setStatus(ExpressStatus.PAYED.getKey());
         e.setPublishTime(new Date());
@@ -179,7 +180,7 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
     @Override
     public Integer getOrderName(Integer cityId) {
         List<Express> orderName = baseMapper.getOrderName(cityId);
-        if(orderName==null){
+        if (orderName == null) {
             return 0;
         }
         return orderName.size();
