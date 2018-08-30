@@ -20,4 +20,6 @@ public interface ManagerUserService extends IService<ManagerUser> {
     List<Map> selectVoList(Wrapper wrapper);
 
     List<ManagerUser> getUserListByUsername(String username);
+
+    ManagerUser shopManager(Integer shopId);
 }

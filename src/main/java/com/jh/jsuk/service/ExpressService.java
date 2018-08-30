@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.jh.jsuk.entity.Express;
+import com.jh.jsuk.entity.UserOrder;
 import com.jh.jsuk.entity.vo.ExpressVo2;
 import com.jh.jsuk.envm.ExpressStatus;
 import com.jh.jsuk.envm.UserType;
@@ -45,4 +46,11 @@ public interface ExpressService extends IService<Express> {
      * 快递跑腿 余额支付
      */
     void balancePay(String orderId, Integer userId) throws Exception;
+
+    /**
+     * 创建已经支付了的订单
+     * @param order
+     * @param userId
+     */
+    void createCityDistributionPayed(UserOrder order, Integer userId);
 }

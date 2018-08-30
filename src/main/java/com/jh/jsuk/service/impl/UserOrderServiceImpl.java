@@ -687,7 +687,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
         s = s * EARTH_RADIUS;
         s = Math.round(s * 1000);
-        return s/1000;
+        return s / 1000;
     }
 
 
@@ -995,9 +995,24 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         shopMoney.insert();
     }
 
-    @Override
-    public void onPayed(List<UserOrder> userOrders, Integer userId) {
+    @Autowired
+    ExpressService expressService;
 
+    @Override
+    public void onPayed(List<UserOrder> userOrders, Integer userId) throws Exception {
+        if (userOrders == null || userOrders.isEmpty() || userId == null) {
+            log.error("传值错误 userId:{},orders:{} ", userId, userOrders);
+            return;
+        }
+        for (UserOrder order : userOrders) {
+            if (order == null)
+                continue;
+            DistributionType distributionType = EnumUitl.toEnum(DistributionType.class, order.getDistributionType());
+            if (DistributionType.CITY_DISTRIBUTION.equals(distributionType)) {
+                expressService.createCityDistributionPayed(order, userId);
+            }
+
+        }
     }
 
 

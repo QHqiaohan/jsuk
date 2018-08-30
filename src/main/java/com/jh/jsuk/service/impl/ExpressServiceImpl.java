@@ -17,9 +17,11 @@ import com.jh.jsuk.envm.*;
 import com.jh.jsuk.exception.MessageException;
 import com.jh.jsuk.service.DistributionUserService;
 import com.jh.jsuk.service.ExpressService;
+import com.jh.jsuk.service.ShopService;
 import com.jh.jsuk.service.UserRemainderService;
 import com.jh.jsuk.utils.DistanceUtil;
 import com.jh.jsuk.utils.EnumUitl;
+import com.jh.jsuk.utils.OrderNumUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -121,13 +123,13 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
 
     @Override
     public void balancePay(String expressId, Integer userId) throws Exception {
-        Express ee  = new Express();
+        Express ee = new Express();
         Express express = ee.selectById(expressId);
         //获取订单价格
         BigDecimal price = new BigDecimal(express.getPrice());
         //用户余额不足
         if (userRemainderService.hasRemain(userId, price)) {
-           //userRemainderService.consume(userId, price);
+            //userRemainderService.consume(userId, price);
             //修改订单信息
             express.setStatus(2);
             express.updateById();
@@ -143,9 +145,28 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
             ee1.insert();
 
 
-        }else{
+        } else {
             throw new MessageException("余额不足");
         }
+        distributionUserService.notifyRobbing();
+    }
+
+    @Autowired
+    ShopService shopService;
+
+
+    @Override
+    public void createCityDistributionPayed(UserOrder order, Integer userId) {
+        Express e = new Express();
+        e.setUserId(userId);
+        BigDecimal f = order.getFreight();
+        e.setPrice(f == null ? null : String.valueOf(f));
+        e.setStatus(ExpressStatus.PAYED.getKey());
+        e.setPublishTime(new Date());
+        e.setOrderNo(OrderNumUtil.getOrderIdByUUId());
+        e.setNotes(StrUtil.format("帮我送:{}", order.getGoodsName()));
+        e.setRequirementTime(order.getDistributionTime());
+        e.insert();
         distributionUserService.notifyRobbing();
     }
 }

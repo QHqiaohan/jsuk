@@ -1,5 +1,6 @@
 package com.jh.jsuk.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.dao.ManagerUserDao;
@@ -29,5 +30,12 @@ public class ManagerUserServiceImpl extends ServiceImpl<ManagerUserDao, ManagerU
     @Override
     public List<ManagerUser> getUserListByUsername(String username) {
         return baseMapper.getUserListByUsername(username);
+    }
+
+    @Override
+    public ManagerUser shopManager(Integer shopId) {
+        EntityWrapper<ManagerUser> wrapper = new EntityWrapper<>();
+        wrapper.eq(ManagerUser.SHOP_ID, shopId);
+        return selectOne(wrapper);
     }
 }

@@ -23,5 +23,5 @@ public interface ThirdPayService {
     /**
      * 支付成功回调
      */
-    void chargeBack(ThirdPayVoChild payVoChild) throws MessageException;
+    void chargeBack(ThirdPayVoChild payVoChild) throws Exception;
 }

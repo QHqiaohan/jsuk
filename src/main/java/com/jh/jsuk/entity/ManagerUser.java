@@ -1,5 +1,6 @@
 package com.jh.jsuk.entity;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.jh.jsuk.envm.ManageUserType;
 import com.jh.jsuk.exception.CannotConvertException;
@@ -298,6 +299,13 @@ public class ManagerUser extends ParentUser<ManagerUser> {
 
     public void setLastLoginTime(Date lastLoginTime) {
         this.lastLoginTime = lastLoginTime;
+    }
+
+    public String confirmName() {
+        if (StrUtil.isNotBlank(nickName)) {
+            return nickName;
+        }
+        return name;
     }
 
     public static final String ID = "id";

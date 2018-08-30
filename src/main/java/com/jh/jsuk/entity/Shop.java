@@ -60,6 +60,19 @@ public class Shop extends Model<Shop> {
      */
     @ApiModelProperty(value = "纬度", name = "latitude")
     private Double latitude;
+
+
+    public Integer getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Integer addressId) {
+        this.addressId = addressId;
+    }
+
+    private Integer addressId;
+
+
     /**
      * 店铺图片
      */

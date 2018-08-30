@@ -3,11 +3,11 @@ package com.jh.jsuk.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.jh.jsuk.dao.ShopDao;
+import com.jh.jsuk.entity.ManagerUser;
 import com.jh.jsuk.entity.Shop;
+import com.jh.jsuk.entity.UserAddress;
 import com.jh.jsuk.entity.vo.ShopTelPhoneVo;
-import com.jh.jsuk.service.ShopMoneyService;
-import com.jh.jsuk.service.ShopService;
-import com.jh.jsuk.service.UserRemainderService;
+import com.jh.jsuk.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -67,6 +68,40 @@ public class ShopServiceImpl extends ServiceImpl<ShopDao, Shop> implements ShopS
     @Override
     public List<Shop> findShopsByUserArea(Integer cityId) {
         return baseMapper.findShopsByUserArea(cityId);
+    }
+
+    @Autowired
+    UserAddressService userAddressService;
+
+    @Autowired
+    ManagerUserService managerUserService;
+
+    @Override
+    public UserAddress syncAddressInfo(Integer shopId) {
+        Shop shop = selectById(shopId);
+        if (shop == null)
+            return null;
+        if (shop.getAddressId() != null) {
+            return userAddressService.selectById(shop.getAddressId());
+        }
+        UserAddress a = new UserAddress();
+        a.setAddress(shop.getAddress());
+        Integer cityId = shop.getCityId();
+        a.setCity(cityId == null ? null : String.valueOf(cityId));
+        a.setArea(cityId == null ? null : String.valueOf(cityId));
+        Double latitude = shop.getLatitude();
+        a.setLatitude(latitude == null ? null : String.valueOf(latitude));
+        Double longitude = shop.getLongitude();
+        a.setLongitude(longitude == null ? null : String.valueOf(longitude));
+        ManagerUser managerUser = managerUserService.shopManager(shopId);
+        if (managerUser != null) {
+            a.setPhone(managerUser.getPhone());
+            a.setName(managerUser.confirmName());
+        }
+        a.setIsDel(0);
+        a.setCreateTime(new Date());
+        a.insert();
+        return a;
     }
 
 }

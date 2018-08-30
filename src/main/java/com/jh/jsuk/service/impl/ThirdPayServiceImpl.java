@@ -93,7 +93,7 @@ public class ThirdPayServiceImpl implements ThirdPayService {
      * 支付成功回调
      */
     @Override
-    public void chargeBack(ThirdPayVoChild payVoChild) throws MessageException {
+    public void chargeBack(ThirdPayVoChild payVoChild) throws Exception {
         ThirdPayVo payVo = payVoChild.getPayVo();
         switch (payVo.getType()) {
             //用户订单支付
@@ -181,7 +181,7 @@ public class ThirdPayServiceImpl implements ThirdPayService {
      * <p>
      * 回调
      */
-    private void userOrderComplete(ThirdPayVo payVo) {
+    private void userOrderComplete(ThirdPayVo payVo) throws Exception {
         String[] ids = payVo.getParam().split(",");
         List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
         BigDecimal price = new BigDecimal("0.00");
