@@ -122,7 +122,6 @@ public class ThirdPayServiceImpl implements ThirdPayService {
     }
 
 
-
     @Autowired
     DistributionUserService distributionUserService;
 
@@ -140,7 +139,7 @@ public class ThirdPayServiceImpl implements ThirdPayService {
 
     /**
      * 会员充值成功
-     *
+     * <p>
      * 回调
      */
     private void userRechargeComplete(ThirdPayVoChild payVoChild) {
@@ -159,15 +158,13 @@ public class ThirdPayServiceImpl implements ThirdPayService {
         userRechargeRecord.updateById();
 
 
-
     }
 
     /**
      * 到店支付成功
-     *
-     *
+     * <p>
+     * <p>
      * 回调
-     *
      */
     private void payStore(ThirdPayVo payVo) {
         //商家余额
@@ -181,18 +178,20 @@ public class ThirdPayServiceImpl implements ThirdPayService {
 
     /**
      * 用户订单支付成功
-     *
+     * <p>
      * 回调
-     *
      */
     private void userOrderComplete(ThirdPayVo payVo) {
-        System.out.println("22222222222222222222222222222222222222222222222222222222222222");
         String[] ids = payVo.getParam().split(",");
         List<UserOrder> userOrders = userOrderService.selectBatchIds(Arrays.asList(ids));
         BigDecimal price = new BigDecimal("0.00");
+        Integer userId = null;
         for (UserOrder userOrder : userOrders) {
-            if(userOrder == null)
+            if (userOrder == null)
                 continue;
+            if (userId == null) {
+                userId = userOrder.getUserId();
+            }
             //修改订单信息
             userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
             userOrder.setPayTime(new Date());
@@ -203,18 +202,18 @@ public class ThirdPayServiceImpl implements ThirdPayService {
 
             //修改商品销量；
             List<UserOrderGoods> order_id1 = userOrderGoodsService.getListByOrderId(userOrder.getId());
-            for (UserOrderGoods uo :order_id1){
+            for (UserOrderGoods uo : order_id1) {
                 ShopGoods sg = new ShopGoods();
                 ShopGoods shopGoods = sg.selectById(uo.getGoodsId());
-                shopGoods.setSaleAmont(shopGoods.getSaleAmont()+1);
+                shopGoods.setSaleAmont(shopGoods.getSaleAmont() + 1);
                 shopGoods.updateById();
             }
         }
         //获取积分规则列表
         IntegralRule ir = new IntegralRule();
         IntegralRule ie = ir.selectById(1);
-        int i1=0;
-        if(ie!=null){
+        int i1 = 0;
+        if (ie != null) {
             Integer consumption = ie.getConsumption();//多少钱
             Integer gainIntegral = ie.getGainIntegral();//送多少积分
             int i = price.intValue();
@@ -236,41 +235,29 @@ public class ThirdPayServiceImpl implements ThirdPayService {
         shopMoney.setStatus(UserRemainderStatus.PASSED);
         shopMoney.insert();
 
-        Date day=new Date();
+        Date day = new Date();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
         String format = df.format(day);
         SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
         String format1 = df1.format(day);
         ShopTodayStatistics oi = shopTodayStatisticsService.getOneByshopId(format, format1, userOrders.get(0).getShopId());
-        if(oi==null){
+        if (oi == null) {
             ShopTodayStatistics sts = new ShopTodayStatistics();
             sts.setShopId(userOrders.get(0).getShopId());
             sts.setTodayMoney(price.toString());
             sts.setTodayOrder(1);
             sts.setToday(new Date());
             sts.insert();
-        }else{
-            oi.setTodayOrder(oi.getTodayOrder()+1);
+        } else {
+            oi.setTodayOrder(oi.getTodayOrder() + 1);
             String todayMoney = oi.getTodayMoney();
             BigDecimal bm = new BigDecimal(todayMoney);
             BigDecimal add = bm.add(price);
             oi.setTodayMoney(add.toString());
             oi.updateById();
         }
+        userOrderService.onPayed(userOrders, userId);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**

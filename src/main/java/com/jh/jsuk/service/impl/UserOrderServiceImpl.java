@@ -470,8 +470,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             o.setPayType(orderDto.getPayType());
             o.setFreight(orderPrice.getFreight());
             StringBuilder goodsName = new StringBuilder();
-            BigDecimal you=new BigDecimal(0); //创建一个邮费计数值；
-            BigDecimal zong =new BigDecimal(0); //创建一个总价计数值；
+            BigDecimal you = new BigDecimal(0); //创建一个邮费计数值；
+            BigDecimal zong = new BigDecimal(0); //创建一个总价计数值；
 
             for (UserOrderGoods userOrderGoods : gs) {
                 Integer num = userOrderGoods.getNum(); //获取商品型号数量
@@ -484,9 +484,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 ShopGoodsSize sgs = new ShopGoodsSize();
                 ShopGoodsSize ss = sgs.selectById(goodsSizeId);
                 //取出型号id的邮费；
-                if(ss!=null){
+                if (ss != null) {
                     int i = Integer.parseInt(ss.getFreight());
-                    you=you.add(new BigDecimal(i));
+                    you = you.add(new BigDecimal(i));
                 }
 
                 ShopGoods shopGoods = shopGoodsService.selectById(userOrderGoods.getGoodsId());
@@ -497,44 +497,44 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             ShopSets shopSet = shopSetService.getShopSet(orderGoods.getShopId());
             Integer dt = orderDto.getDistributionType();//获取配送类型 0 快递，1同城，2到店
             //判断配送类型
-            if(dt==0){
+            if (dt == 0) {
                 //判断商家是否包邮
-               if(shopSet!=null){
-                   Integer packagemail = shopSet.getPackagemail();
-                   if(packagemail==2){//开启了包邮
-                       //判断购买价是否大于包邮价
-                       if(zong.compareTo(new BigDecimal(shopSet.getMoney()))>=0){
-                           you=new BigDecimal(0);//如果大于 ，邮费为0
-                       }
-                   }
-               }
-            }else if(dt==1){
+                if (shopSet != null) {
+                    Integer packagemail = shopSet.getPackagemail();
+                    if (packagemail == 2) {//开启了包邮
+                        //判断购买价是否大于包邮价
+                        if (zong.compareTo(new BigDecimal(shopSet.getMoney())) >= 0) {
+                            you = new BigDecimal(0);//如果大于 ，邮费为0
+                        }
+                    }
+                }
+            } else if (dt == 1) {
                 //计算同城邮费
                 //根据店铺id查询店铺的经纬度；
                 Shop sp = new Shop();
                 Shop shop = sp.selectById(orderGoods.getShopId());
-                Double shopwei=0.0;
-                Double shopjing=0.0;
-                if(shop!=null){
-                    shopwei =   shop.getLatitude();//s商家维度
+                Double shopwei = 0.0;
+                Double shopjing = 0.0;
+                if (shop != null) {
+                    shopwei = shop.getLatitude();//s商家维度
                     shopjing = shop.getLongitude();//商家经度
                 }
                 //获取用户地址的经纬度；
                 UserAddress ua = new UserAddress();
                 UserAddress uss = ua.selectById(orderDto.getAddressId());
-                Double userwei=0.0;
-                Double userjing=0.0;
-                if(uss!=null){
-                    userwei=Double.parseDouble(uss.getLatitude());//用户维度
-                    userjing= Double.parseDouble(uss.getLongitude());//用户经度
+                Double userwei = 0.0;
+                Double userjing = 0.0;
+                if (uss != null) {
+                    userwei = Double.parseDouble(uss.getLatitude());//用户维度
+                    userjing = Double.parseDouble(uss.getLongitude());//用户经度
                 }
                 //获取计算规则
                 RunningFee rf = new RunningFee();
                 RunningFee runningFee = rf.selectById(1);
                 Integer qiprace = 0;//起步费用
                 Integer qiju = 0;//起步距离
-                Integer chaofei =0;//超过费用
-                if(runningFee!=null){
+                Integer chaofei = 0;//超过费用
+                if (runningFee != null) {
                     qiprace = runningFee.getStartFee();
                     qiju = runningFee.getStartDistance();
                     chaofei = runningFee.getAddFee();
@@ -544,14 +544,14 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 DecimalFormat df = new DecimalFormat("######0"); //四色五入转换成整数
                 String format = df.format(v);
                 int i = Integer.parseInt(format);//距离
-                if(i>qiju){
+                if (i > qiju) {
                     int i1 = (i - qiju) * chaofei + qiprace;
                     you = new BigDecimal(i1);
-                }else{
+                } else {
                     you = new BigDecimal(qiprace);
                 }
-            }else{
-                you=new BigDecimal(0);//到店自提邮费为0；
+            } else {
+                you = new BigDecimal(0);//到店自提邮费为0；
             }
 
 
@@ -559,9 +559,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             User user = new User();
             User user1 = user.selectById(userId);
             BigDecimal zhe = new BigDecimal(1);
-            if(user1!=null){
+            if (user1 != null) {
                 Integer level = user1.getLevel();
-                if(level!=0){
+                if (level != 0) {
                     Member mm = new Member();
                     Member member = mm.selectById(level);
                     zhe = member.getMemberDiscount();
@@ -569,13 +569,13 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             }
 
             //满减数量
-            BigDecimal discount=new BigDecimal(0);
+            BigDecimal discount = new BigDecimal(0);
             //查询是否满减
             List<Coupon> lb = couponService.getListByShopId(orderGoods.getShopId());
-            for(Coupon cu : lb){
+            for (Coupon cu : lb) {
                 //获取满减值
                 BigDecimal fullPrice = cu.getFullPrice();
-                if(zong.compareTo(fullPrice)>=0){
+                if (zong.compareTo(fullPrice) >= 0) {
                     discount = cu.getDiscount();
                     break;
                 }
@@ -589,10 +589,10 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             //设置积分折扣的钱
             BigDecimal jizong = new BigDecimal(0);
             //是否使用积分
-            if(isuseintegerl==1){//使用积分
+            if (isuseintegerl == 1) {//使用积分
                 //获取店家是否允许使用积分；
-                if(shopSet!=null){
-                    if (shopSet.getIntegral()==2) {
+                if (shopSet != null) {
+                    if (shopSet.getIntegral() == 2) {
                         //获取积分列表
                         List<UserIntegral> userIntegrals = userIntegralService.selectList(new EntityWrapper<UserIntegral>()
                             .eq(UserIntegral.USER_ID, userId));
@@ -610,7 +610,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                         //获取积分规则列表
                         IntegralRule ir = new IntegralRule();
                         IntegralRule ie = ir.selectById(1);
-                        if(ie!=null){
+                        if (ie != null) {
                             Integer ii = ie.getIntegral();//多少积分
                             BigDecimal mon = ie.getDeduction();//换多少钱
                             BigDecimal jif = new BigDecimal(ii);
@@ -621,11 +621,11 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                             ui.setCraTime(new Date());
                             //判断积分和钱
                             BigDecimal zongji = new BigDecimal(sum);//总积分
-                            if(zong.compareTo(zongji)>=0){
-                                jizong=(zongji.add(you).subtract(discount)).multiply(mon).divide(jif);
+                            if (zong.compareTo(zongji) >= 0) {
+                                jizong = (zongji.add(you).subtract(discount)).multiply(mon).divide(jif);
                                 ui.setIntegralNumber(sum);
-                            }else{
-                                jizong=(zong.add(you).subtract(discount)).multiply(mon).divide(jif);
+                            } else {
+                                jizong = (zong.add(you).subtract(discount)).multiply(mon).divide(jif);
                                 ui.setIntegralNumber(subtract.intValue());
                             }
                             ui.insert();
@@ -634,8 +634,8 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 }
             }
             o.setIntegralReduce(jizong);
-            orderPrice.setOrderRealPrice(subtract.subtract(jizong).setScale(2,BigDecimal.ROUND_HALF_UP));
-            o.setOrderRealPrice((subtract.subtract(jizong)).setScale(2,BigDecimal.ROUND_HALF_UP));
+            orderPrice.setOrderRealPrice(subtract.subtract(jizong).setScale(2, BigDecimal.ROUND_HALF_UP));
+            o.setOrderRealPrice((subtract.subtract(jizong)).setScale(2, BigDecimal.ROUND_HALF_UP));
             //设置满减；
             o.setFullReduce(discount);
             o.setGoodsName(goodsName.toString());
@@ -664,27 +664,27 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     private static double EARTH_RADIUS = 6371.393;
-    private static double rad(double d)
-    {
+
+    private static double rad(double d) {
         return d * Math.PI / 180.0;
     }
 
     /**
      * 计算两个经纬度之间的距离
+     *
      * @param lat1
      * @param lng1
      * @param lat2
      * @param lng2
      * @return
      */
-    public static double GetDistance(double lat1, double lng1, double lat2, double lng2)
-    {
+    public static double GetDistance(double lat1, double lng1, double lat2, double lng2) {
         double radLat1 = rad(lat1);
         double radLat2 = rad(lat2);
         double a = radLat1 - radLat2;
         double b = rad(lng1) - rad(lng2);
-        double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2) +
-            Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
+        double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+            Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
         s = s * EARTH_RADIUS;
         s = Math.round(s * 1000);
         return s;
@@ -714,7 +714,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             if (shop.getGoods().size() == 0) {
                 continue;
             }
-            OrderResponse response = createOrder(orderDto, shop, orderType, userId,orderDto.getIsUseIntegral());
+            OrderResponse response = createOrder(orderDto, shop, orderType, userId, orderDto.getIsUseIntegral());
             if (OrderType.NORMAL.equals(orderType) &&
                 (response.is(OrderResponseStatus.SUCCESS) || response.is(OrderResponseStatus.PARTLY_SUCCESS))) {
                 delShopCart(shop);
@@ -860,7 +860,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 //            userRemainder.setStatus(UserRemainderStatus.PASSED);
 //            userRemainder.setPlatformNumber(userOrder.getPlatformNumber());
 //            userRemainder.insert();
-            userRemainderService.consume(userId,userOrder.getOrderRealPrice(),userOrder.getOrderNum());
+            userRemainderService.consume(userId, userOrder.getOrderRealPrice(), userOrder.getOrderNum());
             //修改订单信息
             userOrder.setStatus(OrderStatus.WAIT_DELIVER.getKey());
             userOrder.setPayType(PayType.BALANCE_PAY.getKey());
@@ -871,10 +871,10 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
             List<UserOrderGoods> order_id1 = userOrderGoodsService.getListByOrderId(userOrder.getId());
 
-            for (UserOrderGoods uo :order_id1){
+            for (UserOrderGoods uo : order_id1) {
                 ShopGoods sg = new ShopGoods();
                 ShopGoods shopGoods = sg.selectById(uo.getGoodsId());
-                shopGoods.setSaleAmont(shopGoods.getSaleAmont()+1);
+                shopGoods.setSaleAmont(shopGoods.getSaleAmont() + 1);
                 shopGoods.updateById();
 
             }
@@ -882,7 +882,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         //获取积分规则列表
         IntegralRule ir = new IntegralRule();
         IntegralRule ie = ir.selectById(1);
-        if(ie!=null){
+        if (ie != null) {
             Integer consumption = ie.getConsumption();//多少钱
             Integer gainIntegral = ie.getGainIntegral();//送多少积分
             int i = price.intValue();
@@ -904,21 +904,21 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
         shopMoney.setShopId(userOrders.get(0).getShopId());
         shopMoney.insert();
 
-        Date day=new Date();
+        Date day = new Date();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
         String format = df.format(day);
         SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
         String format1 = df1.format(day);
         ShopTodayStatistics oi = shopTodayStatisticsService.getOneByshopId(format, format1, userOrders.get(0).getShopId());
-        if(oi==null){
+        if (oi == null) {
             ShopTodayStatistics sts = new ShopTodayStatistics();
             sts.setShopId(userOrders.get(0).getShopId());
             sts.setTodayMoney(price.toString());
             sts.setTodayOrder(1);
             sts.setToday(new Date());
             sts.insert();
-        }else{
-            oi.setTodayOrder(oi.getTodayOrder()+1);
+        } else {
+            oi.setTodayOrder(oi.getTodayOrder() + 1);
             String todayMoney = oi.getTodayMoney();
             BigDecimal bm = new BigDecimal(todayMoney);
             BigDecimal add = bm.add(price);
@@ -929,22 +929,23 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
 
         SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-01 00:00:00");
         String format3 = df2.format(day);
-        Date   date   =   df2.parse(format3);
-        ShopMonthStatistics monthStatistics = shopMonthStatisticsService.getmonthByShopId(userOrders.get(0).getShopId(),format3);
-            if(monthStatistics==null){
-                ShopMonthStatistics sms = new ShopMonthStatistics();
-                sms.setShopId(userOrders.get(0).getShopId());
-                sms.setMonth(date);
-                sms.setMonthOrder(1);
-                sms.insert();
-            }else{
-                monthStatistics.setMonthOrder(monthStatistics.getMonthOrder()+1);
-                monthStatistics.updateById();
-            }
-
+        Date date = df2.parse(format3);
+        ShopMonthStatistics monthStatistics = shopMonthStatisticsService.getmonthByShopId(userOrders.get(0).getShopId(), format3);
+        if (monthStatistics == null) {
+            ShopMonthStatistics sms = new ShopMonthStatistics();
+            sms.setShopId(userOrders.get(0).getShopId());
+            sms.setMonth(date);
+            sms.setMonthOrder(1);
+            sms.insert();
+        } else {
+            monthStatistics.setMonthOrder(monthStatistics.getMonthOrder() + 1);
+            monthStatistics.updateById();
+        }
+        onPayed(userOrders, userId);
     }
+
     @Autowired
-private  ShopMonthStatisticsService shopMonthStatisticsService;
+    private ShopMonthStatisticsService shopMonthStatisticsService;
 
     @Override
     public AfterSaleVo getAddressAndPhone(Integer orderId) {
@@ -992,6 +993,11 @@ private  ShopMonthStatisticsService shopMonthStatisticsService;
         shopMoney.setType(ShopMoneyType.GAIN);
         shopMoney.setShopId(order.getShopId());
         shopMoney.insert();
+    }
+
+    @Override
+    public void onPayed(List<UserOrder> userOrders, Integer userId) {
+
     }
 
 

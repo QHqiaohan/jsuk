@@ -37,6 +37,7 @@ public interface UserOrderService extends IService<UserOrder> {
 
     /**
      * 用户端
+     *
      * @param page
      * @param wrapper
      * @param userId
@@ -109,8 +110,15 @@ public interface UserOrderService extends IService<UserOrder> {
 
     /**
      * 商家端 确认退款
+     *
      * @param id
      * @param price
      */
     void refund(Integer id, String price) throws MessageException;
+
+    /**
+     * 付款完成之后
+     * 包括 在线付款和余额支付
+     */
+    void onPayed(List<UserOrder> userOrders, Integer userId);
 }
