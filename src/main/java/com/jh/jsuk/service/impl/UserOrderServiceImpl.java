@@ -584,7 +584,12 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             BigDecimal subtract = new BigDecimal(0);
             o.setFreight(you);//设置邮费
             BigDecimal add = zong.add(you);//将商品价和邮费相加
-            o.setOrderPrice(add);//设置总价
+            if(OrderType.RUSH_BUY.equals(orderType)){
+
+            }else{
+                o.setOrderPrice(add);//设置总价
+            }
+
             subtract = ((add.subtract(discount)).multiply(zhe));//（总价-满减）*折扣=支付价
             //设置积分折扣的钱
             BigDecimal jizong = new BigDecimal(0);

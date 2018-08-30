@@ -15,4 +15,5 @@ import com.baomidou.mybatisplus.service.IService;
 public interface CitysService extends IService<Citys> {
 
     Page page(Page page, String kw);
+    Integer getcitynumBycityname(String cityname);
 }

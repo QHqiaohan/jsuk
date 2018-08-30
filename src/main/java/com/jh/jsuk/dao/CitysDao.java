@@ -24,4 +24,5 @@ public interface CitysDao extends BaseMapper<Citys> {
 
     List<Map<String, Object>> page(Page page,@Param("kw") String kw);
 
+    Integer getcitynumBycityname(@Param("cityName") String cityName);
 }

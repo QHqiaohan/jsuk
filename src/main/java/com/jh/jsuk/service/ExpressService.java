@@ -54,4 +54,11 @@ public interface ExpressService extends IService<Express> {
      * @param userId
      */
     void createCityDistributionPayed(UserOrder order, Integer userId, Integer cityId);
+
+    /**
+     * 获取当前城市可接订单量
+     * @param cityId
+     * @return
+     */
+    Integer getOrderName(Integer cityId);
 }
