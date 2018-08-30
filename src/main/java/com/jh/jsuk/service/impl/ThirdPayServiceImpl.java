@@ -256,7 +256,7 @@ public class ThirdPayServiceImpl implements ThirdPayService {
             oi.setTodayMoney(add.toString());
             oi.updateById();
         }
-        userOrderService.onPayed(userOrders, userId);
+        userOrderService.onPayed(userOrders, userId, null);
     }
 
 

@@ -49,10 +49,11 @@ public interface ExpressService extends IService<Express> {
 
     /**
      * 创建已经支付了的订单
+     *
      * @param order
      * @param userId
      */
-    void createCityDistributionPayed(UserOrder order, Integer userId);
+    void createCityDistributionPayed(UserOrder order, Integer userId, Integer cityId);
 
     /**
      * 获取当前城市可接订单量

@@ -842,7 +842,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     }
 
     @Override
-    public void balancePay(List<UserOrder> userOrders, Integer userId) throws Exception {
+    public void balancePay(List<UserOrder> userOrders, Integer userId, Integer cityId) throws Exception {
         //获取订单价格
         BigDecimal price = new BigDecimal("0.00");
         for (UserOrder u : userOrders) {
@@ -946,7 +946,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             monthStatistics.setMonthOrder(monthStatistics.getMonthOrder() + 1);
             monthStatistics.updateById();
         }
-        onPayed(userOrders, userId);
+        onPayed(userOrders, userId, cityId);
     }
 
     @Autowired
@@ -1004,7 +1004,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
     ExpressService expressService;
 
     @Override
-    public void onPayed(List<UserOrder> userOrders, Integer userId) throws Exception {
+    public void onPayed(List<UserOrder> userOrders, Integer userId, Integer cityId) throws Exception {
         if (userOrders == null || userOrders.isEmpty() || userId == null) {
             log.error("传值错误 userId:{},orders:{} ", userId, userOrders);
             return;
@@ -1014,7 +1014,7 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
                 continue;
             DistributionType distributionType = EnumUitl.toEnum(DistributionType.class, order.getDistributionType());
             if (DistributionType.CITY_DISTRIBUTION.equals(distributionType)) {
-                expressService.createCityDistributionPayed(order, userId);
+                expressService.createCityDistributionPayed(order, userId, cityId);
             }
 
         }
