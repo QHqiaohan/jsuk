@@ -85,6 +85,8 @@ public class ModularPortalController {
             }
         }
         map.put("shop", list);
+
+
         /**
          * 商品列表
          */

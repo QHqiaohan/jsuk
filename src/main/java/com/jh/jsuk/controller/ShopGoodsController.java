@@ -532,6 +532,7 @@ public class ShopGoodsController {
         }
         Integer cityId = shop1.getCityId();
         ShopGoods shopGoods = new ShopGoods();
+        shopGoods.setShopGoogModularId(modularId);
         shopGoods.setCityId(cityId);
         shopGoods.setShopId(shopId);
         shopGoods.setAttributeId(addGoodsVo.getAttributeId());

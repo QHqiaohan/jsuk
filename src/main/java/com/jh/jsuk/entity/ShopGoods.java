@@ -35,6 +35,9 @@ public class ShopGoods extends Model<ShopGoods> {
      */
     @ApiModelProperty(value = "店铺id", name = "shopId")
     private Integer shopId;
+
+    private Integer shopGoogModularId;//商品模块id
+
     /**
      * 属性ID
      */

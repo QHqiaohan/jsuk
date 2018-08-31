@@ -54,6 +54,7 @@
     AND jsg.`status` = '1'
     AND jsg.is_del = 0
     AND jsg.city_id = #{cityId}
+    and jsg.shop_good_modular_id=#{modularId}
     ORDER BY
     jsg.sale_amont DESC
     LIMIT 0,4
