@@ -59,6 +59,11 @@ public class ShopController {
         return R.succ();
     }
 
+    /**
+     * 修改商家的设置是否包邮和使用积分
+     * @param se
+     * @return
+     */
     @PostMapping(value = "/setShopSet")
     public Result setShopSet(ShopSets se) {
         boolean b = se.updateById();
@@ -183,6 +188,8 @@ public class ShopController {
         List<Shop> shops = shopService.findCollectByUserId(userId);
         return new Result().success(shops);
     }
+    @Autowired
+    private UserAddressService userAddressService;
 
     @ApiOperation("商家端-店铺管理")
     @RequestMapping(value = "/addShopInfo", method = {RequestMethod.POST, RequestMethod.GET})
@@ -195,6 +202,37 @@ public class ShopController {
 
         Integer shopId = managerUser.getShopId();
         shop.setId(shopId);
+
+
+        Shop s = new Shop();
+        Shop shop1 = s.selectById(shopId);
+        UserAddress ua1;
+        if(shop1!=null){
+            if(shop1.getAddressId()==null){
+                UserAddress ua = new UserAddress();
+                ua.setLatitude(shop1.getLatitude()+"");//设置维度
+                ua.setLongitude(shop1.getLongitude()+"");//设置经度
+                ua.setName(shop1.getShopName());//设置名称
+                ua.setPhone(shop1.getShopPhone());//设置手机
+                ua.setAddress(shop1.getAddress());
+                ua.insert();
+               ua1 = userAddressService.selectOne(new EntityWrapper<UserAddress>()
+                    .eq(UserAddress.PHONE, shop1.getShopPhone())
+                    .eq(UserAddress.NAME,shop1.getShopName()));
+               if(ua1!=null){
+                   shop.setAddressId(ua1.getId());
+               }
+            }else{
+                UserAddress ud = new UserAddress();
+                UserAddress userAddress = ud.selectById(shop1.getAddressId());
+                userAddress.setAddress(shop1.getAddress());
+                userAddress.setLongitude(shop1.getLongitude()+"");
+                userAddress.setLatitude(shop1.getLatitude()+"");
+                userAddress.setName(shop1.getShopName());
+                userAddress.updateById();
+            }
+
+        }
         shop.updateById();
         return new Result().success("店铺信息修改成功");
     }
