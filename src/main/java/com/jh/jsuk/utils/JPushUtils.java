@@ -150,7 +150,7 @@ public class JPushUtils {
                             .build())
                     .build())
             .setOptions(Options.newBuilder()
-                .setApnsProduction(false)
+                .setApnsProduction(true)
                 .build())
             .build();
     }

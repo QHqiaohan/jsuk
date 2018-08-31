@@ -111,6 +111,16 @@ public class Express extends Model<Express> {
      */
     private String orderNo;
 
+    private Integer userOrderId;
+
+    public Integer getUserOrderId() {
+        return userOrderId;
+    }
+
+    public void setUserOrderId(Integer userOrderId) {
+        this.userOrderId = userOrderId;
+    }
+
     @JsonIgnore
     public boolean isCompleted() {
         return status != null && (status.equals(5) || status.equals(6));

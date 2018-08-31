@@ -166,9 +166,14 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
         e.setStatus(ExpressStatus.PAYED.getKey());
         e.setPublishTime(new Date());
         e.setOrderNo(OrderNumUtil.getOrderIdByUUId());
-        e.setNotes(StrUtil.format("帮我送:{}", order.getGoodsName()));
+        String goodsName = order.getGoodsName();
+        if (goodsName == null) {
+            goodsName = "";
+        }
+        e.setNotes(StrUtil.format("帮我送:{}", goodsName.replaceAll(",$", "")));
         e.setRequirementTime(order.getDistributionTime());
         e.setGetAddress(order.getAddressId());
+        e.setUserOrderId(order.getId());
         UserAddress address = shopService.syncAddressInfo(order.getShopId());
         if (address != null)
             e.setSenderAddress(address.getId());
