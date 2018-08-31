@@ -71,6 +71,11 @@ public class Express extends Model<Express> {
     @ApiModelProperty(value = "真实重量", name = "realWeight")
     private String realWeight;
     /**
+     * 用户订单
+     */
+    @ApiModelProperty(value = "用户订单", name = "userOrderId")
+    private Integer userOrderId;
+    /**
      * 是否删除 0=未删除,1=删除
      */
     private Integer isDel;
@@ -111,14 +116,9 @@ public class Express extends Model<Express> {
      */
     private String orderNo;
 
-    private Integer userOrderId;
-
-    public Integer getUserOrderId() {
-        return userOrderId;
-    }
-
-    public void setUserOrderId(Integer userOrderId) {
-        this.userOrderId = userOrderId;
+    public Integer getUserOrderId(){return userOrderId;}
+    public void setUserOrderId(Integer userOrderId){
+        this.userOrderId=userOrderId;
     }
 
     @JsonIgnore
