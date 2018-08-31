@@ -121,4 +121,6 @@ public interface UserOrderService extends IService<UserOrder> {
      * 包括 在线付款和余额支付
      */
     void onPayed(List<UserOrder> userOrders, Integer userId,Integer cityId) throws Exception;
+
+    void onCancel(Integer id) throws Exception;
 }

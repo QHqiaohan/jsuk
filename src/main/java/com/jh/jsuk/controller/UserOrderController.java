@@ -543,10 +543,8 @@ public class UserOrderController {
 
     @ApiOperation(value = "用户端&商家端-取消订单")
     @RequestMapping(value = "/cancelOrder", method = {RequestMethod.POST, RequestMethod.GET})
-    public Result cancelOrder(@ApiParam(value = "订单ID", required = true) Integer id) {
-        UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
-        userOrder.setStatus(OrderStatus.CANCEL.getKey());
-        userOrder.updateById();
+    public Result cancelOrder(@ApiParam(value = "订单ID", required = true) Integer id) throws Exception {
+        userOrderService.onCancel(id);
         return new Result().success("取消成功!");
     }
 

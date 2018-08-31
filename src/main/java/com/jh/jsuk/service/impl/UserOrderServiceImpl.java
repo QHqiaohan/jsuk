@@ -584,9 +584,9 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             BigDecimal subtract = new BigDecimal(0);
             o.setFreight(you);//设置邮费
             BigDecimal add = zong.add(you);//将商品价和邮费相加
-            if(OrderType.RUSH_BUY.equals(orderType)){
+            if (OrderType.RUSH_BUY.equals(orderType)) {
 
-            }else{
+            } else {
                 o.setOrderPrice(add);//设置总价
             }
 
@@ -1018,6 +1018,18 @@ public class UserOrderServiceImpl extends ServiceImpl<UserOrderDao, UserOrder> i
             }
 
         }
+    }
+
+    @Override
+    public void onCancel(Integer id) throws Exception {
+        UserOrder userOrder = userOrderService.selectOne(new EntityWrapper<UserOrder>().eq(UserOrder.ID, id));
+        userOrder.setStatus(OrderStatus.CANCEL.getKey());
+        userOrder.updateById();
+        Express entity = new Express();
+        EntityWrapper<Express> wrapper = new EntityWrapper<>();
+        wrapper.eq(Express.USER_ORDER_ID, id);
+        entity.setStatus(ExpressStatus.CANCEL.getKey());
+        expressService.update(entity, wrapper);
     }
 
 

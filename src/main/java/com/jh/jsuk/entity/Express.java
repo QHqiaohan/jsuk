@@ -288,6 +288,7 @@ public class Express extends Model<Express> {
 
     public static final String END_TIME = "end_time";
 
+    public static final String USER_ORDER_ID = "user_order_id";
 
     @Override
     protected Serializable pkVal() {
