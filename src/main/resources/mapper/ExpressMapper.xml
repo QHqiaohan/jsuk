@@ -20,11 +20,12 @@
     <result column="publish_time" property="publishTime"/>
     <result column="end_time" property="endTime"/>
     <result column="order_no" property="orderNo"/>
+    <result column="user_order_id" property="userOrderId"/>
   </resultMap>
 
   <!-- 通用查询结果列 -->
   <sql id="Base_Column_List">
-    id, user_id, sender_address, order_no, get_address, goods_type, weight, real_weight, is_del, status, type, price, notes, requirement_time, publish_time, end_time
+    id, user_id, sender_address, order_no, get_address, goods_type, weight, real_weight, is_del, status, type, price, notes, requirement_time, publish_time, end_time,user_order_id
   </sql>
   <resultMap id="ExpressListVo" type="com.jh.jsuk.entity.vo.ExpressListVo" extends="BaseResultMap">
     <association property="user" column="user_id" select="com.jh.jsuk.dao.UserDao.selectById"/>
